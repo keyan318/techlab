@@ -1,0 +1,491 @@
+<?php
+
+namespace App\Services;
+
+use App\Exceptions\NvidiaNimException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Log;
+use Psr\Http\Message\ResponseInterface;
+
+/**
+ * Thin, dedicated client for the NVIDIA NIM Chat Completions API.
+ *
+ * NVIDIA NIM exposes an OpenAI-compatible endpoint and is Astro's SOLE AI
+ * provider. Responsibilities:
+ *  - selecting the configured model
+ *  - authenticating server-side only (the key never reaches the browser)
+ *  - sending the full message history
+ *  - streaming the assistant response token-by-token to a callback
+ *  - parsing NIM's Server-Sent-Events stream
+ *  - classifying failures into actionable categories and logging them
+ *
+ * It deliberately knows nothing about Laravel HTTP responses, controllers or
+ * the database — that keeps the streaming boundary clean and testable.
+ */
+class NvidiaNimService
+{
+    protected Client $client;
+
+    public function __construct(?Client $client = null)
+    {
+        $this->client = $client ?? new Client([
+            'timeout' => 300,
+            'connect_timeout' => 15,
+        ]);
+    }
+
+    /**
+     * The configured model id (defaults to a working NVIDIA NIM free-tier model).
+     */
+    public function model(): string
+    {
+        return (string) config('nvidia_nim.model', '');
+    }
+
+    /**
+     * Ensure the API key and model are configured before issuing a request.
+     *
+     * With the model now env-driven (no hardcoded default), a missing
+     * NVIDIA_NIM_MODEL must fail loudly and safely rather than producing a
+     * confusing upstream 400. The API key is never included in any message.
+     *
+     * @throws NvidiaNimException  CONFIGURATION_ERROR with a safe message.
+     */
+    protected function assertConfigured(): void
+    {
+        if (empty(config('nvidia_nim.api_key'))) {
+            throw new NvidiaNimException(
+                "Astro couldn't respond because the NVIDIA NIM API key is missing from the server configuration.",
+                'CONFIGURATION_ERROR'
+            );
+        }
+
+        if (empty($this->model())) {
+            throw new NvidiaNimException(
+                "Astro couldn't respond because the NVIDIA NIM model isn't configured. Set NVIDIA_NIM_MODEL in your .env file.",
+                'CONFIGURATION_ERROR'
+            );
+        }
+    }
+
+    /**
+     * The TechLab tutor system prompt.
+     *
+     * Accepts optional context so Astro can adapt to the student:
+     *  - 'level'  : auto|beginner|intermediate|advanced
+     *  - 'context': a short free-form topic/course hint (e.g. "HTML5 · semantic tags")
+     */
+    public function systemPrompt(array $options = []): string
+    {
+        $base = config('nvidia_nim.system_prompt', '');
+
+        $extras = [];
+
+        $level = strtolower(trim($options['level'] ?? 'auto'));
+        if (in_array($level, ['beginner', 'intermediate', 'advanced'], true)) {
+            $extras[] = "Student level: explain at the **{$level}** level.";
+        }
+
+        $context = trim($options['context'] ?? '');
+        if ($context !== '') {
+            $extras[] = "Course context: {$context}. Relate your explanation to what the student is currently learning, but only bring in what is relevant.";
+        }
+
+        if ($extras === []) {
+            return $base;
+        }
+
+        return $base."\n\n---\nContext for this conversation:\n".implode("\n", $extras);
+    }
+
+    /**
+     * The system prompt used to extract a structured analogy from an explanation.
+     */
+    public function systemPromptForAnalogy(): string
+    {
+        return config('nvidia_nim.analogy_prompt', '');
+    }
+
+    /**
+     * Extra request fields needed when reasoning ("thinking") mode is enabled.
+     *
+     * Returns an empty array when thinking is disabled. The model then streams
+     * its private reasoning under "reasoning_content" and the final answer in
+     * "content" — the student-facing stream only ever surfaces "content".
+     *
+     * @return array<string, mixed>
+     */
+    protected function reasoningFields(): array
+    {
+        if (! config('nvidia_nim.thinking_enabled', false)) {
+            return [];
+        }
+
+        return [
+            'chat_template_kwargs' => [
+                'enable_thinking' => true,
+                'medium_effort' => (bool) config('nvidia_nim.medium_effort', false),
+            ],
+            'reasoning_budget' => (int) config('nvidia_nim.reasoning_budget', 16384),
+        ];
+    }
+
+    /**
+     * Perform a single (non-streaming) chat completion and return the text.
+     *
+     * Used by background tasks such as analogy extraction — never by the live
+     * chat stream, so it does not compete with streaming responses.
+     *
+     * @param  array<int, array{role: string, content: string}>  $messages
+     * @param  array<string, mixed>  $options  e.g. ['temperature' => 0.3, 'max_tokens' => 600]
+     */
+    public function complete(array $messages, array $options = []): string
+    {
+        $this->assertConfigured();
+
+        // Thinking is opt-in for non-stream calls (e.g. analogy extraction keeps
+        // it off for speed). Chat uses stream() which enables it by default.
+        $enableThinking = ! empty($options['enable_thinking']);
+        unset($options['enable_thinking']);
+
+        $payload = array_merge([
+            'model' => $this->model(),
+            'messages' => $messages,
+            'stream' => false,
+            'max_tokens' => (int) config('nvidia_nim.max_tokens', 4096),
+            'temperature' => (float) config('nvidia_nim.temperature', 1),
+            'top_p' => (float) config('nvidia_nim.top_p', 0.95),
+        ], $options);
+
+        if ($enableThinking) {
+            $payload = array_merge($payload, $this->reasoningFields());
+        }
+
+        $response = $this->sendRequest($payload, false);
+
+        $body = json_decode((string) $response->getBody(), true);
+
+        if (! is_array($body)) {
+            throw new NvidiaNimException(
+                "NVIDIA NIM responded, but Astro couldn't understand the response format.",
+                'NIM_RESPONSE_ERROR'
+            );
+        }
+
+        $content = $body['choices'][0]['message']['content'] ?? '';
+
+        return is_string($content) ? $content : '';
+    }
+
+    /**
+     * Like complete(), but parses the response as JSON.
+     *
+     * Strips a leading/trailing ```json markdown fence if present and extracts
+     * the first balanced {...} block if the model adds commentary.
+     *
+     * @return array|null  decoded JSON, or null if it could not be parsed
+     */
+    public function completeJson(array $messages, array $options = []): ?array
+    {
+        $raw = $this->complete($messages, $options);
+
+        $clean = trim($raw);
+        if (str_starts_with($clean, '```')) {
+            $clean = preg_replace('/^```[a-zA-Z]*\s*/', '', $clean);
+            $clean = preg_replace('/\s*```$/', '', $clean);
+            $clean = trim($clean);
+        }
+
+        $decoded = json_decode($clean, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        if (preg_match('/\{(?:[^{}]|(?R))*\}/s', $clean, $m)) {
+            $decoded = json_decode($m[0], true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Stream a chat completion from NVIDIA NIM.
+     *
+     * @param  array<int, array{role: string, content: string}>  $messages
+     * @param  callable(string): void  $onDelta  invoked with each content chunk
+     * @return string  the full assistant response (for persistence)
+     *
+     * @throws NvidiaNimException  with a descriptive category on any failure.
+     */
+    public function stream(array $messages, callable $onDelta): string
+    {
+        $this->assertConfigured();
+
+        $payload = [
+            'model' => $this->model(),
+            'messages' => $messages,
+            'stream' => true,
+            'max_tokens' => (int) config('nvidia_nim.max_tokens', 4096),
+            'temperature' => (float) config('nvidia_nim.temperature', 1),
+            'top_p' => (float) config('nvidia_nim.top_p', 0.95),
+        ];
+
+        // Thinking is ON for chat by default. The model's private reasoning
+        // trace is intentionally dropped by the stream loop below; only the
+        // final "content" answer is forwarded to the student.
+        $payload = array_merge($payload, $this->reasoningFields());
+
+        // A reasoning model under load can occasionally return a stream whose
+        // content channel is empty (rate-limit / truncated response). Retry
+        // once before surfacing a friendly error, so the student never sees a
+        // blank Astro bubble.
+        $full = $this->streamOnce($payload, $onDelta);
+
+        if (trim($full) === '') {
+            usleep(800_000);
+            $full = $this->streamOnce($payload, $onDelta);
+        }
+
+        if (trim($full) === '') {
+            throw new NvidiaNimException(
+                "Astro couldn't form a response just now. Please try again in a moment.",
+                'NIM_EMPTY_RESPONSE'
+            );
+        }
+
+        return $full;
+    }
+
+    /**
+     * Open a single streaming request and forward every visible content delta.
+     *
+     * Reasoning / "thinking" tokens (if any) are intentionally ignored and never
+     * forwarded to the student — only the final "content" answer is surfaced.
+     *
+     * @return string  the full assistant content for this attempt
+     */
+    protected function streamOnce(array $payload, callable $onDelta): string
+    {
+        $full = '';
+        $buffer = '';
+
+        $response = $this->sendRequest($payload, true);
+
+        $body = $response->getBody();
+
+        while (! $body->eof()) {
+            $chunk = $body->read(4096);
+            if ($chunk === '') {
+                continue;
+            }
+
+            $buffer .= $chunk;
+
+            // Process every complete SSE line we currently have buffered.
+            while (($newline = strpos($buffer, "\n")) !== false) {
+                $line = trim(substr($buffer, 0, $newline));
+                $buffer = substr($buffer, $newline + 1);
+
+                if ($line === '') {
+                    continue;
+                }
+
+                if (! str_starts_with($line, 'data:')) {
+                    continue;
+                }
+
+                $data = trim(substr($line, 5));
+
+                if ($data === '[DONE]') {
+                    break 2;
+                }
+
+                $decoded = json_decode($data, true);
+
+                if (! is_array($decoded)) {
+                    continue;
+                }
+
+                // Only surface the visible assistant content. Reasoning /
+                // thinking tokens (if any) are intentionally ignored and
+                // never forwarded to the student.
+                $delta = $decoded['choices'][0]['delta']['content'] ?? '';
+
+                if (is_string($delta) && $delta !== '') {
+                    $full .= $delta;
+                    $onDelta($delta);
+                }
+            }
+        }
+
+        return $full;
+    }
+
+    /**
+     * Perform the HTTP request to NVIDIA NIM with retry for transient failures.
+     *
+     * Network-level errors (including transient blips) and 5xx are retried a
+     * couple of times with a short backoff; fatal errors (missing key, 400,
+     * 401/403, 404, 429) surface immediately as a classified NvidiaNimException.
+     *
+     * @param  array  $payload   the full request body
+     * @param  bool   $stream    whether to request a streaming response
+     *
+     * @throws NvidiaNimException  after classifying the failure (always).
+     */
+    protected function sendRequest(array $payload, bool $stream): ResponseInterface
+    {
+        $requestId = bin2hex(random_bytes(6));
+        $attempts = 3;
+        $last = null;
+
+        Log::info('Astro NIM request started', [
+            'request_id' => $requestId,
+            'model' => $this->model(),
+            'stream' => $stream,
+        ]);
+
+        for ($attempt = 1; $attempt <= $attempts; $attempt++) {
+            try {
+                $response = $this->client->request(
+                    'POST',
+                    rtrim(config('nvidia_nim.base_url'), '/').'/chat/completions',
+                    [
+                        'headers' => [
+                            'Authorization' => 'Bearer '.config('nvidia_nim.api_key'),
+                            'Content-Type' => 'application/json',
+                        ],
+                        'json' => $payload,
+                        'stream' => $stream,
+                        'timeout' => 300,
+                        'connect_timeout' => 15,
+                    ]
+                );
+
+                Log::info('Astro NIM response received', [
+                    'request_id' => $requestId,
+                    'http_status' => $response->getStatusCode(),
+                ]);
+
+                return $response;
+            } catch (RequestException $e) {
+                $status = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 0;
+                $transient = ($status !== 0) && in_array($status, [500, 502, 503, 504], true);
+
+                if ($transient && $attempt < $attempts) {
+                    Log::warning('Astro NIM transient HTTP error, retrying', [
+                        'request_id' => $requestId,
+                        'status' => $status,
+                        'attempt' => $attempt,
+                    ]);
+                    usleep(400_000 * $attempt);
+
+                    continue;
+                }
+
+                [$message, $category] = $this->classify($status, $e);
+
+                Log::warning('Astro NIM request failed', [
+                    'request_id' => $requestId,
+                    'category' => $category,
+                    'http_status' => $status,
+                    'error' => $message,
+                ]);
+
+                throw new NvidiaNimException(
+                    $message,
+                    $category,
+                    $status !== 0 ? $status : null,
+                    $requestId,
+                    $e
+                );
+            } catch (GuzzleException $e) {
+                [$message, $category] = $this->classify(0, $e);
+
+                Log::warning('Astro NIM request failed', [
+                    'request_id' => $requestId,
+                    'category' => $category,
+                    'error' => $message,
+                ]);
+
+                throw new NvidiaNimException($message, $category, null, $requestId, $e);
+            }
+        }
+
+        // Unreachable, but keeps static analysis happy.
+        throw new NvidiaNimException(
+            "Astro couldn't respond because of an unexpected error.",
+            'UNKNOWN_ERROR',
+            null,
+            $requestId
+        );
+    }
+
+    /**
+     * Map an HTTP status (or a connection/timeout failure with no response) to a
+     * safe, user-facing message and an error category. Never includes the API
+     * key or raw provider text.
+     *
+     * @return array{0: string, 1: string}  [safe message, category]
+     */
+    protected function classify(int $status, \Throwable $e): array
+    {
+        if ($status === 401 || $status === 403) {
+            return [
+                "Astro couldn't connect because NVIDIA NIM rejected the server credentials.",
+                'AUTHENTICATION_ERROR',
+            ];
+        }
+
+        if ($status === 404) {
+            return [
+                "Astro couldn't respond because the configured NVIDIA model is unavailable.",
+                'NIM_MODEL_ERROR',
+            ];
+        }
+
+        if ($status === 429) {
+            return [
+                'Astro is currently busy because NVIDIA NIM is rate-limiting requests. Please try again in a moment.',
+                'NIM_RATE_LIMIT',
+            ];
+        }
+
+        if ($status === 400) {
+            return [
+                "Astro couldn't process the request because the AI request sent by the server was invalid.",
+                'NIM_REQUEST_ERROR',
+            ];
+        }
+
+        if ($status >= 500) {
+            return [
+                'NVIDIA NIM encountered a server error. Please try again shortly.',
+                'SERVER_ERROR',
+            ];
+        }
+
+        // No HTTP response: connection refused, DNS failure, or timeout.
+        // curl errno 28 == operation timed out; anything else is unreachable.
+        $errno = method_exists($e, 'getHandlerContext')
+            ? ($e->getHandlerContext()['errno'] ?? null)
+            : null;
+
+        if ($errno === 28) {
+            return [
+                "Astro couldn't respond because the NVIDIA NIM request timed out.",
+                'NIM_TIMEOUT',
+            ];
+        }
+
+        return [
+            "Astro couldn't connect to NVIDIA NIM because the AI service is unreachable.",
+            'NIM_CONNECTION_ERROR',
+        ];
+    }
+}

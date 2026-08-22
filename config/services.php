@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | NVIDIA NIM (Astro, the TechLab AI tutor)
+    |--------------------------------------------------------------------------
+    |
+    | Credentials for NVIDIA NIM's OpenAI-compatible Chat Completions API.
+    | The secret key is referenced via env() ONLY — never hardcode it here or
+    | commit it. The full service config lives in config/nvidia_nim.php; this
+    | entry exists so third-party services have a conventional home.
+    |
+    */
+    'nvidia_nim' => [
+        'api_key' => env('NVIDIA_NIM_API_KEY'),
+        'base_url' => env('NVIDIA_NIM_BASE_URL', 'https://integrate.api.nvidia.com/v1'),
+    ],
+
 ];

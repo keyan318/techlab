@@ -17,10 +17,10 @@ class TeacherController extends Controller
     public function dashboard(): View|RedirectResponse
     {
         if (! Auth::check()) {
-            return redirect('/login');
+            return redirect(route('login'));
         }
         if ((Auth::user()->role ?? 'student') !== 'teacher') {
-            return redirect('/dashboard');
+            return redirect(route('student.dashboard'));
         }
 
         $crew = Crew::where('teacher_id', Auth::id())->first();
@@ -34,10 +34,10 @@ class TeacherController extends Controller
     public function createCrew(Request $request): RedirectResponse
     {
         if (! Auth::check() || (Auth::user()->role ?? 'student') !== 'teacher') {
-            return redirect('/login');
+            return redirect(route('login'));
         }
         if (Crew::where('teacher_id', Auth::id())->exists()) {
-            return redirect('/teacher/dashboard');
+            return redirect(route('teacher.dashboard'));
         }
 
         $request->validate([
@@ -58,6 +58,6 @@ class TeacherController extends Controller
         $crew->roster()->attach(Auth::id(), ['role' => 'teacher']);
         Auth::user()->update(['crew_id' => $crew->id]);
 
-        return redirect('/teacher/dashboard');
+        return redirect(route('teacher.dashboard'));
     }
 }

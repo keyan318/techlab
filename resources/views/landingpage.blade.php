@@ -140,6 +140,39 @@
       50% { transform: translateY(-26px); }
     }
 
+    /* ---------- Rocket (one-time entrance) ---------- */
+    /* Plays a single launch animation on page load, then leaves the scene.
+       Sits in the .space layer (behind all page content) like the planets, so
+       it travels *through* the hero without covering text or CTAs. The neon
+       plasma exhaust (cyan -> blue -> violet) is drawn on <canvas>. */
+    .rocket-stage {
+      position: absolute;
+      bottom: -2vh; left: 4vw;
+      width: clamp(170px, 24vw, 340px);
+      z-index: 1;
+      will-change: transform, opacity;
+      /* Hidden until the launch plays — safe for no-JS and reduced-motion. */
+      opacity: 0; visibility: hidden;
+      pointer-events: none;
+    }
+    .rocket-img {
+      width: 100%; height: auto; display: block;
+      filter: drop-shadow(0 0 34px rgba(115,182,255,0.35)) drop-shadow(0 0 12px rgba(155,107,255,0.25));
+    }
+    /* Canvas is pinned to the rocket's nozzle (bottom-centre) and drawn so the
+       flame streams downward, away from the rocket body. */
+    .rocket-flame {
+      position: absolute;
+      left: 50%; top: 78%;
+      transform: translateX(-50%);
+      width: 52%; height: 44%;
+      pointer-events: none;
+    }
+
+    @media (max-width: 860px) {
+      .rocket-stage { width: clamp(130px, 38vw, 200px); left: -4vw; bottom: -1vh; }
+    }
+
     /* ---------- Nav ---------- */
     .nav {
       position: sticky; top: 0; z-index: 50;
@@ -342,6 +375,12 @@
       <div class="planet p4"></div>
       <div class="ringed"><div class="core"></div><div class="ring"></div></div>
     </div>
+
+    <!-- Rocket: one-time entrance launch (hidden until it fires) -->
+    <div class="rocket-stage" id="rocket-stage" aria-hidden="true">
+      <img class="rocket-img" src="{{ asset('rocket.png') }}" alt="" />
+      <canvas class="rocket-flame" id="rocket-flame"></canvas>
+    </div>
   </div>
 
   <!-- Nav -->
@@ -486,6 +525,50 @@
     <span>© 2026 TechLab — Learn. Build. Explore.</span>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script>
+    // Scroll-linked animations — GSAP ScrollTrigger + motion-design "Playful" archetype
+    // (ease-out-back, soft overshoot, 150–400ms). Adds motion only; no elements/colors/text changed.
+    (function () {
+      if (!window.gsap || !window.ScrollTrigger) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const ease = 'back.out(1.7)'; // Playful signature easing
+
+      // Background glow drifts on scroll (separate element from pointer-parallax layers)
+      gsap.to('.layer-glow', {
+        yPercent: 16,
+        scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true }
+      });
+
+      // Hero lifts and gently fades as it scrolls out of view
+      gsap.to('.hero', {
+        yPercent: -10, opacity: 0.9,
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+
+      // Feature cards reveal on scroll (staggered Playful bounce)
+      gsap.from('.features .card', {
+        y: 44, opacity: 0, duration: 0.5, ease, stagger: 0.12, clearProps: 'all',
+        scrollTrigger: { trigger: '.features', start: 'top 82%' }
+      });
+
+      // Progress strip reveals on scroll (bar fill stays on its existing load animation)
+      gsap.from('.progress-wrap', {
+        y: 44, opacity: 0, duration: 0.5, ease, clearProps: 'all',
+        scrollTrigger: { trigger: '.progress-wrap', start: 'top 88%' }
+      });
+
+      // Footer gentle reveal
+      gsap.from('footer', {
+        y: 30, opacity: 0, duration: 0.5, ease, clearProps: 'all',
+        scrollTrigger: { trigger: 'footer', start: 'top 95%' }
+      });
+    })();
+  </script>
+
   <script>
     // Twinkling starfield
     (function () {
@@ -539,6 +622,150 @@
         requestAnimationFrame(loop);
       }
       loop();
+    })();
+  </script>
+
+  <!-- Rocket exhaust: neon plasma flame, palette-matched (cyan -> blue -> violet) -->
+  <script>
+    (function () {
+      const stage = document.getElementById('rocket-stage');
+      const canvas = document.getElementById('rocket-flame');
+      if (!stage || !canvas) return;
+      const ctx = canvas.getContext('2d');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // No GSAP or reduced motion -> keep the rocket hidden (no flame, no loop).
+      if (reduce || !window.gsap) return;
+
+      let flameIntensity = 0;   // 0 = exhaust off
+      let flameActive = false;  // keep the rAF loop alive while burning
+      let rafId = null;
+
+      let W = 0, H = 0, dpr = 1;
+      function resize() {
+        const r = canvas.getBoundingClientRect();
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = Math.max(1, Math.round(r.width));
+        H = Math.max(1, Math.round(r.height));
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      window.addEventListener('load', resize);
+      const img = canvas.previousElementSibling; // .rocket-img
+      if (img && img.complete === false) img.addEventListener('load', resize);
+
+      // Palette mirrors the landing-page CSS vars
+      const HOT    = [225, 255, 255]; // near-white cyan core
+      const CYAN   = [91, 225, 255];  // --cyan
+      const BLUE   = [115, 182, 255]; // --blue
+      const VIOLET = [155, 107, 255]; // --violet
+
+      const lerp = (a, b, t) => a + (b - a) * t;
+      function colorFor(life) {
+        if (life > 0.6) { const t = (life - 0.6) / 0.4;       // hot -> cyan
+          return [lerp(CYAN[0], HOT[0], t), lerp(CYAN[1], HOT[1], t), lerp(CYAN[2], HOT[2], t)]; }
+        if (life > 0.3) { const t = (life - 0.3) / 0.3;       // blue -> cyan
+          return [lerp(BLUE[0], CYAN[0], t), lerp(BLUE[1], CYAN[1], t), lerp(BLUE[2], CYAN[2], t)]; }
+        const t = life / 0.3;                                 // violet -> blue
+        return [lerp(VIOLET[0], BLUE[0], t), lerp(VIOLET[1], BLUE[1], t), lerp(VIOLET[2], BLUE[2], t)];
+      }
+
+      const particles = [];
+      const MAX = 90;
+
+      function spawn() {
+        const ox = W * (0.5 + (Math.random() - 0.5) * 0.18);
+        const oy = H * 0.05;
+        const speed = 1.4 + Math.random() * 2.2;
+        const angle = Math.PI / 2 + (Math.random() - 0.5) * 0.5; // mostly downward
+        particles.push({
+          x: ox, y: oy,
+          vx: Math.cos(angle) * speed * 0.5 + (Math.random() - 0.5) * 0.6,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          decay: 0.012 + Math.random() * 0.02,
+          size: (W * 0.07) * (0.6 + Math.random() * 0.8) * (0.55 + flameIntensity * 0.6),
+          wob: Math.random() * Math.PI * 2,
+        });
+      }
+
+      function frame() {
+        ctx.clearRect(0, 0, W, H);
+        if (flameIntensity > 0) {
+          const n = Math.max(1, Math.round(3 * flameIntensity));
+          for (let i = 0; i < n; i++) if (particles.length < MAX) spawn();
+        }
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.life -= p.decay;
+          if (p.life <= 0) { particles.splice(i, 1); continue; }
+          p.wob += 0.15;
+          p.x += p.vx + Math.sin(p.wob) * 0.4;
+          p.y += p.vy;
+          p.vy += 0.05;
+          const c = colorFor(p.life);
+          const a = p.life * 0.9;
+          const r = p.size * (0.5 + (1 - p.life) * 0.9);
+          const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+          g.addColorStop(0, `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a})`);
+          g.addColorStop(1, `rgba(${c[0]|0},${c[1]|0},${c[2]|0},0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+        // Keep animating only while burning or while the plume drains out.
+        if (flameActive || particles.length > 0) rafId = requestAnimationFrame(frame);
+        else rafId = null;
+      }
+      function startFlame() {
+        flameActive = true;
+        if (rafId == null) rafId = requestAnimationFrame(frame);
+      }
+      function rampFlame(target, dur) {
+        const proxy = { v: flameIntensity };
+        gsap.to(proxy, { v: target, duration: dur, ease: 'power1.inOut',
+          onUpdate: () => { flameIntensity = proxy.v; } });
+      }
+
+      // One-time launch: ignition -> accelerate -> fly through scene -> exit.
+      function launchRocket() {
+        resize();
+        flameIntensity = 1.35;   // ignition burst
+        startFlame();
+        gsap.set(stage, { autoAlpha: 0, x: 0, y: 64, rotation: -15, scale: 0.94, transformOrigin: '50% 80%' });
+
+        const tl = gsap.timeline({
+          defaults: { ease: 'power2.in' },
+          onComplete: () => {
+            flameActive = false;          // let remaining particles drain
+            flameIntensity = 0;
+            stage.style.display = 'none'; // remove from the scene entirely
+          }
+        });
+
+        // Ignition: reveal, then a small squash-and-tip so it reads as leaving a pad
+        tl.to(stage, { autoAlpha: 1, duration: 0.18, ease: 'power1.out' }, 0)
+          .to(stage, { y: 70, duration: 0.18, ease: 'power2.out' }, 0)
+          .to(stage, { y: 56, rotation: -12, duration: 0.22, ease: 'power2.out' }, 0.18)
+          .add(() => rampFlame(1, 0.4), 0.18)
+          // Main flight: accelerate up-and-right, arcing out of the scene
+          .to(stage, {
+            x: () => window.innerWidth * 0.6,
+            y: () => -window.innerHeight * 0.95,
+            rotation: -6, scale: 1.04, duration: 2.0
+          }, 0.4)
+          // Taper the plume and fade out during the final stretch
+          .add(() => rampFlame(0, 0.6), 1.7)
+          .to(stage, { autoAlpha: 0, duration: 0.6, ease: 'power1.in' }, 1.7);
+      }
+
+      if (document.readyState === 'complete') launchRocket();
+      else window.addEventListener('load', launchRocket);
     })();
   </script>
 </body>
