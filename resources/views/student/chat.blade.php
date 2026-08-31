@@ -312,6 +312,19 @@
           }
         },
       });
+
+      // Shared conversation ID store for Studio actions (Quiz, PPT, etc.)
+      Alpine.store('conversation', {
+        currentId: null,
+
+        set(id) {
+          this.currentId = id;
+        },
+
+        clear() {
+          this.currentId = null;
+        },
+      });
     });
   </script>
 
@@ -390,6 +403,9 @@
               // keep a short preview for the configuring screen
               qz._preview = (this.messages || []).filter(m=>m.content && m.content!=='').slice(-2).map(m=> (m.role==='assistant'?'Astro':'You')+': '+m.content.slice(0,120)).join(' — ');
             }
+            // Also sync to the shared conversation store for PPT and other actions
+            const conv = this.$store.conversation;
+            if (conv) conv.set(this.conversationId);
           };
           this.$watch('messages', syncStores);
           this.$watch('conversationId', syncStores);
@@ -398,6 +414,8 @@
           this.$watch('conversationId', (v) => {
             const qz = this.$store.quiz;
             if (qz) qz.conversationId = v;
+            const conv = this.$store.conversation;
+            if (conv) conv.set(v);
           });
         },
 

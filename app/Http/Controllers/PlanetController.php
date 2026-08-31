@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class PlanetController extends Controller
@@ -175,7 +177,7 @@ class PlanetController extends Controller
     /**
      * Show a planet's overview page. Unknown slugs 404; guests are sent to login.
      */
-    public function show(string $slug): View
+    public function show(string $slug): View|RedirectResponse
     {
         if (! Auth::check()) {
             return redirect()->route('login');
@@ -189,6 +191,113 @@ class PlanetController extends Controller
 
         return view('student.planets.'.$slug, [
             'course' => $course,
+        ]);
+    }
+
+    /**
+     * Course overview: the learning-plan node path for a track.
+     * Guests are sent to login; unknown slugs 404.
+     */
+    public function overview(string $slug): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            abort(404);
+        }
+
+        return view('student.planets.overview', [
+            'slug' => $slug,
+        ]);
+    }
+
+    /**
+     * Lesson placeholder — the "Start learning" target until lessons are built.
+     * Guests are sent to login; unknown slugs 404.
+     */
+    public function lesson(string $slug, string $lesson): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            abort(404);
+        }
+
+        // Per-lesson view when one exists; otherwise the shared placeholder.
+        $lessonView = 'student.planets.lesson-'.$lesson;
+
+        return view(
+            view()->exists($lessonView) ? $lessonView : 'student.planets.lesson-stub',
+            ['slug' => $slug, 'lesson' => $lesson]
+        );
+    }
+
+    /**
+     * Chapter story — comic-panel intro before a lesson's interactive part.
+     * Guests are sent to login; unknown slugs 404. Chapter metadata is
+     * hardcoded per lesson for now (only Thinking in Code has a story).
+     */
+    public function story(string $slug, string $lesson): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            abort(404);
+        }
+
+        $chapters = [
+            'thinking-in-code' => ['number' => '1', 'title' => 'The Landing'],
+        ];
+
+        return view('student.planets.story', [
+            'slug' => $slug,
+            'lesson' => $lesson,
+            'chapterNumber' => $chapters[$lesson]['number'] ?? '1',
+            'chapterTitle' => $chapters[$lesson]['title'] ?? ucfirst(str_replace('-', ' ', $lesson)),
+        ]);
+    }
+
+    /**
+     * POST /student/planet/{slug}/plan — learning-plan generation.
+     *
+     * Placeholder payload: the shape mirrors what the course overview renders
+     * so the post-onboarding carousel flow completes end to end. The real
+     * Nemotron roadmap generation swaps into this method later without
+     * changing the response contract. Instant reply by design — the
+     * carousel's "Finishing up..." state needs a fast resolution target.
+     */
+    public function generatePlan(string $slug): JsonResponse
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            return response()->json(['error' => 'Planet not found.'], 404);
+        }
+
+        // Placeholder roadmap — ordered, first node unlocked.
+        $nodes = [
+            ['label' => 'Thinking in Code', 'locked' => false],
+            ['label' => 'Programming with Variables', 'locked' => true],
+            ['label' => 'Programming with Functions', 'locked' => true],
+            ['label' => 'Algorithmic Thinking', 'locked' => true],
+            ['label' => 'Build Your First Project', 'locked' => true],
+        ];
+
+        return response()->json([
+            'ok' => true,
+            'plan' => [
+                'slug' => $slug,
+                'title' => $this->courseShell($slug)['title'],
+                'nodes' => $nodes,
+            ],
         ]);
     }
 }

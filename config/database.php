@@ -97,6 +97,10 @@ return [
             'prefix_indexes' => true,
             'sslmode' => env('DB_SSLMODE', 'prefer'),
             'search_path' => env('DB_SCHEMA', 'public'),
+            'options' => extension_loaded('pdo_pgsql') ? array_filter([
+                ...(defined('PDO::PGSQL_ATTR_SSL_MODE') ? [PDO::PGSQL_ATTR_SSL_MODE => env('DB_SSLMODE', 'require')] : []),
+                ...(defined('PDO::PGSQL_ATTR_SSL_SNI_SERVER_NAME') ? [PDO::PGSQL_ATTR_SSL_SNI_SERVER_NAME => env('DB_SSL_SNI_SERVER_NAME')] : []),
+            ]) : [],
         ],
 
         'sqlsrv' => [

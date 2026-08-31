@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\NvidiaNimException;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Services\DeckGeneratorService;
 use App\Services\NvidiaNimService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +18,8 @@ use Illuminate\Support\Str;
 class ChatController extends Controller
 {
     public function __construct(
-        protected NvidiaNimService $nim
+        protected NvidiaNimService $nim,
+        protected DeckGeneratorService $deckGenerator
     ) {}
 
     /**
@@ -332,5 +334,50 @@ class ChatController extends Controller
         $firstLine = strtok($content, "\n") ?: $content;
 
         return Str::limit(preg_replace('/\s+/', ' ', trim($firstLine)), 50) ?: 'New chat';
+    }
+
+    /**
+     * Generate a slide deck from the current conversation.
+     *
+     * Called by the Studio panel's PPT button. Ownership is enforced:
+     * the student can only generate a deck from their own conversation.
+     *
+     * @return \Illuminate\Http\JsonResponse  { deck_id } on success, { error } on failure
+     */
+    public function generateDeck(Request $request, int $conversation): \Illuminate\Http\JsonResponse
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $conversation = Conversation::where('user_id', $request->user()->id)
+            ->find($conversation);
+
+        if (! $conversation) {
+            return response()->json(['error' => 'Conversation not found.'], 404);
+        }
+
+        try {
+            $deckId = $this->deckGenerator->generateDeckFromConversation($conversation->id);
+
+            return response()->json(['deck_id' => $deckId], 200);
+        } catch (\Throwable $e) {
+            $rid = bin2hex(random_bytes(6));
+            Log::error('Deck generation failed', [
+                'request_id' => $rid,
+                'conversation_id' => $conversation->id,
+                'message' => $e->getMessage(),
+            ]);
+
+            $detail = config('app.debug')
+                ? ('Could not generate deck: ' . $e->getMessage())
+                : "Astro couldn't build your slide deck right now. Please try again.";
+
+            return response()->json([
+                'error' => $detail,
+                'kind' => 'generation',
+                'request_id' => $rid,
+            ], 500);
+        }
     }
 }
