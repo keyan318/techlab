@@ -51,7 +51,7 @@
 
 <script>
   function studioCard({ isPpt, conversationId }) {
-    if (!isPpt) return {};
+    if (!isPpt) return { isPpt: false };
 
     return {
       isPpt: true,
