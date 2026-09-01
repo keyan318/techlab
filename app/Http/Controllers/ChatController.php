@@ -357,6 +357,12 @@ class ChatController extends Controller
             return response()->json(['error' => 'Conversation not found.'], 404);
         }
 
+        // Deck generation calls Nemotron with the full conversation history,
+        // which can take well over PHP's default 30s max_execution_time
+        // (especially the 550B model's "thinking" phase). Lift the limit
+        // so the request isn't killed mid-generation.
+        set_time_limit(0);
+
         try {
             $deckId = $this->deckGenerator->generateDeckFromConversation($conversation->id);
 
