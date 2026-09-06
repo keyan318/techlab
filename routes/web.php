@@ -35,25 +35,23 @@ Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->name(
 // Planet / course selection (the onboarding track choice).
 Route::get('/student/planet/{slug}', [PlanetController::class, 'show'])->name('student.planet');
 
-// Course overview: the learning-plan node path for a track.
-Route::get('/student/planet/{slug}/overview', [PlanetController::class, 'overview'])->name('student.planet.overview');
-
-// Lesson stub — placeholder target for "Start learning" until lessons exist.
-Route::get('/student/planet/{slug}/lesson/{lesson}', [PlanetController::class, 'lesson'])->name('student.planet.lesson');
-
-// Chapter story — comic-panel intro that precedes a lesson.
-Route::get('/student/planet/{slug}/story/{lesson}', [PlanetController::class, 'story'])->name('student.planet.story');
+// New route for module/lesson format: /student/planet/{slug}/{module}/{lesson}
+Route::get('/student/planet/{slug}/{module}/{lesson}', [PlanetController::class, 'viewModuleLesson'])->name('student.planet.module.lesson');
 
 // Learning-plan generation for a track. Placeholder payload until the
 // Nemotron roadmap generator lands — same response contract, instant reply.
 Route::post('/student/planet/{slug}/plan', [PlanetController::class, 'generatePlan'])->name('student.planet.plan');
 
-Route::get('/teacher/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
-Route::post('/teacher/crew', [TeacherController::class, 'createCrew'])->name('teacher.crew.create');
+// View individual lesson
+Route::get('/student/planet/{slug}/view/{lessonId}', [PlanetController::class, 'viewLesson'])->name('student.planet.view');
 
 // Course-player alias for `/planets/{slug}` — keeps existing onboarding links
 // working while exposing the course player at the URL referenced in the spec.
 Route::get('/planets/{slug}', [PlanetController::class, 'show'])->name('student.planet.course');
+
+// Python interactive editor page
+Route::get('/student/planet/{slug}/editor/{lessonId}', [PlanetController::class, 'editor'])->name('student.planet.editor');
+
 
 use App\Http\Controllers\DeckController;
 

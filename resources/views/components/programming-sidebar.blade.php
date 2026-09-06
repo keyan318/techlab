@@ -1,0 +1,951 @@
+<aside class="programming-sidebar">
+
+    {{-- TABS --}}
+    <div class="sidebar-tabs">
+        <button class="sidebar-tab active" type="button">
+            <span class="tab-icon">▤</span>
+            <span>Course Outline</span>
+        </button>
+
+        <button class="sidebar-tab" type="button">
+            <span class="tab-icon">▧</span>
+            <span>Resources</span>
+        </button>
+    </div>
+
+    {{-- SEARCH --}}
+    <div class="sidebar-search">
+        <div class="search-wrapper">
+            <span class="search-icon">⌕</span>
+            <input
+                type="text"
+                placeholder="Search course content..."
+            >
+        </div>
+    </div>
+
+    {{-- COURSE OUTLINE --}}
+    <div class="course-outline">
+
+        {{-- M1 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M1 — Python Foundations
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m1', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            {{-- LESSONS --}}
+            <div class="module-lessons" id="m1">
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">1.1</span>
+                        <span>First Signal</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">1.2</span>
+                        <span>Variables & Memory</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">1.3</span>
+                        <span>Data Types</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">1.4</span>
+                        <span>Expressions & Operators</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">1.5</span>
+                        <span>Talking to the Program</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">1.6</span>
+                        <span>Reading Error Messages</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        {{-- M2 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M2 — Conditions & Loops
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m2', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            <div class="module-lessons" id="m2">
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">2.1</span>
+                        <span>Decision Points</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">2.2</span>
+                        <span>Branching Paths</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">2.3</span>
+                        <span>Combining Conditions</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">2.4</span>
+                        <span>Repeating Signals</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">2.5</span>
+                        <span>Repeating With for</span>
+                    </div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+                    <div class="lesson-name">
+                        <span class="lesson-number">2.6</span>
+                        <span>Breaking the Loop</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        {{-- M3 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M3 — Functions & Error Handling
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m3', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            <div class="module-lessons" id="m3">
+
+                <div class="lesson-item">
+                    <div class="lesson-connector"><span class="lesson-dot"></span></div>
+                    <div class="lesson-name"><span class="lesson-number">3.1</span><span>Reusable Routines</span></div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector"><span class="lesson-dot"></span></div>
+                    <div class="lesson-name"><span class="lesson-number">3.2</span><span>Passing Information</span></div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector"><span class="lesson-dot"></span></div>
+                    <div class="lesson-name"><span class="lesson-number">3.3</span><span>Returning Results</span></div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector"><span class="lesson-dot"></span></div>
+                    <div class="lesson-name"><span class="lesson-number">3.4</span><span>Anticipating Failure</span></div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-connector"><span class="lesson-dot"></span></div>
+                    <div class="lesson-name"><span class="lesson-number">3.5</span><span>Sanity Checks</span></div>
+                </div>
+
+            </div>
+        </div>
+
+
+        {{-- M4 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M4 — Working With Data & Files
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m4', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            <div class="module-lessons" id="m4">
+
+                @foreach([
+                    '4.1 Collections',
+                    '4.2 List Operations',
+                    '4.3 Labeled Data',
+                    '4.4 Nested Structures',
+                    '4.5 Text Manipulation',
+                    '4.6 Reading Files',
+                    '4.7 Writing Files',
+                    '4.8 Structured Data Formats'
+                ] as $lesson)
+
+                    <div class="lesson-item">
+                        <div class="lesson-connector">
+                            <span class="lesson-dot"></span>
+                        </div>
+
+                        <div class="lesson-name">
+                            <span>{{ $lesson }}</span>
+                        </div>
+                    </div>
+
+                @endforeach
+
+            </div>
+        </div>
+
+
+        {{-- M5 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M5 — Python Automation
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m5', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            <div class="module-lessons" id="m5">
+
+                @foreach([
+                    '5.1 Pattern Matching',
+                    '5.2 Practical Regex',
+                    '5.3 File System Basics',
+                    '5.4 Building a CLI Tool',
+                    '5.5 Time & Scheduling Concepts'
+                ] as $lesson)
+
+                    <div class="lesson-item">
+                        <div class="lesson-connector">
+                            <span class="lesson-dot"></span>
+                        </div>
+
+                        <div class="lesson-name">
+                            <span>{{ $lesson }}</span>
+                        </div>
+                    </div>
+
+                @endforeach
+
+            </div>
+        </div>
+
+
+        {{-- M6 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M6 — Real-World Projects
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m6', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            <div class="module-lessons" id="m6">
+
+                @foreach(['6.1', '6.2', '6.3', '6.4'] as $lesson)
+
+                    <div class="lesson-item">
+                        <div class="lesson-connector">
+                            <span class="lesson-dot"></span>
+                        </div>
+
+                        <div class="lesson-name">
+                            <span>{{ $lesson }}</span>
+                        </div>
+                    </div>
+
+                @endforeach
+
+            </div>
+        </div>
+
+
+        {{-- M7 --}}
+        <div class="course-module">
+
+            <div class="module-header">
+
+                <div class="module-info">
+                    <div class="module-title">
+                        M7 — Final Automation Project
+                    </div>
+
+                    <div class="module-progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+
+                        <span>0%</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="module-toggle"
+                    onclick="toggleModule('m7', this)"
+                    aria-expanded="false"
+                >
+                    <span>⌄</span>
+                </button>
+
+            </div>
+
+            <div class="module-lessons" id="m7">
+
+                <div class="lesson-item">
+                    <div class="lesson-connector">
+                        <span class="lesson-dot"></span>
+                    </div>
+
+                    <div class="lesson-name">
+                        <span>7.1 Proposal & Design</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</aside>
+
+
+<style>
+
+.programming-sidebar {
+    width: 30vw;
+    min-width: 380px;
+    max-width: 520px;
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #dddddd;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+
+/* =========================
+   TABS
+========================= */
+
+.sidebar-tabs {
+    display: flex;
+    flex-shrink: 0;
+    border-bottom: 1px solid #dddddd;
+}
+
+.sidebar-tab {
+    flex: 1;
+    height: 90px;
+    border: none;
+    background: #ffffff;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333333;
+    cursor: pointer;
+    border-bottom: 4px solid transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    transition: all 0.2s ease;
+}
+
+.sidebar-tab:hover {
+    background: #f7f7f7;
+}
+
+.sidebar-tab.active {
+    color: #4caf50;
+    border-bottom-color: #4caf50;
+}
+
+.tab-icon {
+    font-size: 24px;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.sidebar-search {
+    padding: 24px 28px;
+    flex-shrink: 0;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-wrapper input {
+    width: 100%;
+    height: 56px;
+    box-sizing: border-box;
+
+    padding: 0 18px 0 48px;
+
+    border: 2px solid #dddddd;
+    border-radius: 12px;
+
+    font-size: 18px;
+    outline: none;
+
+    transition: border-color 0.2s ease;
+}
+
+.search-wrapper input:focus {
+    border-color: #4caf50;
+}
+
+.search-icon {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    font-size: 28px;
+    color: #888888;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   COURSE OUTLINE
+========================= */
+
+.course-outline {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   MODULE
+========================= */
+
+.course-module {
+    border-top: 1px solid #dddddd;
+}
+
+
+/*
+IMPORTANT:
+The module header is completely independent
+from the lesson container.
+Nothing inside the lesson container
+changes the module header position.
+*/
+
+.module-header {
+    position: relative;
+
+    min-height: 145px;
+    padding: 22px 78px 22px 28px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    background: #ffffff;
+}
+
+
+/* =========================
+   MODULE INFO
+========================= */
+
+.module-info {
+    width: 100%;
+}
+
+.module-title {
+    font-size: 22px;
+    line-height: 1.35;
+    font-weight: 700;
+
+    color: #333333;
+
+    margin-bottom: 18px;
+}
+
+.module-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-track {
+    flex: 1;
+    height: 8px;
+
+    background: #eeeeee;
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+
+    background: #4caf50;
+
+    border-radius: 20px;
+}
+
+.module-progress span {
+    min-width: 40px;
+
+    font-size: 15px;
+    color: #555555;
+}
+
+
+/* =========================
+   DROPDOWN BUTTON
+========================= */
+
+.module-toggle {
+    position: absolute;
+
+    right: 20px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #eeeeee;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.module-toggle span {
+    font-size: 26px;
+
+    transition: transform 0.25s ease;
+}
+
+.module-toggle:hover {
+    background: #4caf50;
+    color: #ffffff;
+}
+
+
+/*
+Only the arrow rotates.
+The module title NEVER moves.
+*/
+
+.module-toggle.open {
+    background: #4caf50;
+    color: #ffffff;
+}
+
+.module-toggle.open span {
+    transform: rotate(180deg);
+}
+
+
+/* =========================
+   LESSON CONTAINER
+========================= */
+
+.module-lessons {
+    display: none;
+
+    background: #f7fcf6;
+
+    padding: 8px 18px 16px 28px;
+}
+
+.module-lessons.open {
+    display: block;
+}
+
+
+/* =========================
+   LESSON
+========================= */
+
+.lesson-item {
+    display: flex;
+
+    min-height: 64px;
+
+    position: relative;
+
+    cursor: pointer;
+
+    border-radius: 8px;
+
+    transition: background 0.2s ease;
+}
+
+.lesson-item:hover {
+    background: #e6f5e3;
+}
+
+
+/* =========================
+   CONNECTOR
+========================= */
+
+.lesson-connector {
+    width: 48px;
+
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.lesson-connector::after {
+    content: "";
+
+    position: absolute;
+
+    top: 30px;
+    bottom: -30px;
+
+    left: 23px;
+
+    border-left: 2px dashed #b7b7b7;
+}
+
+.lesson-item:last-child .lesson-connector::after {
+    display: none;
+}
+
+
+/* =========================
+   LESSON DOT
+========================= */
+
+.lesson-dot {
+    width: 28px;
+    height: 28px;
+
+    margin-top: 17px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    border: 2px solid #b9dcb8;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================
+   LESSON TEXT
+========================= */
+
+.lesson-name {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 14px 8px;
+
+    font-size: 18px;
+    line-height: 1.35;
+
+    color: #333333;
+}
+
+.lesson-number {
+    font-weight: 600;
+    color: #4caf50;
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */ 
+
+.course-outline::-webkit-scrollbar {
+    width: 8px;
+}
+
+.course-outline::-webkit-scrollbar-track {
+    background: #f4f4f4;
+}
+
+.course-outline::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 10px;
+}
+
+.course-outline::-webkit-scrollbar-thumb:hover {
+    background: #aaaaaa;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .programming-sidebar {
+        width: 38vw;
+        min-width: 320px;
+    }
+
+    .module-title {
+        font-size: 20px;
+    }
+
+    .lesson-name {
+        font-size: 16px;
+    }
+}
+
+</style>
+
+
+<script>
+
+function toggleModule(moduleId, button) {
+
+    const lessons = document.getElementById(moduleId);
+
+    const isOpen = lessons.classList.contains('open');
+
+    /*
+     * Only open/close the lesson container.
+     * The module header remains completely untouched.
+     */
+
+    if (isOpen) {
+
+        lessons.classList.remove('open');
+
+        button.classList.remove('open');
+
+        button.setAttribute('aria-expanded', 'false');
+
+    } else {
+
+        lessons.classList.add('open');
+
+        button.classList.add('open');
+
+        button.setAttribute('aria-expanded', 'true');
+
+    }
+}
+
+</script>

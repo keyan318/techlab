@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechLab - Learn. Build. Level Up.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Slush-inspired color palette */
+            --carbon: #000000;
+            --paper-white: #ffffff;
+            --sky-wash: #dceeff;
+            --concrete-gray: #cccccc;
+            --soft-mist: #e9e9e9;
+            --electric-blue: #4da2ff;
+            --mint-pop: #55db9c;
+            --lavender: #e9ccff;
+            --ember: #fb4903;
+            --sunburst: #ffd731;
+            --voltage-violet: #5c4ade;
+        }
+
+        * {
+            font-family: 'Figtree', sans-serif;
+        }
+
+        .display-text {
+            font-family: 'Antonio', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            line-height: 0.75;
+        }
+
+        .nav-pill {
+            @apply px-4 py-2 rounded-full font-medium text-sm uppercase tracking-wider transition-all duration-200;
+        }
+
+        .nav-pill-active {
+            @apply bg-carbon text-paper-white;
+        }
+
+        .nav-pill-inactive {
+            @apply bg-paper-white text-carbon border border-carbon;
+        }
+
+        .btn-primary {
+            @apply bg-carbon text-paper-white px-6 py-3 rounded-full font-medium text-base uppercase tracking-wider flex items-center gap-2 transition-all duration-200 hover:bg-paper-white hover:text-carbon hover:border hover:border-carbon;
+        }
+
+        .btn-secondary {
+            @apply bg-paper-white text-carbon px-6 py-3 rounded-full font-medium text-base uppercase tracking-wider border border-carbon transition-all duration-200 hover:bg-carbon hover:text-paper-white;
+        }
+
+        .sticker {
+            @apply inline-block rounded-xl p-4 border border-carbon flex items-center gap-2 transition-all duration-200 hover:scale-105 hover:rotate-1 duration-300;
+        }
+
+        .section-poster {
+            @apply relative overflow-hidden;
+        }
+
+        .section-poster::before {
+            @apply content-[''] absolute inset-0 bg-[length:200px_200px] bg-[url('data:image/svg+xml;utf8,<svg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%2220%22 height%3D%2220%22 viewBox%3D%220 0 20 20%22 fill%3D%22none%22>%3Ccircle cx%3D%2210%22 cy%3D%2210%22 r%3D%221.5%22 fill%3D%22%23000000%22 fill-opacity%3D%220.05%22/%3E%3C/svg%3E')] pointer-events-none;
+        }
+
+        .inflatable-element {
+            @apply relative overflow-hidden;
+        }
+
+        .inflatable-element::after {
+            @apply content-[''] absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%22100%22 height%3D%22100%22 viewBox%3D%220 0 100 100%22 fill%3D%22none%22>%3Cpath d%3D%22M50 5 C30 40 30 60 50 95 C70 60 70 40 50 5 Z%22 fill%3D%22%234da2ff%22 fill-opacity%3D%220.15%22 stroke%3D%22%23000000%22 stroke-width%3D%222%22/%3E%3C/svg%3E')] pointer-events-none opacity-70;
+        }
+    </style>
+</head>
+<body class="bg-paper-white text-carbon">
+    <!-- Navigation -->
+    <nav class="flex items-center justify-between px-6 py-4 bg-paper-white/80 backdrop-blur-sm border-b border-carbon/10 fixed w-full z-50">
+        <div class="flex items-center space-x-3">
+            <div class="h-8 w-8 bg-carbon rounded-full flex items-center justify-center text-paper-white font-bold text-xs">
+                TL
+            </div>
+            <span class="text-base font-semibold">TechLab</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-4">
+            <a href="#" class="nav-pill nav-pill-active">Learn</a>
+            <a href="#" class="nav-pill nav-pill-inactive">Build</a>
+            <a href="#" class="nav-pill nav-pill-inactive">Labs</a>
+            <a href="#" class="nav-pill nav-pill-inactive">Courses</a>
+            <a href="#" class="nav-pill nav-pill-inactive">About</a>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <button class="nav-pill nav-pill-inactive md:hidden">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <a href="#" class="btn-primary">Start Learning</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-20 pb-24 bg-sky-wash relative section-poster">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="inflatable-element mb-12">
+                <!-- Inflatable 3D Element (behind text) -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <svg width="100%" height="100%" viewBox="0 0 800 200" preserveAspectRatio="none">
+                        <path d="M-50 100 C150 0 650 0 850 100 C650 200 150 200 -50 100 Z"
+                              fill="var(--electric-blue)" fill-opacity="0.2"
+                              stroke="var(--carbon)"
+                              stroke-width="4"/>
+                        <defs>
+                    </svg>
+                </div>
+
+                <!-- Main Display Text -->
+                <div class="relative z-10 text-center">
+                    <h1 class="display-text text-6xl md:text-7xl lg:text-8xl">
+                        TECH<span class="block">LAB</span>
+                    </h1>
+                    <p class="mt-6 text-xl lg:text-2xl max-w-xl mx-auto text-carbon/80">
+                        Learn. Build. Level Up.
+                    </p>
+                    <div class="mt-8 flex flex-wrap justify-center gap-4">
+                        <a href="#" class="btn-primary">Start Learning</a>
+                        <a href="#" class="btn-secondary">Explore Courses</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sticker Elements -->
+            <div class="absolute inset-0 pointer-events-none">
+                <!-- Rocket Sticker -->
+                <div class="sticker bg-mint-pop/20 border-mint-pop/50 rotate-6" style="top: 20%; left: 10%;">
+                    <svg class="h-5 w-5 text-mint-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 4a2 2 0 00-2 2v2a2 2 0 00-1 1.73l-3.46 4.14a2 2 0 00.52 2.33l2.78.9a2 2 0 002.24 0l2.78-.9a2 2 0 00.52-2.33L13 9.73V6a2 2 0 00-2-2zM9 16a2 2 0 01-2 2v1a2 2 0 01-2 2v1a2 2 0 012 2h2a2 2 0 012-2v-1a2 2 0 012-2v-1a2 2 0 01-2-2h-2z"></path>
+                    </svg>
+                    Rocket
+                </div>
+
+                <!-- AI Brain Sticker -->
+                <div class="sticker bg-lavender/20 border-lavender/50 -rotate-3" style="top: 15%; right: 12%;">
+                    <svg class="h-5 w-5 text-lavender" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2a3 3 0 00-3 3v3a6 6 0 00-3.59 8.7l-.39.5A2 2 0 105.21 16a2 2 0 003.79.8l.39-.3a4 4 0 013.42 0l.39.3a2 2 0 003.79-.8l-.39-.5A6 6 0 0015 8V5a3 3 0 00-3-3z"></path>
+                    </svg>
+                    AI
+                </div>
+
+                <!-- Code Brackets Sticker -->
+                <div class="sticker bg-sunburst/20 border-sunburst/50 rotate-10" style="bottom: 25%; left: 8%;">
+                    <svg class="h-5 w-5 text-sunburst" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 6h8M8 10h8M8 14h8M8 18h8"></path>
+                    </svg>
+                    </> Code
+                </div>
+
+                <!-- Planet Sticker -->
+                <div class="sticker bg-voltage-violet/20 border-voltage-violet/50 -rotate-8" style="bottom: 20%; right: 15%;">
+                    <svg class="h-5 w-5 text-voltage-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2a9 9 0 100 18 9 9 0 000-18zm0 2a7 7 0 110 14 7 7 0 000-14zm0-2a2 2 0 100 4 2 2 0 000-4z"></path>
+                    </svg>
+                    Orbit
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learn Section -->
+    <section class="bg-paper-white section-poster">
+        <div class="max-w-6xl mx-auto px-6 py-20">
+            <div class="text-center mb-16">
+                <h2 class="display-text text-5xl md:text-6xl">LEARN</h2>
+                <p class="mt-4 text-lg max-w-xl mx-auto text-carbon/70">
+                    Interactive lessons, AI-assisted learning, and gamified progression
+                </p>
+            </div>
+
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4 items-start">
+                <!-- Lesson Sticker -->
+                <div class="sticker bg-mint-pop/10 border-mint-pop/30 p-6 hover:bg-mint-pop/20 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-start space-x-4">
+                        <div class="h-10 w-10 bg-mint-pop/20 rounded-xl flex items-center justify-center">
+                            <svg class="h-6 w-6 text-mint-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Lessons</h3>
+                            <p class="text-sm text-carbon/60">Interactive video and text lessons</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Sticker -->
+                <div class="sticker bg-lavender/10 border-lavender/30 p-6 hover:bg-lavender/20 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-start space-x-4">
+                        <div class="h-10 w-10 bg-lavender/20 rounded-xl flex items-center justify-center">
+                            <svg class="h-6 w-6 text-lavender" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 11a1 1 0 112 0v1a1 1 0 11-2 0v-1zm0 3a1 1 0 100 2h2a1 1 0 100-2h-2zm4-9a4 4 0 00-4 4v1a1 1 0 002 0v-1a2 2 0 014 0v1a1 1 0 002 0v-1a4 4 0 00-4-4z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Quizzes</h3>
+                            <p class="text-sm text-carbon/60">Test your knowledge with instant feedback</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Tutor Sticker -->
+                <div class="sticker bg-electric-blue/10 border-electric-blue/30 p-6 hover:bg-electric-blue/20 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-start space-x-4">
+                        <div class="h-10 w-10 bg-electric-blue/20 rounded-xl flex items-center justify-center">
+                            <svg class="h-6 w-6 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2a3 3 0 00-3 3v3a6 6 0 00-3.59 8.7l-.39.5A2 2 0 105.21 16a2 2 0 003.79.8l.39-.3a4 4 0 013.42 0l.39.3a2 2 0 003.79-.8l-.39-.5A6 6 0 0015 8V5a3 3 0 00-3-3z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">AI Tutor</h3>
+                            <p class="text-sm text-carbon/60">Personalized help from Astro</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Sticker -->
+                <div class="sticker bg-sunburst/10 border-sunburst/30 p-6 hover:bg-sunburst/20 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-start space-x-4">
+                        <div class="h-10 w-10 bg-sunburst/20 rounded-xl flex items-center justify-center">
+                            <svg class="h-6 w-6 text-sunburst" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M3.73 2.27a10.07 10.07 0 0110.54 0l1.24 2.06a1.01 1.01 0 01-.47 1.78l-.69 3.1a1 1 0 00-.84 1.3l-2.37.87a1.01 1.01 0 01-1.28-.54l-.5-2.5a1 1 0 00-.97-.83l-.74-.27A9.94 9.94 0 013 4.77V4a1 1 0 012 0v.77zM7 7h10v1H7V7zm4 6h2v2H11v-2zm-6 4h10v1H7v-1z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Progress</h3>
+                            <p class="text-sm text-carbon/60">Earn XP and level up your skills</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Build Section -->
+    <section class="bg-sky-wash section-poster">
+        <div class="max-w-6xl mx-auto px-6 py-20">
+            <div class="text-center mb-16">
+                <h2 class="display-text text-5xl md:text-6xl">BUILD</h2>
+                <p class="mt-4 text-lg max-w-xl mx-auto text-carbon/70">
+                    Hands-on labs, real-world projects, and practical skills
+                </p>
+            </div>
+
+            <div class="relative">
+                <!-- Inflatable Learning Path -->
+                <div class="h-96 relative overflow-hidden">
+                    <svg class="absolute inset-0 pointer-events-none" width="100%" height="100%" viewBox="0 0 800 400" preserveAspectRatio="none">
+                        <path d="M50 200 C150 100 250 50 350 100 C450 150 550 250 650 200 C750 150 650 50 750 100"
+                              fill="none"
+                              stroke="var(--electric-blue)"
+                              stroke-width="8"
+                              stroke-dasharray="20,10"/>
+                        <circle cx="100" cy="200" r="12" fill="var(--electric-blue)"/>
+                        <circle cx="300" cy="100" r="12" fill="var(--mint-pop)"/>
+                        <circle cx="500" cy="250" r="12" fill="var(--lavender)"/>
+                        <circle cx="700" cy="150" r="12" fill="var(--sunburst)"/>
+                    </svg>
+                </div>
+
+                <!-- Build Content -->
+                <div class="relative z-10 mt-20 space-y-12">
+                    <div class="sticker bg-mint-pop/10 border-mint-pop/30 p-8 hover:bg-mint-pop/20 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="flex items-center space-x-4">
+                            <div class="h-12 w-12 bg-mint-pop/20 rounded-xl flex items-center justify-center">
+                                <svg class="h-8 w-8 text-mint-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2a5 5 0 00-5 5v1a5 5 0 004.49 7.36l-.5 1.02A5 5 0 0012 20a5 5 0 005-4.87l-.5-1.02A5 5 0 0017 4V3a5 5 0 00-5-5zm0 10a3 3 0 110-6 3 3 0 010 6z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Coding Labs</h3>
+                                <p class="text-sm text-carbon/60">Interactive environments to practice</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sticker bg-lavender/10 border-lavender/30 p-8 hover:bg-lavender/20 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="flex items-center space-x-4">
+                            <div class="h-12 w-12 bg-lavender/20 rounded-xl flex items-center justify-center">
+                                <svg class="h-8 w-8 text-lavender" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Projects</h3>
+                                <p class="text-sm text-carbon/60">Build real-world applications</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sticker bg-voltage-violet/10 border-voltage-violet/30 p-8 hover:bg-voltage-violet/20 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="flex items-center space-x-4">
+                            <div class="h-12 w-12 bg-voltage-violet/20 rounded-xl flex items-center justify-center">
+                                <svg class="h-8 w-8 text-voltage-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 00-2-2h-2V6a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Collaboration</h3>
+                                <p class="text-sm text-carbon/60">Work with peers on team projects</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Astro / AI Section -->
+    <section class="bg-paper-white section-poster">
+        <div class="max-w-6xl mx-auto px-6 py-20">
+            <div class="text-center mb-16">
+                <h2 class="display-text text-5xl md:text-6xl">MEET ASTRO</h2>
+                <p class="mt-4 text-lg max-w-xl mx-auto text-carbon/70">
+                    Your AI-powered learning companion
+                </p>
+            </div>
+
+            <div class="grid gap-8 md:grid-cols-2 items-start">
+                <!-- Astro Visual -->
+                <div class="relative">
+                    <div class="h-96 w-full bg-lavender/10 rounded-2xl border border-lavender/20 overflow-hidden relative">
+                        <!-- Astro Character (placeholder) -->
+                        <div class="absolute inset-0 flex items-center justify-center bg-lavender/10 pointer-events-none">
+                            <div class="text-8xl text-lavender/50">🤖</div>
+                        </div>
+
+                        <!-- Inflatable Element Around Astro -->
+                        <div class="absolute inset-0 pointer-events-none">
+                            <svg width="100%" height="100%" viewBox="0 0 800 400" preserveAspectRatio="none">
+                                <path d="M100 200 Q200 50 400 200 T700 200"
+                                      fill="none"
+                                      stroke="var(--electric-blue)"
+                                      stroke-width="4"
+                                      opacity="0.3"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Astro Features -->
+                <div class="space-y-6">
+                    <div class="sticker bg-electric-blue/10 border-electric-blue/30 p-6 hover:bg-electric-blue/20 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-8 w-8 bg-electric-blue/20 rounded-xl flex items-center justify-center">
+                                <svg class="h-5 w-5 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 00-2-2h-2V6a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Personalized Learning</h3>
+                                <p class="text-sm text-carbon/60">Adapts to your learning style and pace</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sticker bg-mint-pop/10 border-mint-pop/30 p-6 hover:bg-mint-pop/20 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-8 w-8 bg-mint-pop/20 rounded-xl flex items-center justify-center">
+                                <svg class="h-5 w-5 text-mint-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-4v-5.5c0-1.1.9-2 2-2h1.5v-2H14v-1.5h-5V3.5h1c1.1 0 2 .9 2 2v5.5h5V12h-5.5l-1.41 1.41c-.39.39-.39 1.02-.01 1.41H18v5.5h-5z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Instant Help</h3>
+                                <p class="text-sm text-carbon/60">Get answers to your questions anytime</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sticker bg-sunburst/10 border-sunburst/30 p-6 hover:bg-sunburst/20 transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-8 w-8 bg-sunburst/20 rounded-xl flex items-center justify-center">
+                                <svg class="h-5 w-5 text-sunburst" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 00-2-2h-2V6a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Progress Tracking</h3>
+                                <p class="text-sm text-carbon/60">See how you're improving over time</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="bg-sky-wash section-poster">
+        <div class="max-w-6xl mx-auto px-6 py-20">
+            <div class="text-center mb-16">
+                <h2 class="display-text text-5xl md:text-6xl">COURSES</h2>
+                <p class="mt-4 text-lg max-w-xl mx-auto text-carbon/70">
+                    Explore our learning paths and subjects
+                </p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Programming Sticker -->
+                <div class="sticker bg-mint-pop/15 border-mint-pop/40 p-8 hover:bg-mint-pop/25 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-mint-pop/25 rounded-xl flex items-center justify-center">
+                            <svg class="h-8 w-8 text-mint-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2a5 5 0 00-5 5v1a5 5 0 004.49 7.36l-.5 1.02A5 5 0 0012 20a5 5 0 005-4.87l-.5-1.02A5 5 0 0017 4V3a5 5 0 00-5-5zm0 10a3 3 0 110-6 3 3 0 010 6z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Programming</h3>
+                            <p class="text-sm text-carbon/60">Python, JavaScript, web development and more</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Networking Sticker -->
+                <div class="sticker bg-lavender/15 border-lavender/40 p-8 hover:bg-lavender/25 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-lavender/25 rounded-xl flex items-center justify-center">
+                            <svg class="h-8 w-8 text-lavender" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M2 12s3-5 6-5s6 5 6 5-3 5-6 5-6-5-6-5zm10-7v3l3-3zM9 9h6v2H9V9zm4 6h2v2h-2v-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Networking</h3>
+                            <p class="text-sm text-carbon/60">LAN, WAN, protocols and network security</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cybersecurity Sticker -->
+                <div class="sticker bg-voltage-violet/15 border-voltage-violet/40 p-8 hover:bg-voltage-violet/25 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-voltage-violet/25 rounded-xl flex items-center justify-center">
+                            <svg class="h-8 w-8 text-voltage-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 00-2-2h-2V6a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Cybersecurity</h3>
+                            <p class="text-sm text-carbon/60">Ethical hacking, defense strategies and digital safety</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Science Sticker -->
+                <div class="sticker bg-sunburst/15 border-sunburst/40 p-8 hover:bg-sunburst/25 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-sunburst/25 rounded-xl flex items-center justify-center">
+                            <svg class="h-8 w-8 text-sunburst" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 00-2-2h-2V6a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Data Science</h3>
+                            <p class="text-sm text-carbon/60">Statistics, machine learning and data analysis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI & ML Sticker -->
+                <div class="sticker bg-electric-blue/15 border-electric-blue/40 p-8 hover:bg-electric-blue/25 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-electric-blue/25 rounded-xl flex items-center justify-center">
+                            <svg class="h-8 w-8 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">AI & ML</h3>
+                            <p class="text-sm text-carbon/60">Machine learning, neural networks and AI applications</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Dev Sticker -->
+                <div class="sticker bg-ember/15 border-ember/40 p-8 hover:bg-ember/25 transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-ember/25 rounded-xl flex items-center justify-center">
+                            <svg class="h-8 w-8 text-ember" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.27a.93.93 0 00-.94.73V6h-2a2 2 0 00-2 2v8a2 2 0 002 2h2v1.13c.04.82.31 1.61.78 2.15l2.09 2.09a.5.5 0 00.71-.07l.93-1.09a.5.5 0 00-.07-.71l-2.1-2.1a.94.94 0 00-.78-.25zM19 6h-2a2 2 0 00-2 2v5H9V8a2 2 0 002-2h-2V6a2 2 0 002-2h12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">Game Dev</h3>
+                            <p class="text-sm text-carbon/60">2D/3D game development and interactive experiences</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="bg-paper-white section-poster py-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="display-text text-5xl md:text-6xl mb-8">
+                READY TO<span class="block"> START?</span>
+            </h2>
+            <p class="text-lg mb-12 max-w-2xl mx-auto text-carbon/70">
+                Join thousands of students learning tech skills through interactive lessons, hands-on projects, and AI-assisted learning.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <a href="#" class="btn-primary flex-1 sm:flex-none px-8 py-4">
+                    Start Your Journey
+                </div>
+                <a href="#" class="btn-secondary flex-1 sm:flex-none px-8 py-4">
+                    Explore All Courses
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-carbon text-paper-white py-8">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8">
+                <span>© 2026 TechLab. All rights reserved.</span>
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:text-carbon/80 transition-colors duration-200">Privacy</a>
+                    <a href="#" class="hover:text-carbon/80 transition-colors duration-200">Terms</a>
+                    <a href="#" class="hover:text-carbon/80 transition-colors duration-200">Contact</a>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-center space-x-4">
+                <a href="#" class="text-sm hover:text-carbon/80 transition-colors duration-200">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 15H5a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2z"></path></svg>
+                    Discord
+                </a>
+                <a href="#" class="text-sm hover:text-carbon/80 transition-colors duration-200">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14h.01M12 14h.01M16 14h.01M9 19l2 2M9 19l2-2M14 10l2 2M14 10l2-2M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9 9m9 9a3 3 0 01-3 3m3-3a3 3 0 00-3-3m3 3a3 3 0 01-3 3m3-3a3 3 0 00-3-3m3 3a3 3 0 01-3 3m3-3a3 3 0 00-3-3"></path></svg>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

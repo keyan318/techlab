@@ -1,3 +1,152 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for course sidebar */
+.course-sidebar {
+  @apply w-64 bg-white border-r rounded-l-lg shadow-lg flex flex-col h-full;
+}
+
+.sidebar-header {
+  @apply p-4 border-b;
+}
+
+.sidebar-header h2 {
+  @apply text-xl font-bold text-gray-800 flex items-center;
+}
+
+.sidebar-header svg {
+  @apply w-5 h-5 mr-2 text-primary;
+}
+
+.sidebar-content {
+  @apply flex-1 overflow-y-auto p-4 space-y-4;
+}
+
+.progress-overview {
+  @apply bg-gray-50 rounded-lg p-4 border;
+}
+
+.progress-overview .flex {
+  @apply justify-between items-start;
+}
+
+.progress-overview p {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.progress-overview .text-2xl {
+  @apply font-bold text-primary;
+}
+
+.progress-overview .text-3xl {
+  @apply text-primary;
+}
+
+.progress-overview .mt-3 {
+  @apply w-full bg-gray-200 rounded-full h-2.5 mt-3;
+}
+
+.progress-overview .bg-primary {
+  @apply h-2.5 rounded-full;
+}
+
+.progress-overview .text-xs {
+  @apply text-gray-500 mt-1;
+}
+
+.section-group {
+  @apply mb-4;
+}
+
+.section-header {
+  @apply w-full flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-primary/5 transition-colors;
+}
+
+.section-header.active {
+  @apply bg-primary/10;
+}
+
+.section-header h3 {
+  @apply font-medium text-gray-800 flex-1;
+}
+
+.section-header p {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+.section-header .text-gray-400 {
+  @apply transition-transform w-4 h-4;
+}
+
+.section-header .rotate-180 {
+  @apply rotate-180;
+}
+
+.lesson-item {
+  @apply w-full flex justify-between items-center p-2 rounded hover:bg-gray-50 transition-colors cursor-default;
+}
+
+.lesson-item.active {
+  @apply bg-primary/50;
+}
+
+.lesson-item.completed {
+  @apply bg-green-50;
+}
+
+.lesson-item .flex-1 {
+  @apply min-w-0;
+}
+
+.lesson-item .flex.items-start {
+  @apply space-x-3;
+}
+
+.lesson-item .flex-shrink-0 .w-2 {
+  @apply h-2 rounded-full;
+}
+
+.lesson-item .flex-shrink-0 .bg-primary {
+  @apply bg-primary;
+}
+
+.lesson-item .flex-shrink-0 .bg-gray-300 {
+  @apply bg-gray-300;
+}
+
+.lesson-item .flex-shrink-0 .bg-gray-100 {
+  @apply bg-gray-100;
+}
+
+.lesson-item p {
+  @apply text-sm font-medium text-gray-900 truncate;
+}
+
+.lesson-item .text-xs {
+  @apply text-gray-500 line-clamp-1;
+}
+
+.lesson-item .bg-primary {
+  @apply bg-primary/10 text-primary px-2 py-1 rounded text-xs;
+}
+
+.lesson-item .bg-green-500 {
+  @apply bg-green-500/10 text-green-600 px-2 py-1 rounded text-xs;
+}
+
+.lesson-item .text-gray-300 {
+  @apply text-gray-300;
+}
+
+.sidebar-footer {
+  @apply p-4 border-t;
+}
+
+.sidebar-footer button {
+  @apply w-full flex items-center justify-center px-3 py-2 bg-border text-sm font-medium rounded hover:bg-primary/5 transition-colors;
+}
+
+.sidebar-footer svg {
+  @apply w-4 h-4 mr-2;
+}
