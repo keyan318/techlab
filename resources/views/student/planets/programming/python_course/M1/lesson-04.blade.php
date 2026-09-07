@@ -1,49 +1,78 @@
-<?php
-/*
- * Programming M1 Lesson 4: Expressions & Operators
- */
+{{-- M1 · Lesson 1.4: Expressions & Operators — content fragment. --}}
+<div class="lesson-fragment" data-module="m1" data-lesson="04">
 
-$lessonData = [
-    'title' => 'Expressions & Operators',
-    'objective' => 'The student can write and evaluate expressions using arithmetic and comparison operators in Python.',
-    'simple_explanation' => "An expression is a combination of values, variables, and operators that Python evaluates to produce a result. Operators include math symbols like +, -, *, / and comparison symbols like ==, >, <.",
-    'astro_explanation' => "Astro uses expressions to calculate things like fuel consumption, trajectory angles, and system status. For example, Astro might calculate remaining fuel as: fuel_used / fuel_capacity * 100 to get a percentage.",
-    'code_example' => "# Arithmetic expressions\ntotal_fuel = 1000\nused_fuel = 375\nremaining_fuel = total_fuel - used_fuel\nfuel_percentage = remaining_fuel / total_fuel * 100\n\nprint(f\"Remaining fuel: {remaining_fuel} liters\")\nprint(f\"Fuel percentage: {fuel_percentage}%\")\n\n# Comparison expressions\ntemperature = 22\nis_hot = temperature > 25\nprint(f\"Is it hot? {is_hot}\")",
-    'interactive_exercise' => [
-        'prompt' => 'Calculate the area of a rectangle with width 8 and height 5, then print whether the area is greater than 30.',
-        'starter_code' => "width = 8\nheight = 5\n# your code here\n",
-        'expected_output' => null,
-    ],
-    'challenge' => [
-        'prompt' => "Explain the difference between = and == in Python. When would you use each?",
-        'starter_code' => "# your explanation here\n",
-        'expected_output' => null,
-    ],
-    'quiz' => [
-        [
-            'question' => 'What is the output of this code?\nprint(10 + 3 * 2)',
-            'options' => [
-                'a' => '26',
-                'b' => '16',
-                'c' => '19',
-                'd' => '36',
-            ],
-            'correct' => 'b',
-            'explanation' => "Python follows order of operations: multiplication before addition. So 3 * 2 = 6, then 10 + 6 = 16.",
-        ],
-        [
-            'question' => 'Which expression evaluates to True?',
-            'options' => [
-                'a' => '5 == \"5\"',
-                'b' => '10 > 3',
-                'c' => '7 <= 5',
-                'd' => '4 != 4',
-            ],
-            'correct' => 'b',
-            'explanation' => "10 > 3 evaluates to True because 10 is greater than 3. The others are False: 5 != '5' (different types), 7 <= 5 is False, and 4 != 4 is False.",
-        ],
-    ],
-];
+    <h1 class="lesson-heading">Lesson 1.4: Expressions &amp; Operators</h1>
+    <p class="lesson-objective"><strong>Learning Objective:</strong> The student can write arithmetic expressions and combine text using operators, understanding basic operator precedence.</p>
 
-return $lessonData;
-?>
+    <h2 class="section-heading">Simple Explanation</h2>
+    <p class="body-text">An expression is anything Python can evaluate down to a single value, like <code>3 + 4</code> or <code>"Sys" + "tem"</code>. Python supports the usual math operators (+, -, *, /) plus a few extras: ** for exponents, // for division that drops the remainder, and % for the remainder itself (called modulo). Just like in math class, multiplication and division happen before addition and subtraction unless you use parentheses.</p>
+
+    <h2 class="section-heading">Astro Explanation</h2>
+    <p class="body-text">Astro's diagnostics constantly combine numbers — total fuel burned, average hull temperature across three sensors, remaining oxygen after a leak. Every one of those is an expression: raw numbers going in, one answer coming out. Get the order of operations wrong and Astro reports the wrong reading to the Captain, which on a real ship would be a very bad day.</p>
+
+    <h2 class="section-heading">Code Example</h2>
+    <pre class="code-block"><code>damage = 100 - (15 * 2)
+average_temp = (18 + 22 + 20) / 3
+remainder_fuel = 47 % 10
+print(damage, average_temp, remainder_fuel)</code></pre>
+
+    <h2 class="section-heading">Interactive Coding Exercise</h2>
+    <p class="body-text">You're given three sensor readings. Write a single expression that computes their average using parentheses correctly, then print it.</p>
+
+    @php
+        $editorUrl = route('student.planet.editor', [
+            'slug' => 'programming',
+            'starter_code' => "reading1 = 18\nreading2 = 22\nreading3 = 20\n\n# compute and print the average using one expression\n",
+            'expected' => '20.0',
+            'return_to' => route('student.planet.module.lesson', [
+                'slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson04',
+            ]),
+        ]);
+    @endphp
+    <div class="cta-wrap">
+        <a href="{{ $editorUrl }}"
+           class="btn-code-yourself"
+           style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;text-decoration:none;font-family:'Space Grotesk',sans-serif;">
+            🐍 Code it yourself
+        </a>
+    </div>
+
+    <h2 class="section-heading">Challenge</h2>
+    <p class="body-text">Write a program that calculates how many full crates of 6 emergency ration packs can be made from 155 packs, and how many packs are left over — using // and % on the same input.</p>
+
+    <h2 class="section-heading">Quiz</h2>
+
+    <div class="quiz-block" data-q="1">
+        <p class="quiz-prompt">Q1. What does <code>17 // 5</code> evaluate to?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 3.4</li>
+            <li class="quiz-option quiz-correct">B. 3 ✓</li>
+            <li class="quiz-option">C. 2</li>
+            <li class="quiz-option">D. 85</li>
+        </ul>
+        <p class="quiz-explanation"><em>// is floor (integer) division — it divides and drops anything after the decimal point, giving 3.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="2">
+        <p class="quiz-prompt">Q2. What does <code>17 % 5</code> evaluate to?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 3.4</li>
+            <li class="quiz-option">B. 3</li>
+            <li class="quiz-option quiz-correct">C. 2 ✓</li>
+            <li class="quiz-option">D. 85</li>
+        </ul>
+        <p class="quiz-explanation"><em>% (modulo) gives the remainder after division: 17 divided by 5 is 3 with 2 left over.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="3">
+        <p class="quiz-prompt">Q3. What is the result of <code>2 + 3 * 4</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 20</li>
+            <li class="quiz-option quiz-correct">B. 14 ✓</li>
+            <li class="quiz-option">C. 24</li>
+            <li class="quiz-option">D. 9</li>
+        </ul>
+        <p class="quiz-explanation"><em>Multiplication happens before addition, so it's 2 + (3 * 4) = 2 + 12 = 14.</em></p>
+    </div>
+
+</div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class PlanetController extends Controller
@@ -133,9 +135,6 @@ class PlanetController extends Controller
 
             foreach ($section['lessons'] as $lessonIndex => $lesson) {
                 $isFirstLesson = $sectionIndex === 0 && $lessonIndex === 0;
-                // Static placeholder progress: only the very first lesson is
-                // unlocked-and-current. All later lessons are not-yet-started.
-                // A future iteration can wire this to user progress.
                 $state = $isFirstLesson ? 'current' : 'not_started';
 
                 $lessonId = $course['id'].'-s'.$sectionIndex.'-l'.$lessonIndex;
@@ -227,7 +226,6 @@ class PlanetController extends Controller
             abort(404);
         }
 
-        // Per-lesson view when one exists; otherwise the shared placeholder.
         $lessonView = 'student.planets.lesson-'.$lesson;
 
         return view(
@@ -265,12 +263,7 @@ class PlanetController extends Controller
 
     /**
      * POST /student/planet/{slug}/plan — learning-plan generation.
-     *
-     * Placeholder payload: the shape mirrors what the course overview renders
-     * so the post-onboarding carousel flow completes end to end. The real
-     * Nemotron roadmap generation swaps into this method later without
-     * changing the response contract. Instant reply by design — the
-     * carousel's "Finishing up..." state needs a fast resolution target.
+     * (Unchanged — placeholder payload for the onboarding carousel flow.)
      */
     public function generatePlan(string $slug): JsonResponse
     {
@@ -282,7 +275,6 @@ class PlanetController extends Controller
             return response()->json(['error' => 'Planet not found.'], 404);
         }
 
-        // Placeholder roadmap — ordered, first node unlocked.
         $nodes = [
             ['label' => 'Thinking in Code', 'locked' => false],
             ['label' => 'Programming with Variables', 'locked' => true],
@@ -300,6 +292,51 @@ class PlanetController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Resolve a module + lesson pair to its view name.
+     *
+     * Your lesson files are named "lesson-01" (with a dash), but the
+     * sidebar/URL sends "lesson01" (no dash). Rather than force a
+     * rename across every lesson file, this checks BOTH naming styles
+     * and uses whichever one actually exists on disk. Returns null if
+     * neither is found.
+     */
+    private function resolveLessonView(string $slug, string $module, string $lesson): ?string
+    {
+        $moduleKey = strtoupper($module);
+        $base = "student.planets.{$slug}.python_course.{$moduleKey}.";
+
+        $candidates = [$lesson];
+
+        // "lesson01" -> also try "lesson-01"
+        if (preg_match('/^lesson(\d+)$/', $lesson, $m)) {
+            $candidates[] = 'lesson-'.$m[1];
+        }
+
+        // "lesson-01" -> also try "lesson01"
+        if (preg_match('/^lesson-(\d+)$/', $lesson, $m)) {
+            $candidates[] = 'lesson'.$m[1];
+        }
+
+        foreach ($candidates as $candidate) {
+            $view = $base.$candidate;
+            if (view()->exists($view)) {
+                return $view;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * GET /student/planet/{slug}/{module}/{lesson}
+     *
+     * Renders the FULL course shell (sidebar + main panel), with the
+     * requested lesson already rendered server-side inside it. This is
+     * the URL used for first load, browser refresh, and direct/shared
+     * links — it must always work even with JavaScript disabled.
+     */
     public function viewModuleLesson(string $slug, string $module, string $lesson): View|RedirectResponse
     {
         if (! Auth::check()) {
@@ -310,16 +347,107 @@ class PlanetController extends Controller
             abort(404);
         }
 
-        $module = strtoupper($module);
-        $lesson = preg_replace('/^lesson([0-9]+)$/', 'lesson-$1', $lesson);
+        $view = $this->resolveLessonView($slug, $module, $lesson);
 
-        $view = "student.planets.{$slug}.python_course.{$module}.lesson-{$lesson}";
-
-        if (view()->exists($view)) {
-            return view($view);
-        }
-
-        abort(404);
+        // Shell renders an "empty-lesson" state itself if $view is null,
+        // so we don't hard-404 here — a typo'd lesson id still shows the
+        // course chrome instead of a blank error page.
+        return view('student.planets.'.$slug, [
+            'slug' => $slug,
+            'module' => strtolower($module),
+            'lesson' => $lesson,
+            'lessonView' => $view,
+        ]);
     }
 
+    /**
+     * GET /student/planet/{slug}/{module}/{lesson}/fragment
+     *
+     * Returns ONLY the compiled lesson HTML — no layout, no sidebar,
+     * no <html>/<head>/<body>. This is what the shell's JavaScript
+     * fetches and drops into #lesson-stage when a sidebar item (or the
+     * prev/next arrows) is clicked. This is the endpoint that makes
+     * lesson switching happen with zero page reloads.
+     */
+    public function lessonFragment(string $slug, string $module, string $lesson): Response
+    {
+        if (! Auth::check()) {
+            abort(401);
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            abort(404);
+        }
+
+        $view = $this->resolveLessonView($slug, $module, $lesson);
+
+        if (! $view) {
+            // TEMPORARY DEBUG — remove once lessons are loading correctly.
+            // Shows exactly which view names Laravel tried and the physical
+            // file paths it expects, right on screen.
+            $moduleKey = strtoupper($module);
+            $base = "student.planets.{$slug}.python_course.{$moduleKey}.";
+            $tried = [$lesson];
+
+            if (preg_match('/^lesson(\d+)$/', $lesson, $m)) {
+                $tried[] = 'lesson-'.$m[1];
+            }
+            if (preg_match('/^lesson-(\d+)$/', $lesson, $m)) {
+                $tried[] = 'lesson'.$m[1];
+            }
+
+            $lines = array_map(function ($candidate) use ($base) {
+                $viewName = $base.$candidate;
+                $path = resource_path('views/'.str_replace('.', '/', $viewName).'.blade.php');
+
+                return '<p style="margin-top:6px; font-size:13px;">Tried <code>'.e($viewName).'</code> → <code>'.e($path).'</code></p>';
+            }, $tried);
+
+            return response(
+                '<div class="empty-lesson"><div>'
+                .'<h1>Lesson not found</h1>'
+                .implode('', $lines)
+                .'</div></div>',
+                404
+            );
+        }
+
+        return response(view($view)->render());
+    }
+
+    /**
+     * GET /student/planet/{slug}/editor
+     *
+     * The Pyodide-powered "Code it yourself" page. This method knows
+     * nothing about specific lessons or modules — it just reads whatever
+     * the linking lesson page put in the query string:
+     *
+     *   starter_code  - pre-fills the textarea (optional, defaults to blank)
+     *   expected      - if present, shows the "Check Answer" button and
+     *                   the editor compares printed output against this
+     *                   (optional — omit it for open-ended challenges)
+     *   return_to     - full URL the "Back to lesson" button should use
+     *                   (optional, falls back to the planet overview)
+     *
+     * Every lesson builds its own link to this same route with its own
+     * values. This method — and the view it renders — never need to
+     * change again when new lessons are added.
+     */
+    public function editor(string $slug, Request $request): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            abort(404);
+        }
+
+        return view('student.planets.python-editor', [
+            'slug' => $slug,
+            'starterCode' => (string) $request->query('starter_code', ''),
+            'expected' => $request->query('expected'),
+            'returnTo' => $request->query('return_to'),
+        ]);
+    }
 }

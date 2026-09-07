@@ -38,6 +38,9 @@ Route::get('/student/planet/{slug}', [PlanetController::class, 'show'])->name('s
 // New route for module/lesson format: /student/planet/{slug}/{module}/{lesson}
 Route::get('/student/planet/{slug}/{module}/{lesson}', [PlanetController::class, 'viewModuleLesson'])->name('student.planet.module.lesson');
 
+Route::get('/student/planet/{slug}/{module}/{lesson}/fragment', [PlanetController::class, 'lessonFragment'])
+    ->name('student.planet.module.lesson.fragment');
+
 // Learning-plan generation for a track. Placeholder payload until the
 // Nemotron roadmap generator lands — same response contract, instant reply.
 Route::post('/student/planet/{slug}/plan', [PlanetController::class, 'generatePlan'])->name('student.planet.plan');
@@ -49,8 +52,13 @@ Route::get('/student/planet/{slug}/view/{lessonId}', [PlanetController::class, '
 // working while exposing the course player at the URL referenced in the spec.
 Route::get('/planets/{slug}', [PlanetController::class, 'show'])->name('student.planet.course');
 
-// Python interactive editor page
-Route::get('/student/planet/{slug}/editor/{lessonId}', [PlanetController::class, 'editor'])->name('student.planet.editor');
+// Python interactive editor page.
+// NOTE: {lessonId} was dropped from this route on purpose — the "Code it
+// yourself" button links to /student/planet/{slug}/editor exactly, with no
+// trailing segment. Which lesson/exercise to preload (if any) now comes from
+// optional query params instead: ?module=m1&lesson=01
+// e.g. http://127.0.0.1:8000/student/planet/programming/editor?module=m1&lesson=01
+Route::get('/student/planet/{slug}/editor', [PlanetController::class, 'editor'])->name('student.planet.editor');
 
 
 use App\Http\Controllers\DeckController;

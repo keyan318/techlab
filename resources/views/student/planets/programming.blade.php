@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        {{ $lessonData['title'] ?? 'Programming Course' }}
-    </title>
+    <title>Programming Course</title>
 
     <style>
 
@@ -59,23 +56,6 @@
             width: 100%;
             height: 100vh;
             overflow: hidden;
-        }
-
-        /* =========================================================
-           SIDEBAR
-        ========================================================= */
-
-        .sidebar {
-            width: 360px;
-            min-width: 360px;
-            height: 100vh;
-
-            background-color: var(--white);
-
-            border-right: 1px solid var(--border-gray);
-
-            overflow-y: auto;
-            overflow-x: hidden;
         }
 
         /* =========================================================
@@ -220,6 +200,8 @@
             margin: 0 auto;
 
             min-height: 100%;
+
+            transition: opacity 0.15s ease;
         }
 
         .lesson-heading {
@@ -372,23 +354,19 @@
            SCROLLBAR
         ========================================================= */
 
-        .sidebar::-webkit-scrollbar,
         .content::-webkit-scrollbar {
             width: 8px;
         }
 
-        .sidebar::-webkit-scrollbar-track,
         .content::-webkit-scrollbar-track {
             background: #f7f7f7;
         }
 
-        .sidebar::-webkit-scrollbar-thumb,
         .content::-webkit-scrollbar-thumb {
             background: #cfcfcf;
             border-radius: 10px;
         }
 
-        .sidebar::-webkit-scrollbar-thumb:hover,
         .content::-webkit-scrollbar-thumb:hover {
             background: #aaa;
         }
@@ -399,22 +377,12 @@
 
         @media (max-width: 1200px) {
 
-            .sidebar {
-                width: 320px;
-                min-width: 320px;
-            }
-
             .content {
                 padding: 35px 40px;
             }
         }
 
         @media (max-width: 900px) {
-
-            .sidebar {
-                width: 300px;
-                min-width: 300px;
-            }
 
             .content {
                 padding: 30px;
@@ -429,20 +397,6 @@
 
             .container {
                 flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                min-width: 100%;
-
-                height: 280px;
-
-                border-right: none;
-                border-bottom: 1px solid var(--border-gray);
-            }
-
-            .main-area {
-                height: calc(100vh - 280px);
             }
 
             .header {
@@ -469,143 +423,35 @@
 <body>
 
 @php
+    // These come from PlanetController::viewModuleLesson(). Sensible
+    // defaults so this view never breaks if hit without them.
+    $slug   = $slug   ?? 'programming';
+    $module = $module ?? 'm1';
+    $lesson = $lesson ?? 'lesson01';
 
-    /*
-    |--------------------------------------------------------------------------
-    | CURRENT LESSON
-    |--------------------------------------------------------------------------
-    |
-    | The sidebar sends the lesson ID through the URL.
-    |
-    | Example:
-    |
-    | /student/planet/programming?lesson=m1-lesson01
-    |
-    */
-
-    $lesson = request('lesson', 'm1-lesson01');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | LESSON FILE MAP
-    |--------------------------------------------------------------------------
-    |
-    | Each lesson ID points to one lesson data file.
-    |
-    */
-
-    $lessonFiles = [
-
-        // MODULE 1
-        'm1-lesson01' => 'python_course/M1/lesson01.blade.php',
-        'm1-lesson02' => 'python_course/M1/lesson02.blade.php',
-        'm1-lesson03' => 'python_course/M1/lesson03.blade.php',
-        'm1-lesson04' => 'python_course/M1/lesson04.blade.php',
-        'm1-lesson05' => 'python_course/M1/lesson05.blade.php',
-        'm1-lesson06' => 'python_course/M1/lesson06.blade.php',
-
-        // MODULE 2
-        'm2-lesson01' => 'python_course/M2/lesson01.blade.php',
-        'm2-lesson02' => 'python_course/M2/lesson02.blade.php',
-        'm2-lesson03' => 'python_course/M2/lesson03.blade.php',
-        'm2-lesson04' => 'python_course/M2/lesson04.blade.php',
-        'm2-lesson05' => 'python_course/M2/lesson05.blade.php',
-        'm2-lesson06' => 'python_course/M2/lesson06.blade.php',
-
-        // MODULE 3
-        'm3-lesson01' => 'python_course/M3/lesson01.blade.php',
-        'm3-lesson02' => 'python_course/M3/lesson02.blade.php',
-        'm3-lesson03' => 'python_course/M3/lesson03.blade.php',
-        'm3-lesson04' => 'python_course/M3/lesson04.blade.php',
-        'm3-lesson05' => 'python_course/M3/lesson05.blade.php',
-
-        // MODULE 4
-        'm4-lesson01' => 'python_course/M4/lesson01.blade.php',
-        'm4-lesson02' => 'python_course/M4/lesson02.blade.php',
-        'm4-lesson03' => 'python_course/M4/lesson03.blade.php',
-        'm4-lesson04' => 'python_course/M4/lesson04.blade.php',
-        'm4-lesson05' => 'python_course/M4/lesson05.blade.php',
-        'm4-lesson06' => 'python_course/M4/lesson06.blade.php',
-        'm4-lesson07' => 'python_course/M4/lesson07.blade.php',
-        'm4-lesson08' => 'python_course/M4/lesson08.blade.php',
-
-        // MODULE 5
-        'm5-lesson01' => 'python_course/M5/lesson01.blade.php',
-        'm5-lesson02' => 'python_course/M5/lesson02.blade.php',
-        'm5-lesson03' => 'python_course/M5/lesson03.blade.php',
-        'm5-lesson04' => 'python_course/M5/lesson04.blade.php',
-        'm5-lesson05' => 'python_course/M5/lesson05.blade.php',
-
-        // MODULE 6
-        'm6-lesson01' => 'python_course/M6/lesson01.blade.php',
-        'm6-lesson02' => 'python_course/M6/lesson02.blade.php',
-        'm6-lesson03' => 'python_course/M6/lesson03.blade.php',
-        'm6-lesson04' => 'python_course/M6/lesson04.blade.php',
-
-        // MODULE 7
-        'm7-lesson01' => 'python_course/M7/lesson01.blade.php',
-    ];
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SELECT LESSON
-    |--------------------------------------------------------------------------
-    */
-
-    $lessonFile = $lessonFiles[$lesson] ?? $lessonFiles['m1-lesson01'];
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | GET PHYSICAL FILE PATH
-    |--------------------------------------------------------------------------
-    */
-
-    $lessonPath = resource_path(
-        'views/student/planets/programming/' . $lessonFile
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | LOAD LESSON DATA
-    |--------------------------------------------------------------------------
-    |
-    | IMPORTANT:
-    |
-    | We use include because the lesson file returns an array.
-    |
-    */
-
-    $lessonData = null;
-
-    if (file_exists($lessonPath)) {
-        $lessonData = include $lessonPath;
-    }
-
+    // lessonView may be explicitly null (controller couldn't find a
+    // matching file under either naming style) — leave it null rather
+    // than guessing a string, so the check below shows the fallback.
+    $lessonView = $lessonView ?? "student.planets.{$slug}.python_course." . strtoupper($module) . ".{$lesson}";
 @endphp
 
 
 <div class="container">
 
     {{-- =========================================================
-         SIDEBAR
+         SIDEBAR — the remote control. It only ever fires
+         window.TechLab.loadLesson(module, lesson).
     ========================================================== --}}
 
     @include('components.programming-sidebar')
 
 
     {{-- =========================================================
-         MAIN AREA
+         MAIN AREA — the TV. It never rebuilds itself, it just
+         swaps what's showing on #lesson-stage.
     ========================================================== --}}
 
     <main class="main-area">
-
-        {{-- =====================================================
-             HEADER
-        ====================================================== --}}
 
         <header class="header">
 
@@ -619,8 +465,8 @@
                     &#9664;
                 </div>
 
-                <div class="lesson-title">
-                    {{ $lessonData['title'] ?? 'Programming Fundamentals' }}
+                <div class="lesson-title" id="lesson-title-text">
+                    Loading…
                 </div>
 
             </div>
@@ -628,21 +474,10 @@
 
             <div class="header-right">
 
-                <div class="icon" title="Dark mode">
-                    🌙
-                </div>
-
-                <div class="icon" title="Search">
-                    🔍
-                </div>
-
-                <div class="icon" title="Language">
-                    🌐
-                </div>
-
-                <div class="icon" title="Accessibility">
-                    ♿
-                </div>
+                <div class="icon" title="Dark mode">🌙</div>
+                <div class="icon" title="Search">🔍</div>
+                <div class="icon" title="Language">🌐</div>
+                <div class="icon" title="Accessibility">♿</div>
 
                 <div
                     class="icon"
@@ -657,232 +492,48 @@
         </header>
 
 
-        {{-- =====================================================
-             LESSON VIEWER
-        ====================================================== --}}
-
         <div class="content">
 
-            <div class="lesson-content">
-
-                @if ($lessonData)
-
-                    {{-- LESSON TITLE --}}
-
-                    <h1 class="lesson-heading">
-                        {{ $lessonData['title'] }}
-                    </h1>
-
-
-                    {{-- OBJECTIVE --}}
-
-                    @if (!empty($lessonData['objective']))
-
-                        <h2 class="secondary-heading">
-                            Objective
-                        </h2>
-
-                        <p class="body-text">
-                            {{ $lessonData['objective'] }}
-                        </p>
-
-                    @endif
-
-
-                    {{-- SIMPLE EXPLANATION --}}
-
-                    @if (!empty($lessonData['simple_explanation']))
-
-                        <h2 class="secondary-heading">
-                            Explanation
-                        </h2>
-
-                        <p class="body-text">
-                            {{ $lessonData['simple_explanation'] }}
-                        </p>
-
-                    @endif
-
-
-                    {{-- ASTRO EXPLANATION --}}
-
-                    @if (!empty($lessonData['astro_explanation']))
-
-                        <h2 class="secondary-heading">
-                            Astro's Explanation
-                        </h2>
-
-                        <p class="body-text">
-                            {{ $lessonData['astro_explanation'] }}
-                        </p>
-
-                    @endif
-
-
-                    {{-- CODE EXAMPLE --}}
-
-                    @if (!empty($lessonData['code_example']))
-
-                        <h2 class="secondary-heading">
-                            Code Example
-                        </h2>
-
-                        <pre class="code-block"><code>{{ $lessonData['code_example'] }}</code></pre>
-
-                    @endif
-
-
-                    {{-- INTERACTIVE EXERCISE --}}
-
-                    @if (!empty($lessonData['interactive_exercise']))
-
-                        <h2 class="secondary-heading">
-                            Interactive Exercise
-                        </h2>
-
-                        <div class="exercise-card">
-
-                            <p class="body-text">
-                                {{ $lessonData['interactive_exercise']['prompt'] }}
-                            </p>
-
-                            <h3>
-                                Starter Code
-                            </h3>
-
-                            <pre class="code-block"><code>{{ $lessonData['interactive_exercise']['starter_code'] }}</code></pre>
-
-                            @if (!empty($lessonData['interactive_exercise']['expected_output']))
-
-                                <h3>
-                                    Expected Output
-                                </h3>
-
-                                <pre class="code-block"><code>{{ $lessonData['interactive_exercise']['expected_output'] }}</code></pre>
-
-                            @endif
-
-                        </div>
-
-                    @endif
-
-
-                    {{-- CHALLENGE --}}
-
-                    @if (!empty($lessonData['challenge']))
-
-                        <h2 class="secondary-heading">
-                            Challenge
-                        </h2>
-
-                        <div class="exercise-card">
-
-                            <p class="body-text">
-                                {{ $lessonData['challenge']['prompt'] }}
-                            </p>
-
-                            <h3>
-                                Starter Code
-                            </h3>
-
-                            <pre class="code-block"><code>{{ $lessonData['challenge']['starter_code'] }}</code></pre>
-
-                        </div>
-
-                    @endif
-
-
-                    {{-- QUIZ --}}
-
-                    @if (!empty($lessonData['quiz']))
-
-                        <h2 class="secondary-heading">
-                            Quiz
-                        </h2>
-
-                        @foreach ($lessonData['quiz'] as $index => $question)
-
-                            <div class="quiz-card">
-
-                                <p class="quiz-question">
-
-                                    {{ $index + 1 }}.
-
-                                    {{ $question['question'] }}
-
-                                </p>
-
-
-                                @foreach ($question['options'] as $key => $option)
-
-                                    <div class="quiz-option">
-
-                                        <strong>
-                                            {{ strtoupper($key) }}.
-                                        </strong>
-
-                                        {{ $option }}
-
-                                    </div>
-
-                                @endforeach
-
-                            </div>
-
-                        @endforeach
-
-                    @endif
-
-
-                    {{-- LESSON NAVIGATION --}}
-
-                    <div class="nav-arrows">
-
-                        <div
-                            class="nav-arrow"
-                            onclick="goToPreviousLesson()"
-                            title="Previous lesson"
-                        >
-                            &#9664;
-                        </div>
-
-
-                        <div
-                            class="nav-arrow"
-                            onclick="goToNextLesson()"
-                            title="Next lesson"
-                        >
-                            &#9654;
-                        </div>
-
-                    </div>
-
-
-                @else
-
-                    {{-- LESSON NOT FOUND --}}
-
+            {{--
+                THIS is the TV screen. Its id is what all the JS
+                below targets when a sidebar button is pressed.
+                It's server-rendered on first load (no flash / no
+                extra round trip), then swapped client-side after.
+            --}}
+            <div class="lesson-content" id="lesson-stage">
+
+                @includeIf($lessonView)
+
+                @unless(view()->exists($lessonView))
                     <div class="empty-lesson">
-
                         <div>
-
-                            <h1>
-                                Lesson not found
-                            </h1>
-
+                            <h1>Lesson not found</h1>
                             <p style="margin-top: 10px;">
                                 The selected lesson file does not exist yet.
                             </p>
-
-                            <p style="margin-top: 10px; font-size: 13px;">
-                                {{ $lessonPath }}
-                            </p>
-
                         </div>
+                    </div>
+                @endunless
 
+                <div class="nav-arrows">
+
+                    <div
+                        class="nav-arrow"
+                        onclick="goToPreviousLesson()"
+                        title="Previous lesson"
+                    >
+                        &#9664;
                     </div>
 
-                @endif
+                    <div
+                        class="nav-arrow"
+                        onclick="goToNextLesson()"
+                        title="Next lesson"
+                    >
+                        &#9654;
+                    </div>
+
+                </div>
 
             </div>
 
@@ -894,120 +545,132 @@
 
 
 <script>
+(function () {
 
-    function toggleFullscreen() {
+    const slug  = @json($slug);
+    let current = { module: @json($module), lesson: @json($lesson) };
 
-        if (!document.fullscreenElement) {
+    const stage    = document.getElementById('lesson-stage');
+    const titleEl  = document.getElementById('lesson-title-text');
 
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-
-        } else {
-
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-
-        }
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | LESSON NAVIGATION
-    |--------------------------------------------------------------------------
-    */
-
+    // Ordered list used only for the prev/next arrows.
     const lessonOrder = [
-
-        'm1-lesson01',
-        'm1-lesson02',
-        'm1-lesson03',
-        'm1-lesson04',
-        'm1-lesson05',
-        'm1-lesson06',
-
-        'm2-lesson01',
-        'm2-lesson02',
-        'm2-lesson03',
-        'm2-lesson04',
-        'm2-lesson05',
-        'm2-lesson06',
-
-        'm3-lesson01',
-        'm3-lesson02',
-        'm3-lesson03',
-        'm3-lesson04',
-        'm3-lesson05',
-
-        'm4-lesson01',
-        'm4-lesson02',
-        'm4-lesson03',
-        'm4-lesson04',
-        'm4-lesson05',
-        'm4-lesson06',
-        'm4-lesson07',
-        'm4-lesson08',
-
-        'm5-lesson01',
-        'm5-lesson02',
-        'm5-lesson03',
-        'm5-lesson04',
-        'm5-lesson05',
-
-        'm6-lesson01',
-        'm6-lesson02',
-        'm6-lesson03',
-        'm6-lesson04',
-
-        'm7-lesson01'
-
+        {module:'m1', lesson:'lesson01'}, {module:'m1', lesson:'lesson02'}, {module:'m1', lesson:'lesson03'},
+        {module:'m1', lesson:'lesson04'}, {module:'m1', lesson:'lesson05'}, {module:'m1', lesson:'lesson06'},
+        {module:'m2', lesson:'lesson01'}, {module:'m2', lesson:'lesson02'}, {module:'m2', lesson:'lesson03'},
+        {module:'m2', lesson:'lesson04'}, {module:'m2', lesson:'lesson05'}, {module:'m2', lesson:'lesson06'},
+        {module:'m3', lesson:'lesson01'}, {module:'m3', lesson:'lesson02'}, {module:'m3', lesson:'lesson03'},
+        {module:'m3', lesson:'lesson04'}, {module:'m3', lesson:'lesson05'},
+        {module:'m4', lesson:'lesson01'}, {module:'m4', lesson:'lesson02'}, {module:'m4', lesson:'lesson03'},
+        {module:'m4', lesson:'lesson04'}, {module:'m4', lesson:'lesson05'}, {module:'m4', lesson:'lesson06'},
+        {module:'m4', lesson:'lesson07'}, {module:'m4', lesson:'lesson08'},
+        {module:'m5', lesson:'lesson01'}, {module:'m5', lesson:'lesson02'}, {module:'m5', lesson:'lesson03'},
+        {module:'m5', lesson:'lesson04'}, {module:'m5', lesson:'lesson05'},
+        {module:'m6', lesson:'lesson01'}, {module:'m6', lesson:'lesson02'}, {module:'m6', lesson:'lesson03'},
+        {module:'m6', lesson:'lesson04'},
+        {module:'m7', lesson:'lesson01'},
     ];
 
+    function syncTitleAndSidebar(moduleId, lessonId) {
+        const heading = stage.querySelector('h1, .lesson-heading');
+        if (titleEl) titleEl.textContent = heading ? heading.textContent.trim() : 'Untitled lesson';
 
-    const currentLesson = @json($lesson);
+        document.querySelectorAll('.lesson-item').forEach(function (a) {
+            a.classList.toggle(
+                'active',
+                a.dataset.module === moduleId && a.dataset.lesson === lessonId
+            );
+        });
+    }
 
+    // THIS is the core function. Pressing a sidebar "channel button"
+    // (or the prev/next arrows) always ends up calling this. It never
+    // touches window.location — it fetches the fragment and drops it
+    // straight into the TV screen.
+    async function loadLesson(moduleId, lessonId, opts) {
+        opts = opts || {};
+        const pushState = opts.pushState !== false;
+
+        const pageUrl     = `/student/planet/${slug}/${moduleId}/${lessonId}`;
+        const fragmentUrl = `${pageUrl}/fragment`;
+
+        stage.style.opacity = '0.35';
+
+        try {
+            const res = await fetch(fragmentUrl, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (!res.ok) throw new Error('not found');
+
+            const html = await res.text();
+
+            stage.innerHTML = html;
+            current = { module: moduleId, lesson: lessonId };
+
+            syncTitleAndSidebar(moduleId, lessonId);
+
+            if (pushState) {
+                history.pushState({ module: moduleId, lesson: lessonId }, '', pageUrl);
+            }
+        } catch (err) {
+            stage.innerHTML =
+                '<div class="empty-lesson"><div><h1>Lesson not found</h1>' +
+                '<p style="margin-top:10px;">Could not load this lesson.</p></div></div>';
+        } finally {
+            stage.style.opacity = '1';
+        }
+    }
 
     function goToPreviousLesson() {
-
-        const currentIndex =
-            lessonOrder.indexOf(currentLesson);
-
-        if (currentIndex > 0) {
-
-            const previousLesson =
-                lessonOrder[currentIndex - 1];
-
-            window.location.href =
-                '{{ url('/student/planet/programming') }}?lesson='
-                + previousLesson;
+        const idx = lessonOrder.findIndex(function (l) {
+            return l.module === current.module && l.lesson === current.lesson;
+        });
+        if (idx > 0) {
+            loadLesson(lessonOrder[idx - 1].module, lessonOrder[idx - 1].lesson);
         }
-
     }
-
 
     function goToNextLesson() {
-
-        const currentIndex =
-            lessonOrder.indexOf(currentLesson);
-
-        if (
-            currentIndex !== -1 &&
-            currentIndex < lessonOrder.length - 1
-        ) {
-
-            const nextLesson =
-                lessonOrder[currentIndex + 1];
-
-            window.location.href =
-                '{{ url('/student/planet/programming') }}?lesson='
-                + nextLesson;
+        const idx = lessonOrder.findIndex(function (l) {
+            return l.module === current.module && l.lesson === current.lesson;
+        });
+        if (idx !== -1 && idx < lessonOrder.length - 1) {
+            loadLesson(lessonOrder[idx + 1].module, lessonOrder[idx + 1].lesson);
         }
-
     }
 
+    // Back/forward browser buttons should also just re-tune the TV,
+    // not reload the page.
+    window.addEventListener('popstate', function (e) {
+        if (e.state && e.state.module && e.state.lesson) {
+            loadLesson(e.state.module, e.state.lesson, { pushState: false });
+        }
+    });
+
+    // Expose the one function the sidebar is allowed to call.
+    // The sidebar knows NOTHING else about how this panel works.
+    window.TechLab = window.TechLab || {};
+    window.TechLab.loadLesson = loadLesson;
+
+    window.goToPreviousLesson = goToPreviousLesson;
+    window.goToNextLesson = goToNextLesson;
+
+    window.toggleFullscreen = function () {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen && document.exitFullscreen();
+        }
+    };
+
+    // Sync the header title + sidebar highlight for whatever lesson
+    // was rendered server-side on first page load.
+    document.addEventListener('DOMContentLoaded', function () {
+        syncTitleAndSidebar(current.module, current.lesson);
+    });
+
+})();
 </script>
 
 </body>
