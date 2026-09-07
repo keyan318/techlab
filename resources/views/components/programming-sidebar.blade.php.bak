@@ -82,7 +82,7 @@
 
             <div class="module-lessons" id="m1">
 
-                <a href="/student/planet/programming/m1/lesson01" class="lesson-item">
+                <a href="/python/M1/lesson01" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -92,7 +92,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson02" class="lesson-item">
+                <a href="/python/M1/lesson02" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -102,7 +102,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson03" class="lesson-item">
+                <a href="/python/M1/lesson03" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -112,7 +112,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson04" class="lesson-item">
+                <a href="/python/M1/lesson04" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -122,7 +122,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson05" class="lesson-item">
+                <a href="/python/M1/lesson05" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -132,7 +132,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson06" class="lesson-item">
+                <a href="/python/M1/lesson06" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -184,7 +184,7 @@
 
             <div class="module-lessons" id="m2">
 
-                <a href="/student/planet/programming/m2/lesson01" class="lesson-item">
+                <a href="/python/M2/lesson01" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -194,7 +194,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson02" class="lesson-item">
+                <a href="/python/M2/lesson02" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -204,7 +204,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson03" class="lesson-item">
+                <a href="/python/M2/lesson03" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -214,7 +214,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson04" class="lesson-item">
+                <a href="/python/M2/lesson04" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -224,7 +224,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson05" class="lesson-item">
+                <a href="/python/M2/lesson05" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -234,7 +234,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson06" class="lesson-item">
+                <a href="/python/M2/lesson06" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -286,7 +286,7 @@
 
             <div class="module-lessons" id="m3">
 
-                <a href="/student/planet/programming/m3/lesson01" class="lesson-item">
+                <a href="/python/M3/lesson01" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -296,7 +296,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3-lesson02" class="lesson-item">
+                <a href="/python/M3/lesson02" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -306,7 +306,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3-lesson03" class="lesson-item">
+                <a href="/python/M3/lesson03" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -316,7 +316,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3-lesson04" class="lesson-item">
+                <a href="/python/M3/lesson04" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -326,7 +326,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3-lesson05" class="lesson-item">
+                <a href="/python/M3/lesson05" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -378,7 +378,7 @@
 
             <div class="module-lessons" id="m4">
 
-                <a href="/student/planet/programming/m4-lesson01" class="lesson-item">
+                <a href="/python/M4/lesson01" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -388,7 +388,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4-lesson02" class="lesson-item">
+                <a href="/python/M4/lesson02" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -398,7 +398,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4-lesson03" class="lesson-item">
+                <a href="/python/M4/lesson03" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -408,7 +408,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4-lesson04" class="lesson-item">
+                <a href="/python/M4/lesson04" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -418,7 +418,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4-lesson05" class="lesson-item">
+                <a href="/python/M4/lesson05" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
@@ -428,7 +428,7 @@
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4-lesson06" class="lesson-item">
+                <a href="/python/M4/lesson06" class="lesson-item">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>

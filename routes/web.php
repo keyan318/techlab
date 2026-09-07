@@ -64,3 +64,16 @@ Route::get('/decks/{id}', [DeckController::class, 'showPage'])->name('decks.page
 
 // Generate a slide deck from a conversation (Studio PPT action).
 Route::post('/conversations/{conversation}/generate-deck', [ChatController::class, 'generateDeck'])->name('conversations.generate-deck');
+
+Route::get('/python/{module}/lesson{lesson}', function ($module, $lesson) {
+
+    $file = resource_path(
+        "views/planets/programming/python_course/{$module}/lesson-{$lesson}.blade.php"
+    );
+
+    if (!file_exists($file)) {
+        abort(404);
+    }
+
+    return view()->file($file);
+});

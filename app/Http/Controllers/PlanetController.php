@@ -300,4 +300,26 @@ class PlanetController extends Controller
             ],
         ]);
     }
+    public function viewModuleLesson(string $slug, string $module, string $lesson): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (! in_array($slug, self::PLANETS, true)) {
+            abort(404);
+        }
+
+        $module = strtoupper($module);
+        $lesson = preg_replace('/^lesson([0-9]+)$/', 'lesson-$1', $lesson);
+
+        $view = "student.planets.{$slug}.python_course.{$module}.lesson-{$lesson}";
+
+        if (view()->exists($view)) {
+            return view($view);
+        }
+
+        abort(404);
+    }
+
 }

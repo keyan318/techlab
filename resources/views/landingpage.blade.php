@@ -392,7 +392,7 @@
                     Master programming, networking, and cybersecurity through hands-on, gamified learning adventures with your AI guide Astro.
                 </p>
                 <div class="hero-actions">
-                    <a href="#" class="btn-primary">Start Learning Free</a>
+                <a href="{{ url('/register') }}" class="btn-primary">Start Learning Free</a>
                     <a href="#" class="btn-outline">Watch Tour</a>
                 </div>
             </div>

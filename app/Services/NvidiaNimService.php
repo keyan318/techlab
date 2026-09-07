@@ -226,9 +226,13 @@ class NvidiaNimService
     {
         $this->assertConfigured();
 
+        // Prepend the system prompt to ensure the model follows Astro's guidelines
+        $systemMessage = ['role' => 'system', 'content' => $this->systemPrompt([])];
+        $messagesWithSystem = array_merge([$systemMessage], $messages);
+
         $payload = [
             'model' => $this->model(),
-            'messages' => $messages,
+            'messages' => $messagesWithSystem,
             'stream' => true,
             'max_tokens' => (int) config('nvidia_nim.max_tokens', 4096),
             'temperature' => (float) config('nvidia_nim.temperature', 1),
