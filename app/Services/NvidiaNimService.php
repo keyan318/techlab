@@ -19,6 +19,7 @@ use Psr\Http\Message\ResponseInterface;
  *  - sending the full message history
  *  - streaming the assistant response token-by-token to a callback
  *  - parsing NIM's Server-Sent-Events stream
+ *  - stripping inline reasoning ("thinking") from the visible answer
  *  - classifying failures into actionable categories and logging them
  *
  * It deliberately knows nothing about Laravel HTTP responses, controllers or
@@ -27,6 +28,17 @@ use Psr\Http\Message\ResponseInterface;
 class NvidiaNimService
 {
     protected Client $client;
+
+    /**
+     * Cross-chunk state for stripping <think>...</think> reasoning that some
+     * NIM models emit INLINE inside the "content" delta itself, rather than
+     * on a separate "reasoning_content" channel. A <think> (or </think>) tag
+     * can be split across two separate SSE chunks, so this buffer/flag has to
+     * persist across calls to stripThinking() within a single streamOnce()
+     * attempt — reset at the top of each streamOnce() call.
+     */
+    protected string $thinkBuffer = '';
+    protected bool $inThinkBlock = false;
 
     public function __construct(?Client $client = null)
     {
@@ -111,27 +123,32 @@ class NvidiaNimService
     /**
      * Extra request fields needed when reasoning ("thinking") mode is enabled.
      *
-     * Returns an empty array when thinking is disabled. The model then streams
-     * its private reasoning under "reasoning_content" and the final answer in
-     * "content" — the student-facing stream only ever surfaces "content".
+     * Returns an empty array when thinking is disabled. When enabled, the
+     * model is REQUESTED to keep private reasoning separate from the final
+     * "content" field via reasoning_content — but in practice some models
+     * still emit <think>...</think> inline inside "content" instead. The
+     * student-facing stream defends against this in streamOnce() /
+     * stripThinking() regardless of which channel the model actually uses.
      *
      * @return array<string, mixed>
      */
     protected function reasoningFields(): array
-    {
-        if (! config('nvidia_nim.thinking_enabled', false)) {
-            return [];
-        }
+{
+    $thinkingEnabled = (bool) config('nvidia_nim.thinking_enabled', false);
 
-        return [
-            'chat_template_kwargs' => [
-                'enable_thinking' => true,
-                'medium_effort' => (bool) config('nvidia_nim.medium_effort', false),
-            ],
-            'reasoning_budget' => (int) config('nvidia_nim.reasoning_budget', 16384),
-        ];
+    $fields = [
+        'chat_template_kwargs' => [
+            'enable_thinking' => $thinkingEnabled,
+        ],
+    ];
+
+    if ($thinkingEnabled) {
+        $fields['chat_template_kwargs']['medium_effort'] = (bool) config('nvidia_nim.medium_effort', false);
+        $fields['reasoning_budget'] = (int) config('nvidia_nim.reasoning_budget', 16384);
     }
 
+    return $fields;
+}
     /**
      * Perform a single (non-streaming) chat completion and return the text.
      *
@@ -176,7 +193,15 @@ class NvidiaNimService
 
         $content = $body['choices'][0]['message']['content'] ?? '';
 
-        return is_string($content) ? $content : '';
+        // Defensive: strip any inline <think> block even on non-stream calls,
+        // in case a caller passes enable_thinking=true for this path later.
+        $content = is_string($content) ? $content : '';
+        if ($content !== '' && str_contains($content, '<think>')) {
+            $content = preg_replace('/<think>.*?<\/think>/s', '', $content) ?? $content;
+            $content = trim($content);
+        }
+
+        return $content;
     }
 
     /**
@@ -217,8 +242,9 @@ class NvidiaNimService
      * Stream a chat completion from NVIDIA NIM.
      *
      * @param  array<int, array{role: string, content: string}>  $messages
-     * @param  callable(string): void  $onDelta  invoked with each content chunk
-     * @return string  the full assistant response (for persistence)
+     * @param  callable(string): void  $onDelta  invoked with each VISIBLE content chunk
+     *                                            (reasoning/<think> blocks already stripped)
+     * @return string  the full VISIBLE assistant response (for persistence)
      *
      * @throws NvidiaNimException  with a descriptive category on any failure.
      */
@@ -240,8 +266,18 @@ class NvidiaNimService
         ];
 
         // Thinking is ON for chat by default. The model's private reasoning
-        // trace is intentionally dropped by the stream loop below; only the
-        // final "content" answer is forwarded to the student.
+        // trace is intentionally dropped by the stream loop below — whether
+        // it arrives on a separate "reasoning_content" channel or inline
+        // inside "content" wrapped in <think>...</think> — so only the final
+        // visible answer is ever forwarded to the student.
+        //
+        // NOTE ON TRUNCATION: reasoning tokens (on either channel) are billed
+        // against the SAME max_tokens budget as the visible answer. If
+        // answers are getting cut off, the fix is here: raise
+        // NVIDIA_NIM_MAX_TOKENS in .env (or lower NVIDIA_NIM_REASONING_BUDGET
+        // if you're on a model that honors it as a separate cap), not just
+        // stripping the tags below — stripping only fixes what's DISPLAYED,
+        // not how much budget the answer gets to work with.
         $payload = array_merge($payload, $this->reasoningFields());
 
         // A reasoning model under load can occasionally return a stream whose
@@ -266,17 +302,27 @@ class NvidiaNimService
     }
 
     /**
-     * Open a single streaming request and forward every visible content delta.
+     * Open a single streaming request and forward every VISIBLE content delta.
      *
-     * Reasoning / "thinking" tokens (if any) are intentionally ignored and never
-     * forwarded to the student — only the final "content" answer is surfaced.
+     * Reasoning / "thinking" tokens are intentionally never forwarded to the
+     * student. This covers both cases: a model that puts reasoning on a
+     * separate "reasoning_content" field (never read here), AND a model that
+     * emits it inline inside "content" wrapped in <think>...</think> (caught
+     * and stripped by stripThinking() below, stateful across chunks).
      *
-     * @return string  the full assistant content for this attempt
+     * @return string  the full VISIBLE assistant content for this attempt
      */
     protected function streamOnce(array $payload, callable $onDelta): string
     {
         $full = '';
         $buffer = '';
+
+        // Reset think-block state for this attempt. Important: stream()
+        // may call streamOnce() twice (initial + retry) on the same service
+        // instance, and stale state from a failed first attempt must not
+        // leak into the retry.
+        $this->thinkBuffer = '';
+        $this->inThinkBlock = false;
 
         $response = $this->sendRequest($payload, true);
 
@@ -315,19 +361,78 @@ class NvidiaNimService
                     continue;
                 }
 
-                // Only surface the visible assistant content. Reasoning /
-                // thinking tokens (if any) are intentionally ignored and
-                // never forwarded to the student.
+                // Only surface VISIBLE assistant content. Some NIM models put
+                // reasoning inline inside this same "content" field wrapped
+                // in <think>...</think> rather than on a separate channel —
+                // stripThinking() filters that out before anything reaches
+                // the student or gets persisted to the database.
                 $delta = $decoded['choices'][0]['delta']['content'] ?? '';
 
                 if (is_string($delta) && $delta !== '') {
-                    $full .= $delta;
-                    $onDelta($delta);
+                    $visible = $this->stripThinking($delta);
+                    if ($visible !== '') {
+                        $full .= $visible;
+                        $onDelta($visible);
+                    }
                 }
             }
         }
 
         return $full;
+    }
+
+    /**
+     * Strip <think>...</think> reasoning blocks from a streamed delta,
+     * tracking open/close state across chunks via $this->thinkBuffer and
+     * $this->inThinkBlock since a single <think> or </think> tag can be
+     * split across two separate SSE chunks.
+     *
+     * Content inside an open-but-not-yet-closed think block is discarded
+     * immediately rather than held indefinitely, so a stream that never
+     * sends a closing </think> tag (e.g. it gets cut off) doesn't silently
+     * swallow the rest of the real answer along with it — only the reasoning
+     * text itself is lost, which is the desired behavior anyway.
+     */
+    protected function stripThinking(string $delta): string
+    {
+        $this->thinkBuffer .= $delta;
+        $out = '';
+
+        while (true) {
+            if (! $this->inThinkBlock) {
+                $pos = strpos($this->thinkBuffer, '<think>');
+                if ($pos === false) {
+                    // No opening tag (complete or partial) pending. But guard
+                    // against a '<think>' tag split across chunks by holding
+                    // back a short tail that could be the start of one.
+                    $tailKeep = min(strlen($this->thinkBuffer), 6);
+                    $safeLen = strlen($this->thinkBuffer) - $tailKeep;
+                    if ($safeLen > 0 && str_contains(substr($this->thinkBuffer, -$tailKeep), '<')) {
+                        $out .= substr($this->thinkBuffer, 0, $safeLen);
+                        $this->thinkBuffer = substr($this->thinkBuffer, $safeLen);
+                    } else {
+                        $out .= $this->thinkBuffer;
+                        $this->thinkBuffer = '';
+                    }
+                    break;
+                }
+                $out .= substr($this->thinkBuffer, 0, $pos);
+                $this->thinkBuffer = substr($this->thinkBuffer, $pos + 7); // strlen('<think>')
+                $this->inThinkBlock = true;
+            } else {
+                $pos = strpos($this->thinkBuffer, '</think>');
+                if ($pos === false) {
+                    // Still inside the think block — discard what we have so
+                    // far, wait for more chunks to find the closing tag.
+                    $this->thinkBuffer = '';
+                    break;
+                }
+                $this->thinkBuffer = substr($this->thinkBuffer, $pos + 8); // strlen('</think>')
+                $this->inThinkBlock = false;
+            }
+        }
+
+        return $out;
     }
 
     /**

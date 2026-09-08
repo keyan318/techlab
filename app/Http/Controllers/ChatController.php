@@ -118,6 +118,12 @@ class ChatController extends Controller
 
     /**
      * Send a message to Astro and get a response.
+     *
+     * NOTE: This method fully buffers the NVIDIA NIM response server-side
+     * (ob_start()/ob_end_clean(), then a single response()->json([...])).
+     * It is NOT a true streaming endpoint today. The frontend (chat.blade.php)
+     * must treat this as a plain JSON response, not an SSE/text stream — see
+     * astroChat().send() in chat.blade.php.
      */
     public function send(Request $request): JsonResponse
     {

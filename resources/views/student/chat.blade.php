@@ -1,3 +1,14 @@
+{{--
+  /chat — TechLab design shell (DESIGN ONLY), rebranded to the landing page.
+  Three-column Gemini-Notebook-style layout: Sources | Chat | Studio.
+  Visual tokens pulled 1:1 from resources/views/landingpage.blade.php:
+  cosmic palette (#06061a void, blue/violet/cyan accents), glass surfaces,
+  Inter body + Space Grotesk headings + Space Mono labels, 20px cards /
+  14px icon chips / 999px pills, gradient primary CTA. No lime.
+  Built with Blade partials + Alpine.js (CDN) + Tailwind (Play CDN, tokens
+  inline). For production: move tokens into tailwind.config.js, build via
+  Vite, and load Alpine from resources/js/app.js.
+--}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -317,7 +328,7 @@
     });
   </script>
 
-  {{-- Markdown rendering for Astro's streamed replies (marked) + XSS-safe
+  {{-- Markdown rendering for Astro's replies (marked) + XSS-safe
        sanitization (DOMPurify). Loaded before Alpine so they are ready when a
        reply first arrives. --}}
   <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
@@ -364,11 +375,18 @@
     /**
      * Astro chat controller — the REAL client for the /chat/message endpoint.
      *
-     * Flow: push the user's message + an empty Astro bubble, POST to the
-     * backend (which talks to NVIDIA NIM server-side), then read the streamed
-     * text/plain response token-by-token and render it live with markdown.
-     * The backend owns the conversation/memory; we just keep the conversation
-     * id so follow-up turns are threaded.
+     * IMPORTANT: /chat/message is NOT a streaming endpoint. ChatController::send()
+     * fully buffers the NVIDIA NIM response server-side (ob_start()/ob_end_clean())
+     * and returns ONE JSON object: { success, conversation_id, message_id, response }.
+     * This client must treat it as plain JSON, not as an SSE/text stream — trying
+     * to read it as a stream and split on a "meta line" (as an earlier version of
+     * this file did) will fail silently, because json_encode() escapes real
+     * newlines inside the response text as the two-character sequence \n rather
+     * than an actual newline byte, so there is never a literal newline to split
+     * on. That earlier mismatch was the cause of raw JSON leaking into the chat
+     * bubble. If true token-by-token streaming is added later, this function
+     * will need to change back to a reader-based approach that matches whatever
+     * the backend actually emits.
      */
     function astroChat() {
       return {
@@ -453,9 +471,9 @@
           });
           const idx = this.messages.length - 1;
           // Mutating a nested object property (e.g. astro.content = ...) does NOT
-          // reliably trigger Alpine's reactivity for x-html/x-show, so the
-          // streamed text never reaches the DOM. Reassigning the array element
-          // via its index IS tracked, so the bubble re-renders on every chunk.
+          // reliably trigger Alpine's reactivity for x-html/x-show, so reassigning
+          // the array element via its index IS tracked, so the bubble re-renders
+          // once the response comes back.
           const setAstro = (patch) => {
             this.messages[idx] = { ...this.messages[idx], ...patch };
           };
@@ -471,7 +489,7 @@
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'text/plain, */*',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrf,
                 'X-Requested-With': 'XMLHttpRequest',
               },
@@ -483,63 +501,25 @@
               }),
             });
 
-            if (!res.ok || !res.body) {
-              let msg = "Astro couldn't respond right now. Please try again.";
-              try {
-                const j = await res.json();
-                if (j && j.error) msg = j.error;
-              } catch (e) { /* keep default */ }
+            // /chat/message returns ONE JSON object (see ChatController::send()),
+            // not a stream — parse it as plain JSON.
+            const j = await res.json().catch(() => null);
+
+            if (!res.ok || !j || !j.success) {
+              const msg = (j && j.error) ? j.error : "Astro couldn't respond right now. Please try again.";
               setAstro({ pending: false, error: true, content: msg, html: this.md(msg) });
               this.sending = false;
               this.scrollToBottom();
               return;
             }
 
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            let raw = '';
-            let metaParsed = false;
-
-            while (true) {
-              const { value, done } = await reader.read();
-              if (done) break;
-              raw += decoder.decode(value, { stream: true });
-
-              // The first line is JSON meta: { conversation_id, user_message_id, assistant_message_id }.
-              if (!metaParsed) {
-                const nl = raw.indexOf('\n');
-                if (nl === -1) continue;
-                const metaLine = raw.slice(0, nl);
-                raw = raw.slice(nl + 1);
-                try {
-                  const meta = JSON.parse(metaLine);
-                  if (meta.conversation_id) { this.conversationId = meta.conversation_id; const qz=this.$store.quiz; if(qz) qz.conversationId = meta.conversation_id; }
-                  if (meta.assistant_message_id) this.assistantMessageId = meta.assistant_message_id;
-                } catch (e) { /* non-fatal */ }
-                metaParsed = true;
-              }
-
-              const content = this.stripSentinel(raw);
-              setAstro({ content, html: this.md(content) });
-              this.scrollToBottom();
+            if (j.conversation_id) {
+              this.conversationId = j.conversation_id;
+              const qz = this.$store.quiz;
+              if (qz) qz.conversationId = j.conversation_id;
             }
 
-            // Finalize.
-            const finalContent = this.stripSentinel(raw);
-            const patch = { content: finalContent, html: this.md(finalContent), pending: false };
-
-            const errIdx = raw.indexOf('__ERROR__:');
-            if (errIdx !== -1) {
-              let ej = null;
-              try { ej = JSON.parse(raw.slice(errIdx + '__ERROR__:'.length)); } catch (e) { /* ignore */ }
-              patch.error = true;
-              patch.errorMessage = (ej && ej.message)
-                ? ej.message
-                : "Astro couldn't respond right now. Please try again.";
-              patch.content = patch.errorMessage;
-              patch.html = this.md(patch.errorMessage);
-            }
-            setAstro(patch);
+            setAstro({ content: j.response, html: this.md(j.response), pending: false });
           } catch (e) {
             setAstro({
               pending: false,
@@ -553,16 +533,6 @@
           this.scrollToBottom();
         },
 
-        // Drop the terminal markers the backend appends (__END__ / __ERROR__).
-        stripSentinel(raw) {
-          let c = raw;
-          const endIdx = c.indexOf('__END__');
-          if (endIdx !== -1) c = c.slice(0, endIdx);
-          const errIdx = c.indexOf('__ERROR__');
-          if (errIdx !== -1) c = c.slice(0, errIdx);
-          return c;
-        },
-
         // Markdown -> sanitized HTML (never trusts raw model output).
         md(text) {
           if (!text) return '';
@@ -571,9 +541,9 @@
             return DOMPurify.sanitize(dirty);
           } catch (e) {
             return text
-              .replace(/&/g, '&')
-              .replace(/</g, '<')
-              .replace(/>/g, '>')
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
               .replace(/\n/g, '<br>');
           }
         },
@@ -587,43 +557,53 @@
     }
   </script>
 </head>
+
 <body class="bg-void font-sans text-ink antialiased" x-data="chatShell()">
-  <div class="flex h-screen w-screen overflow-hidden">
-    {{-- COLUMN 1 -- Sources --}}
-    @include('student.chat.partials.sources-panel')
-
-    {{-- COLUMN 2 -- Chat (center, primary focus, widest column) --}}
-    @include('student.chat.partials.chat-panel')
-
-    {{-- COLUMN 3 -- Studio --}}
-    @include('student.chat.partials.studio-panel')
+  {{-- Space background (landing-page gradient + brand glows) --}}
+  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute inset-0" style="background: radial-gradient(120% 90% at 50% -10%, #241456 0%, rgba(36,20,86,0) 55%), radial-gradient(100% 80% at 85% 110%, #1a0f4d 0%, rgba(26,15,77,0) 60%), linear-gradient(160deg, #0a0826 0%, #120a33 45%, #1e1259 100%);"></div>
+    <div class="absolute -left-24 -top-28 h-[460px] w-[460px] rounded-full opacity-50 blur-[70px]" style="background: radial-gradient(circle, rgba(155,107,255,0.5), transparent 70%);"></div>
+    <div class="absolute -bottom-36 -right-28 h-[520px] w-[520px] rounded-full opacity-50 blur-[70px]" style="background: radial-gradient(circle, rgba(91,225,255,0.35), transparent 70%);"></div>
   </div>
 
-  {{-- Infographic Studio overlay (source modal + deck viewer) --}}
-  @include('student.chat.partials.infographic-viewer')
-  @include('student.chat.partials.quiz-viewer')
+  <div class="flex h-screen w-screen overflow-hidden">
 
-  {{-- Mobile backdrop for off-canvas drawers --}}
-  <div
-    x-show="mobileDrawer" x-cloak @click="closeDrawer()"
-    x-transition.opacity
-    class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
-  ></div>
+    {{-- COLUMN 1 — Sources --}}
+    @include('student.chat.partials.sources-panel')
 
-  {{-- Desktop reopen tabs (shown only when a side column is collapsed) --}}
-  <button
-    x-show="!sourcesOpen" x-cloak @click="sourcesOpen = true"
-    class="fixed left-0 top-1/2 z-20 hidden h-16 w-7 -translate-y-1/2 items-center justify-center rounded-r-lg border border-l-0 border-glassBorder bg-[rgba(6,6,26,0.6)] text-muted backdrop-blur-xl transition hover:text-[#73b6ff] lg:flex"
-    title="Open sources" aria-label="Open sources"
-  >
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m9 6 6 6-6 6"/></svg>
-  </button>
-  <button
-    x-show="!studioOpen" x-cloak @click="studioOpen = true"
-    class="fixed right-0 top-1/2 z-20 hidden h-16 w-7 -translate-y-1/2 items-center justify-center rounded-l-lg border border-r-0 border-glassBorder bg-[rgba(6,6,26,0.6)] text-muted backdrop-blur-xl transition hover:text-[#73b6ff] lg:flex"
-    title="Open studio" aria-label="Open studio"
-  >
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m15 6-6 6 6 6"/></svg>
-  </button>
+    {{-- COLUMN 2 — Chat --}}
+    @include('student.chat.partials.chat-panel')
+
+    {{-- COLUMN 3 — Studio --}}
+    @include('student.chat.partials.studio-panel')
+
+    {{-- Infographic Studio overlay (source modal + deck viewer) --}}
+    @include('student.chat.partials.infographic-viewer')
+    @include('student.chat.partials.quiz-viewer')
+
+    {{-- Mobile backdrop for off-canvas drawers --}}
+    <div
+      x-show="mobileDrawer" x-cloak @click="closeDrawer()"
+      x-transition.opacity
+      class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+    ></div>
+
+    {{-- Desktop reopen tabs (shown only when a side column is collapsed) --}}
+    <button
+      x-show="!sourcesOpen" x-cloak @click="sourcesOpen = true"
+      class="fixed left-0 top-1/2 z-20 hidden h-16 w-7 -translate-y-1/2 items-center justify-center rounded-r-lg border border-l-0 border-glassBorder bg-[rgba(6,6,26,0.6)] text-muted backdrop-blur-xl transition hover:text-[#73b6ff] lg:flex"
+      title="Open sources" aria-label="Open sources"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+    <button
+      x-show="!studioOpen" x-cloak @click="studioOpen = true"
+      class="fixed right-0 top-1/2 z-20 hidden h-16 w-7 -translate-y-1/2 items-center justify-center rounded-l-lg border border-r-0 border-glassBorder bg-[rgba(6,6,26,0.6)] text-muted backdrop-blur-xl transition hover:text-[#73b6ff] lg:flex"
+      title="Open studio" aria-label="Open studio"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="m15 6-6 6 6 6"/></svg>
+    </button>
+
+  </div>
 </body>
 </html>
