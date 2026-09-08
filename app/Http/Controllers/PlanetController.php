@@ -450,4 +450,18 @@ class PlanetController extends Controller
             'returnTo' => $request->query('return_to'),
         ]);
     }
+        /**
+     * Public entry point for other controllers (e.g. ChatController) that need
+     * a normalized course array without going through the HTTP show() action.
+     */
+    public static function course(string $slug): array
+    {
+        if (! in_array($slug, self::PLANETS, true)) {
+            return [];
+        }
+
+        $instance = new self();
+
+        return $instance->normalizeCourse($instance->courseShell($slug));
+    }
 }
