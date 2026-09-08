@@ -14,7 +14,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TechLab · Chat with Astro</title>
+  <title>TechLab Test · Chat with Astro</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   {{-- Fonts: match landing page (Space Grotesk + Inter + Space Mono) --}}
