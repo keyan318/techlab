@@ -19,8 +19,17 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
+//chat
 Route::get('/chat', [ChatController::class, 'index'])->name('student.chat');
+//dashboard or planets
+Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
+//Crew
+Route::get('/student/crew', [StudentController::class, 'crew'])->name('student.crew');
+Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->name('student.crew.join');
+
+
+
+
 Route::post('/chat/message', [ChatController::class, 'send'])->name('chat.message');
 Route::get('/chat/conversations', [ChatController::class, 'conversations'])->name('chat.conversations');
 Route::get('/chat/conversations/{conversation}', [ChatController::class, 'show'])->name('chat.conversation.show');
@@ -29,8 +38,9 @@ Route::post('/chat/analogy', [AstroController::class, 'drawAnalogy'])->name('cha
 Route::post('/chat/infographic', [InfographicController::class, 'generate'])->name('chat.infographic');
 Route::post('/chat/quiz', [QuizController::class, 'generate'])->name('chat.quiz');
 Route::get('/astro/ping', [AstroController::class, 'ping'])->name('astro.ping');
-Route::get('/student/crew', [StudentController::class, 'crew'])->name('student.crew');
-Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->name('student.crew.join');
+
+
+
 
 // Planet / course selection (the onboarding track choice).
 Route::get('/student/planet/{slug}', [PlanetController::class, 'show'])->name('student.planet');
@@ -85,3 +95,7 @@ Route::get('/python/{module}/lesson{lesson}', function ($module, $lesson) {
 
     return view()->file($file);
 });
+
+// ADD this POST route directly below it:
+Route::post('/student/planet/{slug}/editor/launch', [PlanetController::class, 'launchEditor'])
+    ->name('student.planet.editor.launch');

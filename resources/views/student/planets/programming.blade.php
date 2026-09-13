@@ -435,6 +435,21 @@
     $lessonView = $lessonView ?? "student.planets.{$slug}.python_course." . strtoupper($module) . ".{$lesson}";
 @endphp
 
+{{--
+    ┌─────────────────────────────────────────────────────────────┐
+    │  CURRENT LESSON — injected by Blade on every page load.     │
+    │  Kept in sync by loadLesson() on every client-side swap.    │
+    │  The Python editor reads this to know which lesson to mark  │
+    │  complete when the student gets the coding challenge right.  │
+    └─────────────────────────────────────────────────────────────┘
+--}}
+<script>
+    window.CURRENT_LESSON = {
+        module: @json($module),
+        lesson: @json($lesson),
+    };
+</script>
+
 
 <div class="container">
 
@@ -608,7 +623,17 @@
             stage.innerHTML = html;
             current = { module: moduleId, lesson: lessonId };
 
+            // ── Keep CURRENT_LESSON in sync so the Python editor always
+            //    knows which lesson it is displaying, even after a
+            //    client-side swap via the sidebar or prev/next arrows.
+            window.CURRENT_LESSON = { module: moduleId, lesson: lessonId };
+
             syncTitleAndSidebar(moduleId, lessonId);
+
+            // Tell the sidebar to move its active highlight.
+            if (window.TechLab && typeof window.TechLab.setActiveLesson === 'function') {
+                window.TechLab.setActiveLesson(moduleId, lessonId);
+            }
 
             if (pushState) {
                 history.pushState({ module: moduleId, lesson: lessonId }, '', pageUrl);
@@ -627,7 +652,17 @@
             return l.module === current.module && l.lesson === current.lesson;
         });
         if (idx > 0) {
-            loadLesson(lessonOrder[idx - 1].module, lessonOrder[idx - 1].lesson);
+            const prevLesson = lessonOrder[idx - 1];
+            // Check if the previous lesson is unlocked before navigating
+            if (window.TechLab && typeof window.TechLab.getLessonStatus === 'function') {
+                const status = window.TechLab.getLessonStatus(prevLesson.module, prevLesson.lesson);
+                if (status.unlocked) {
+                    loadLesson(prevLesson.module, prevLesson.lesson);
+                }
+            } else {
+                // Fallback: navigate anyway if TechLab not available
+                loadLesson(prevLesson.module, prevLesson.lesson);
+            }
         }
     }
 
@@ -636,7 +671,17 @@
             return l.module === current.module && l.lesson === current.lesson;
         });
         if (idx !== -1 && idx < lessonOrder.length - 1) {
-            loadLesson(lessonOrder[idx + 1].module, lessonOrder[idx + 1].lesson);
+            const nextLesson = lessonOrder[idx + 1];
+            // Check if the next lesson is unlocked before navigating
+            if (window.TechLab && typeof window.TechLab.getLessonStatus === 'function') {
+                const status = window.TechLab.getLessonStatus(nextLesson.module, nextLesson.lesson);
+                if (status.unlocked) {
+                    loadLesson(nextLesson.module, nextLesson.lesson);
+                }
+            } else {
+                // Fallback: navigate anyway if TechLab not available
+                loadLesson(nextLesson.module, nextLesson.lesson);
+            }
         }
     }
 
@@ -668,6 +713,12 @@
     // was rendered server-side on first page load.
     document.addEventListener('DOMContentLoaded', function () {
         syncTitleAndSidebar(current.module, current.lesson);
+
+        // Tell the sidebar script (which may have already run) about
+        // the initial active lesson.
+        if (window.TechLab && typeof window.TechLab.setActiveLesson === 'function') {
+            window.TechLab.setActiveLesson(current.module, current.lesson);
+        }
     });
 
 })();

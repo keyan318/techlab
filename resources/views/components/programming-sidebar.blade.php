@@ -55,7 +55,7 @@
                         M1 — Python Foundations
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m1">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -82,63 +82,69 @@
 
             <div class="module-lessons" id="m1">
 
-                <a href="/student/planet/programming/m1/lesson01" class="lesson-item" data-module="m1" data-lesson="lesson01">
+                <a href="/student/planet/programming/m1/lesson01" class="lesson-item" data-module="m1" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">1.1</span>
                         <span>First Signal</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson02" class="lesson-item" data-module="m1" data-lesson="lesson02">
+                <a href="/student/planet/programming/m1/lesson02" class="lesson-item" data-module="m1" data-lesson="lesson02" data-order="2">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">1.2</span>
                         <span>Variables & Memory</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson03" class="lesson-item" data-module="m1" data-lesson="lesson03">
+                <a href="/student/planet/programming/m1/lesson03" class="lesson-item" data-module="m1" data-lesson="lesson03" data-order="3">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">1.3</span>
                         <span>Data Types</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson04" class="lesson-item" data-module="m1" data-lesson="lesson04">
+                <a href="/student/planet/programming/m1/lesson04" class="lesson-item" data-module="m1" data-lesson="lesson04" data-order="4">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">1.4</span>
                         <span>Expressions & Operators</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson05" class="lesson-item" data-module="m1" data-lesson="lesson05">
+                <a href="/student/planet/programming/m1/lesson05" class="lesson-item" data-module="m1" data-lesson="lesson05" data-order="5">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">1.5</span>
                         <span>Talking to the Program</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson06" class="lesson-item" data-module="m1" data-lesson="lesson06">
+                <a href="/student/planet/programming/m1/lesson06" class="lesson-item" data-module="m1" data-lesson="lesson06" data-order="6">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">1.6</span>
                         <span>Reading Error Messages</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -159,7 +165,7 @@
                         M2 — Conditions & Loops
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m2">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -184,63 +190,69 @@
 
             <div class="module-lessons" id="m2">
 
-                <a href="/student/planet/programming/m2/lesson01" class="lesson-item" data-module="m2" data-lesson="lesson01">
+                <a href="/student/planet/programming/m2/lesson01" class="lesson-item" data-module="m2" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">2.1</span>
                         <span>Decision Points</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson02" class="lesson-item" data-module="m2" data-lesson="lesson02">
+                <a href="/student/planet/programming/m2/lesson02" class="lesson-item" data-module="m2" data-lesson="lesson02" data-order="2">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">2.2</span>
                         <span>Branching Paths</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson03" class="lesson-item" data-module="m2" data-lesson="lesson03">
+                <a href="/student/planet/programming/m2/lesson03" class="lesson-item" data-module="m2" data-lesson="lesson03" data-order="3">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">2.3</span>
                         <span>Combining Conditions</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson04" class="lesson-item" data-module="m2" data-lesson="lesson04">
+                <a href="/student/planet/programming/m2/lesson04" class="lesson-item" data-module="m2" data-lesson="lesson04" data-order="4">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">2.4</span>
                         <span>Repeating Signals</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson05" class="lesson-item" data-module="m2" data-lesson="lesson05">
+                <a href="/student/planet/programming/m2/lesson05" class="lesson-item" data-module="m2" data-lesson="lesson05" data-order="5">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">2.5</span>
                         <span>Repeating With for</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m2/lesson06" class="lesson-item" data-module="m2" data-lesson="lesson06">
+                <a href="/student/planet/programming/m2/lesson06" class="lesson-item" data-module="m2" data-lesson="lesson06" data-order="6">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">2.6</span>
                         <span>Breaking the Loop</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -261,7 +273,7 @@
                         M3 — Functions & Error Handling
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m3">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -286,53 +298,58 @@
 
             <div class="module-lessons" id="m3">
 
-                <a href="/student/planet/programming/m3/lesson01" class="lesson-item" data-module="m3" data-lesson="lesson01">
+                <a href="/student/planet/programming/m3/lesson01" class="lesson-item" data-module="m3" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">3.1</span>
                         <span>Reusable Routines</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3/lesson02" class="lesson-item" data-module="m3" data-lesson="lesson02">
+                <a href="/student/planet/programming/m3/lesson02" class="lesson-item" data-module="m3" data-lesson="lesson02" data-order="2">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">3.2</span>
                         <span>Passing Information</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3/lesson03" class="lesson-item" data-module="m3" data-lesson="lesson03">
+                <a href="/student/planet/programming/m3/lesson03" class="lesson-item" data-module="m3" data-lesson="lesson03" data-order="3">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">3.3</span>
                         <span>Returning Results</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3/lesson04" class="lesson-item" data-module="m3" data-lesson="lesson04">
+                <a href="/student/planet/programming/m3/lesson04" class="lesson-item" data-module="m3" data-lesson="lesson04" data-order="4">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">3.4</span>
                         <span>Anticipating Failure</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m3/lesson05" class="lesson-item" data-module="m3" data-lesson="lesson05">
+                <a href="/student/planet/programming/m3/lesson05" class="lesson-item" data-module="m3" data-lesson="lesson05" data-order="5">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">3.5</span>
                         <span>Sanity Checks</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -353,7 +370,7 @@
                         M4 — Working With Data & Files
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m4">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -378,83 +395,91 @@
 
             <div class="module-lessons" id="m4">
 
-                <a href="/student/planet/programming/m4/lesson01" class="lesson-item" data-module="m4" data-lesson="lesson01">
+                <a href="/student/planet/programming/m4/lesson01" class="lesson-item" data-module="m4" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.1</span>
                         <span>Collections</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson02" class="lesson-item" data-module="m4" data-lesson="lesson02">
+                <a href="/student/planet/programming/m4/lesson02" class="lesson-item" data-module="m4" data-lesson="lesson02" data-order="2">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.2</span>
                         <span>List Operations</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson03" class="lesson-item" data-module="m4" data-lesson="lesson03">
+                <a href="/student/planet/programming/m4/lesson03" class="lesson-item" data-module="m4" data-lesson="lesson03" data-order="3">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.3</span>
                         <span>Labeled Data</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson04" class="lesson-item" data-module="m4" data-lesson="lesson04">
+                <a href="/student/planet/programming/m4/lesson04" class="lesson-item" data-module="m4" data-lesson="lesson04" data-order="4">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.4</span>
                         <span>Nested Structures</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson05" class="lesson-item" data-module="m4" data-lesson="lesson05">
+                <a href="/student/planet/programming/m4/lesson05" class="lesson-item" data-module="m4" data-lesson="lesson05" data-order="5">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.5</span>
                         <span>Text Manipulation</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson06" class="lesson-item" data-module="m4" data-lesson="lesson06">
+                <a href="/student/planet/programming/m4/lesson06" class="lesson-item" data-module="m4" data-lesson="lesson06" data-order="6">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.6</span>
                         <span>Reading Files</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson07" class="lesson-item" data-module="m4" data-lesson="lesson07">
+                <a href="/student/planet/programming/m4/lesson07" class="lesson-item" data-module="m4" data-lesson="lesson07" data-order="7">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.7</span>
                         <span>Writing Files</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m4/lesson08" class="lesson-item" data-module="m4" data-lesson="lesson08">
+                <a href="/student/planet/programming/m4/lesson08" class="lesson-item" data-module="m4" data-lesson="lesson08" data-order="8">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">4.8</span>
                         <span>Structured Data Formats</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -475,7 +500,7 @@
                         M5 — Python Automation
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m5">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -500,53 +525,58 @@
 
             <div class="module-lessons" id="m5">
 
-                <a href="/student/planet/programming/m5/lesson01" class="lesson-item" data-module="m5" data-lesson="lesson01">
+                <a href="/student/planet/programming/m5/lesson01" class="lesson-item" data-module="m5" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">5.1</span>
                         <span>Pattern Matching</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m5/lesson02" class="lesson-item" data-module="m5" data-lesson="lesson02">
+                <a href="/student/planet/programming/m5/lesson02" class="lesson-item" data-module="m5" data-lesson="lesson02" data-order="2">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">5.2</span>
                         <span>Practical Regex</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m5/lesson03" class="lesson-item" data-module="m5" data-lesson="lesson03">
+                <a href="/student/planet/programming/m5/lesson03" class="lesson-item" data-module="m5" data-lesson="lesson03" data-order="3">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">5.3</span>
                         <span>File System Basics</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m5/lesson04" class="lesson-item" data-module="m5" data-lesson="lesson04">
+                <a href="/student/planet/programming/m5/lesson04" class="lesson-item" data-module="m5" data-lesson="lesson04" data-order="4">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">5.4</span>
                         <span>Building a CLI Tool</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m5/lesson05" class="lesson-item" data-module="m5" data-lesson="lesson05">
+                <a href="/student/planet/programming/m5/lesson05" class="lesson-item" data-module="m5" data-lesson="lesson05" data-order="5">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">5.5</span>
                         <span>Time & Scheduling Concepts</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -567,7 +597,7 @@
                         M6 — Real-World Projects
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m6">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -592,39 +622,43 @@
 
             <div class="module-lessons" id="m6">
 
-                <a href="/student/planet/programming/m6/lesson01" class="lesson-item" data-module="m6" data-lesson="lesson01">
+                <a href="/student/planet/programming/m6/lesson01" class="lesson-item" data-module="m6" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">6.1</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m6/lesson02" class="lesson-item" data-module="m6" data-lesson="lesson02">
+                <a href="/student/planet/programming/m6/lesson02" class="lesson-item" data-module="m6" data-lesson="lesson02" data-order="2">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">6.2</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m6/lesson03" class="lesson-item" data-module="m6" data-lesson="lesson03">
+                <a href="/student/planet/programming/m6/lesson03" class="lesson-item" data-module="m6" data-lesson="lesson03" data-order="3">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">6.3</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m6/lesson04" class="lesson-item" data-module="m6" data-lesson="lesson04">
+                <a href="/student/planet/programming/m6/lesson04" class="lesson-item" data-module="m6" data-lesson="lesson04" data-order="4">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">6.4</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -645,7 +679,7 @@
                         M7 — Final Automation Project
                     </div>
 
-                    <div class="module-progress">
+                    <div class="module-progress" data-module-progress="m7">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -670,13 +704,14 @@
 
             <div class="module-lessons" id="m7">
 
-                <a href="/student/planet/programming/m7/lesson01" class="lesson-item" data-module="m7" data-lesson="lesson01">
+                <a href="/student/planet/programming/m7/lesson01" class="lesson-item" data-module="m7" data-lesson="lesson01" data-order="1">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
                         <span class="lesson-number">7.1</span>
                         <span>Proposal & Design</span>
+                        <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
@@ -854,6 +889,7 @@
     height: 100%;
     background: #4caf50;
     border-radius: 20px;
+    transition: width 0.3s ease;
 }
 
 .module-progress span {
@@ -942,9 +978,6 @@
     background: #e6f5e3;
 }
 
-/* NEW — minimal addition so the currently open lesson is visibly
-   selected. Reuses the same hover color already defined above,
-   just applied persistently instead of only on :hover. */
 .lesson-item.active {
     background: #e6f5e3;
 }
@@ -952,6 +985,34 @@
 .lesson-item.active .lesson-dot {
     background: #4caf50;
     border-color: #4caf50;
+}
+
+/* Completed lessons: solid green filled dot */
+.lesson-item.completed .lesson-dot {
+    background: #4caf50;
+    border-color: #4caf50;
+}
+
+/* Locked lessons: dim + not-allowed cursor */
+.lesson-item.locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;  /* ← added: belt-and-suspenders block */
+}
+
+.lesson-item.locked:hover {
+    background: transparent;
+}
+
+.lesson-lock {
+    display: none;
+    margin-left: auto;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.lesson-item.locked .lesson-lock {
+    display: inline-block;
 }
 
 
@@ -1073,47 +1134,271 @@ function toggleModule(moduleId, button) {
     const isOpen = lessons.classList.contains('open');
 
     if (isOpen) {
-
         lessons.classList.remove('open');
         button.classList.remove('open');
         button.setAttribute('aria-expanded', 'false');
-
     } else {
-
         lessons.classList.add('open');
         button.classList.add('open');
         button.setAttribute('aria-expanded', 'true');
-
     }
 
 }
 
 /*
 |--------------------------------------------------------------------------
-| LESSON CLICK -> TELL THE MAIN PANEL WHICH CHANNEL TO TUNE TO
+| LESSON PROGRESS SYSTEM
 |--------------------------------------------------------------------------
 |
-| The sidebar is the remote control. It does NOT know how the main panel
-| renders a lesson, and it does NOT reload the page. It just intercepts
-| the click and hands off {module, lesson} to whatever is listening
-| (programming.blade.php defines window.TechLab.loadLesson).
+| Persists completed lessons in localStorage (per-course), then derives:
+|   - which lessons are unlocked (lesson 1 of a module is unlocked as soon
+|     as the previous module's last lesson is completed; module 1 lesson 1
+|     is always unlocked)
+|   - module completion percentages
 |
+| Storage key is scoped to this course ("programming") so it won't collide
+| with Networking/Cybersecurity progress if this partial is reused there.
+|
+| Exposed globally as window.TechLab.markLessonComplete(module, lesson) so
+| the Python editor's "Submit"/"Next" flow can call it directly without the
+| editor needing to know anything about the sidebar's storage format.
+|
+| NEW ─ after marking complete, the system also:
+|   1. auto-navigates to the next lesson via TechLab.loadLesson (or href fallback)
+|   2. updates the active-lesson highlight in the sidebar
+*/
+
+(function () {
+    const STORAGE_KEY = 'techlab_progress_programming';
+
+    // ─── Build flat ordered list of all lessons from the DOM ───────────────
+    function buildLessonOrder() {
+        return Array.from(document.querySelectorAll('.lesson-item')).map(function (el) {
+            return { module: el.dataset.module, lesson: el.dataset.lesson, el: el };
+        });
+    }
+
+    // ─── localStorage helpers ───────────────────────────────────────────────
+    function loadCompleted() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveCompleted(list) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch (e) {
+            // localStorage unavailable — fail silently.
+        }
+    }
+
+    function keyFor(moduleId, lessonId) {
+        return moduleId + '/' + lessonId;
+    }
+
+    // ─── State ──────────────────────────────────────────────────────────────
+    let completed = loadCompleted();   // ["m1/lesson01", …]
+    const order   = buildLessonOrder();
+
+    function isCompleted(moduleId, lessonId) {
+        return completed.indexOf(keyFor(moduleId, lessonId)) !== -1;
+    }
+
+    // A lesson is unlocked when it is the very first one, or the lesson
+    // immediately before it (course-wide) has been completed.
+    function isUnlocked(index) {
+        if (index === 0) return true;
+        const prev = order[index - 1];
+        return isCompleted(prev.module, prev.lesson);
+    }
+
+    // ─── DOM render ─────────────────────────────────────────────────────────
+    function renderLockState() {
+        order.forEach(function (item, index) {
+            const unlocked = isUnlocked(index);
+            const done     = isCompleted(item.module, item.lesson);
+
+            item.el.classList.toggle('locked',    !unlocked);
+            item.el.classList.toggle('completed',  done);
+
+            if (!unlocked) {
+                item.el.setAttribute('aria-disabled', 'true');
+            } else {
+                item.el.removeAttribute('aria-disabled');
+            }
+        });
+    }
+
+    function renderModulePercentages() {
+        const modules = {};
+
+        order.forEach(function (item) {
+            if (!modules[item.module]) modules[item.module] = { total: 0, done: 0 };
+            modules[item.module].total++;
+            if (isCompleted(item.module, item.lesson)) modules[item.module].done++;
+        });
+
+        Object.keys(modules).forEach(function (moduleId) {
+            const stats = modules[moduleId];
+            const pct   = stats.total > 0 ? Math.round((stats.done / stats.total) * 100) : 0;
+
+            const progressEl = document.querySelector('[data-module-progress="' + moduleId + '"]');
+            if (!progressEl) return;
+
+            const fill  = progressEl.querySelector('.progress-fill');
+            const label = progressEl.querySelector('span');
+
+            if (fill)  fill.style.width   = pct + '%';
+            if (label) label.textContent   = pct;
+        });
+    }
+
+    // Mark the sidebar item that matches the currently-open lesson as active.
+    function renderActiveLesson(moduleId, lessonId) {
+        order.forEach(function (item) {
+            const isCurrent = item.module === moduleId && item.lesson === lessonId;
+            item.el.classList.toggle('active', isCurrent);
+        });
+    }
+
+    function refresh() {
+        renderLockState();
+        renderModulePercentages();
+    }
+
+    // ─── Next-lesson helper ─────────────────────────────────────────────────
+    // Returns the {module, lesson, el} entry that comes immediately after the
+    // supplied lesson, or null if it is the last lesson in the course.
+    function getNextLesson(moduleId, lessonId) {
+        const index = order.findIndex(function (item) {
+            return item.module === moduleId && item.lesson === lessonId;
+        });
+        if (index === -1 || index === order.length - 1) return null;
+        return order[index + 1];
+    }
+
+    // ─── Public: markLessonComplete ─────────────────────────────────────────
+    //
+    // Called by the Python editor's "Next / Submit" button once the answer
+    // is verified as correct.
+    //
+    //   window.TechLab.markLessonComplete('m1', 'lesson01');
+    //
+    // What it does:
+    //   1. Persists the completion to localStorage.
+    //   2. Re-renders lock states + progress bars immediately.
+    //   3. Navigates to the next lesson automatically.
+    //
+    function markLessonComplete(moduleId, lessonId) {
+        // 1 ─ Persist
+        const key = keyFor(moduleId, lessonId);
+        if (completed.indexOf(key) === -1) {
+            completed.push(key);
+            saveCompleted(completed);
+        }
+
+        // 2 ─ Re-render sidebar
+        refresh();
+
+        // 3 ─ Navigate to the next lesson
+        const next = getNextLesson(moduleId, lessonId);
+        if (!next) return; // last lesson — nothing to navigate to
+
+        if (window.TechLab && typeof window.TechLab.loadLesson === 'function') {
+            // The main panel (programming.blade.php) owns lesson loading.
+            window.TechLab.loadLesson(next.module, next.lesson);
+
+            // Auto-expand the next lesson's module in the sidebar if it is
+            // in a different module than the one just completed.
+            if (next.module !== moduleId) {
+                const nextModuleLessons = document.getElementById(next.module);
+                const nextModuleToggle  = nextModuleLessons
+                    ? nextModuleLessons.previousElementSibling
+                        && nextModuleLessons.closest('.course-module')
+                           .querySelector('.module-toggle')
+                    : null;
+
+                if (nextModuleLessons && !nextModuleLessons.classList.contains('open')) {
+                    nextModuleLessons.classList.add('open');
+                    if (nextModuleToggle) {
+                        nextModuleToggle.classList.add('open');
+                        nextModuleToggle.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            }
+        } else {
+            // Fallback: full page navigation using the href already on the element.
+            window.location.href = next.el.getAttribute('href');
+        }
+    }
+
+    // ─── Public: getLessonStatus ────────────────────────────────────────────
+    function getLessonStatus(moduleId, lessonId) {
+        const index = order.findIndex(function (item) {
+            return item.module === moduleId && item.lesson === lessonId;
+        });
+        if (index === -1) return { unlocked: false, completed: false };
+        return { unlocked: isUnlocked(index), completed: isCompleted(moduleId, lessonId) };
+    }
+
+    // ─── Block locked lesson clicks (capture phase — runs first) ────────────
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('.lesson-item');
+        if (!link) return;
+        if (link.classList.contains('locked')) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+    }, true);
+
+    // ─── Export public API ───────────────────────────────────────────────────
+    window.TechLab = window.TechLab || {};
+    window.TechLab.markLessonComplete  = markLessonComplete;
+    window.TechLab.getLessonStatus     = getLessonStatus;
+    window.TechLab.refreshProgress     = refresh;
+    window.TechLab.setActiveLesson     = renderActiveLesson;  // ← new, call from programming.blade.php
+
+    // ─── Initial render ──────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', refresh);
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        refresh();
+    }
+
+})();
+
+/*
+|--------------------------------------------------------------------------
+| LESSON CLICK → TELL THE MAIN PANEL WHICH LESSON TO LOAD
+|--------------------------------------------------------------------------
+|
+| Locked lessons are already blocked by the capture-phase listener above.
+| This listener handles unlocked clicks and delegates to the main panel.
 */
 
 document.addEventListener('click', function (e) {
     const link = e.target.closest('.lesson-item');
     if (!link) return;
+    if (link.classList.contains('locked')) return;
 
     e.preventDefault();
 
     const moduleId = link.dataset.module;
     const lessonId = link.dataset.lesson;
 
+    // Update the sidebar's own active highlight immediately.
+    document.querySelectorAll('.lesson-item').forEach(function (el) {
+        el.classList.remove('active');
+    });
+    link.classList.add('active');
+
     if (window.TechLab && typeof window.TechLab.loadLesson === 'function') {
         window.TechLab.loadLesson(moduleId, lessonId);
     } else {
-        // Fallback: if the main panel script hasn't loaded for some reason,
-        // don't leave the click doing nothing — navigate normally.
         window.location.href = link.getAttribute('href');
     }
 });

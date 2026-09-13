@@ -48,17 +48,14 @@
       <div class="grid grid-cols-2 gap-2">
         @include('student.chat.partials.studio-card', ['label' => 'Quiz', 'wire' => "\$store.quiz.open()", 'iconSvg' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 2.5"/><path d="M12 17h.01"/>'])
         @include('student.chat.partials.studio-card', ['label' => 'Flashcards', 'iconSvg' => '<rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h8M8 14h5"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Mind Map', 'iconSvg' => '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 12 15.5 6M8.5 12l7 6"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Audio', 'iconSvg' => '<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/>'])
         @include('student.chat.partials.studio-card', [
           'label' => 'Slide deck',
           'iconSvg' => '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v4M8 21h8M9 9h2M9 13h2"/>',
           'customAction' => true,
         ])
-        @include('student.chat.partials.studio-card', ['label' => 'Video', 'iconSvg' => '<rect x="3" y="5" width="14" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/><path d="M21 9v6"/>'])
         @include('student.chat.partials.studio-card', ['label' => 'Infographic', 'wire' => '$store.infographic.open()', 'iconSvg' => '<path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8"/>'])
         @include('student.chat.partials.studio-card', ['label' => 'Reports', 'iconSvg' => '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 12h6M9 16h6"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Data table', 'iconSvg' => '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16"/>'])
+
       </div>
 
       {{-- Divider --}}
