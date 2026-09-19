@@ -616,6 +616,14 @@
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
 
+            if (res.status === 403) {
+                // Server says this lesson is still locked (the sidebar is display only).
+                stage.innerHTML =
+                    '<div class="empty-lesson"><div><h1>Lesson locked 🔒</h1>' +
+                    '<p style="margin-top:10px;">Complete the previous lesson\'s coding challenge to unlock this one.</p></div></div>';
+                return;
+            }
+
             if (!res.ok) throw new Error('not found');
 
             const html = await res.text();

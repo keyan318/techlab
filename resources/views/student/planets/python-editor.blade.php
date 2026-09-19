@@ -553,7 +553,6 @@
     $title       = session('editor_title',        'Exercise');
     $difficulty  = session('editor_difficulty',   '');
     $xp          = session('editor_xp',           '');
-    $expected    = session('editor_expected',      '');
     $starterCode = session('editor_starter_code', '');
     $instructions= session('editor_instructions', 'Write your Python code in the editor and click Run to test it.');
     $hintTitle   = session('editor_hint_title',   "Astro's Hint");
@@ -561,15 +560,12 @@
     $hintCode    = session('editor_hint_code',    '');
     $challenge   = session('editor_challenge',    '');
     $returnTo    = session('editor_return_to',    route('student.planet', ['slug' => $slug ?? 'programming']));
-    $nextLesson  = session('editor_next_lesson',  null);
 
-    // Lesson identity — flashed by the controller from the lesson form's
-    // hidden "module" and "lesson" fields. Used by JS to mark the lesson
-    // complete in localStorage when the student gets the answer right.
-    // Defaults to null so older lesson files that haven't added the fields
-    // yet fail gracefully without errors.
-    $lessonModule = session('editor_module', null);   // e.g. "m1"
-    $lessonId     = session('editor_lesson', null);   // e.g. "lesson01"
+    // Server-verified completion endpoint for this lesson's challenge, flashed
+    // by PlanetController::launchEditor. Null when the exercise has no
+    // output-checkable challenge — the editor then only offers Run.
+    // The answer key itself is never sent to the browser.
+    $completeUrl = session('editor_complete_url', null);
 @endphp
 
 {{-- Top nav --}}
@@ -675,9 +671,10 @@
         <div class="action-bar">
             <span id="editor-status" class="editor-status">Loading Python…</span>
             <button id="run-btn" class="btn-run" disabled>▶ Run</button>
-            @if($expected)
+            @if($completeUrl)
                 <button id="submit-btn" class="btn-submit" disabled>Submit answer</button>
-                <a id="next-btn" class="btn-next" href="{{ $nextLesson ?: $returnTo }}">Next →</a>
+                {{-- href is set from the server's response once the answer is verified --}}
+                <a id="next-btn" class="btn-next" href="{{ $returnTo }}">Next →</a>
             @endif
         </div>
 
@@ -717,13 +714,9 @@
     const xpToast      = document.getElementById('xp-toast');
     const successToast = document.getElementById('success-toast');
 
-    const expectedOutput = @json($expected);
-
-    // ── Which lesson this editor was launched from.
-    //    Blade stamps these from session so the editor never needs to
-    //    parse URLs or know anything about the sidebar internals.
-    const LESSON_MODULE = @json($lessonModule);  // e.g. "m1"  or null
-    const LESSON_ID     = @json($lessonId);      // e.g. "lesson01" or null
+    // Server endpoint that verifies the output and records the completion.
+    const COMPLETE_URL = @json($completeUrl);
+    const CSRF_TOKEN   = @json(csrf_token());
 
     /* Line numbers */
     function updateLineNumbers() {
@@ -769,52 +762,14 @@
         });
     });
 
-    // ── Called once when the student's answer is confirmed correct.
-    //    Order matters: mark the lesson complete FIRST (updates
-    //    localStorage + sidebar state), THEN show the success UI.
-    function showSuccessState() {
-
-        // ── THE KEY LINE ─────────────────────────────────────────────
-        // Tell the sidebar this lesson is done. This single call:
-        //   ✓ Turns the lesson dot green
-        //   ✓ Removes the 🔒 from the next lesson
-        //   ✓ Updates the module progress percentage
-        //   ✓ Persists everything to localStorage (survives refresh)
-        //
-        // It does NOT auto-navigate here because the student is in the
-        // standalone editor page, not inside programming.blade.php.
-        // Navigation is handled by the "Next →" button below.
-        if (LESSON_MODULE && LESSON_ID &&
-            window.TechLab && typeof window.TechLab.markLessonComplete === 'function') {
-            // Same-window flow: sidebar script is available in this window
-            window.TechLab.markLessonComplete(LESSON_MODULE, LESSON_ID);
-        } else if (LESSON_MODULE && LESSON_ID &&
-                   window.opener && window.opener.TechLab &&
-                   typeof window.opener.TechLab.markLessonComplete === 'function') {
-            // If the editor was opened in a new tab/window, reach back
-            // to the parent tab's sidebar.
-            window.opener.TechLab.markLessonComplete(LESSON_MODULE, LESSON_ID);
-        } else if (LESSON_MODULE && LESSON_ID) {
-            // Fallback: update localStorage directly (sidebar will sync on next load)
-            try {
-                const STORAGE_KEY = 'techlab_progress_programming';
-                const key = LESSON_MODULE + '/' + LESSON_ID;
-                const raw = localStorage.getItem(STORAGE_KEY);
-                const completed = (raw ? JSON.parse(raw) : []);
-                if (!Array.isArray(completed)) { /* skip */ }
-                else if (completed.indexOf(key) === -1) {
-                    completed.push(key);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
-                }
-            } catch (e) {
-                // localStorage unavailable — fail silently.
-            }
-        }
-        // ── END KEY LINE ─────────────────────────────────────────────
-
+    // ── Called once when the SERVER has verified the answer and recorded the
+    //    completion. Progress lives in the database, so there is nothing to
+    //    persist client-side; `nextUrl` (from the server) unlocks the Next link.
+    function showSuccessState(nextUrl) {
         showToast(xpToast);
         showToast(successToast);
         if (nextBtn) {
+            if (nextUrl) nextBtn.setAttribute('href', nextUrl);
             nextBtn.classList.add('visible');
         }
         if (submitBtn) {
@@ -888,19 +843,45 @@
 
     runBtn.addEventListener('click', runCode);
 
+    function showFail(message) {
+        toast.style.display = 'block';
+        toast.className = 'test-toast fail';
+        toast.textContent = message;
+    }
+
     if (submitBtn) {
         submitBtn.addEventListener('click', async () => {
             const result = await runCode();
             if (result === null) return;
-            const pass = result.trim() === (expectedOutput || '').trim();
 
-            if (pass) {
-                toast.style.display = 'none';
-                showSuccessState();   // ← this now also marks the lesson complete
-            } else {
-                toast.style.display = 'block';
-                toast.className = 'test-toast fail';
-                toast.textContent = '❌ Not quite — check the output above and try again.';
+            // The server holds the answer key: it compares the output, records
+            // the completion, and tells us where "Next" goes.
+            submitBtn.disabled = true;
+            try {
+                const res = await fetch(COMPLETE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                    },
+                    body: JSON.stringify({ output: result }),
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    toast.style.display = 'none';
+                    showSuccessState(data.next);
+                    return;
+                }
+
+                submitBtn.disabled = false;
+                showFail(res.status === 422
+                    ? '❌ Not quite — check the output above and try again.'
+                    : '⚠️ Could not verify your answer (' + res.status + '). Please try again.');
+            } catch (e) {
+                submitBtn.disabled = false;
+                showFail('⚠️ Could not reach the server. Check your connection and try again.');
             }
         });
     }

@@ -1150,16 +1150,14 @@ function toggleModule(moduleId, button) {
 | LESSON PROGRESS SYSTEM
 |--------------------------------------------------------------------------
 |
-| Reads the student's completed lessons from the database (rendered by the
-| server into SERVER_COMPLETED below — it follows the account across browsers
-| and survives clearing localStorage), then derives:
-|   - which lessons are unlocked (a lesson is unlocked when the lesson right
-|     before it, course-wide, is completed; module 1 lesson 1 is always unlocked)
+| Persists completed lessons in localStorage (per-course), then derives:
+|   - which lessons are unlocked (lesson 1 of a module is unlocked as soon
+|     as the previous module's last lesson is completed; module 1 lesson 1
+|     is always unlocked)
 |   - module completion percentages
 |
-| This is display only. The real lock is enforced on the server by the
-| EnsureLessonUnlocked middleware, so editing the DOM/classes here cannot
-| open a locked lesson.
+| Storage key is scoped to this course ("programming") so it won't collide
+| with Networking/Cybersecurity progress if this partial is reused there.
 |
 | Exposed globally as window.TechLab.markLessonComplete(module, lesson) so
 | the Python editor's "Submit"/"Next" flow can call it directly without the
@@ -1171,8 +1169,7 @@ function toggleModule(moduleId, button) {
 */
 
 (function () {
-    // Completed lessons as "m1/lesson01" keys — the database is the source of truth.
-    const SERVER_COMPLETED = @json(auth()->check() ? \App\Services\CourseProgressService::completedKeys(auth()->user()) : []);
+    const STORAGE_KEY = 'techlab_progress_programming';
 
     // ─── Build flat ordered list of all lessons from the DOM ───────────────
     function buildLessonOrder() {
@@ -1181,12 +1178,31 @@ function toggleModule(moduleId, button) {
         });
     }
 
+    // ─── localStorage helpers ───────────────────────────────────────────────
+    function loadCompleted() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveCompleted(list) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch (e) {
+            // localStorage unavailable — fail silently.
+        }
+    }
+
     function keyFor(moduleId, lessonId) {
         return moduleId + '/' + lessonId;
     }
 
     // ─── State ──────────────────────────────────────────────────────────────
-    let completed = SERVER_COMPLETED.slice();   // ["m1/lesson01", …]
+    let completed = loadCompleted();   // ["m1/lesson01", …]
     const order   = buildLessonOrder();
 
     function isCompleted(moduleId, lessonId) {
@@ -1268,20 +1284,22 @@ function toggleModule(moduleId, button) {
 
     // ─── Public: markLessonComplete ─────────────────────────────────────────
     //
-    // Marks a lesson done in the sidebar's in-memory state.
+    // Called by the Python editor's "Next / Submit" button once the answer
+    // is verified as correct.
     //
     //   window.TechLab.markLessonComplete('m1', 'lesson01');
     //
     // What it does:
-    //   1. Records the completion in the sidebar's in-memory state.
+    //   1. Persists the completion to localStorage.
     //   2. Re-renders lock states + progress bars immediately.
     //   3. Navigates to the next lesson automatically.
     //
     function markLessonComplete(moduleId, lessonId) {
-        // 1 ─ Reflect it locally (the server has already recorded the completion)
+        // 1 ─ Persist
         const key = keyFor(moduleId, lessonId);
         if (completed.indexOf(key) === -1) {
             completed.push(key);
+            saveCompleted(completed);
         }
 
         // 2 ─ Re-render sidebar

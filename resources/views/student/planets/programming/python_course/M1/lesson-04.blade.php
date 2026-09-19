@@ -19,22 +19,36 @@ print(damage, average_temp, remainder_fuel)</code></pre>
     <h2 class="section-heading">Interactive Coding Exercise</h2>
     <p class="body-text">You're given three sensor readings. Write a single expression that computes their average using parentheses correctly, then print it.</p>
 
-    @php
-        $editorUrl = route('student.planet.editor', [
-            'slug' => 'programming',
-            'starter_code' => "reading1 = 18\nreading2 = 22\nreading3 = 20\n\n# compute and print the average using one expression\n",
-            'expected' => '20.0',
-            'return_to' => route('student.planet.module.lesson', [
-                'slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson04',
-            ]),
-        ]);
-    @endphp
-    <div class="cta-wrap">
-        <a href="{{ $editorUrl }}"
-           class="btn-code-yourself"
-           style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;text-decoration:none;font-family:'Space Grotesk',sans-serif;">
-            🐍 Code it yourself
-        </a>
+    {{-- ── Code it yourself — POST form, data goes via session flash ── --}}
+    <div class="cta-wrap" style="margin-top:2rem;">
+        <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
+            @csrf
+            <input type="hidden" name="title"        value="Expressions &amp; Operators">
+            <input type="hidden" name="difficulty"   value="Easy">
+            <input type="hidden" name="xp"           value="10">
+            <input type="hidden" name="starter_code" value="reading1 = 18
+reading2 = 22
+reading3 = 20
+
+# compute and print the average using one expression
+">
+            <input type="hidden" name="instructions" value="Astro has three sensor readings. Compute their average in ONE expression — add them up, then divide by 3 — and print it.
+
+Parentheses matter here: division happens before addition unless you group the sum.
+
+Your output must be exactly:
+20.0">
+            <input type="hidden" name="hint_title"   value="Astro's Hint">
+            <input type="hidden" name="hint_body"    value="Order of operations: / runs before +. Put the three readings in parentheses so they are added first, then divide the whole group by 3.">
+            <input type="hidden" name="hint_code"    value="print((reading1 + reading2 + reading3) / 3)">
+            <input type="hidden" name="challenge"    value="Write a program that calculates how many full crates of 6 emergency ration packs can be made from 155 packs, and how many packs are left over — using // and % on the same input.">
+            <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson04']) }}">
+
+            <button type="submit"
+                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
+                🐍 Code it yourself
+            </button>
+        </form>
     </div>
 
     <h2 class="section-heading">Challenge</h2>

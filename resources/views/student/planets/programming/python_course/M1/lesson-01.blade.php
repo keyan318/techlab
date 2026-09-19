@@ -87,7 +87,6 @@ Signal strength: nominal</code></pre>
             <input type="hidden" name="title"        value="First Signal">
             <input type="hidden" name="difficulty"   value="Easy">
             <input type="hidden" name="xp"           value="10">
-            <input type="hidden" name="expected"     value="Ship systems rebooting...">
             <input type="hidden" name="starter_code" value="">
             <input type="hidden" name="instructions" value="Astro's first signal is broken! The message exists, but Python doesn't know it should display it.
 

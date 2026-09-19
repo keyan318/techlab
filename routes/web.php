@@ -3,6 +3,7 @@
 use App\Http\Controllers\AstroController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InfographicController;
+use App\Http\Controllers\LessonProgressController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\HomeController;
@@ -46,17 +47,23 @@ Route::get('/astro/ping', [AstroController::class, 'ping'])->name('astro.ping');
 Route::get('/student/planet/{slug}', [PlanetController::class, 'show'])->name('student.planet');
 
 // New route for module/lesson format: /student/planet/{slug}/{module}/{lesson}
-Route::get('/student/planet/{slug}/{module}/{lesson}', [PlanetController::class, 'viewModuleLesson'])->name('student.planet.module.lesson');
+// Both are gated: a Programming lesson stays locked until the previous lesson's
+// coding challenge is completed (see EnsureLessonUnlocked).
+Route::get('/student/planet/{slug}/{module}/{lesson}', [PlanetController::class, 'viewModuleLesson'])
+    ->middleware('lesson.unlocked')
+    ->name('student.planet.module.lesson');
 
 Route::get('/student/planet/{slug}/{module}/{lesson}/fragment', [PlanetController::class, 'lessonFragment'])
+    ->middleware('lesson.unlocked')
     ->name('student.planet.module.lesson.fragment');
+
+// Editor reports a finished challenge; the server verifies it against the answer key.
+Route::post('/student/planet/{slug}/lesson/{module}/{lesson}/complete', [LessonProgressController::class, 'complete'])
+    ->name('student.planet.lesson.complete');
 
 // Learning-plan generation for a track. Placeholder payload until the
 // Nemotron roadmap generator lands — same response contract, instant reply.
 Route::post('/student/planet/{slug}/plan', [PlanetController::class, 'generatePlan'])->name('student.planet.plan');
-
-// View individual lesson
-Route::get('/student/planet/{slug}/view/{lessonId}', [PlanetController::class, 'viewLesson'])->name('student.planet.view');
 
 // Course-player alias for `/planets/{slug}` — keeps existing onboarding links
 // working while exposing the course player at the URL referenced in the spec.

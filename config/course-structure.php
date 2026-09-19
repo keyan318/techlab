@@ -39,6 +39,7 @@ return [
                     'lesson-01' => [
                         'title' => 'First Signal',
                         'slug' => 'first-signal',
+                        'expected' => 'Ship systems rebooting...',
                         'order' => 1,
                         'view' => 'student.programming.M1.lesson-01',
                         'type' => 'lesson'
@@ -46,6 +47,7 @@ return [
                     'lesson-02' => [
                         'title' => 'Variables & Memory',
                         'slug' => 'variables-memory',
+                        'expected' => '42',
                         'order' => 2,
                         'view' => 'student.programming.M1.lesson-02',
                         'type' => 'lesson'
@@ -53,6 +55,7 @@ return [
                     'lesson-03' => [
                         'title' => 'Data Types',
                         'slug' => 'data-types',
+                        'expected' => '20',
                         'order' => 3,
                         'view' => 'student.programming.M1.lesson-03',
                         'type' => 'lesson'
@@ -60,6 +63,7 @@ return [
                     'lesson-04' => [
                         'title' => 'Expressions & Operators',
                         'slug' => 'expressions-operators',
+                        'expected' => '20.0',
                         'order' => 4,
                         'view' => 'student.programming.M1.lesson-04',
                         'type' => 'lesson'
@@ -67,6 +71,7 @@ return [
                     'lesson-05' => [
                         'title' => 'Talking to the Program',
                         'slug' => 'talking-program',
+                        'expected' => 'Wanderer needs 8 ration packs',
                         'order' => 5,
                         'view' => 'student.programming.M1.lesson-05',
                         'type' => 'lesson'
@@ -74,6 +79,7 @@ return [
                     'lesson-06' => [
                         'title' => 'Reading Error Messages',
                         'slug' => 'reading-errors',
+                        'expected' => '97',
                         'order' => 6,
                         'view' => 'student.programming.M1.lesson-06',
                         'type' => 'lesson'

@@ -28,6 +28,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Lessons this user has completed (server-side progression state).
+     */
+    public function lessonProgress(): HasMany
+    {
+        return $this->hasMany(LessonProgress::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

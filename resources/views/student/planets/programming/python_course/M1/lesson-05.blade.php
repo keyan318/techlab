@@ -19,26 +19,40 @@ age = int(age_text)
 print("In 10 years you'll be", age + 10)</code></pre>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
-    <p class="body-text">Write a program that asks the user for a ship name and a crew count (as text), converts the crew count to an int, and prints a formatted status line combining both.</p>
+    <p class="body-text">Astro stores a ship name and a crew count as text. Convert the crew count to an int, work out how many ration packs are needed (2 per crew member), and print a combined status line.</p>
 
-    @php
-        // No 'expected' here on purpose — input() output depends on what
-        // the student types, so there's no single fixed right answer to
-        // check against. The editor just shows Run, no Check Answer button.
-        $editorUrl = route('student.planet.editor', [
-            'slug' => 'programming',
-            'starter_code' => "ship_name = input(\"Enter ship name: \")\ncrew_text = input(\"Enter crew count: \")\n\n# convert crew_text to an int, then print a combined status line\n",
-            'return_to' => route('student.planet.module.lesson', [
-                'slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson05',
-            ]),
-        ]);
-    @endphp
-    <div class="cta-wrap">
-        <a href="{{ $editorUrl }}"
-           class="btn-code-yourself"
-           style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;text-decoration:none;font-family:'Space Grotesk',sans-serif;">
-            🐍 Code it yourself
-        </a>
+    {{-- ── Code it yourself — POST form, data goes via session flash ── --}}
+    <div class="cta-wrap" style="margin-top:2rem;">
+        <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
+            @csrf
+            <input type="hidden" name="title"        value="Talking to the Program">
+            <input type="hidden" name="difficulty"   value="Easy">
+            <input type="hidden" name="xp"           value="10">
+            <input type="hidden" name="starter_code" value="ship_name = &quot;Wanderer&quot;
+crew_text = &quot;4&quot;
+
+# convert crew_text to an int, then print the status line
+">
+            <input type="hidden" name="instructions" value="Astro&#x27;s ship name and crew count are stored as text:
+ship_name = &quot;Wanderer&quot;
+crew_text = &quot;4&quot;
+
+Convert crew_text to an int. Each crew member needs 2 ration packs. Print one status line combining the ship name and the total packs.
+
+Your output must be exactly:
+Wanderer needs 8 ration packs">
+            <input type="hidden" name="hint_title"   value="Astro's Hint">
+            <input type="hidden" name="hint_body"    value="You can&#x27;t multiply or add to text like a number, so convert first with int(crew_text). To glue numbers into a sentence, turn the result back into text with str() — or use an f-string.">
+            <input type="hidden" name="hint_code"    value="total = int(crew_text) * 2
+print(ship_name + &quot; needs &quot; + str(total) + &quot; ration packs&quot;)">
+            <input type="hidden" name="challenge"    value="Build a mini &quot;launch checklist&quot; that asks 3 separate input() questions (fuel amount, crew ready y/n, destination) and prints a final go/no-go style summary using all three answers.">
+            <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson05']) }}">
+
+            <button type="submit"
+                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
+                🐍 Code it yourself
+            </button>
+        </form>
     </div>
 
     <h2 class="section-heading">Challenge</h2>

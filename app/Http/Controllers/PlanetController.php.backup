@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CourseProgressService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -176,22 +175,11 @@ class PlanetController extends Controller
             abort(404);
         }
 
-        $data = ['course' => $this->normalizeCourse($this->courseShell($slug))];
+        $course = $this->normalizeCourse($this->courseShell($slug));
 
-        // The programming shell renders a lesson inside itself. Without these the
-        // view falls back to a guessed name ("…M1.lesson01") that never matches the
-        // lesson-01.blade.php files on disk, so the page renders "Lesson not found".
-        // resolveLessonView() already understands both spellings.
-        if ($slug === 'programming') {
-            $data += [
-                'slug'       => $slug,
-                'module'     => 'm1',
-                'lesson'     => 'lesson01',
-                'lessonView' => $this->resolveLessonView($slug, 'm1', 'lesson01'),
-            ];
-        }
-
-        return view('student.planets.'.$slug, $data);
+        return view('student.planets.'.$slug, [
+            'course' => $course,
+        ]);
     }
 
     /**
@@ -334,9 +322,6 @@ class PlanetController extends Controller
         $view = $this->resolveLessonView($slug, $module, $lesson);
 
         return view('student.planets.'.$slug, [
-            // The networking/cybersecurity shells read $course; show() passes it and
-            // this action must too, or they die with "Undefined variable $course".
-            'course'     => $this->normalizeCourse($this->courseShell($slug)),
             'slug'       => $slug,
             'module'     => strtolower($module),
             'lesson'     => $lesson,
@@ -432,6 +417,7 @@ class PlanetController extends Controller
         session()->flash('editor_title',        $request->input('title',        'Exercise'));
         session()->flash('editor_difficulty',   $request->input('difficulty',   ''));
         session()->flash('editor_xp',           $request->input('xp',           ''));
+        session()->flash('editor_expected',     $request->input('expected',     ''));
         session()->flash('editor_starter_code', $request->input('starter_code', ''));
         session()->flash('editor_instructions', $request->input('instructions', ''));
         session()->flash('editor_hint_title',   $request->input('hint_title',   "Astro's Hint"));
@@ -439,27 +425,6 @@ class PlanetController extends Controller
         session()->flash('editor_hint_code',    $request->input('hint_code',    ''));
         session()->flash('editor_challenge',    $request->input('challenge',    ''));
         session()->flash('editor_return_to',    $request->input('return_to',    ''));
-
-        // Programming lessons: hand the editor a server-verified completion URL.
-        // The answer key never leaves the server — the editor only sends its
-        // output to this URL and learns pass/fail. The lesson is identified from
-        // the lesson page the student came from (return_to is a full URL).
-        if ($slug === CourseProgressService::COURSE) {
-            $parts = explode('/', trim((string) parse_url((string) $request->input('return_to', ''), PHP_URL_PATH), '/'));
-
-            // Expected: student / planet / {slug} / {module} / {lesson}
-            if (count($parts) >= 5 && $parts[0] === 'student' && $parts[1] === 'planet' && $parts[2] === $slug) {
-                [$module, $lesson] = CourseProgressService::normalize($parts[3], $parts[4]);
-
-                if (CourseProgressService::expectedFor($module, $lesson) !== null) {
-                    session()->flash('editor_complete_url', route('student.planet.lesson.complete', [
-                        'slug'   => $slug,
-                        'module' => $module,
-                        'lesson' => $lesson,
-                    ]));
-                }
-            }
-        }
 
         return redirect()->route('student.planet.editor', ['slug' => $slug]);
     }

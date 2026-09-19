@@ -19,25 +19,36 @@ print(fuel_level + 10)
 # TypeError: can only concatenate str (not "int") to str</code></pre>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
-    <p class="body-text">You're shown 3 short broken snippets (a missing quote causing SyntaxError, a misspelled variable causing NameError, and a str+int causing TypeError). Match each traceback's last line to the correct bug.</p>
+    <p class="body-text">This snippet is broken: it crashes with a TypeError. Run it, read the last line of the traceback, then fix the code so it prints the correct result.</p>
 
-    @php
-        // No 'expected' — the point of this exercise is reading the error,
-        // not matching an output string.
-        $editorUrl = route('student.planet.editor', [
-            'slug' => 'programming',
-            'starter_code' => "fuel_level = \"87\"\nprint(fuel_level + 10)\n",
-            'return_to' => route('student.planet.module.lesson', [
-                'slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson06',
-            ]),
-        ]);
-    @endphp
-    <div class="cta-wrap">
-        <a href="{{ $editorUrl }}"
-           class="btn-code-yourself"
-           style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;text-decoration:none;font-family:'Space Grotesk',sans-serif;">
-            🐍 Code it yourself
-        </a>
+    {{-- ── Code it yourself — POST form, data goes via session flash ── --}}
+    <div class="cta-wrap" style="margin-top:2rem;">
+        <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
+            @csrf
+            <input type="hidden" name="title"        value="Reading Error Messages">
+            <input type="hidden" name="difficulty"   value="Easy">
+            <input type="hidden" name="xp"           value="10">
+            <input type="hidden" name="starter_code" value="fuel_level = &quot;87&quot;
+print(fuel_level + 10)
+">
+            <input type="hidden" name="instructions" value="This code should add 10 to the fuel level, but it crashes.
+
+Click Run and read the LAST line of the error — it names the problem. Then fix the code.
+
+Once fixed, your output must be exactly:
+97">
+            <input type="hidden" name="hint_title"   value="Astro's Hint">
+            <input type="hidden" name="hint_body"    value="The last line says you can&#x27;t add a str and an int. fuel_level is text (&quot;87&quot;), not a number. Convert it with int() before adding.">
+            <input type="hidden" name="hint_code"    value="fuel_level = &quot;87&quot;
+print(int(fuel_level) + 10)">
+            <input type="hidden" name="challenge"    value="Given a 10-line program with two intentional bugs, run it, read both tracebacks, fix both bugs, and get it running cleanly.">
+            <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson06']) }}">
+
+            <button type="submit"
+                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
+                🐍 Code it yourself
+            </button>
+        </form>
     </div>
 
     <h2 class="section-heading">Challenge</h2>

@@ -20,22 +20,35 @@ print(type(fuel), type(crew), type(ship_name), type(airlock_sealed))</code></pre
     <h2 class="section-heading">Interactive Coding Exercise</h2>
     <p class="body-text">You're given a string <code>"12"</code>. Convert it to an int using <code>int()</code>, then add 8 to it and print the result.</p>
 
-    @php
-        $editorUrl = route('student.planet.editor', [
-            'slug' => 'programming',
-            'starter_code' => "value = \"12\"\n\n# convert value to an int, add 8, then print the result\n",
-            'expected' => '20',
-            'return_to' => route('student.planet.module.lesson', [
-                'slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson03',
-            ]),
-        ]);
-    @endphp
-    <div class="cta-wrap">
-        <a href="{{ $editorUrl }}"
-           class="btn-code-yourself"
-           style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;text-decoration:none;font-family:'Space Grotesk',sans-serif;">
-            🐍 Code it yourself
-        </a>
+    {{-- ── Code it yourself — POST form, data goes via session flash ── --}}
+    <div class="cta-wrap" style="margin-top:2rem;">
+        <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
+            @csrf
+            <input type="hidden" name="title"        value="Data Types">
+            <input type="hidden" name="difficulty"   value="Easy">
+            <input type="hidden" name="xp"           value="10">
+            <input type="hidden" name="starter_code" value="value = &quot;12&quot;
+
+# convert value to an int, add 8, then print the result
+">
+            <input type="hidden" name="instructions" value="Astro received a reading as text: &quot;12&quot;. Text and numbers can&#x27;t be added directly.
+
+Convert value to an int using int(), add 8 to it, then print the result.
+
+Your output must be exactly:
+20">
+            <input type="hidden" name="hint_title"   value="Astro's Hint">
+            <input type="hidden" name="hint_body"    value="int() turns a numeric-looking string into a whole number. Wrap the variable in int(...) first, then add 8 — and print the whole expression.">
+            <input type="hidden" name="hint_code"    value="value = &quot;12&quot;
+print(int(value) + 8)">
+            <input type="hidden" name="challenge"    value="Given a mixed set of variables (a number stored as text, a decimal, a whole number), write code that converts each to the correct type and prints their sum where mathematically valid.">
+            <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson03']) }}">
+
+            <button type="submit"
+                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
+                🐍 Code it yourself
+            </button>
+        </form>
     </div>
 
     <h2 class="section-heading">Challenge</h2>
