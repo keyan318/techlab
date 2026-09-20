@@ -183,6 +183,19 @@ class NetworkingCourseTest extends TestCase
         }
     }
 
+    public function test_module_four_is_fully_written_so_the_whole_course_exists(): void
+    {
+        $written = array_keys(self::writtenLessons());
+
+        foreach (['m4/lesson01', 'm4/lesson02', 'm4/lesson03', 'm4/lesson04', 'm4/lesson05', 'm4/lesson06'] as $expected) {
+            $this->assertContains($expected, $written, "{$expected} has no lesson file");
+        }
+
+        // Every lesson in the blueprint now has a file: no student can land on "Lesson not found".
+        $blueprint = array_map(fn ($i) => $i['module'].'/'.$i['lesson'], CourseProgressService::order('networking'));
+        $this->assertEqualsCanonicalizing($blueprint, $written);
+    }
+
     #[DataProvider('writtenLessons')]
     public function test_each_written_lesson_follows_the_lesson_contract(string $module, string $lesson): void
     {

@@ -1,0 +1,195 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 100,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.101/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 70,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "sensor",
+      "kind": "host",
+      "name": "sensor",
+      "x": 380,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.20/24",
+          "up": false
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "printer",
+      "kind": "host",
+      "name": "printer",
+      "x": 380,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.150/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 250,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth1",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "sensor.eth0-relay.eth2",
+      "a": [
+        "sensor",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "printer.eth0-relay.eth3",
+      "a": [
+        "printer",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth3"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m4-l1",
+    "title": "Lesson 4.1 \u2014 Network Management",
+    "blurb": "Find what is down, then make the configuration match the address plan.",
+    "steps": [
+      {
+        "title": "Monitor: sweep the network",
+        "body": "Good management starts with **monitoring**. From astro, ping every device on the network: `192.168.1.2` (ship-server), `192.168.1.20` (sensor) and `192.168.1.150` (printer). One of them is down. Find it, then look at that device's link state and repair it.",
+        "objectives": [
+          {
+            "id": "m4l1-server",
+            "label": "ship-server is reachable",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "ship-server"
+            }
+          },
+          {
+            "id": "m4l1-printer",
+            "label": "printer is reachable",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "printer"
+            }
+          },
+          {
+            "id": "m4l1-sensor",
+            "label": "sensor is reachable",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "sensor"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Configuration: match the address plan",
+        "body": "The ship's **address plan** says: servers use `.2` to `.9`, printers use `.10` to `.19`, and DHCP hands out `.100` to `.150`. The printer sits at `.150`, inside the DHCP pool, which risks a conflict. Bring it into line: give the printer `192.168.1.10/24` (delete the old address first with `ip addr del`), then confirm astro can still reach it.",
+        "objectives": [
+          {
+            "id": "m4l1-plan",
+            "label": "printer uses the planned address 192.168.1.10/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "printer",
+              "iface": "eth0",
+              "cidr": "192.168.1.10/24"
+            }
+          },
+          {
+            "id": "m4l1-printer2",
+            "label": "astro can reach the printer at its new address",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toAddr": "192.168.1.10"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

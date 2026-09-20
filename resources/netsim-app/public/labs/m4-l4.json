@@ -1,0 +1,178 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 60,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "dhcpServer": {
+        "enabled": true,
+        "rangeStart": "192.168.1.100",
+        "rangeEnd": "192.168.1.100",
+        "router": null,
+        "dns": null
+      }
+    },
+    {
+      "id": "core",
+      "kind": "switch",
+      "name": "core",
+      "x": 300,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": [],
+      "vlans": {
+        "eth1": 30
+      }
+    },
+    {
+      "id": "wifi-ap",
+      "kind": "ap",
+      "name": "wifi-ap",
+      "x": 300,
+      "y": 220,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": [],
+      "ssid": "codexia-crew"
+    },
+    {
+      "id": "laptop",
+      "kind": "host",
+      "name": "laptop",
+      "x": 130,
+      "y": 380,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "tablet",
+      "kind": "host",
+      "name": "tablet",
+      "x": 470,
+      "y": 380,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "ship-server.eth0-core.eth0",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "core",
+        "eth0"
+      ]
+    },
+    {
+      "id": "core.eth1-wifi-ap.eth0",
+      "a": [
+        "core",
+        "eth1"
+      ],
+      "b": [
+        "wifi-ap",
+        "eth0"
+      ]
+    },
+    {
+      "id": "laptop.eth0-wifi-ap.eth1",
+      "a": [
+        "laptop",
+        "eth0"
+      ],
+      "b": [
+        "wifi-ap",
+        "eth1"
+      ]
+    },
+    {
+      "id": "tablet.eth0-wifi-ap.eth2",
+      "a": [
+        "tablet",
+        "eth0"
+      ],
+      "b": [
+        "wifi-ap",
+        "eth2"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m4-l4",
+    "title": "Lesson 4.4 \u2014 Wireless Issues",
+    "blurb": "The Wi-Fi says connected, but nothing works. The fault is on the wired side.",
+    "steps": [
+      {
+        "title": "Connected, but no address",
+        "body": "The laptop shows the `codexia-crew` Wi-Fi as connected (the dashed link), yet it has no address. Run `dhclient` on laptop and see. The radio link is fine, so look at the wired path from the access point to the DHCP server. Click the **core** switch and check **Port VLANs (access)**: the port that leads to the access point (`eth1 \u2192 wifi-ap`) is not in the same VLAN as the server. Put it back in VLAN `1`, then run `dhclient` on laptop again.",
+        "objectives": [
+          {
+            "id": "m4l4-laptop",
+            "label": "laptop got an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "laptop",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m4l4-ping",
+            "label": "laptop can reach ship-server",
+            "check": {
+              "type": "ping",
+              "from": "laptop",
+              "expect": "success",
+              "toDevice": "ship-server"
+            }
+          }
+        ]
+      },
+      {
+        "title": "The second wireless client",
+        "body": "Now connect the tablet: run `dhclient` on tablet. It gets nothing, because the DHCP pool holds a single address. Click ship-server, open **DHCP server**, and widen the range end to `192.168.1.150`. Run `dhclient` on tablet again.",
+        "objectives": [
+          {
+            "id": "m4l4-tablet",
+            "label": "tablet got an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "tablet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m4l4-wifi",
+            "label": "laptop and tablet can reach each other",
+            "check": {
+              "type": "ping",
+              "from": "laptop",
+              "expect": "success",
+              "toDevice": "tablet"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

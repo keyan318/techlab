@@ -1,0 +1,179 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 70,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.30/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 420,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.20/24",
+          "up": false
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "file-server",
+      "kind": "server",
+      "name": "file-server",
+      "x": 420,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.50/24",
+          "up": false
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 250,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "volt.eth0-relay.eth1",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth2",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "file-server.eth0-relay.eth3",
+      "a": [
+        "file-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth3"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m4-l2",
+    "title": "Lesson 4.2 \u2014 Physical Issues",
+    "blurb": "Two links are dead. Find them without blaming the wrong console.",
+    "steps": [
+      {
+        "title": "Scope the problem, then fix the bottom layer",
+        "body": "Astro and Volt both report that the file server is unreachable, and Astro cannot find Rivet either. Ask first: is it one device or many? Ping between astro and volt to see whether the two reporters can reach each other (they can). That points at the far devices, not at the reporters. Check the link state of `rivet` and `file-server` with `ip link` and repair what is down.",
+        "objectives": [
+          {
+            "id": "m4l2-control",
+            "label": "astro and volt can still reach each other",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          },
+          {
+            "id": "m4l2-rivet",
+            "label": "astro can reach rivet",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          },
+          {
+            "id": "m4l2-files-a",
+            "label": "astro can reach the file server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "file-server"
+            }
+          },
+          {
+            "id": "m4l2-files-v",
+            "label": "volt can reach the file server",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "file-server"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

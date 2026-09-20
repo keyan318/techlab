@@ -1,0 +1,219 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 60,
+      "y": 160,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "nameserver": "192.168.1.53"
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 300,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "dnsServer": {
+        "enabled": true,
+        "records": [
+          [
+            "earth.lan",
+            "203.0.113.10"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 300,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "gate",
+      "kind": "router",
+      "name": "gate",
+      "x": 480,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "203.0.113.1/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "earth-cloud",
+      "kind": "server",
+      "name": "earth-cloud",
+      "x": 640,
+      "y": 240,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth answers: all systems logical, Captain."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth1",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "gate.eth0-relay.eth2",
+      "a": [
+        "gate",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "gate.eth1-earth-cloud.eth0",
+      "a": [
+        "gate",
+        "eth1"
+      ],
+      "b": [
+        "earth-cloud",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m4-l3",
+    "title": "Lesson 4.3 \u2014 Logical Issues",
+    "blurb": "Three configuration faults, one behind another. Peel them off in order.",
+    "steps": [
+      {
+        "title": "Can astro reach the local server?",
+        "body": "Start with the nearest thing. From astro run `ip addr` and `ping 192.168.1.2`. Compare astro's address with the network the server is on. Fix the address (`ip addr del` the wrong one, `ip addr add` a correct one in the same network).",
+        "objectives": [
+          {
+            "id": "m4l3-local",
+            "label": "astro can reach ship-server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "ship-server"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Can astro reach past the router?",
+        "body": "Local traffic works now. Try `ping 203.0.113.10` (Earth's server). If it fails, run `ip route` and ask: how does astro know where to send traffic for other networks?",
+        "objectives": [
+          {
+            "id": "m4l3-remote",
+            "label": "astro can reach earth-cloud by IP",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "earth-cloud"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Can astro use names?",
+        "body": "Ping by number works, so try by name: `dig earth.lan`. The ship's DNS server is `192.168.1.2` and it knows `earth.lan`. Click astro and check its **DNS client** setting against that address.",
+        "objectives": [
+          {
+            "id": "m4l3-dns",
+            "label": "astro resolves earth.lan to 203.0.113.10",
+            "check": {
+              "type": "dns",
+              "from": "astro",
+              "name": "earth.lan",
+              "expect": "resolves",
+              "addr": "203.0.113.10"
+            }
+          },
+          {
+            "id": "m4l3-http",
+            "label": "astro opens http://earth.lan/",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://earth.lan/",
+              "expect": "ok",
+              "contains": "Earth answers"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

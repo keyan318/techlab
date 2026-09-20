@@ -1,0 +1,210 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 50,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.1.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "r1",
+      "kind": "router",
+      "name": "r1",
+      "x": 200,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.1.1/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "172.16.0.0/24",
+          "via": "10.0.1.2",
+          "dev": "eth1"
+        }
+      ]
+    },
+    {
+      "id": "r2",
+      "kind": "router",
+      "name": "r2",
+      "x": 360,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.1.2/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.2.1/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "192.168.1.0/24",
+          "via": "10.0.1.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "r3",
+      "kind": "router",
+      "name": "r3",
+      "x": 520,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.2.2/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "172.16.0.1/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "earth-cloud",
+      "kind": "server",
+      "name": "earth-cloud",
+      "x": 680,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "172.16.0.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "172.16.0.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth here. Trail followed, Captain."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-r1.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "r1",
+        "eth0"
+      ]
+    },
+    {
+      "id": "r1.eth1-r2.eth0",
+      "a": [
+        "r1",
+        "eth1"
+      ],
+      "b": [
+        "r2",
+        "eth0"
+      ]
+    },
+    {
+      "id": "r2.eth1-r3.eth0",
+      "a": [
+        "r2",
+        "eth1"
+      ],
+      "b": [
+        "r3",
+        "eth0"
+      ]
+    },
+    {
+      "id": "r3.eth1-earth-cloud.eth0",
+      "a": [
+        "r3",
+        "eth1"
+      ],
+      "b": [
+        "earth-cloud",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m4-l5",
+    "title": "Lesson 4.5 \u2014 Follow the Trail",
+    "blurb": "Nothing reaches Earth. Divide and conquer to find every break.",
+    "steps": [
+      {
+        "title": "Find the breaks, one at a time",
+        "body": "Astro cannot reach Earth, and there are three routers in between. Do not guess: **divide and conquer**. Run `traceroute 172.16.0.10` on astro and see how far the packets get. Fix what stops them, then test again. Change one thing at a time, because one fault can hide another. Routers print their routes with `ip route` and take new ones with `ip route add <network> via <next hop>`.",
+        "objectives": [
+          {
+            "id": "m4l5-ping",
+            "label": "astro can reach earth-cloud",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "earth-cloud"
+            }
+          },
+          {
+            "id": "m4l5-http",
+            "label": "astro opens Earth's page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://172.16.0.10/",
+              "expect": "ok",
+              "contains": "Trail followed"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

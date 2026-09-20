@@ -51,7 +51,7 @@ const all = (f: SaveFile) => f.lab!.steps.flatMap((s) => s.objectives);
 const allPass = (r: Record<string, CheckResult>) => Object.values(r).every((x) => x.pass);
 
 describe('every TechLab lab file is well formed', () => {
-  for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm1-l6', 'm2-l1', 'm2-l2', 'm2-l3', 'm2-l4', 'm2-l5', 'm2-l6', 'm2-l7', 'm3-l1', 'm3-l2', 'm3-l3', 'm3-l4', 'm3-l5']) {
+  for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm1-l6', 'm2-l1', 'm2-l2', 'm2-l3', 'm2-l4', 'm2-l5', 'm2-l6', 'm2-l7', 'm3-l1', 'm3-l2', 'm3-l3', 'm3-l4', 'm3-l5', 'm4-l1', 'm4-l2', 'm4-l3', 'm4-l4', 'm4-l5', 'm4-l6']) {
     it(`${id}: lab id matches the file name and objective ids are unique`, () => {
       const f = load(id);
       expect(f.lab!.id).toBe(id);
@@ -424,5 +424,150 @@ describe('m3-l5 DNS Overview', () => {
     expect(grade(net, s2)['m3l5-dns'].pass).toBe(false);
     server.dnsServer.records.set('portal.codexia.lan', ip('192.168.1.2'));
     expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+// ── Module 4: Network Management and Troubleshooting ─────────────────────────
+
+describe('m4-l1 Network Management', () => {
+  it('finds the down device, then brings the printer into line with the address plan', () => {
+    const f = load('m4-l1');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    const before = grade(net, s1);
+    expect(before['m4l1-server'].pass).toBe(true);
+    expect(before['m4l1-printer'].pass).toBe(true);
+    expect(before['m4l1-sensor'].pass).toBe(false);
+    sh(net, dev(net, 'sensor'), 'ip link set eth0 up');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // The printer works, but it breaks the plan (.150 is inside the DHCP pool).
+    expect(grade(net, s2)['m4l1-plan'].pass).toBe(false);
+    sh(net, dev(net, 'printer'), 'ip addr del 192.168.1.150/24 dev eth0');
+    sh(net, dev(net, 'printer'), 'ip addr add 192.168.1.10/24 dev eth0');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+describe('m4-l2 Physical Issues', () => {
+  it('keeps the healthy pair working and needs both dead links repaired', () => {
+    const f = load('m4-l2');
+    const net = restoreNetwork(f);
+    const before = grade(net, all(f));
+    expect(before['m4l2-control'].pass).toBe(true);   // the reporters are fine
+    expect(before['m4l2-rivet'].pass).toBe(false);
+    expect(before['m4l2-files-a'].pass).toBe(false);
+    expect(before['m4l2-files-v'].pass).toBe(false);
+
+    sh(net, dev(net, 'rivet'), 'ip link set eth0 up');
+    const mid = grade(net, all(f));
+    expect(mid['m4l2-rivet'].pass).toBe(true);
+    expect(mid['m4l2-files-a'].pass).toBe(false);     // one fix is not enough
+
+    sh(net, dev(net, 'file-server'), 'ip link set eth0 up');
+    expect(allPass(grade(net, all(f)))).toBe(true);
+  });
+});
+
+describe('m4-l3 Logical Issues', () => {
+  it('has three faults stacked in order: address, gateway, resolver', () => {
+    const f = load('m4-l3');
+    const net = restoreNetwork(f);
+    const [s1, s2, s3] = steps(f);
+    const astro = dev(net, 'astro');
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, astro, 'ip addr del 192.168.10.10/24 dev eth0');
+    sh(net, astro, 'ip addr add 192.168.1.10/24 dev eth0');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    expect(allPass(grade(net, s2))).toBe(false);      // no default route
+    sh(net, astro, 'ip route add default via 192.168.1.1');
+    expect(allPass(grade(net, s2))).toBe(true);
+
+    // Pinging by number works, but the resolver points at the wrong address.
+    expect(grade(net, s3)['m4l3-dns'].pass).toBe(false);
+    astro.nameserver = ip('192.168.1.2');
+    expect(allPass(grade(net, s3))).toBe(true);
+  });
+});
+
+describe('m4-l4 Wireless Issues', () => {
+  it('needs the AP uplink VLAN fixed, then a bigger DHCP pool for the second client', () => {
+    const f = load('m4-l4');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    // Associated but unreachable: the DHCP server is in another VLAN from the AP.
+    expect(out(net, dev(net, 'laptop'), 'dhclient')).toContain('No DHCPOFFERS');
+    expect(allPass(grade(net, s1))).toBe(false);
+
+    const core = [...net.devices.values()].find((d) => d.name === 'core') as SwitchDevice;
+    core.vlans.set('eth1', 1);
+    sh(net, dev(net, 'laptop'), 'dhclient');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // The pool holds one address: the second wireless client gets nothing.
+    expect(out(net, dev(net, 'tablet'), 'dhclient')).toContain('No DHCPOFFERS');
+    expect(allPass(grade(net, s2))).toBe(false);
+    dev(net, 'ship-server').dhcpServer!.rangeEnd = ip('192.168.1.150');
+    sh(net, dev(net, 'tablet'), 'dhclient');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+describe('m4-l5 Follow the Trail', () => {
+  it('hides a return-path fault behind a forward-path fault', () => {
+    const f = load('m4-l5');
+    const net = restoreNetwork(f);
+    expect(allPass(grade(net, all(f)))).toBe(false);
+
+    // traceroute shows the first hop answering, then the trail going cold.
+    const trace = out(net, dev(net, 'astro'), 'traceroute 172.16.0.10');
+    expect(trace).toContain('192.168.1.1');
+    expect(trace).not.toMatch(/\b172\.16\.0\.10\b.*ms/);
+
+    sh(net, dev(net, 'r2'), 'ip route add 172.16.0.0/24 via 10.0.2.2');
+    // Forward path fixed, but the reply still cannot get home: the second fault was hiding.
+    expect(allPass(grade(net, all(f)))).toBe(false);
+    sh(net, dev(net, 'r3'), 'ip route add 192.168.1.0/24 via 10.0.2.1');
+    expect(allPass(grade(net, all(f)))).toBe(true);
+  });
+});
+
+describe('m4-l6 Final Mission: Call Earth', () => {
+  it('needs all six faults fixed, each layer only after the one below it', () => {
+    const f = load('m4-l6');
+    const net = restoreNetwork(f);
+    const [s1, s2, s3, s4] = steps(f);
+    const server = dev(net, 'ship-server');
+
+    // Nothing works at the start.
+    for (const st of [s1, s2, s3, s4]) expect(allPass(grade(net, st))).toBe(false);
+
+    // 1. Physical: rivet's link.
+    sh(net, dev(net, 'rivet'), 'ip link set eth0 up');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // 2. DHCP: pool of one address, no router option, no dns option.
+    sh(net, dev(net, 'astro'), 'dhclient');
+    expect(out(net, dev(net, 'volt'), 'dhclient')).toContain('No DHCPOFFERS');
+    server.dhcpServer!.rangeEnd = ip('192.168.20.150');
+    sh(net, dev(net, 'volt'), 'dhclient');
+    // Addresses now, but still no gateway to hand out.
+    expect(allPass(grade(net, s2))).toBe(false);
+    server.dhcpServer!.router = ip('192.168.20.1');
+    server.dhcpServer!.dns = ip('192.168.20.2');
+    sh(net, dev(net, 'astro'), 'dhclient');
+    sh(net, dev(net, 'volt'), 'dhclient');
+    expect(allPass(grade(net, s2))).toBe(true);
+
+    // 3. Routing: Earth has no route back.
+    expect(allPass(grade(net, s3))).toBe(false);
+    sh(net, dev(net, 'earth-cloud'), 'ip route add default via 203.0.113.1');
+    expect(allPass(grade(net, s3))).toBe(true);
+
+    // 4. Services: the name is missing from DNS.
+    expect(allPass(grade(net, s4))).toBe(false);
+    server.dnsServer!.records.set('earth.relay', ip('203.0.113.10'));
+    expect(allPass(grade(net, s4))).toBe(true);
   });
 });
