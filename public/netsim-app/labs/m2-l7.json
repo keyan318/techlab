@@ -1,0 +1,283 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 60,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 60,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 250,
+      "y": 130,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 60,
+      "y": 350,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "gate",
+      "kind": "router",
+      "name": "gate",
+      "x": 450,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "earth-cloud",
+      "kind": "server",
+      "name": "earth-cloud",
+      "x": 640,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay online. Midterm passed, Captain."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "gate.eth0-relay.eth2",
+      "a": [
+        "gate",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "volt.eth0-gate.eth1",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "gate",
+        "eth1"
+      ]
+    },
+    {
+      "id": "gate.eth2-earth-cloud.eth0",
+      "a": [
+        "gate",
+        "eth2"
+      ],
+      "b": [
+        "earth-cloud",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l7",
+    "title": "Lesson 2.7 \u2014 Midterm Mission",
+    "blurb": "Build the ship network from a blank router and call Earth.",
+    "steps": [
+      {
+        "title": "Address plan",
+        "body": "Split `192.168.20.0/24` into two `/25` subnets. **Comms deck** `192.168.20.0/25`: astro `.10`, rivet `.20`, router port eth0 `.1`. **Shield deck** `192.168.20.128/25`: volt `.140`, router port eth1 `.129`. The Earth link is `203.0.113.1/24` on router port eth2 (Earth is already set up). Use `ip addr add ... dev ...` on every device.",
+        "objectives": [
+          {
+            "id": "m2l7-gate-a",
+            "label": "gate eth0 is 192.168.20.1/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth0",
+              "cidr": "192.168.20.1/25"
+            }
+          },
+          {
+            "id": "m2l7-gate-b",
+            "label": "gate eth1 is 192.168.20.129/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth1",
+              "cidr": "192.168.20.129/25"
+            }
+          },
+          {
+            "id": "m2l7-gate-c",
+            "label": "gate eth2 is 203.0.113.1/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth2",
+              "cidr": "203.0.113.1/24"
+            }
+          },
+          {
+            "id": "m2l7-astro",
+            "label": "astro is in 192.168.20.0/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.20.0/25"
+            }
+          },
+          {
+            "id": "m2l7-rivet",
+            "label": "rivet is in 192.168.20.0/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.20.0/25"
+            }
+          },
+          {
+            "id": "m2l7-volt",
+            "label": "volt is in 192.168.20.128/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "192.168.20.128/25"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Gateways",
+        "body": "Point the comms deck at `192.168.20.1` and the shield deck at `192.168.20.129`: `ip route add default via ...` on astro, rivet and volt.",
+        "objectives": [
+          {
+            "id": "m2l7-def-a",
+            "label": "astro's default route goes via 192.168.20.1",
+            "check": {
+              "type": "default-route",
+              "device": "astro",
+              "via": "192.168.20.1"
+            }
+          },
+          {
+            "id": "m2l7-def-r",
+            "label": "rivet's default route goes via 192.168.20.1",
+            "check": {
+              "type": "default-route",
+              "device": "rivet",
+              "via": "192.168.20.1"
+            }
+          },
+          {
+            "id": "m2l7-def-v",
+            "label": "volt's default route goes via 192.168.20.129",
+            "check": {
+              "type": "default-route",
+              "device": "volt",
+              "via": "192.168.20.129"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Call Earth",
+        "body": "Prove the whole ship works. Ping across the decks, then send the first message to Earth.",
+        "objectives": [
+          {
+            "id": "m2l7-ping-av",
+            "label": "astro can reach volt across the decks",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          },
+          {
+            "id": "m2l7-ping-ve",
+            "label": "volt can reach Earth",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "earth-cloud"
+            }
+          },
+          {
+            "id": "m2l7-http",
+            "label": "astro receives Earth's reply",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://203.0.113.10/",
+              "expect": "ok",
+              "contains": "Midterm passed"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

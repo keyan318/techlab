@@ -1,0 +1,178 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 60,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "r1",
+      "kind": "router",
+      "name": "r1",
+      "x": 250,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.12.1/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "r2",
+      "kind": "router",
+      "name": "r2",
+      "x": 450,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.12.2/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "172.16.0.1/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "earth-cloud",
+      "kind": "server",
+      "name": "earth-cloud",
+      "x": 640,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "172.16.0.10/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay online. Message received, Captain."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-r1.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "r1",
+        "eth0"
+      ]
+    },
+    {
+      "id": "r1.eth1-r2.eth0",
+      "a": [
+        "r1",
+        "eth1"
+      ],
+      "b": [
+        "r2",
+        "eth0"
+      ]
+    },
+    {
+      "id": "r2.eth1-earth-cloud.eth0",
+      "a": [
+        "r2",
+        "eth1"
+      ],
+      "b": [
+        "earth-cloud",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l6",
+    "title": "Lesson 2.6 \u2014 Static Routes",
+    "blurb": "Teach two routers the way to Earth, and the way back.",
+    "steps": [
+      {
+        "title": "Set the hosts' way out",
+        "body": "Two routers stand between astro and Earth. Each host needs a default gateway: `ip route add default via 192.168.1.1` on astro and `ip route add default via 172.16.0.1` on earth-cloud.",
+        "objectives": [
+          {
+            "id": "m2l6-def-a",
+            "label": "astro's default route goes via 192.168.1.1",
+            "check": {
+              "type": "default-route",
+              "device": "astro",
+              "via": "192.168.1.1"
+            }
+          },
+          {
+            "id": "m2l6-def-e",
+            "label": "earth-cloud's default route goes via 172.16.0.1",
+            "check": {
+              "type": "default-route",
+              "device": "earth-cloud",
+              "via": "172.16.0.1"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Teach each router the far network",
+        "body": "r1 only knows the networks it touches. Tell it where Earth's network is: on r1 run `ip route add 172.16.0.0/24 via 10.0.12.2`. Tell r2 the way back: on r2 run `ip route add 192.168.1.0/24 via 10.0.12.1`. Check with `ip route`, then ping and fetch the page from astro.",
+        "objectives": [
+          {
+            "id": "m2l6-ping",
+            "label": "astro can ping earth-cloud",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "earth-cloud"
+            }
+          },
+          {
+            "id": "m2l6-http",
+            "label": "astro can fetch the Earth relay page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://172.16.0.10/",
+              "expect": "ok",
+              "contains": "Earth relay"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

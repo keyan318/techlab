@@ -1,0 +1,144 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 340,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "httpServer": {
+        "enabled": false,
+        "port": 80,
+        "body": ""
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth1",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l1",
+    "title": "Lesson 2.1 \u2014 Climb the Layers",
+    "blurb": "Bring a dead server up one layer at a time.",
+    "steps": [
+      {
+        "title": "Layers 1 to 3: link and address",
+        "body": "The ship server is dead at the bottom of the stack. Its cable link is down (Layer 1) and it has no IP address (Layer 3). Open its terminal, bring the link up with `ip link set eth0 up`, and give it `ip addr add 192.168.1.50/24 dev eth0`. Then ping it from astro.",
+        "objectives": [
+          {
+            "id": "m2l1-ip",
+            "label": "ship-server has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "ship-server",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m2l1-ping",
+            "label": "astro can ping ship-server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "ship-server"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Layer 4: open a port",
+        "body": "A ping only proves Layer 3. To talk to a service, the Transport layer needs an open port. Click ship-server, find **Extra open ports**, type `80` in the `tcp` box and press Enter. Then press Check objectives.",
+        "objectives": [
+          {
+            "id": "m2l1-tcp",
+            "label": "TCP port 80 on ship-server is open",
+            "check": {
+              "type": "tcp",
+              "from": "astro",
+              "toAddr": "192.168.1.50",
+              "port": 80,
+              "expect": "open"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Layer 7: speak HTTP",
+        "body": "An open port is not enough: something must answer in the language of the Application layer. On ship-server, tick **serve HTTP** in the Web server section and set the page text to `Codexia mission server online`.",
+        "objectives": [
+          {
+            "id": "m2l1-http",
+            "label": "astro can fetch the web page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://192.168.1.50/",
+              "expect": "ok",
+              "contains": "Codexia"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

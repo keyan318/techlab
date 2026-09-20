@@ -1,0 +1,147 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 90,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 310,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "gate",
+      "kind": "router",
+      "name": "gate",
+      "x": 340,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-gate.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "gate",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-gate.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "gate",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l5",
+    "title": "Lesson 2.5 \u2014 Split the Block",
+    "blurb": "Cut one /24 into two /25 subnets and connect them.",
+    "steps": [
+      {
+        "title": "Give each subnet its addresses",
+        "body": "You own 192.168.10.0/24. Split it into two `/25` subnets: `192.168.10.0/25` (hosts .1 to .126) for astro and `192.168.10.128/25` (hosts .129 to .254) for rivet. Set the router first: `ip addr add 192.168.10.1/25 dev eth0` and `ip addr add 192.168.10.129/25 dev eth1`. Then give astro `192.168.10.10/25` and rivet `192.168.10.140/25`.",
+        "objectives": [
+          {
+            "id": "m2l5-gate-a",
+            "label": "gate has 192.168.10.1/25 on eth0",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth0",
+              "cidr": "192.168.10.1/25"
+            }
+          },
+          {
+            "id": "m2l5-gate-b",
+            "label": "gate has 192.168.10.129/25 on eth1",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth1",
+              "cidr": "192.168.10.129/25"
+            }
+          },
+          {
+            "id": "m2l5-astro",
+            "label": "astro is in 192.168.10.0/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.10.0/25"
+            }
+          },
+          {
+            "id": "m2l5-rivet",
+            "label": "rivet is in 192.168.10.128/25",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.10.128/25"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Point each host at its gateway",
+        "body": "Each host needs the router on its own side as the default gateway: `ip route add default via 192.168.10.1` on astro and `ip route add default via 192.168.10.129` on rivet. Then ping across the two subnets.",
+        "objectives": [
+          {
+            "id": "m2l5-def-a",
+            "label": "astro's default route goes via 192.168.10.1",
+            "check": {
+              "type": "default-route",
+              "device": "astro",
+              "via": "192.168.10.1"
+            }
+          },
+          {
+            "id": "m2l5-def-r",
+            "label": "rivet's default route goes via 192.168.10.129",
+            "check": {
+              "type": "default-route",
+              "device": "rivet",
+              "via": "192.168.10.129"
+            }
+          },
+          {
+            "id": "m2l5-ping",
+            "label": "astro can reach rivet across the subnets",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

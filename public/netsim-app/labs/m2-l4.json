@@ -1,0 +1,115 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 90,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 70,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.130/25",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 190,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "volt.eth0-relay.eth1",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l4",
+    "title": "Lesson 2.4 \u2014 Network or Host?",
+    "blurb": "A wrong mask makes Volt think Astro is on another network.",
+    "steps": [
+      {
+        "title": "Repair the mask",
+        "body": "Astro uses mask `/24`. Volt uses `/25`, so Volt believes its network is 192.168.1.128 to 192.168.1.255 and treats Astro as being somewhere else. Run `ip addr` on volt, then set the correct mask: `ip addr del 192.168.1.130/25 dev eth0` and `ip addr add 192.168.1.130/24 dev eth0`.",
+        "objectives": [
+          {
+            "id": "m2l4-mask",
+            "label": "volt uses mask /24 in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m2l4-ping-av",
+            "label": "astro can ping volt",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          },
+          {
+            "id": "m2l4-ping-va",
+            "label": "volt can ping astro",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "astro"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

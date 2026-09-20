@@ -1,0 +1,118 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 340,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.50/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth1",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l2",
+    "title": "Lesson 2.2 \u2014 Standard Ports",
+    "blurb": "Open the standard ports and keep the insecure one closed.",
+    "steps": [
+      {
+        "title": "Open web and SSH, keep Telnet closed",
+        "body": "Standards give every service a well-known port. Web (HTTP) is TCP `80` and secure remote login (SSH) is TCP `22`. Telnet (TCP `23`) sends passwords in plain text, so it must stay closed. Click ship-server, find **Extra open ports**, type `22, 80` in the `tcp` box and press Enter. Leave 23 alone.",
+        "objectives": [
+          {
+            "id": "m2l2-80",
+            "label": "TCP 80 (HTTP) is open",
+            "check": {
+              "type": "tcp",
+              "from": "astro",
+              "toAddr": "192.168.1.50",
+              "port": 80,
+              "expect": "open"
+            }
+          },
+          {
+            "id": "m2l2-22",
+            "label": "TCP 22 (SSH) is open",
+            "check": {
+              "type": "tcp",
+              "from": "astro",
+              "toAddr": "192.168.1.50",
+              "port": 22,
+              "expect": "open"
+            }
+          },
+          {
+            "id": "m2l2-23",
+            "label": "TCP 23 (Telnet) stays closed",
+            "check": {
+              "type": "tcp",
+              "from": "astro",
+              "toAddr": "192.168.1.50",
+              "port": 23,
+              "expect": "refused"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

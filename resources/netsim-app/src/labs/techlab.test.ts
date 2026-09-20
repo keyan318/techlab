@@ -41,7 +41,7 @@ const all = (f: SaveFile) => f.lab!.steps.flatMap((s) => s.objectives);
 const allPass = (r: Record<string, CheckResult>) => Object.values(r).every((x) => x.pass);
 
 describe('every TechLab lab file is well formed', () => {
-  for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm1-l6']) {
+  for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm1-l6', 'm2-l1', 'm2-l2', 'm2-l3', 'm2-l4', 'm2-l5', 'm2-l6', 'm2-l7']) {
     it(`${id}: lab id matches the file name and objective ids are unique`, () => {
       const f = load(id);
       expect(f.lab!.id).toBe(id);
@@ -148,5 +148,148 @@ describe('m1-l6 Cloud Relay', () => {
     expect(grade(net, all(f))['m1l6-http'].pass).toBe(false);
     sh(net, dev(net, 'earth-cloud'), 'ip route add default via 203.0.113.1');
     expect(allPass(grade(net, all(f)))).toBe(true);
+  });
+});
+
+// ── Module 2: Networking Protocols ────────────────────────────────────────────
+
+describe('m2-l1 Climb the Layers', () => {
+  it('needs each layer fixed in order: link + address, then port, then HTTP', () => {
+    const f = load('m2-l1');
+    const net = restoreNetwork(f);
+    const [s1, s2, s3] = steps(f);
+    const server = dev(net, 'ship-server');
+
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, server, 'ip link set eth0 up');
+    // Link up but no address yet: still not reachable.
+    expect(grade(net, s1)['m2l1-ping'].pass).toBe(false);
+    sh(net, server, 'ip addr add 192.168.1.50/24 dev eth0');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    expect(allPass(grade(net, s2))).toBe(false);
+    server.services.tcp.add(80);
+    expect(allPass(grade(net, s2))).toBe(true);
+
+    // An open port alone does not answer HTTP.
+    expect(allPass(grade(net, s3))).toBe(false);
+    server.httpServer = { enabled: true, port: 80, body: 'Codexia mission server online' };
+    expect(allPass(grade(net, s3))).toBe(true);
+  });
+});
+
+describe('m2-l2 Standard Ports', () => {
+  it('fails until 80 and 22 are open, and Telnet stays closed throughout', () => {
+    const f = load('m2-l2');
+    const net = restoreNetwork(f);
+    const before = grade(net, all(f));
+    expect(before['m2l2-80'].pass).toBe(false);
+    expect(before['m2l2-22'].pass).toBe(false);
+    expect(before['m2l2-23'].pass).toBe(true);
+
+    const server = dev(net, 'ship-server');
+    server.services.tcp.add(80);
+    server.services.tcp.add(22);
+    expect(allPass(grade(net, all(f)))).toBe(true);
+
+    // Opening Telnet is the mistake the lab warns about.
+    server.services.tcp.add(23);
+    expect(grade(net, all(f))['m2l2-23'].pass).toBe(false);
+  });
+});
+
+describe('m2-l3 Private Addresses', () => {
+  it('fails with the typo, passes once rivet is on the right network', () => {
+    const f = load('m2-l3');
+    const net = restoreNetwork(f);
+    expect(allPass(grade(net, all(f)))).toBe(false);
+    sh(net, dev(net, 'rivet'), 'ip addr del 192.168.1.20/24 dev eth0');
+    sh(net, dev(net, 'rivet'), 'ip addr add 192.168.0.20/24 dev eth0');
+    expect(allPass(grade(net, all(f)))).toBe(true);
+  });
+});
+
+describe('m2-l4 Network or Host?', () => {
+  it('fails with the mismatched mask, passes once volt uses /24', () => {
+    const f = load('m2-l4');
+    const net = restoreNetwork(f);
+    const before = grade(net, all(f));
+    expect(before['m2l4-mask'].pass).toBe(false);
+    expect(before['m2l4-ping-va'].pass).toBe(false);
+    sh(net, dev(net, 'volt'), 'ip addr del 192.168.1.130/25 dev eth0');
+    sh(net, dev(net, 'volt'), 'ip addr add 192.168.1.130/24 dev eth0');
+    expect(allPass(grade(net, all(f)))).toBe(true);
+  });
+});
+
+describe('m2-l5 Split the Block', () => {
+  it('needs the subnet addresses, then the gateways', () => {
+    const f = load('m2-l5');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, dev(net, 'gate'), 'ip addr add 192.168.10.1/25 dev eth0');
+    sh(net, dev(net, 'gate'), 'ip addr add 192.168.10.129/25 dev eth1');
+    sh(net, dev(net, 'astro'), 'ip addr add 192.168.10.10/25 dev eth0');
+    sh(net, dev(net, 'rivet'), 'ip addr add 192.168.10.140/25 dev eth0');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // Addressed but no gateways: cannot cross subnets yet.
+    expect(allPass(grade(net, s2))).toBe(false);
+    sh(net, dev(net, 'astro'), 'ip route add default via 192.168.10.1');
+    sh(net, dev(net, 'rivet'), 'ip route add default via 192.168.10.129');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+
+  it('rejects a /24 host address inside the /25 plan', () => {
+    const f = load('m2-l5');
+    const net = restoreNetwork(f);
+    sh(net, dev(net, 'astro'), 'ip addr add 192.168.10.10/24 dev eth0');
+    expect(grade(net, steps(f)[0])['m2l5-astro'].pass).toBe(false);
+  });
+});
+
+describe('m2-l6 Static Routes', () => {
+  it('needs both routers taught the far network, in both directions', () => {
+    const f = load('m2-l6');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, dev(net, 'astro'), 'ip route add default via 192.168.1.1');
+    sh(net, dev(net, 'earth-cloud'), 'ip route add default via 172.16.0.1');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    expect(allPass(grade(net, s2))).toBe(false);
+    sh(net, dev(net, 'r1'), 'ip route add 172.16.0.0/24 via 10.0.12.2');
+    // Forward path only: the reply still cannot return through r2.
+    expect(grade(net, s2)['m2l6-ping'].pass).toBe(false);
+    sh(net, dev(net, 'r2'), 'ip route add 192.168.1.0/24 via 10.0.12.1');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+describe('m2-l7 Midterm Mission', () => {
+  it('starts blank and passes only when the whole ship is built', () => {
+    const f = load('m2-l7');
+    const net = restoreNetwork(f);
+    const [s1, s2, s3] = steps(f);
+    expect(allPass(grade(net, all(f)))).toBe(false);
+
+    sh(net, dev(net, 'gate'), 'ip addr add 192.168.20.1/25 dev eth0');
+    sh(net, dev(net, 'gate'), 'ip addr add 192.168.20.129/25 dev eth1');
+    sh(net, dev(net, 'gate'), 'ip addr add 203.0.113.1/24 dev eth2');
+    sh(net, dev(net, 'astro'), 'ip addr add 192.168.20.10/25 dev eth0');
+    sh(net, dev(net, 'rivet'), 'ip addr add 192.168.20.20/25 dev eth0');
+    sh(net, dev(net, 'volt'), 'ip addr add 192.168.20.140/25 dev eth0');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // Addressed, but nobody has a gateway: Earth is out of reach.
+    expect(allPass(grade(net, s3))).toBe(false);
+
+    sh(net, dev(net, 'astro'), 'ip route add default via 192.168.20.1');
+    sh(net, dev(net, 'rivet'), 'ip route add default via 192.168.20.1');
+    sh(net, dev(net, 'volt'), 'ip route add default via 192.168.20.129');
+    expect(allPass(grade(net, s2))).toBe(true);
+    expect(allPass(grade(net, s3))).toBe(true);
   });
 });

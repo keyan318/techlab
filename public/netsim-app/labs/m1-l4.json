@@ -135,7 +135,7 @@
     "steps": [
       {
         "title": "Volt isolates the shield systems",
-        "body": "Right now every device shares one broadcast domain, so anyone can reach Volt's shield console. A **VLAN** splits one physical switch into separate virtual switches. Click the relay switch, find **Port VLANs (access)** and put ports `eth2` (volt) and `eth4` (the router's second cable) into VLAN `20`. Astro and Rivet stay in VLAN 1. Then press Check objectives.",
+        "body": "Right now every device shares one broadcast domain, so anyone can reach Volt's shield console. A **VLAN** splits one physical switch into separate virtual switches. Click the relay switch, find **Port VLANs (access)**. Set the port `eth2 \u2192 volt` and the port `eth4 \u2192 gate` (the router's second cable) to `20`, typing the number and pressing Enter. Leave `eth3 \u2192 gate` in VLAN 1. Astro and Rivet stay in VLAN 1. Then press Check objectives.",
         "objectives": [
           {
             "id": "m1l4-comms",

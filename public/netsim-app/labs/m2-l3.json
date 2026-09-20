@@ -1,0 +1,115 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 90,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.0.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.20/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 190,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m2-l3",
+    "title": "Lesson 2.3 \u2014 Private Addresses",
+    "blurb": "Spot the typo that put Rivet on the wrong network.",
+    "steps": [
+      {
+        "title": "Fix the address",
+        "body": "Both consoles use private 192.168.x.x addresses, but they cannot talk. Compare the two addresses carefully: one octet differs. Run `ip addr` on each console to read them. Rivet's third octet is wrong. Remove it with `ip addr del 192.168.1.20/24 dev eth0`, then add `ip addr add 192.168.0.20/24 dev eth0`.",
+        "objectives": [
+          {
+            "id": "m2l3-ip",
+            "label": "rivet is in 192.168.0.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.0.0/24"
+            }
+          },
+          {
+            "id": "m2l3-ping-ar",
+            "label": "astro can ping rivet",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          },
+          {
+            "id": "m2l3-ping-ra",
+            "label": "rivet can ping astro",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "astro"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
