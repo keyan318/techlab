@@ -118,10 +118,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l5.json) complete
         <strong>Mission:</strong> get astro online with DHCP, then turn the ship server into a name server. <strong>Success:</strong> astro resolves <code>portal.codexia.lan</code> to <code>192.168.1.2</code>, an unknown name gets NXDOMAIN, and astro opens the portal page by name.
     </p>
 
-    <div class="relay-lab" data-lab="m3-l5">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m3-l5" title="Relay Lab: give the crew names" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m3-l5" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm3', 'lesson' => 'lesson05']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

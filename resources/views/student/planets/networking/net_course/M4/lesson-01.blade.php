@@ -122,10 +122,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
         <strong>Mission:</strong> sweep the network to find what is down, then make the printer follow the address plan. <strong>Success:</strong> astro reaches the server, the printer and the sensor, and the printer uses <code>192.168.1.10/24</code>.
     </p>
 
-    <div class="relay-lab" data-lab="m4-l1">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m4-l1" title="Relay Lab: monitor and enforce the plan" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m4-l1" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm4', 'lesson' => 'lesson01']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

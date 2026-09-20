@@ -101,10 +101,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l4.json) complete
         <strong>Mission:</strong> fix the pool size, then make the server hand out a gateway and a DNS server. <strong>Success:</strong> all three consoles lease addresses, astro has a default route via <code>192.168.1.1</code>, and astro can look up <code>codexia.lan</code>.
     </p>
 
-    <div class="relay-lab" data-lab="m3-l4">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m3-l4" title="Relay Lab: size the pool and set the options" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m3-l4" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm3', 'lesson' => 'lesson04']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

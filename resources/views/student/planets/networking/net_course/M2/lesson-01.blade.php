@@ -117,10 +117,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l1.json) complete
         <strong>Mission:</strong> bring <code>ship-server</code> to life one layer at a time. <strong>Success:</strong> astro can ping the server (Layers 1 to 3), TCP port 80 is open (Layer 4), and astro can fetch the web page (Layer 7).
     </p>
 
-    <div class="relay-lab" data-lab="m2-l1">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m2-l1" title="Relay Lab: climb the layers" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m2-l1" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm2', 'lesson' => 'lesson01']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

@@ -628,19 +628,14 @@
         .quest-card[data-kind="diagram"]   { --q-accent: #0fa3b1; --q-accent-2: #6fe0e8; }
         .quest-card[data-kind="lab"]       { --q-accent: #2f6fe0; --q-accent-2: #73b6ff; }
 
+        .relay-lab-note { margin-top: 16px; }
+
         /* Networking lesson extras: bullet lists and diagrams. */
         .body-list { margin: 0 0 1rem 1.25rem; line-height: 1.7; }
         .body-list li { margin-bottom: 4px; }
         .net-diagram { margin: 1rem 0; }
         .net-diagram svg { width: 100%; height: auto; display: block; font-family: inherit; }
 
-        /* Relay Lab: the NetSim simulator, embedded. */
-        .relay-lab iframe { width: 100%; height: 620px; border: 1px solid rgba(11,18,48,.12); border-radius: 14px; background: #0b1226; display: block; }
-        .relay-lab-note { margin-top: 10px; font-size: 13.5px; color: #4b5578; }
-        .relay-lab-status { margin-top: 14px; padding: 14px 18px; border-radius: 14px; background: #eef4ff; color: #1b2b57; font-weight: 600; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .relay-lab-status.passed { background: #e6f7ee; color: #14663f; }
-        .relay-lab-status .relay-next { margin-left: auto; padding: 9px 16px; border-radius: 10px; border: 0; background: #2f6fe0; color: #fff; font-weight: 700; cursor: pointer; }
-        .relay-lab-status .relay-next:hover { background: #2559b8; }
 
         .quest-head {
             display: flex;
@@ -862,7 +857,8 @@
             transform: skewX(-18deg);
             transition: left 0.7s cubic-bezier(.22,1,.36,1);
         }
-        .code-btn .python-logo {
+        .code-btn .python-logo,
+        .code-btn .networking-logo {
             flex-shrink: 0;
             width: 24px;
             height: 24px;
@@ -884,7 +880,8 @@
         }
         .code-btn:hover::before { opacity: 1; }
         .code-btn:hover::after  { left: 130%; }
-        .code-btn:hover .python-logo { transform: rotate(-10deg) scale(1.12); }
+        .code-btn:hover .python-logo,
+        .code-btn:hover .networking-logo { transform: rotate(-10deg) scale(1.12); }
         .code-btn:hover .code-btn-arrow { opacity: 1; transform: translateX(0); }
         /* responds on press, not release */
         .code-btn:active {
@@ -896,8 +893,8 @@
             outline-offset: 3px;
         }
         @media (prefers-reduced-motion: reduce) {
-            .code-btn, .code-btn::after, .code-btn .python-logo, .code-btn-arrow { transition: none; }
-            .code-btn:hover, .code-btn:hover .python-logo { transform: none; }
+            .code-btn, .code-btn::after, .code-btn .python-logo, .code-btn .networking-logo, .code-btn-arrow { transition: none; }
+            .code-btn:hover, .code-btn:hover .python-logo, .code-btn:hover .networking-logo { transform: none; }
         }
     </style>
 </head>
@@ -1480,68 +1477,6 @@
     document.addEventListener('fullscreenchange', function () {
         if (!document.fullscreenElement) {
             document.body.classList.remove('is-fullscreen');
-        }
-    });
-
-    // ── Relay Lab (networking) ─────────────────────────────────────────────
-    // The simulator (/netsim-app, same origin) tells us how the student is doing via postMessage.
-    // A pass is reported to the server, which records the lesson and unlocks the next one.
-    const LAB_CSRF = @json(csrf_token());
-    let labPosting = false;
-
-    function labStatus() {
-        let el = stage.querySelector('.relay-lab-status');
-        if (!el) {
-            const host = stage.querySelector('.relay-lab');
-            if (!host) return null;
-            el = document.createElement('div');
-            el.className = 'relay-lab-status';
-            el.setAttribute('aria-live', 'polite');
-            host.appendChild(el);
-        }
-        return el;
-    }
-
-    window.addEventListener('message', function (e) {
-        // Only our own simulator, only from the lab embedded in the lesson being viewed.
-        if (e.origin !== window.location.origin || !e.data || e.data.source !== 'netsim') return;
-        const host = stage.querySelector('.relay-lab');
-        const iframe = host && host.querySelector('iframe');
-        if (!host || !iframe || e.source !== iframe.contentWindow || e.data.lab !== host.dataset.lab) return;
-
-        const status = labStatus();
-
-        if (e.data.type === 'lab-progress') {
-            status.className = 'relay-lab-status';
-            status.textContent = 'Objectives passed: ' + e.data.passed + ' of ' + e.data.total + '. Keep going, Captain.';
-        } else if (e.data.type === 'lab-failed') {
-            status.className = 'relay-lab-status';
-            status.textContent = 'Not yet: ' + e.data.failing.slice(0, 2).join(' · ');
-        } else if (e.data.type === 'lab-passed' && !labPosting && !host.dataset.done) {
-            labPosting = true;
-            const url = '/student/planet/' + slug + '/lab/' + current.module + '/' + current.lesson + '/complete';
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': LAB_CSRF, 'X-Requested-With': 'XMLHttpRequest' },
-                body: JSON.stringify({ lab: host.dataset.lab }),
-            }).then(function (r) { return r.ok ? r.json() : Promise.reject(r); }).then(function (data) {
-                host.dataset.done = '1';
-                status.className = 'relay-lab-status passed';
-                status.innerHTML = '<span>Signal received. Lab complete <b>+' + LESSON_XP + ' XP</b></span>';
-                if (window.TechLab && TechLab.recordLessonComplete) TechLab.recordLessonComplete(current.module, current.lesson);
-                if (data.next) {
-                    const nextBtn = document.createElement('button');
-                    nextBtn.type = 'button';
-                    nextBtn.className = 'relay-next';
-                    nextBtn.textContent = 'Next lesson →';
-                    nextBtn.onclick = goToNextLesson;
-                    status.appendChild(nextBtn);
-                }
-                xpToast(LESSON_XP);
-            }).catch(function () {
-                status.className = 'relay-lab-status';
-                status.textContent = 'The lab passed, but saving your progress failed. Press Check objectives again.';
-            }).finally(function () { labPosting = false; });
         }
     });
 

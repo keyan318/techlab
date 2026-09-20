@@ -122,10 +122,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l2.json) complete
         <strong>Mission:</strong> open the standard ports on <code>ship-server</code> and keep Telnet sealed. <strong>Success:</strong> TCP 80 and TCP 22 are open, and TCP 23 stays closed.
     </p>
 
-    <div class="relay-lab" data-lab="m2-l2">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m2-l2" title="Relay Lab: open the standard ports" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m2-l2" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm2', 'lesson' => 'lesson02']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

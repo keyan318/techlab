@@ -119,12 +119,16 @@ The Relay Lab is the NetSim simulator; passing it (see public/netsim-app/labs/m1
         <strong>Success:</strong> <code>astro</code> can ping <code>rivet</code> and <code>rivet</code> can ping <code>astro</code>.
     </p>
 
-    <div class="relay-lab" data-lab="m1-l1">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m1-l1" title="Relay Lab: build the first network" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands such as
-            <code>ip addr add</code> and <code>ping</code>. The ideas are the same on Cisco gear.
-            Press <strong>Check objectives</strong> when you are ready.
+    <div class="cta-wrap relay-lab-cta" data-lab="m1-l1" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm1', 'lesson' => 'lesson01']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there, such as
+            <code>ip addr add</code> and <code>ping</code>; the ideas are the same on Cisco gear.
+            Press <strong>Check objectives</strong> after each step.
         </p>
     </div>
 

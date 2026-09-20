@@ -115,10 +115,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
         <strong>Mission:</strong> get the crew online and send the distress call. <strong>Success:</strong> rivet is back on the network, astro and volt lease addresses with a gateway, both reach Earth, and astro reads Earth's reply at <code>http://earth.relay/</code>.
     </p>
 
-    <div class="relay-lab" data-lab="m4-l6">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m4-l6" title="Relay Lab: call Earth" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m4-l6" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm4', 'lesson' => 'lesson06']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

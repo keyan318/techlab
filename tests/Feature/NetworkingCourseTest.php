@@ -217,8 +217,12 @@ class NetworkingCourseTest extends TestCase
         $this->assertMatchesRegularExpression('/<h2 class="section-heading">(Rivet\'s |Volt\'s |Crew )[A-Za-z]+<\/h2>/', $html);
         $lab = CourseProgressService::labFor($module, $lesson, 'networking');
         $this->assertStringContainsString('data-lab="'.$lab.'"', $html);
-        $this->assertStringContainsString('lab='.$lab.'"', $html);
         $this->assertFileExists(public_path("netsim-app/labs/{$lab}.json"));
+
+        // The lesson only carries a button; the simulator opens full screen on its own page.
+        $this->assertStringContainsString('Configure it yourself', $html);
+        $this->assertStringContainsString("/student/planet/networking/lab/{$module}/{$lesson}", $html);
+        $this->assertStringNotContainsString('<iframe', $html);
 
         // What the browser gets must not reveal the answers.
         $served = LessonQuizService::strip($html);

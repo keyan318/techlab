@@ -112,6 +112,11 @@ Route::post('/student/planet/{slug}/lab/{module}/{lesson}/complete', [LessonProg
     ->middleware('throttle:30,1')
     ->name('student.planet.lab.complete');
 
+// The full-page simulator for a lesson's lab (the lesson's "Configure it yourself" button opens it).
+Route::get('/student/planet/{slug}/lab/{module}/{lesson}', [\App\Http\Controllers\LessonLabController::class, 'show'])
+    ->middleware('lesson.unlocked')
+    ->name('student.planet.lab');
+
 // Interactive lesson quiz: restore this student's answers, and check + score one answer (first attempt earns XP).
 Route::get('/student/planet/{slug}/quiz/{module}/{lesson}', [LessonQuizController::class, 'status'])->name('student.planet.quiz.status');
 Route::post('/student/planet/{slug}/quiz/{module}/{lesson}', [LessonQuizController::class, 'answer'])->middleware('throttle:60,1')->name('student.planet.quiz.answer');

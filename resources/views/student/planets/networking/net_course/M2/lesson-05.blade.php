@@ -102,10 +102,14 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l5.json) complete
         <strong>Mission:</strong> split <code>192.168.10.0/24</code> into two <code>/25</code> subnets and connect them with the router. <strong>Success:</strong> each device has an address in its own subnet, and astro can ping rivet through <code>gate</code>.
     </p>
 
-    <div class="relay-lab" data-lab="m2-l5">
-        <iframe src="{{ asset('netsim-app/app.html') }}?lab=m2-l5" title="Relay Lab: split the block" loading="lazy"></iframe>
-        <p class="relay-lab-note">
-            Double-click a device to open its terminal. The simulator uses Linux commands. The ideas are the same on Cisco gear.
+    <div class="cta-wrap relay-lab-cta" data-lab="m2-l5" style="margin-top:1.5rem;">
+        <a class="code-btn" href="{{ route('student.planet.lab', ['slug' => 'networking', 'module' => 'm2', 'lesson' => 'lesson05']) }}">
+            @include('components.networking-logo')
+            <span>Configure it yourself</span>
+            <span class="code-btn-arrow" aria-hidden="true">→</span>
+        </a>
+        <p class="body-text relay-lab-note">
+            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>
