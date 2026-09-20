@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Crew;
+use App\Models\CrewQuizAttempt;
+use App\Services\StudentDashboardService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +14,26 @@ use Illuminate\View\View;
 class StudentController extends Controller
 {
     /**
-     * Student dashboard — only reachable when signed in. A teacher who lands
-     * here is bounced to their own dashboard, so a teacher never ends up
-     * viewing the student dashboard.
+     * Student dashboard — overall learning progress across every planet, the
+     * crew XP leaderboard and activity charts. A teacher who lands here is
+     * bounced to their own dashboard.
      */
     public function dashboard(): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect(route('login'));
+        }
+        if ((Auth::user()->role ?? 'student') === 'teacher') {
+            return redirect(route('teacher.dashboard'));
+        }
+
+        return view('student.dashboard', StudentDashboardService::build(Auth::user()));
+    }
+
+    /**
+     * Planet picker (the onboarding track choice), formerly served at /dashboard.
+     */
+    public function planets(): View|RedirectResponse
     {
         if (! Auth::check()) {
             return redirect(route('login'));
@@ -42,13 +60,13 @@ class StudentController extends Controller
         // Progression data. Real values come from auth; level/XP/streak are
         // placeholders for now and can be wired to a Laravel model later.
         $student = [
-            'name'        => Auth::user()->name ?? 'Explorer',
-            'level'       => 7,
-            'levelTitle'  => 'Explorer',
-            'xp'          => 720,
-            'xpForNext'   => 1000,
-            'streak'      => 5,
-            'dailyQuest'  => ['label' => 'Complete 1 lesson', 'progress' => 0, 'goal' => 1],
+            'name' => Auth::user()->name ?? 'Explorer',
+            'level' => 7,
+            'levelTitle' => 'Explorer',
+            'xp' => 720,
+            'xpForNext' => 1000,
+            'streak' => 5,
+            'dailyQuest' => ['label' => 'Complete 1 lesson', 'progress' => 0, 'goal' => 1],
             'achievements' => [
                 ['icon' => '🏆', 'label' => 'First Mission'],
                 ['icon' => '⚡', 'label' => 'Fast Learner'],
@@ -74,119 +92,63 @@ class StudentController extends Controller
 
         $crew = Auth::user()->crew_id ? Crew::find(Auth::user()->crew_id) : null;
 
-        // PLACEHOLDER course data. The real Module / Quiz / Lab / Grade models
-        // and teacher-uploaded materials do not exist yet, so these arrays
-        // mirror the shape those models should expose. When the backend lands,
-        // swap this block for a real query (e.g. $crew->modules()->with('materials'))
-        // and the Blade below can be wired up without a rewrite.
+        // Modules, materials and quizzes are real (teacher-authored); grades are computed from
+        // the student's own quiz attempts. There are no lab/exam models yet, so none are shown.
+        $modules = $crew
+            ? $crew->modules()->with('materials')->get()->values()->map(fn ($m, $i) => [
+                'number' => str_pad($i + 1, 2, '0', STR_PAD_LEFT),
+                'title' => $m->title,
+                'description' => $m->description,
+                'materials' => $m->materials->map(fn ($f) => [
+                    'name' => $f->name,
+                    'ext' => $f->kind,
+                    'url' => route('materials.download', $f),
+                ])->all(),
+                'material_count' => $m->materials->count(),
+            ])->all()
+            : [];
+
+        $quizzes = [];
+        $grades = ['current' => null, 'label' => 'No graded work yet', 'done' => 0, 'count' => 0];
+        if ($crew) {
+            $attempts = CrewQuizAttempt::where('user_id', Auth::id())->get()->keyBy('crew_quiz_id');
+            $quizzes = $crew->quizzes()->withCount('questions')->get()->values()->map(function ($q, $i) use ($attempts) {
+                $a = $attempts->get($q->id);
+
+                return [
+                    'id' => $q->id,
+                    'number' => str_pad($i + 1, 2, '0', STR_PAD_LEFT),
+                    'title' => $q->title,
+                    'questions' => $q->questions_count,
+                    'minutes' => $q->minutes,
+                    'status' => $a ? 'completed' : 'available',
+                    'score' => $a?->score,
+                    'total' => $a?->total ?? $q->questions_count,
+                    'percent' => $a?->percent(),
+                ];
+            })->all();
+
+            $done = collect($quizzes)->where('status', 'completed');
+            $grades['count'] = count($quizzes);
+            $grades['done'] = $done->count();
+            if ($done->isNotEmpty()) {
+                $avg = round($done->avg('percent'), 1);
+                $grades['current'] = $avg;
+                $grades['label'] = match (true) {
+                    $avg >= 90 => 'Excellent',
+                    $avg >= 80 => 'Great work',
+                    $avg >= 70 => 'Good',
+                    $avg >= 60 => 'Keep going',
+                    default => 'Needs practice',
+                };
+            }
+        }
+
         $course = $crew ? [
             'description' => 'Learn the fundamentals through guided lessons, quizzes, and hands-on laboratory activities.',
-            'modules' => [
-                [
-                    'number' => '01',
-                    'title' => 'Introduction to Programming',
-                    'description' => 'Learn the basic concepts of programming and problem solving.',
-                    'materials' => [
-                        ['name' => 'Programming Fundamentals.pdf', 'ext' => 'pdf'],
-                        ['name' => 'Lecture 01.pptx', 'ext' => 'pptx'],
-                        ['name' => 'Starter Code.zip', 'ext' => 'zip'],
-                    ],
-                    'material_count' => 3,
-                ],
-                [
-                    'number' => '02',
-                    'title' => 'Variables & Data Types',
-                    'description' => 'How computers store and manipulate information.',
-                    'materials' => [
-                        ['name' => 'Variables Cheat Sheet.pdf', 'ext' => 'pdf'],
-                        ['name' => 'Worksheet.docx', 'ext' => 'docx'],
-                    ],
-                    'material_count' => 2,
-                ],
-                [
-                    'number' => '03',
-                    'title' => 'Control Flow',
-                    'description' => 'Conditions, loops, and logical decision making.',
-                    'materials' => [
-                        ['name' => 'Control Flow Notes.pdf', 'ext' => 'pdf'],
-                        ['name' => 'Flowcharts.png', 'ext' => 'img'],
-                    ],
-                    'material_count' => 2,
-                ],
-            ],
-            'quizzes' => [
-                [
-                    'number' => '01',
-                    'title' => 'Programming Fundamentals',
-                    'questions' => 20,
-                    'minutes' => 15,
-                    'status' => 'completed',
-                    'score' => 18,
-                    'total' => 20,
-                    'percent' => 90,
-                ],
-                [
-                    'number' => '02',
-                    'title' => 'Variables & Types',
-                    'questions' => 15,
-                    'minutes' => 12,
-                    'status' => 'available',
-                    'score' => null,
-                    'total' => 15,
-                    'percent' => null,
-                ],
-                [
-                    'number' => '03',
-                    'title' => 'Control Flow',
-                    'questions' => 18,
-                    'minutes' => 15,
-                    'status' => 'locked',
-                    'score' => null,
-                    'total' => 18,
-                    'percent' => null,
-                ],
-            ],
-            'labs' => [
-                [
-                    'number' => '01',
-                    'title' => 'Build Your First Program',
-                    'description' => 'Apply the concepts from Module 01.',
-                    'due' => 'September 12',
-                    'status' => 'graded',
-                    'score' => 95,
-                    'total' => 100,
-                ],
-                [
-                    'number' => '02',
-                    'title' => 'Temperature Converter',
-                    'description' => 'Practice variables and operators.',
-                    'due' => 'September 19',
-                    'status' => 'not_submitted',
-                    'score' => null,
-                    'total' => 100,
-                ],
-                [
-                    'number' => '03',
-                    'title' => 'Loop Art',
-                    'description' => 'Generate patterns using loops.',
-                    'due' => 'September 26',
-                    'status' => 'late',
-                    'score' => null,
-                    'total' => 100,
-                ],
-            ],
-            // Grading categories are placeholders; replace with real weights from
-            // a Grading model once it exists. Only show categories the system uses.
-            'grades' => [
-                'current' => 92.5,
-                'label' => 'Excellent',
-                'breakdown' => [
-                    ['label' => 'Quizzes', 'weight' => 30, 'score' => 92, 'total' => 100],
-                    ['label' => 'Lab Activities', 'weight' => 40, 'score' => 95, 'total' => 100],
-                    ['label' => 'Exams', 'weight' => 30, 'score' => 90, 'total' => 100],
-                ],
-                'overall' => 92.5,
-            ],
+            'modules' => $modules,
+            'quizzes' => $quizzes,
+            'grades' => $grades,
         ] : null;
 
         return view('student.studentCrew', compact('crew', 'course'));
@@ -195,17 +157,23 @@ class StudentController extends Controller
     /**
      * Join a crew by its invite code.
      */
-    public function joinCrew(Request $request): RedirectResponse
+    public function joinCrew(Request $request): RedirectResponse|JsonResponse
     {
         if (! Auth::check()) {
-            return redirect(route('login'));
+            return $request->expectsJson()
+                ? response()->json(['message' => 'Please log in first.'], 401)
+                : redirect(route('login'));
         }
 
         $data = $request->validate(['code' => ['required', 'string']]);
         $crew = Crew::where('code', strtoupper(trim($data['code'])))->first();
 
         if (! $crew) {
-            return back()->withInput()->withErrors(['code' => 'That crew code was not found. Check with your captain.']);
+            $message = 'That crew code was not found. Check with your captain.';
+
+            return $request->expectsJson()
+                ? response()->json(['message' => $message], 422)
+                : back()->withInput()->withErrors(['code' => $message]);
         }
 
         Auth::user()->update(['crew_id' => $crew->id]);
@@ -213,7 +181,9 @@ class StudentController extends Controller
             $crew->roster()->attach(Auth::id(), ['role' => 'student']);
         }
 
-        return redirect(route('student.crew'));
+        return $request->expectsJson()
+            ? response()->json(['redirect' => route('student.crew')])
+            : redirect(route('student.crew'));
     }
 
     /**

@@ -14,7 +14,13 @@ class Message extends Model
         'conversation_id',
         'role',
         'content',
+        'attachments',
     ];
+
+    protected function casts(): array
+    {
+        return ['attachments' => 'array'];
+    }
 
     /**
      * The conversation this message belongs to.

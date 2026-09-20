@@ -34,6 +34,21 @@ class InfographicImageService
     }
 
     /**
+     * Poster illustrations, generated concurrently. Failed ones are null (the
+     * frontend shows a styled placeholder) — no dark space-art fallback here.
+     *
+     * @param  array<int, string>  $prompts
+     * @param  string  $style  'anime' | 'cartoon'
+     * @return array<int, string|null>
+     */
+    public function generatePosterImages(array $prompts, string $style = 'cartoon'): array
+    {
+        $specs = array_map(fn ($p) => ['prompt' => $p, 'style' => 'poster', 'art' => $style], $prompts);
+
+        return (new NvidiaImageProvider)->generateBatch($specs);
+    }
+
+    /**
      * @param  array<string, mixed>  $slide
      * @return array<string, mixed>
      */
@@ -54,13 +69,13 @@ class InfographicImageService
     protected function provider(string $name): InfographicImageProviderInterface
     {
         return match ($name) {
-            'nvidia' => new NvidiaImageProvider(),
-            default => new LocalInfographicArtProvider(),
+            'nvidia' => new NvidiaImageProvider,
+            default => new LocalInfographicArtProvider,
         };
     }
 
     protected function localArt(): LocalInfographicArtProvider
     {
-        return new LocalInfographicArtProvider();
+        return new LocalInfographicArtProvider;
     }
 }

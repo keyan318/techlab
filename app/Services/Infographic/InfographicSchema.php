@@ -14,7 +14,7 @@ namespace App\Services\Infographic;
 class InfographicSchema
 {
     /**
-     * @return array<string, mixed>|null  normalized plan, or null if unusable
+     * @return array<string, mixed>|null normalized plan, or null if unusable
      */
     public function normalize(?array $raw): ?array
     {

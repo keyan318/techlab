@@ -37,7 +37,18 @@ class NvidiaNimService
      * persist across calls to stripThinking() within a single streamOnce()
      * attempt — reset at the top of each streamOnce() call.
      */
+    /**
+     * NIM can answer HTTP 200 and then put a failure INSIDE the SSE stream, e.g.
+     * data: {"error":{"message":"Service temporarily overloaded","code":503}}
+     * followed by [DONE]. streamOnce() records it here so streamWithRetry() can tell
+     * a real transient failure from a genuinely empty completion.
+     *
+     * @var array{code?: int, message?: string}|null
+     */
+    protected ?array $streamError = null;
+
     protected string $thinkBuffer = '';
+
     protected bool $inThinkBlock = false;
 
     public function __construct(?Client $client = null)
@@ -51,6 +62,18 @@ class NvidiaNimService
     /**
      * The configured model id (defaults to a working NVIDIA NIM free-tier model).
      */
+    /** Which Astro is talking: 'student' (default tutor) or 'teacher' (teaching assistant). */
+    protected string $persona = 'student';
+
+    /** A copy of this service speaking as the given persona (never mutates the shared instance). */
+    public function forPersona(string $persona): static
+    {
+        $clone = clone $this;
+        $clone->persona = $persona;
+
+        return $clone;
+    }
+
     public function model(): string
     {
         return (string) config('nvidia_nim.model', '');
@@ -63,7 +86,7 @@ class NvidiaNimService
      * NVIDIA_NIM_MODEL must fail loudly and safely rather than producing a
      * confusing upstream 400. The API key is never included in any message.
      *
-     * @throws NvidiaNimException  CONFIGURATION_ERROR with a safe message.
+     * @throws NvidiaNimException CONFIGURATION_ERROR with a safe message.
      */
     protected function assertConfigured(): void
     {
@@ -91,7 +114,9 @@ class NvidiaNimService
      */
     public function systemPrompt(array $options = []): string
     {
-        $base = config('nvidia_nim.system_prompt', '');
+        $base = $this->persona === 'teacher'
+            ? config('nvidia_nim.teacher_system_prompt', config('nvidia_nim.system_prompt', ''))
+            : config('nvidia_nim.system_prompt', '');
 
         $extras = [];
 
@@ -133,22 +158,23 @@ class NvidiaNimService
      * @return array<string, mixed>
      */
     protected function reasoningFields(): array
-{
-    $thinkingEnabled = (bool) config('nvidia_nim.thinking_enabled', false);
+    {
+        $thinkingEnabled = (bool) config('nvidia_nim.thinking_enabled', false);
 
-    $fields = [
-        'chat_template_kwargs' => [
-            'enable_thinking' => $thinkingEnabled,
-        ],
-    ];
+        $fields = [
+            'chat_template_kwargs' => [
+                'enable_thinking' => $thinkingEnabled,
+            ],
+        ];
 
-    if ($thinkingEnabled) {
-        $fields['chat_template_kwargs']['medium_effort'] = (bool) config('nvidia_nim.medium_effort', false);
-        $fields['reasoning_budget'] = (int) config('nvidia_nim.reasoning_budget', 16384);
+        if ($thinkingEnabled) {
+            $fields['chat_template_kwargs']['medium_effort'] = (bool) config('nvidia_nim.medium_effort', false);
+            $fields['reasoning_budget'] = (int) config('nvidia_nim.reasoning_budget', 16384);
+        }
+
+        return $fields;
     }
 
-    return $fields;
-}
     /**
      * Perform a single (non-streaming) chat completion and return the text.
      *
@@ -167,6 +193,12 @@ class NvidiaNimService
         $enableThinking = ! empty($options['enable_thinking']);
         unset($options['enable_thinking']);
 
+        // Client-side limits (not part of the API body): callers that must fail fast pass a short timeout / one retry.
+        $retryTimeouts = isset($options['timeout']);   // a caller that set its own short timeout wants a retry on a slow attempt
+        $timeout = (int) ($options['timeout'] ?? 300);
+        $attempts = (int) ($options['attempts'] ?? 3);
+        unset($options['timeout'], $options['attempts']);
+
         $payload = array_merge([
             'model' => $this->model(),
             'messages' => $messages,
@@ -180,7 +212,7 @@ class NvidiaNimService
             $payload = array_merge($payload, $this->reasoningFields());
         }
 
-        $response = $this->sendRequest($payload, false);
+        $response = $this->sendRequest($payload, false, $timeout, $attempts, $retryTimeouts);
 
         $body = json_decode((string) $response->getBody(), true);
 
@@ -210,7 +242,7 @@ class NvidiaNimService
      * Strips a leading/trailing ```json markdown fence if present and extracts
      * the first balanced {...} block if the model adds commentary.
      *
-     * @return array|null  decoded JSON, or null if it could not be parsed
+     * @return array|null decoded JSON, or null if it could not be parsed
      */
     public function completeJson(array $messages, array $options = []): ?array
     {
@@ -243,27 +275,43 @@ class NvidiaNimService
      *
      * @param  array<int, array{role: string, content: string}>  $messages
      * @param  callable(string): void  $onDelta  invoked with each VISIBLE content chunk
-     *                                            (reasoning/<think> blocks already stripped)
-     * @return string  the full VISIBLE assistant response (for persistence)
+     *                                           (reasoning/<think> blocks already stripped)
+     * @return string the full VISIBLE assistant response (for persistence)
      *
-     * @throws NvidiaNimException  with a descriptive category on any failure.
+     * @throws NvidiaNimException with a descriptive category on any failure.
      */
-    public function stream(array $messages, callable $onDelta): string
+    public function stream(array $messages, callable $onDelta, string $sourceContext = '', array $mode = [], ?string $modelOverride = null): string
     {
         $this->assertConfigured();
 
-        // Prepend the system prompt to ensure the model follows Astro's guidelines
-        $systemMessage = ['role' => 'system', 'content' => $this->systemPrompt([])];
+        // Prepend the system prompt to ensure the model follows Astro's guidelines.
+        // $sourceContext carries any connected Planet lessons (see LessonSourceService).
+        $systemContent = $this->systemPrompt([]);
+        if ($sourceContext !== '') {
+            $systemContent .= "\n\n---\n".$sourceContext;
+        }
+        $systemMessage = ['role' => 'system', 'content' => $systemContent];
         $messagesWithSystem = array_merge([$systemMessage], $messages);
 
         $payload = [
-            'model' => $this->model(),
+            'model' => $modelOverride ?? $this->model(),
             'messages' => $messagesWithSystem,
             'stream' => true,
-            'max_tokens' => (int) config('nvidia_nim.max_tokens', 4096),
+            'max_tokens' => (int) ($mode['max_tokens'] ?? config('nvidia_nim.max_tokens', 4096)),
             'temperature' => (float) config('nvidia_nim.temperature', 1),
             'top_p' => (float) config('nvidia_nim.top_p', 0.95),
         ];
+
+        // A model override (the vision model) doesn't share the chat model's thinking
+        // knobs, so it gets the plain payload.
+        if ($modelOverride !== null) {
+            return $this->streamWithRetry($payload, $onDelta);
+        }
+
+        // $mode is a Fast/Deep config from AstroRouter; without one, the .env defaults apply.
+        if ($mode !== []) {
+            return $this->streamWithRetry(array_merge($payload, $this->modeFields($mode)), $onDelta);
+        }
 
         // Thinking is ON for chat by default. The model's private reasoning
         // trace is intentionally dropped by the stream loop below — whether
@@ -280,25 +328,92 @@ class NvidiaNimService
         // not how much budget the answer gets to work with.
         $payload = array_merge($payload, $this->reasoningFields());
 
-        // A reasoning model under load can occasionally return a stream whose
-        // content channel is empty (rate-limit / truncated response). Retry
-        // once before surfacing a friendly error, so the student never sees a
-        // blank Astro bubble.
-        $full = $this->streamOnce($payload, $onDelta);
+        return $this->streamWithRetry($payload, $onDelta);
+    }
 
-        if (trim($full) === '') {
-            usleep(800_000);
-            $full = $this->streamOnce($payload, $onDelta);
+    /**
+     * Request fields for an AstroRouter mode: thinking on/off and, when on, the
+     * reasoning cap under the field name NVIDIA's endpoint accepts (see config).
+     *
+     * @param  array{thinking?: bool, max_tokens?: int, thinking_token_budget?: int}  $mode
+     * @return array<string, mixed>
+     */
+    protected function modeFields(array $mode): array
+    {
+        $thinking = (bool) ($mode['thinking'] ?? false);
+        $fields = ['chat_template_kwargs' => ['enable_thinking' => $thinking]];
+
+        if ($thinking) {
+            $fields['chat_template_kwargs']['medium_effort'] = (bool) config('nvidia_nim.medium_effort', false);
+
+            if (isset($mode['thinking_token_budget'])) {
+                $fields[(string) config('nvidia_nim.thinking_budget_param', 'reasoning_budget')] = (int) $mode['thinking_token_budget'];
+            }
         }
 
-        if (trim($full) === '') {
-            throw new NvidiaNimException(
-                "Astro couldn't form a response just now. Please try again in a moment.",
-                'NIM_EMPTY_RESPONSE'
-            );
-        }
+        return $fields;
+    }
 
-        return $full;
+    /**
+     * Stream, retrying ONLY a genuine transient failure that hasn't shown the student anything.
+     *
+     * Retries when NIM reports an in-band 5xx (e.g. "Service temporarily overloaded") before any
+     * visible text was sent, up to 3 attempts in total with a short backoff. It never retries:
+     *  - a stream that already produced text (a retry would duplicate it — the error is raised
+     *    instead and the partial answer is kept by the caller),
+     *  - a non-transient error (auth, bad request, rate limit),
+     *  - a stream that simply ended with no text and no error (nothing to indicate a retry helps).
+     */
+    protected function streamWithRetry(array $payload, callable $onDelta): string
+    {
+        $attempts = 3;
+        $backoffMicros = [300_000, 600_000];
+
+        for ($attempt = 1; ; $attempt++) {
+            $emitted = false;
+            $full = $this->streamOnce($payload, function (string $chunk) use ($onDelta, &$emitted) {
+                $emitted = true;
+                $onDelta($chunk);
+            });
+
+            $error = $this->streamError;
+
+            if ($error === null) {
+                if (trim($full) === '') {
+                    throw new NvidiaNimException(
+                        "Astro couldn't form a response just now. Please try again in a moment.",
+                        'NIM_EMPTY_RESPONSE'
+                    );
+                }
+
+                return $full;
+            }
+
+            $code = (int) ($error['code'] ?? 0);
+            $transient = in_array($code, [500, 502, 503, 504], true);
+
+            if ($transient && ! $emitted && $attempt < $attempts) {
+                Log::warning('Astro NIM in-band error, retrying', [
+                    'code' => $code,
+                    'message' => (string) ($error['message'] ?? ''),
+                    'attempt' => $attempt,
+                ]);
+                usleep($backoffMicros[$attempt - 1]);
+
+                continue;
+            }
+
+            Log::warning('Astro NIM in-band error, giving up', [
+                'code' => $code,
+                'message' => (string) ($error['message'] ?? ''),
+                'attempt' => $attempt,
+                'text_already_sent' => $emitted,
+            ]);
+
+            [$message, $category] = $this->classify($code, new \RuntimeException((string) ($error['message'] ?? 'NIM stream error')));
+
+            throw new NvidiaNimException($message, $category, $code !== 0 ? $code : null);
+        }
     }
 
     /**
@@ -310,7 +425,7 @@ class NvidiaNimService
      * emits it inline inside "content" wrapped in <think>...</think> (caught
      * and stripped by stripThinking() below, stateful across chunks).
      *
-     * @return string  the full VISIBLE assistant content for this attempt
+     * @return string the full VISIBLE assistant content for this attempt
      */
     protected function streamOnce(array $payload, callable $onDelta): string
     {
@@ -323,6 +438,7 @@ class NvidiaNimService
         // leak into the retry.
         $this->thinkBuffer = '';
         $this->inThinkBlock = false;
+        $this->streamError = null;
 
         $response = $this->sendRequest($payload, true);
 
@@ -358,6 +474,13 @@ class NvidiaNimService
                 $decoded = json_decode($data, true);
 
                 if (! is_array($decoded)) {
+                    continue;
+                }
+
+                // In-band failure (HTTP 200 + an error event): remember it, keep draining to [DONE].
+                if (isset($decoded['error']) && ! isset($decoded['choices'])) {
+                    $this->streamError = is_array($decoded['error']) ? $decoded['error'] : ['message' => (string) $decoded['error']];
+
                     continue;
                 }
 
@@ -442,20 +565,20 @@ class NvidiaNimService
      * couple of times with a short backoff; fatal errors (missing key, 400,
      * 401/403, 404, 429) surface immediately as a classified NvidiaNimException.
      *
-     * @param  array  $payload   the full request body
-     * @param  bool   $stream    whether to request a streaming response
+     * @param  array  $payload  the full request body
+     * @param  bool  $stream  whether to request a streaming response
      *
-     * @throws NvidiaNimException  after classifying the failure (always).
+     * @throws NvidiaNimException after classifying the failure (always).
      */
-    protected function sendRequest(array $payload, bool $stream): ResponseInterface
+    protected function sendRequest(array $payload, bool $stream, int $timeout = 300, int $attempts = 3, bool $retryTimeouts = false): ResponseInterface
     {
         $requestId = bin2hex(random_bytes(6));
-        $attempts = 3;
+        $attempts = max(1, $attempts);
         $last = null;
 
         Log::info('Astro NIM request started', [
             'request_id' => $requestId,
-            'model' => $this->model(),
+            'model' => $payload['model'] ?? $this->model(),
             'stream' => $stream,
         ]);
 
@@ -471,7 +594,7 @@ class NvidiaNimService
                         ],
                         'json' => $payload,
                         'stream' => $stream,
-                        'timeout' => 300,
+                        'timeout' => $timeout,
                         'connect_timeout' => 15,
                     ]
                 );
@@ -514,6 +637,12 @@ class NvidiaNimService
                     $e
                 );
             } catch (GuzzleException $e) {
+                if ($retryTimeouts && $attempt < $attempts) {
+                    Log::warning('Astro NIM slow/failed attempt, retrying', ['request_id' => $requestId, 'attempt' => $attempt, 'timeout_s' => $timeout]);
+
+                    continue;
+                }
+
                 [$message, $category] = $this->classify(0, $e);
 
                 Log::warning('Astro NIM request failed', [
@@ -540,7 +669,7 @@ class NvidiaNimService
      * safe, user-facing message and an error category. Never includes the API
      * key or raw provider text.
      *
-     * @return array{0: string, 1: string}  [safe message, category]
+     * @return array{0: string, 1: string} [safe message, category]
      */
     protected function classify(int $status, \Throwable $e): array
     {

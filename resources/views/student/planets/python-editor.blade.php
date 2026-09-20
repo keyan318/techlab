@@ -309,21 +309,29 @@
             overflow: hidden;
             border-right: 1px solid #1e2a45;
         }
-        #python-code {
-            flex: 1;
-            padding: 16px 20px;
-            border: none;
-            outline: none;
-            resize: none;
-            background: #0b0f24;
-            color: #22c98a;
+        /* Syntax colouring: a highlighted <pre> sits behind a transparent textarea.
+           Both layers share identical metrics so the colours line up under the caret. */
+        .code-stack { position: relative; flex: 1; min-width: 0; background: #0b0f24; }
+        #code-hl, #python-code {
+            position: absolute; inset: 0;
+            margin: 0; padding: 16px 20px;
+            border: none; outline: none; resize: none;
             font-family: 'Space Mono', monospace;
             font-size: 0.875rem;
             line-height: 1.6;
-            caret-color: #22c98a;
-            overflow-y: auto;
+            letter-spacing: normal;
+            tab-size: 4;
+            white-space: pre;
+            word-wrap: normal;
+            overflow: auto;
         }
-        #python-code::selection { background: rgba(34,201,138,0.2); }
+        #code-hl { pointer-events: none; overflow: hidden; color: #e6e9ff; background: transparent; }
+        #python-code {
+            background: transparent;
+            color: transparent;
+            caret-color: #22c98a;
+        }
+        #python-code::selection { background: rgba(115,182,255,0.28); }
 
         /* Action bar */
         .action-bar {
@@ -659,13 +667,17 @@
 
         <div class="code-area-wrapper">
             <div class="line-numbers" id="line-numbers">1</div>
-            <textarea
-                id="python-code"
-                spellcheck="false"
-                autocorrect="off"
-                autocapitalize="off"
-                autocomplete="off"
-            >{{ $starterCode }}</textarea>
+            <div class="code-stack">
+                <pre id="code-hl" aria-hidden="true"></pre>
+                <textarea
+                    id="python-code"
+                    wrap="off"
+                    spellcheck="false"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    autocomplete="off"
+                >{{ $starterCode }}</textarea>
+            </div>
         </div>
 
         <div class="action-bar">
@@ -695,6 +707,7 @@
     </section>
 </main>
 
+<script src="{{ asset('js/code-highlight.js') }}?v={{ filemtime(public_path('js/code-highlight.js')) }}"></script>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 <script>
 (async function () {
@@ -723,6 +736,16 @@
         const count = codeArea.value.split('\n').length;
         lineNums.innerHTML = Array.from({ length: count }, (_, i) => i + 1).join('<br>');
     }
+    /* Syntax colouring layer (display only — the textarea stays the source of truth) */
+    const hlLayer = document.getElementById('code-hl');
+    CodeHighlight.injectStyles();
+    function updateHighlight() {
+        // Trailing newline keeps the last (empty) line the same height in both layers.
+        hlLayer.innerHTML = CodeHighlight.highlight(codeArea.value, 'python') + '\n';
+        hlLayer.scrollTop = codeArea.scrollTop;
+        hlLayer.scrollLeft = codeArea.scrollLeft;
+    }
+    codeArea.addEventListener('input', updateHighlight);
     codeArea.addEventListener('input', updateLineNumbers);
     codeArea.addEventListener('keydown', function (e) {
         if (e.key === 'Tab') {
@@ -731,13 +754,17 @@
             this.value = this.value.substring(0, s) + '    ' + this.value.substring(this.selectionEnd);
             this.selectionStart = this.selectionEnd = s + 4;
             updateLineNumbers();
+            updateHighlight();
         }
     });
     updateLineNumbers();
+    updateHighlight();
 
     /* Sync line-number scroll with textarea scroll */
     codeArea.addEventListener('scroll', () => {
         lineNums.scrollTop = codeArea.scrollTop;
+        hlLayer.scrollTop = codeArea.scrollTop;
+        hlLayer.scrollLeft = codeArea.scrollLeft;
     });
 
     /* Card flip */

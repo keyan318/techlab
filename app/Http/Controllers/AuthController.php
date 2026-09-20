@@ -16,7 +16,7 @@ class AuthController extends Controller
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect(Auth::user()->role === 'teacher' ? route('teacher.dashboard') : route('student.chat'));
+            return redirect(Auth::user()->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard'));
         }
 
         return view('auth.login');
@@ -44,7 +44,7 @@ class AuthController extends Controller
             // were (e.g. the crew home blade) before the session expired.
             $role = Auth::user()->role ?? 'student';
 
-            return redirect($role === 'teacher' ? route('teacher.dashboard') : route('student.chat'));
+            return redirect($role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard'));
         }
 
         return back()
@@ -58,7 +58,7 @@ class AuthController extends Controller
     public function showRegister(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect(Auth::user()->role === 'teacher' ? route('teacher.dashboard') : route('student.chat'));
+            return redirect(Auth::user()->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard'));
         }
 
         return view('auth.register');
@@ -87,7 +87,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $request->session()->put('role', $user->role);
 
-        return redirect($user->role === 'teacher' ? route('teacher.dashboard') : route('student.chat'));
+        return redirect($user->role === 'teacher' ? route('teacher.dashboard') : route('student.dashboard'));
     }
 
     /**

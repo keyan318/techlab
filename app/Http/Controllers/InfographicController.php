@@ -44,6 +44,7 @@ class InfographicController extends Controller
             'transcript.*.role' => ['nullable', 'string'],
             'transcript.*.content' => ['nullable', 'string'],
             'file' => ['nullable', 'file', 'max:10240'],
+            'style' => ['nullable', 'in:anime,cartoon'],
         ]);
 
         // 1) Resolve the real learning material. No material -> friendly nudge.
@@ -55,7 +56,7 @@ class InfographicController extends Controller
 
         if (trim($source) === '') {
             return response()->json([
-                'error' => "Chat with Astro first — the infographic is built from your current conversation.",
+                'error' => 'Chat with Astro first — the infographic is built from your current conversation.',
                 'kind' => 'empty_source',
             ], 422);
         }
@@ -63,7 +64,7 @@ class InfographicController extends Controller
         // 2) Generate the structured lesson plan (Astro = reasoning model).
         set_time_limit(0);
         try {
-            $plan = $this->content->generate($source);
+            $plan = $this->content->generatePoster($source, $data['style'] ?? 'cartoon');
         } catch (InfographicSourceException $e) {
             return response()->json(['error' => $e->getMessage(), 'kind' => 'source'], $e->status());
         } catch (InfographicGenerationException $e) {

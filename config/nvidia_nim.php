@@ -47,6 +47,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Vision model (image attachments in chat)
+    |--------------------------------------------------------------------------
+    | Used instead of `model` for a message that has an image attached. Must be
+    | a multimodal chat model served by the same NIM endpoint (verified: the
+    | 11B Llama 3.2 vision model answers in ~2s). Set NVIDIA_NIM_VISION_MODEL= (empty)
+    | to disable image understanding; the chat UI then declines image uploads.
+    */
+    'vision_model' => env('NVIDIA_NIM_VISION_MODEL', 'meta/llama-3.2-11b-vision-instruct'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Model label (shown in the chat UI)
     |--------------------------------------------------------------------------
     */
@@ -90,6 +101,35 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Astro modes — Fast / Deep (chosen per message by App\Services\AstroRouter)
+    |--------------------------------------------------------------------------
+    |
+    | Both modes use the SAME model (NVIDIA_NIM_MODEL). They differ only in
+    | reasoning effort and token budget. `max_tokens` covers reasoning AND the
+    | visible answer, so Deep gets a much larger cap.
+    |
+    | `thinking_token_budget` is the router's name for "how many tokens the model
+    | may spend reasoning". `thinking_budget_param` is the field name actually sent
+    | to NVIDIA: the hosted Super endpoint REJECTS `thinking_token_budget` (HTTP 400
+    | "Unsupported parameter") and accepts `reasoning_budget`; Nemotron 3.5 Lightning
+    | documents `thinking_token_budget`. Change it only if you change models.
+    |
+    */
+    'modes' => [
+        'fast' => [
+            'thinking' => false,
+            'max_tokens' => (int) env('NVIDIA_NIM_FAST_MAX_TOKENS', 800),
+        ],
+        'deep' => [
+            'thinking' => true,
+            'max_tokens' => (int) env('NVIDIA_NIM_DEEP_MAX_TOKENS', 4096),
+            'thinking_token_budget' => (int) env('NVIDIA_NIM_DEEP_THINKING_BUDGET', 2048),
+        ],
+    ],
+    'thinking_budget_param' => env('NVIDIA_NIM_THINKING_BUDGET_PARAM', 'reasoning_budget'),
+
+    /*
+    |--------------------------------------------------------------------------
     | System Prompt — Astro, the TechLab AI teacher
     |--------------------------------------------------------------------------
     |
@@ -109,6 +149,24 @@ RULES:
 6. Keep explanations simple and clear
 7. Never make students feel stupid
 8. Match depth to question complexity
+PROMPT,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Teacher persona — Astro as a teaching assistant for the Captain (teacher chat)
+    |--------------------------------------------------------------------------
+    */
+    'teacher_system_prompt' => <<<'PROMPT'
+You are Astro, the teaching assistant for a TechLab Captain (a teacher). Give direct answers only.
+
+You help teachers of programming, networking and cybersecurity with: lesson plans and pacing, explaining concepts so they can teach them, quiz and exam questions with answer keys, grading rubrics and feedback wording, activity and lab ideas, classroom management, and ways to support struggling or advanced students.
+
+RULES:
+1. NEVER show your thinking process; give only the final answer
+2. Speak to the teacher as a colleague, not as a student
+3. Prefer practical, ready-to-use output (lists, outlines, sample questions, rubrics) the teacher can copy into class
+4. When writing quiz questions, mark the correct answer and keep distractors plausible
+5. Match depth to the request; ask one short clarifying question only if the grade level or topic is truly unclear
 PROMPT,
 
     /*

@@ -86,6 +86,10 @@ return [
     */
     'image_model' => env('NVIDIA_IMAGE_MODEL', ''),
     'image_base_url' => env('NVIDIA_IMAGE_BASE_URL', 'https://ai.api.nvidia.com/v1/genai'),
+    // flux.1-schnell is the fast free model (max 4 steps); flux.1-dev needs ~20-30.
+    'image_steps' => (int) env('NVIDIA_IMAGE_STEPS', 4),
+    'image_size' => (int) env('NVIDIA_IMAGE_SIZE', 768),
+    'image_timeout' => (int) env('NVIDIA_IMAGE_TIMEOUT', 60),
 
     /*
     |--------------------------------------------------------------------------
@@ -120,6 +124,42 @@ return [
         'cover', 'concept', 'architecture', 'process', 'comparison',
         'analogy', 'code', 'timeline', 'diagram', 'summary', 'quiz',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Poster prompt — single-page visual infographic
+    |--------------------------------------------------------------------------
+    |
+    | The Studio "Infographic" card renders ONE poster (title, subtitle, 3-4
+    | illustrated sections, 3 takeaways) that fits its container — not a
+    | multi-slide deck. The model only plans the content and a short image
+    | brief per section; text is rendered by the frontend (so it is always
+    | legible) and each section's illustration comes from the image model.
+    */
+    'poster_prompt' => <<<'PROMPT'
+You are Astro, the AI teacher inside TechLab, designing a ONE-PAGE educational INFOGRAPHIC POSTER from the student's learning material. It must read at a glance, like a designed poster, not a document.
+
+Reply with ONE JSON object and NOTHING else (no markdown, no code fence):
+
+{
+  "title": string,          // punchy poster title, max 8 words
+  "subtitle": string,       // one line, max 18 words, says what the student will understand
+  "sections": [             // 3 or 4 sections, in learning order (a flow left to right)
+    {
+      "label": string,      // 1-3 word tag, e.g. "Step 1", "The Problem", "Layer 3"
+      "heading": string,    // max 5 words
+      "detail": string,     // max 22 words, plain and concrete
+      "points": [string],   // 0-2 tiny facts, max 8 words each
+      "image_prompt": string // max 25 words: an illustration of the concept, ideally with a friendly character interacting with the key objects. No text, no letters.
+    }
+  ],
+  "takeaways": [            // exactly 3
+    { "heading": string, "detail": string }   // heading max 4 words, detail max 14 words
+  ]
+}
+
+Rules: be accurate to the material; no filler; do not repeat ideas between sections; no markdown; valid JSON only.
+PROMPT,
 
     /*
     |--------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 
         <button class="sidebar-tab active" type="button">
 
-            <span class="tab-icon">▤</span>
+            <svg class="tab-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 3v18"/><rect x="11" y="7" width="6" height="4" rx="1"/><path d="M11 15h6"/></svg>
 
             <span>Course Outline</span>
 
@@ -14,7 +14,7 @@
 
         <button class="sidebar-tab" type="button">
 
-            <span class="tab-icon">▧</span>
+            <svg class="tab-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
 
             <span>Resources</span>
 
@@ -727,12 +727,13 @@
 <style>
 
 .programming-sidebar {
+    font-family: 'Inter', system-ui, sans-serif;
     width: 30vw;
     min-width: 380px;
     max-width: 520px;
     height: 100vh;
-    background: #ffffff;
-    border-right: 1px solid #dddddd;
+    background: #f9f9f9;
+    border-right: 1px solid rgba(0,0,0,.09);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -746,17 +747,18 @@
 .sidebar-tabs {
     display: flex;
     flex-shrink: 0;
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid rgba(0,0,0,.09);
 }
 
 .sidebar-tab {
+    font-family: 'Space Grotesk', sans-serif;
     flex: 1;
     height: 90px;
     border: none;
     background: #ffffff;
     font-size: 20px;
     font-weight: 600;
-    color: #333333;
+    color: #0d0d0d;
     cursor: pointer;
     border-bottom: 4px solid transparent;
     display: flex;
@@ -770,12 +772,16 @@
     background: #f7f7f7;
 }
 
+.sidebar-tab.active .tab-icon { color: #2f7de1; }
+
 .sidebar-tab.active {
-    color: #4caf50;
-    border-bottom-color: #4caf50;
+    color: #2f7de1;
+    border-bottom-color: #2f7de1;
 }
 
 .tab-icon {
+    flex-shrink: 0;
+    color: #676767;
     font-size: 24px;
 }
 
@@ -798,7 +804,7 @@
     height: 56px;
     box-sizing: border-box;
     padding: 0 18px 0 48px;
-    border: 2px solid #dddddd;
+    border: 2px solid rgba(0,0,0,.09);
     border-radius: 12px;
     font-size: 18px;
     outline: none;
@@ -806,7 +812,7 @@
 }
 
 .search-wrapper input:focus {
-    border-color: #4caf50;
+    border-color: #2f7de1;
 }
 
 .search-icon {
@@ -836,7 +842,7 @@
 ========================= */
 
 .course-module {
-    border-top: 1px solid #dddddd;
+    border-top: 1px solid rgba(0,0,0,.09);
 }
 
 
@@ -864,10 +870,12 @@
 }
 
 .module-title {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.02em;
     font-size: 22px;
     line-height: 1.35;
     font-weight: 700;
-    color: #333333;
+    color: #0d0d0d;
     margin-bottom: 18px;
 }
 
@@ -880,14 +888,14 @@
 .progress-track {
     flex: 1;
     height: 8px;
-    background: #eeeeee;
+    background: #f3f3f3;
     border-radius: 20px;
     overflow: hidden;
 }
 
 .progress-fill {
     height: 100%;
-    background: #4caf50;
+    background: #2f7de1;
     border-radius: 20px;
     transition: width 0.3s ease;
 }
@@ -912,7 +920,7 @@
     height: 48px;
     border: none;
     border-radius: 8px;
-    background: #eeeeee;
+    background: #f3f3f3;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -928,12 +936,12 @@
 }
 
 .module-toggle:hover {
-    background: #4caf50;
+    background: #2f7de1;
     color: #ffffff;
 }
 
 .module-toggle.open {
-    background: #4caf50;
+    background: #2f7de1;
     color: #ffffff;
 }
 
@@ -948,7 +956,7 @@
 
 .module-lessons {
     display: none;
-    background: #f7fcf6;
+    background: #f6f9fe;
     padding: 8px 18px 16px 28px;
 }
 
@@ -975,22 +983,22 @@
 }
 
 .lesson-item:hover {
-    background: #e6f5e3;
+    background: #eaf2fd;
 }
 
 .lesson-item.active {
-    background: #e6f5e3;
+    background: #eaf2fd;
 }
 
 .lesson-item.active .lesson-dot {
-    background: #4caf50;
-    border-color: #4caf50;
+    background: #2f7de1;
+    border-color: #2f7de1;
 }
 
 /* Completed lessons: solid green filled dot */
 .lesson-item.completed .lesson-dot {
-    background: #4caf50;
-    border-color: #4caf50;
+    background: #2f7de1;
+    border-color: #2f7de1;
 }
 
 /* Locked lessons: dim + not-allowed cursor */
@@ -1071,12 +1079,12 @@
     padding: 14px 8px;
     font-size: 18px;
     line-height: 1.35;
-    color: #333333;
+    color: #0d0d0d;
 }
 
 .lesson-number {
     font-weight: 600;
-    color: #4caf50;
+    color: #2f7de1;
 }
 
 

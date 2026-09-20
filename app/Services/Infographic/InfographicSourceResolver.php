@@ -4,6 +4,7 @@ namespace App\Services\Infographic;
 
 use App\Exceptions\InfographicSourceException;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 
 /**
  * Resolves a student's "learning material" into one clean text blob.
@@ -72,7 +73,7 @@ class InfographicSourceResolver
     /**
      * Extract text from an uploaded file by type.
      *
-     * @param  \Illuminate\Http\UploadedFile  $file
+     * @param  UploadedFile  $file
      */
     protected function fromFile($file): string
     {
@@ -126,7 +127,7 @@ class InfographicSourceResolver
             );
         }
 
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         if ($zip->open($path) !== true) {
             throw new InfographicSourceException(
                 "Astro couldn't open that PowerPoint file. Please paste the text instead.",
@@ -146,7 +147,7 @@ class InfographicSourceResolver
         $text = implode("\n\n", array_filter($parts));
         if ($text === '') {
             throw new InfographicSourceException(
-                "That PowerPoint had no readable text. Please paste the text instead.",
+                'That PowerPoint had no readable text. Please paste the text instead.',
                 422
             );
         }
@@ -231,7 +232,7 @@ class InfographicSourceResolver
         if (! class_exists(\ZipArchive::class)) {
             return null;
         }
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         if ($zip->open($path) !== true) {
             return null;
         }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Crew;
+use App\Models\TeacherClass;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +25,38 @@ class TeacherController extends Controller
         }
 
         $crew = Crew::where('teacher_id', Auth::id())->first();
+        $crew?->load(['modules', 'roster']);
 
-        return view('teacher.teacherDashboard', compact('crew'));
+        $quizzes = $crew ? $crew->quizzes()->withCount('attempts')->get() : collect();
+        $quizCount = $quizzes->count();
+        $submissionCount = $quizzes->sum('attempts_count');
+
+        $classes = TeacherClass::where('user_id', Auth::id())
+            ->orderBy('day')->orderBy('starts_at')->get()->map->toCard();
+
+        return view('teacher.teacherDashboard', compact('crew', 'quizCount', 'submissionCount', 'classes'));
+    }
+
+    /**
+     * Crew page — roster, learning modules and quizzes. Needs a crew, so a teacher
+     * without one is sent back to the dashboard to create it.
+     */
+    public function crew(): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect(route('login'));
+        }
+        if ((Auth::user()->role ?? 'student') !== 'teacher') {
+            return redirect(route('student.crew'));
+        }
+
+        $crew = Crew::where('teacher_id', Auth::id())->first();
+        if (! $crew) {
+            return redirect(route('teacher.dashboard'));
+        }
+        $crew->load(['modules.materials', 'roster']);
+
+        return view('teacher.teacherCrew', compact('crew'));
     }
 
     /**

@@ -15,6 +15,16 @@ class Crew extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
+    public function modules(): HasMany
+    {
+        return $this->hasMany(CourseModule::class)->orderBy('position')->orderBy('id');
+    }
+
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(CrewQuiz::class)->orderBy('id');
+    }
+
     public function members(): HasMany
     {
         return $this->hasMany(User::class);

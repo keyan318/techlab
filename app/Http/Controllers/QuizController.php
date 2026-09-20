@@ -43,7 +43,9 @@ class QuizController extends Controller
 
         $data = $request->validate([
             'conversation_id' => ['required', 'integer'],
+            'count' => ['nullable', 'integer', 'min:'.config('quiz.min_questions', 3), 'max:'.config('quiz.max_questions', 20)],
         ]);
+        $count = (int) ($data['count'] ?? config('quiz.default_questions', 5));
 
         $user = $request->user();
 
@@ -60,7 +62,7 @@ class QuizController extends Controller
         // Fast local insufficient-content short-circuit (no NIM call).
         if (trim($source) === '') {
             return response()->json([
-                'error' => "Chat with Astro first — the quiz is built from your current conversation.",
+                'error' => 'Chat with Astro first — the quiz is built from your current conversation.',
                 'kind' => 'insufficient_content',
             ], 422);
         }
@@ -73,7 +75,7 @@ class QuizController extends Controller
             // let the model decide. So only short-circuit when source is clearly tiny.
             if (mb_strlen(trim($source)) < 80) {
                 return response()->json([
-                    'error' => "Not enough educational material in this conversation to build a quiz. Chat a bit more with Astro about a topic first.",
+                    'error' => 'Not enough educational material in this conversation to build a quiz. Chat a bit more with Astro about a topic first.',
                     'kind' => 'insufficient_content',
                 ], 422);
             }
@@ -82,11 +84,15 @@ class QuizController extends Controller
         set_time_limit(0);
 
         try {
-            $quiz = $this->content->generate($source);
+            $quiz = $this->content->generate($source, $count);
         } catch (QuizSourceException $e) {
             return response()->json(['error' => $e->getMessage(), 'kind' => 'insufficient_content'], $e->status());
         } catch (QuizGenerationException $e) {
-            $status = $e->category === 'NIM_RATE_LIMIT' ? 429 : $e->status();
+            $status = match ($e->category) {
+                'NIM_RATE_LIMIT' => 429,
+                'NIM_MODEL_ERROR' => 503,   // upstream 404/410 is our outage, not the client's
+                default => $e->status(),
+            };
             Log::warning('Quiz generation failed', [
                 'category' => $e->category,
                 'request_id' => $e->requestId,

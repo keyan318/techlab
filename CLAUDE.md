@@ -66,3 +66,7 @@ Key routing rules:
 - Save progress → invoke /context-save
 - Resume context → invoke /context-restore
 - Author a backlog-ready spec/issue → invoke /spec
+
+## How to talk to the user
+
+When explaining what you are doing or why, keep it simple. Explain it like you're talking to a curious 15-year-old: short sentences, everyday words, a quick example or comparison when it helps. Avoid deep technical jargon; if a technical word is really needed, say what it means in plain words right after. Code, commands and file names stay exact, but the explanation around them should be easy to follow.

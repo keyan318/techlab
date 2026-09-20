@@ -6,14 +6,18 @@
 
     <title>Programming Course</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
 
         :root {
-            --green: #4CAF50;
-            --light-green: #E8F5E9;
-            --gray: #f0f0f0;
-            --dark-gray: #333;
-            --border-gray: #e0e0e0;
+            --green: #2f7de1;
+            --light-green: #eaf2fd;
+            --gray: #f3f3f3;
+            --dark-gray: #0d0d0d;
+            --border-gray: rgba(0,0,0,.09);
             --white: #ffffff;
         }
 
@@ -30,19 +34,9 @@
         }
 
         body {
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                'Segoe UI',
-                Roboto,
-                Oxygen,
-                Ubuntu,
-                Cantarell,
-                'Open Sans',
-                'Helvetica Neue',
-                sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
 
-            background-color: #f5f5f5;
+            background-color: #f9f9f9;
             color: var(--dark-gray);
             overflow: hidden;
         }
@@ -223,7 +217,7 @@
             font-size: 16px;
             line-height: 1.7;
 
-            color: #555;
+            color: #676767;
 
             margin-bottom: 20px;
         }
@@ -242,11 +236,7 @@
 
             line-height: 1.6;
 
-            font-family:
-                'SFMono-Regular',
-                Consolas,
-                'Liberation Mono',
-                monospace;
+            font-family: 'Space Mono', monospace;
         }
 
         .exercise-card {
@@ -417,6 +407,83 @@
             }
         }
 
+    
+        .lesson-title,
+        .lesson-heading,
+        .secondary-heading,
+        .content h1,
+        .content h2,
+        .content h3,
+        .content h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+
+        /* =========================================================
+           FULL SCREEN MODE — lesson only, floating exit button
+        ========================================================= */
+
+        .fs-btn {
+            border: 1px solid var(--border-gray);
+            background: var(--white);
+            color: var(--dark-gray);
+        }
+
+        .fs-btn:active,
+        .fs-exit:active {
+            transform: scale(0.94);
+            transition-duration: 0.1s;
+        }
+
+        .fs-exit {
+            display: none;
+            position: fixed;
+            right: 28px;
+            bottom: 28px;
+            z-index: 50;
+            width: 52px;
+            height: 52px;
+            border: none;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            background: var(--green);
+            box-shadow: 0 8px 24px -6px rgba(47, 125, 225, .55);
+            transition: transform 0.25s cubic-bezier(.34, 1.4, .64, 1);
+        }
+
+        .fs-exit:hover { transform: scale(1.06); }
+
+        body.is-fullscreen .programming-sidebar,
+        body.is-fullscreen .header {
+            display: none;
+        }
+
+        body.is-fullscreen .fs-exit {
+            display: flex;
+            animation: fs-pop 0.3s cubic-bezier(.34, 1.4, .64, 1);
+        }
+
+        body.is-fullscreen .content {
+            padding: 56px max(48px, 8vw);
+        }
+
+        body.is-fullscreen .lesson-content {
+            max-width: 1200px;
+        }
+
+        @keyframes fs-pop {
+            from { opacity: 0; transform: scale(0.6); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fs-exit, body.is-fullscreen .fs-exit { animation: none; transition: none; }
+        }
+
     </style>
 </head>
 
@@ -489,18 +556,14 @@
 
             <div class="header-right">
 
-                <div class="icon" title="Dark mode">🌙</div>
-                <div class="icon" title="Search">🔍</div>
-                <div class="icon" title="Language">🌐</div>
-                <div class="icon" title="Accessibility">♿</div>
+                <a id="ask-astro-link" href="/chat" class="icon" title="Ask Astro about this lesson"
+                   style="text-decoration:none;width:auto;padding:0 12px;font-size:13px;font-weight:600;white-space:nowrap;">
+                    🤖 Ask Astro
+                </a>
 
-                <div
-                    class="icon"
-                    title="Fullscreen"
-                    onclick="toggleFullscreen()"
-                >
-                    ⛶
-                </div>
+                <button type="button" class="icon fs-btn" title="Full screen" aria-label="Full screen" onclick="toggleFullscreen()">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
+                </button>
 
             </div>
 
@@ -586,9 +649,33 @@
         {module:'m7', lesson:'lesson01'},
     ];
 
+    // Turn every plain <pre class="code-block"> in the lesson into the same
+    // highlighted, copy-able box the chat uses. A block that follows an
+    // "Output:" line is program output, so it stays uncoloured.
+    function upgradeCodeBlocks() {
+        if (!window.CodeHighlight) return;
+        stage.querySelectorAll('pre.code-block').forEach(function (pre) {
+            const code = pre.textContent.replace(/\n$/, '');
+            const prev = pre.previousElementSibling;
+            const isOutput = prev && /^\s*output\b/i.test(prev.textContent);
+            const wrap = document.createElement('div');
+            wrap.innerHTML = CodeHighlight.blockHtml(code, isOutput ? 'output' : 'python');
+            const box = wrap.firstElementChild;
+            box.style.marginBottom = '40px';
+            pre.replaceWith(box);
+        });
+    }
+
     function syncTitleAndSidebar(moduleId, lessonId) {
         const heading = stage.querySelector('h1, .lesson-heading');
         if (titleEl) titleEl.textContent = heading ? heading.textContent.trim() : 'Untitled lesson';
+
+        // "Ask Astro about this lesson" -> chat with this lesson pre-connected as a source.
+        const askLink = document.getElementById('ask-astro-link');
+        const num = String(lessonId).match(/(\d+)$/);
+        if (askLink && num) {
+            askLink.href = '/chat?source=' + encodeURIComponent(slug + '/' + String(moduleId).toUpperCase() + '/lesson-' + num[1]);
+        }
 
         document.querySelectorAll('.lesson-item').forEach(function (a) {
             a.classList.toggle(
@@ -629,6 +716,7 @@
             const html = await res.text();
 
             stage.innerHTML = html;
+            upgradeCodeBlocks();
             current = { module: moduleId, lesson: lessonId };
 
             // ── Keep CURRENT_LESSON in sync so the Python editor always
@@ -710,16 +798,29 @@
     window.goToNextLesson = goToNextLesson;
 
     window.toggleFullscreen = function () {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen && document.exitFullscreen();
-        }
+        var on = !document.body.classList.contains('is-fullscreen');
+        document.body.classList.toggle('is-fullscreen', on);
+        try {
+            if (on && !document.fullscreenElement && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (!on && document.fullscreenElement && document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        } catch (e) {}
     };
+
+    // Esc (browser leaves fullscreen) -> leave our fullscreen layout too.
+    document.addEventListener('fullscreenchange', function () {
+        if (!document.fullscreenElement) {
+            document.body.classList.remove('is-fullscreen');
+        }
+    });
 
     // Sync the header title + sidebar highlight for whatever lesson
     // was rendered server-side on first page load.
     document.addEventListener('DOMContentLoaded', function () {
+        if (window.CodeHighlight) CodeHighlight.wire();
+        upgradeCodeBlocks();
         syncTitleAndSidebar(current.module, current.lesson);
 
         // Tell the sidebar script (which may have already run) about
@@ -731,6 +832,12 @@
 
 })();
 </script>
+
+<script src="{{ asset('js/code-highlight.js') }}?v={{ filemtime(public_path('js/code-highlight.js')) }}"></script>
+
+<button type="button" class="fs-exit" title="Exit full screen" aria-label="Exit full screen" onclick="toggleFullscreen()">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+</button>
 
 </body>
 </html>

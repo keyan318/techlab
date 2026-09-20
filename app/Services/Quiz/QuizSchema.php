@@ -16,9 +16,9 @@ namespace App\Services\Quiz;
 class QuizSchema
 {
     /**
-     * @return array<string, mixed>|null  normalized quiz, or null if unusable
+     * @return array<string, mixed>|null normalized quiz, or null if unusable
      */
-    public function normalize(?array $raw): ?array
+    public function normalize(?array $raw, int $count = 5): ?array
     {
         if (! is_array($raw)) {
             return null;
@@ -66,10 +66,9 @@ class QuizSchema
             return null;
         }
 
-        // Cap to exactly 5 for v1 (model is instructed to emit 5, but we enforce).
-        $max = 5;
-        if (count($normalized) > $max) {
-            $normalized = array_slice($normalized, 0, $max);
+        // Cap to the requested count (model is told the count, but we enforce).
+        if (count($normalized) > $count) {
+            $normalized = array_slice($normalized, 0, $count);
         }
 
         // Assign stable ids server-side (q1..qN), ignore whatever the model sent.
@@ -78,8 +77,9 @@ class QuizSchema
         }
         unset($q);
 
-        // v1 requires exactly 5 valid questions. Fewer means insufficient material.
-        if (count($normalized) < 5) {
+        // Accept a slightly short batch (a dropped bad question shouldn't fail the
+        // whole quiz), but not a mostly-empty one.
+        if (count($normalized) < min($count, max(3, (int) ceil($count * 0.4)))) {
             return null;
         }
 
@@ -133,7 +133,7 @@ class QuizSchema
         if (is_array($choicesBeforeRekey) && $this->choicesNeedRemap($choicesBeforeRekey)) {
             $origText = null;
             foreach ($choicesBeforeRekey as $orig) {
-                if (is_array($orig) && strtoupper(trim((string)($orig['key'] ?? ''))) === $correctKeyRaw) {
+                if (is_array($orig) && strtoupper(trim((string) ($orig['key'] ?? ''))) === $correctKeyRaw) {
                     $origText = $this->asText($orig['text'] ?? $orig['label'] ?? '');
                     break;
                 }
@@ -209,6 +209,7 @@ class QuizSchema
                     continue;
                 }
                 $out[] = ['key' => $keys[$nextKey++], 'text' => mb_substr($text, 0, 120)];
+
                 continue;
             }
 
@@ -249,12 +250,17 @@ class QuizSchema
     {
         $keys = [];
         foreach ($raw as $item) {
-            if (!is_array($item)) return true;
-            $k = strtoupper(trim((string)($item['key'] ?? '')));
-            if (!in_array($k, ['A','B','C','D'], true)) return true;
+            if (! is_array($item)) {
+                return true;
+            }
+            $k = strtoupper(trim((string) ($item['key'] ?? '')));
+            if (! in_array($k, ['A', 'B', 'C', 'D'], true)) {
+                return true;
+            }
             $keys[] = $k;
         }
-        return $keys !== ['A','B','C','D'];
+
+        return $keys !== ['A', 'B', 'C', 'D'];
     }
 
     protected function asText($value): string

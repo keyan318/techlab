@@ -1,0 +1,189 @@
+/*
+ * TechLab theme tokens.
+ * Dark = "deep space" (original look). Light = "daylight orbit": cool lavender-tinted whites,
+ * deep indigo ink, and the brand blue/violet/cyan darkened just enough to hold AA contrast on white.
+ * Surfaces follow the usual light-UI recipe: page tint < white cards < white raised, separated by
+ * low-alpha indigo borders and soft, tinted shadows instead of black ones.
+ *
+ * Tailwind (CDN) colors read the --c-* RGB triplets; page-level CSS reads the named vars.
+ */
+:root {
+  --c-void: 6 6 26;
+  --c-ink: 234 238 255;
+  --c-muted: 152 162 212;
+  --c-blue: 115 182 255;
+  --c-violet: 155 107 255;
+  --c-cyan: 91 225 255;
+  --c-glass: 123 142 220;
+  --c-glass-a: .07;
+  --c-glassBorder: 150 170 255;
+  --c-glassBorder-a: .18;
+
+  --void: #06061a; --cosmic: #120a33; --cosmic-2: #1e1259;
+  --blue: #73b6ff; --violet: #9b6bff; --cyan: #5be1ff; --green: #7cffb2; --red: #ff9bb0;
+  --text: #eaeeff; --muted: #98a2d4;
+  --glass: rgba(123,142,220,.07); --glass-border: rgba(150,170,255,.18);
+
+  --space-bg:
+    radial-gradient(120% 90% at 50% -10%, #241456 0%, rgba(36,20,86,0) 55%),
+    radial-gradient(100% 80% at 85% 110%, #1a0f4d 0%, rgba(26,15,77,0) 60%),
+    linear-gradient(160deg, #0a0826 0%, #120a33 45%, #1e1259 100%);
+  --panel-solid: rgba(14,16,44,.92);
+  --panel-side: rgba(6,6,26,.6);
+  --overlay: rgba(3,3,15,.74);
+}
+
+html[data-theme="light"] {
+  --c-void: 255 255 255;
+  --c-ink: 13 13 13;
+  --c-muted: 103 103 103;
+  --c-blue: 47 125 225;
+  --c-violet: 109 63 224;
+  --c-cyan: 14 159 196;
+
+  --void: #ffffff; --cosmic: #f9f9f9; --cosmic-2: #f3f3f3;
+  --blue: #2f7de1; --violet: #6d3fe0; --cyan: #0e9fc4; --green: #0f9d63; --red: #d6325a;
+  --text: #0d0d0d; --muted: #676767;
+  --glass: rgba(0,0,0,.045); --glass-border: rgba(0,0,0,.09);
+
+  --space-bg: #ffffff;
+  --panel-solid: #ffffff;
+  --panel-side: #f9f9f9;
+  --overlay: rgba(0,0,0,.35);
+}
+
+html { color-scheme: dark; }
+html[data-theme="light"] { color-scheme: light; }
+
+/* Smooth cross-fade only while toggling (class added by the button), never on page load */
+html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *::after {
+  transition: background-color .25s ease, border-color .25s ease, color .25s ease, fill .25s ease, stroke .25s ease, box-shadow .25s ease !important;
+}
+
+/* ---------- Backgrounds ---------- */
+body { background-color: var(--void); }
+.space, .space-bg { background: var(--space-bg) !important; }
+
+html[data-theme="light"] .star,
+html[data-theme="light"] .planet { display: none !important; }
+html[data-theme="light"] .glow { opacity: .28 !important; animation: none !important; }
+
+/* ---------- Light-mode overrides for hard-coded dark utilities ---------- */
+html[data-theme="light"] [class*="bg-[rgba(14,16,44,0.92)]"],
+html[data-theme="light"] [class*="bg-[rgba(10,8,30,0.97)]"] { background-color: var(--panel-solid) !important; border: 1px solid rgba(0,0,0,.09); box-shadow: 0 8px 24px -8px rgba(0,0,0,.16) !important; }
+html[data-theme="light"] [class*="bg-[rgba(6,6,26,0.6)]"],
+html[data-theme="light"] [class*="bg-[rgba(6,6,26,0.5)]"],
+html[data-theme="light"] [class*="bg-[rgba(6,6,26,0.55)]"] { background-color: var(--panel-side) !important; }
+html[data-theme="light"] [class*="bg-[rgba(3,3,15,0.74)]"] { background-color: var(--overlay) !important; }
+
+html[data-theme="light"] .bg-white { background-color: #fff !important; }
+html[data-theme="light"] [class*="bg-white/"],
+html[data-theme="light"] [class*="bg-[rgba(255,255,255,0.08)]"] { background-color: rgba(0,0,0,.06) !important; }
+html[data-theme="light"] [class*="border-white"] { border-color: rgba(0,0,0,.09) !important; }
+html[data-theme="light"] .text-white { color: rgb(var(--c-ink)) !important; }
+html[data-theme="light"] [class*="bg-[rgba(123,142,220,0.09)]"] { background-color: rgba(0,0,0,.04) !important; }
+html[data-theme="light"] [class*="bg-[rgba(150,170,255,0.12)]"] { background-color: rgba(0,0,0,.06) !important; }
+
+/* Studio "Add note" pill: near-black with white text on light surfaces */
+html[data-theme="light"] .studio-add-note { background: #0d0d0d !important; color: #fff !important; box-shadow: 0 6px 20px rgba(0,0,0,.25) !important; }
+html[data-theme="light"] .studio-add-note:hover { background: #262626 !important; box-shadow: 0 10px 28px rgba(0,0,0,.3) !important; }
+
+/* Accent text: darken for contrast on light surfaces */
+html[data-theme="light"] [class*="text-[#5be1ff]"] { color: #0a7f9f !important; }
+html[data-theme="light"] [class*="text-[#73b6ff]"] { color: #2468c4 !important; }
+html[data-theme="light"] [class*="text-[#9b6bff]"] { color: #6d3fe0 !important; }
+html[data-theme="light"] [class*="text-[#7cffb2]"],
+html[data-theme="light"] [class*="text-[#5fe0a0]"] { color: #0c8552 !important; }
+html[data-theme="light"] [class*="text-[#ff8aa0]"],
+html[data-theme="light"] [class*="text-[#ff6b81]"],
+html[data-theme="light"] [class*="text-[#ff8fa3]"],
+html[data-theme="light"] [class*="text-[#ff8f8f]"],
+html[data-theme="light"] [class*="text-[#ffb3c2]"],
+html[data-theme="light"] [class*="text-[#ffc2cc]"] { color: #c62550 !important; }
+html[data-theme="light"] [class*="text-[#ffcf85]"] { color: #a35f00 !important; }
+html[data-theme="light"] [class*="border-[#7cffb2]"] { border-color: #2fb37a !important; }
+html[data-theme="light"] [class*="bg-[#7cffb2]"] { background-color: #2fb37a !important; }
+html[data-theme="light"] [class*="bg-[#ff8aa0]"] { background-color: #e0486d !important; }
+html[data-theme="light"] [class*="bg-[#73b6ff]"] { background-color: #2f7de1 !important; }
+html[data-theme="light"] [class*="bg-[#5be1ff]"] { background-color: #12a9d0 !important; }
+
+/* Inputs / scrollbars / selection */
+html[data-theme="light"] ::placeholder { color: rgba(103,103,103,.75) !important; }
+html[data-theme="light"] ::selection { background: rgba(47,125,225,.25); }
+html[data-theme="light"] * { scrollbar-color: rgba(0,0,0,.25) transparent; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.22); }
+
+
+/* ---------- Page-level classes with hard-coded dark values ---------- */
+html[data-theme="light"] body { background: var(--void) !important; color: var(--text); }
+html[data-theme="light"] .card { background: #fff !important; border-color: var(--glass-border) !important; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+html[data-theme="light"] .card-inner { background: #f9f9f9 !important; border-color: rgba(0,0,0,.06) !important; }
+html[data-theme="light"] .ring-track { stroke: rgba(0,0,0,.1) !important; }
+html[data-theme="light"] .sidebar { background: #f9f9f9 !important; }
+html[data-theme="light"] .course-head { background: #f9f9f9 !important; }
+
+/* ---------- Light sidebar: ChatGPT-style (flat, neutral, no glow) ---------- */
+html[data-theme="light"] .tl-glass {
+  background: #f9f9f9 !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border-right: 1px solid rgba(0,0,0,.08) !important;
+  box-shadow: none !important;
+}
+html[data-theme="light"] .tl-glass .tl-item { color: #0d0d0d; border-radius: 10px; }
+html[data-theme="light"] .tl-glass .tl-item:hover,
+html[data-theme="light"] .tl-glass .tl-item:focus-visible { background: rgba(0,0,0,.055) !important; color: #0d0d0d !important; }
+/* active row (current page / open conversation): soft gray pill instead of blue */
+html[data-theme="light"] .tl-glass .tl-item[aria-current],
+html[data-theme="light"] .tl-glass .tl-item[data-on="true"],
+html[data-theme="light"] .tl-glass [class*="bg-[rgba(115,182,255,0.14)]"],
+html[data-theme="light"] .tl-glass [class*="bg-[rgba(115,182,255,0.12)]"] { background: rgba(0,0,0,.075) !important; color: #0d0d0d !important; }
+html[data-theme="light"] .tl-glass [class*="text-[#73b6ff]"],
+html[data-theme="light"] .tl-glass [class*="text-[#5be1ff]"] { color: #0d0d0d !important; }
+/* drop the neon active bar + brand glow */
+html[data-theme="light"] .tl-glass [class*="bg-[#73b6ff]"][class*="w-[3px]"] { display: none !important; }
+html[data-theme="light"] .tl-glass img { filter: none !important; }
+html[data-theme="light"] .tl-glass .text-muted { color: #6b6b6b !important; }
+html[data-theme="light"] .tl-glass .text-ink { color: #0d0d0d !important; }
+/* hairline dividers instead of bright white lines */
+html[data-theme="light"] .tl-glass [class*="border-t"],
+html[data-theme="light"] .tl-glass [class*="border-b"],
+html[data-theme="light"] .tl-glass [class*="border-glassBorder"] { border-color: rgba(0,0,0,.08) !important; }
+html[data-theme="light"] .tl-glass [class*="border-white"] { border-color: rgba(0,0,0,.08) !important; }
+/* hover tooltips on the collapsed rail: dark chip like ChatGPT */
+html[data-theme="light"] .tl-glass [class*="bg-[rgba(14,16,44,0.92)]"] { background: #0d0d0d !important; color: #fff !important; border-color: transparent !important; }
+html[data-theme="light"] .tl-glass [class*="bg-[rgba(14,16,44,0.92)]"].text-ink { color: #fff !important; }
+/* account popover: white card with hairline border + soft shadow */
+html[data-theme="light"] [role="menu"].tl-glass {
+  background: #fff !important; border: 1px solid rgba(0,0,0,.1) !important;
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,.18) !important; border-radius: 14px;
+}
+
+/* ---------- Any remaining dark translucent panel (modals, popovers, drawers) ---------- */
+html[data-theme="light"] [class*="bg-[rgba(10,8,38,"],
+html[data-theme="light"] [class*="bg-[rgba(10,8,30,"],
+html[data-theme="light"] [class*="bg-[rgba(14,16,44,0.9"],
+html[data-theme="light"] [class*="bg-[rgba(14,16,44,0.86"] {
+  background-color: #fff !important;
+  border-color: rgba(0,0,0,.1) !important;
+  box-shadow: 0 24px 60px -16px rgba(0,0,0,.28) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+html[data-theme="light"] .bg-black\/60 { background-color: rgba(0,0,0,.32) !important; }
+html[data-theme="light"] [class*="shadow-[0_30px_80px_rgba(10,10,40,0.7)]"] { box-shadow: 0 24px 60px -16px rgba(0,0,0,.28) !important; }
+html[data-theme="light"] .file, html[data-theme="light"] .code-input { background: #f9f9f9 !important; color: var(--text); }
+html[data-theme="light"] input[type="checkbox"] { color-scheme: light; }
+
+/* Cyan accent text reads as neon on white; use the ink color in light mode. */
+.tl-cyan { color: #5be1ff; }
+html[data-theme="light"] .tl-cyan { color: var(--text) !important; }
+
+/* ---------- Primary gradient CTA (e.g. "Add from Planets"): flat, neutral in light mode ---------- */
+html[data-theme="light"] .tl-cta {
+  background: #0d0d0d !important;
+  color: #fff !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12) !important;
+}
+html[data-theme="light"] .tl-cta:hover {
+  background: #2a2a2a !important;
+  box-shadow: 0 4px 12px -4px rgba(0,0,0,.25) !important;
+}

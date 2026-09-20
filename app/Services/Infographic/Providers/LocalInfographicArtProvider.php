@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 class LocalInfographicArtProvider implements InfographicImageProviderInterface
 {
     protected const WIDTH = 900;
+
     protected const HEIGHT = 520;
 
     protected const ACCENTS = [

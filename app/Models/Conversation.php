@@ -14,6 +14,11 @@ class Conversation extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'pinned_at',
+    ];
+
+    protected $casts = [
+        'pinned_at' => 'datetime',
     ];
 
     /**

@@ -12,14 +12,50 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
+  {{-- Tailwind Play CDN + tokens and Alpine: needed only by the shared shell sidebar
+       (components/shell/side-bar). The page's own styling below is plain CSS. --}}
+    <meta name="theme-color" content="#06061a">
+  <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
+  <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void:        'rgb(var(--c-void) / <alpha-value>)',
+            blue:        'rgb(var(--c-blue) / <alpha-value>)',
+            violet:      'rgb(var(--c-violet) / <alpha-value>)',
+            cyan:        'rgb(var(--c-cyan) / <alpha-value>)',
+            ink:         'rgb(var(--c-ink) / <alpha-value>)',
+            muted:       'rgb(var(--c-muted) / <alpha-value>)',
+            glass:       'var(--glass)',
+            glassBorder: 'var(--glass-border)',
+          },
+          fontFamily: {
+            sans:    ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono:    ['Space Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
   <style>
+    [x-cloak] { display: none !important; }
     :root {
       --void: #06061a; --cosmic: #120a33; --cosmic-2: #1e1259;
       --blue: #73b6ff; --violet: #9b6bff; --cyan: #5be1ff; --green: #7cffb2;
       --red: #ff9bb0;
       --text: #eaeeff; --muted: #98a2d4;
       --glass: rgba(123, 142, 220, 0.07); --glass-border: rgba(150, 170, 255, 0.18);
+      /* Tailwind's reset (loaded for the shell sidebar) forces html/body to 1.5 and
+         inputs/buttons to `inherit`; pin the page's original rhythm back at the root. */
+      line-height: 1.6;
     }
+    .app input, .app button, .wrap input, .wrap button { line-height: normal; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', system-ui, sans-serif; color: var(--text); background: var(--void);
@@ -52,19 +88,35 @@
     .sidebar { width: 250px; flex: 0 0 250px; position: sticky; top: 0; height: 100vh; padding: 22px 18px;
       border-right: 1px solid var(--glass-border); background: rgba(10,12,40,0.5); backdrop-filter: blur(12px);
       display: flex; flex-direction: column; }
-    .brand { display: flex; align-items: center; gap: 12px; padding: 4px 8px 22px; }
-    .brand svg { width: 32px; height: 32px; filter: drop-shadow(0 0 10px rgba(115,182,255,.5)); }
-    .brand .name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.2rem; }
-    .brand .name span { color: var(--blue); }
+    .side-label { font-family: 'Space Mono', monospace; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); padding: 6px 14px 14px; }
     .nav { display: flex; flex-direction: column; gap: 4px; }
     .nav a { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; color: var(--muted);
       font-weight: 600; font-size: .95rem; transition: all .2s; }
     .nav a svg { width: 20px; height: 20px; flex: 0 0 20px; }
     .nav a:hover { color: var(--text); background: var(--glass); }
-    .nav a.active { color: #07142e; background: linear-gradient(100deg, var(--cyan), var(--blue) 60%, var(--violet)); box-shadow: 0 8px 24px rgba(115,182,255,.3); }
-    .nav a.active svg { stroke: #07142e; }
+    .nav a.active { color: var(--text); background: var(--glass); }
+    .nav a.active svg { stroke: currentColor; }
     .side-foot { margin-top: auto; }
     .side-foot form { margin: 0; }
+
+    /* Collapsible in-page nav: starts collapsed (icon rail) to leave room for the course content */
+    .sidebar { transition: width .3s cubic-bezier(.32,.72,0,1), flex-basis .3s cubic-bezier(.32,.72,0,1), padding .3s cubic-bezier(.32,.72,0,1); overflow: hidden; }
+    .nav-txt { white-space: nowrap; overflow: hidden; max-width: 160px; transition: opacity .2s, max-width .3s cubic-bezier(.32,.72,0,1); }
+    .side-label { white-space: nowrap; overflow: hidden; transition: opacity .2s, max-height .3s; max-height: 40px; }
+    .sidebar.is-collapsed { width: 68px; flex-basis: 68px; padding-left: 10px; padding-right: 10px; }
+    .sidebar.is-collapsed .side-label { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; }
+    .sidebar.is-collapsed .nav a { justify-content: center; gap: 0; padding: 11px 0; }
+    .sidebar.is-collapsed .nav-txt { max-width: 0; opacity: 0; }
+    .side-toggle { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding: 10px 14px; border-radius: 12px;
+      border: 0; background: transparent; color: var(--muted); font: 600 .85rem 'Inter', sans-serif; cursor: pointer; transition: color .2s, background .2s; }
+    .side-toggle:hover { color: var(--text); background: var(--glass); }
+    .side-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .side-toggle svg { width: 20px; height: 20px; flex: 0 0 20px; transition: transform .3s; }
+    .sidebar:not(.is-collapsed) .side-toggle svg { transform: rotate(180deg); }
+    .sidebar.is-collapsed .side-toggle .nav-txt { max-width: 0; opacity: 0; }
+    .sidebar.is-collapsed .side-toggle { gap: 0; padding: 10px 0; }
+    @media (prefers-reduced-motion: reduce) { .sidebar, .nav-txt, .side-label { transition: none !important; } }
     .nav-cta { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: .9rem; padding: 11px 18px; border-radius: 999px; width: 100%;
       background: rgba(115,182,255,0.12); border: 1px solid var(--glass-border); color: var(--text); cursor: pointer; text-align: center; transition: all .25s; }
     .nav-cta:hover { background: rgba(115,182,255,0.22); }
@@ -101,6 +153,8 @@
     .file { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(10,12,40,.4); border: 1px solid var(--glass-border);
       cursor: pointer; transition: background .2s, border-color .2s; }
     .file:hover { background: rgba(115,182,255,.10); border-color: var(--blue); }
+    .empty-state { text-align: center; padding: 40px 24px; }
+    a.file { color: inherit; }
     .file-ico { width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; display: grid; place-items: center;
       font-family: 'Space Mono', monospace; font-size: .62rem; font-weight: 700; letter-spacing: .04em; }
     .file-name { flex: 1 1 auto; font-size: .9rem; font-weight: 500; }
@@ -175,12 +229,11 @@
     h1.big { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.03em; margin: 20px 0 8px; }
     h1.big .accent { background: linear-gradient(100deg, var(--cyan), var(--blue) 45%, var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .sub { color: var(--muted); max-width: 56ch; margin: 0 auto; font-size: 1.02rem; }
-    .ship-stage { position: relative; height: 280px; margin: 22px 0 6px; display: flex; align-items: center; justify-content: center; }
-    .ship { width: clamp(120px, 20vw, 180px); animation: shipfloat 5s ease-in-out infinite; filter: drop-shadow(0 18px 40px rgba(115,182,255,.45)); }
-    @keyframes shipfloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-18px) rotate(2deg); } }
-    .thruster { transform-origin: 50% 0; animation: flame .22s alternate infinite; }
-    @keyframes flame { from { transform: scaleY(.55); opacity: .6; } to { transform: scaleY(1.15); opacity: 1; } }
-    .dock { position: absolute; bottom: 8px; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d7c4ff, #6c4bd6 60%, #2e1a73); box-shadow: 0 0 60px rgba(124,75,214,.6); }
+    .ship-stage { position: relative; height: 340px; margin: 22px 0 6px; display: flex; align-items: center; justify-content: center; }
+    .ship { width: clamp(200px, 26vw, 270px); aspect-ratio: 900 / 960; position: relative; z-index: 1; }
+    .ship svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .ship.deny { animation: shipdeny .4s linear; }
+    @keyframes shipdeny { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-7px); } 40%,80% { transform: translateX(7px); } }
     .orbit { position: absolute; bottom: -10px; width: 210px; height: 210px; border: 1.5px dashed rgba(150,170,255,.28); border-radius: 50%; animation: spin 18s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .code-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 22px; padding: 30px; backdrop-filter: blur(12px); margin-top: 22px; text-align: left; }
@@ -207,11 +260,33 @@
       .nav { flex-direction: row; flex-wrap: wrap; }
       .nav a { padding: 9px 12px; }
       .side-foot { margin: 0; }
+      .sidebar.is-collapsed { width: 100%; flex: none; padding: 22px 18px; }
+      .sidebar.is-collapsed .nav a { justify-content: flex-start; gap: 12px; padding: 9px 12px; }
+      .sidebar.is-collapsed .nav-txt { max-width: 160px; opacity: 1; }
+      .sidebar.is-collapsed .side-label { opacity: 1; max-height: 40px; }
+      .side-toggle { display: none; }
     }
+    .cta-btn { background: none; border: 0; cursor: pointer; padding: 0; }
+    .empty-card { color: var(--muted); font-size: .92rem; text-align: center; padding: 26px 18px; }
+    .qz-back { position: fixed; inset: 0; z-index: 100; background: rgba(5,6,24,.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .qz-back[hidden] { display: none; }
+    .qz-box { background: var(--void); color: var(--text); border: 1px solid var(--glass-border); border-radius: 22px; width: min(680px, 100%); max-height: 88vh; overflow: auto; padding: 24px 26px; }
+    .qz-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .qz-head h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; }
+    .qz-x { background: none; border: 0; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--muted); }
+    .qz-q { margin: 18px 0; }
+    .qz-q p { font-weight: 600; margin-bottom: 8px; }
+    .qz-opt { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--glass-border); border-radius: 12px; margin-top: 8px; cursor: pointer; }
+    .qz-opt input { accent-color: var(--violet); }
+    .qz-opt.ok { border-color: #1fa971; background: rgba(31,169,113,.12); }
+    .qz-opt.bad { border-color: #e5484d; background: rgba(229,72,77,.10); }
+    .qz-score { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; margin: 4px 0 8px; }
+    .qz-err { color: #e5484d; font-size: .9rem; margin-top: 10px; }
+    .qz-submit { margin-top: 8px; }
     @media (prefers-reduced-motion: reduce) { *,*::after,*::before { animation: none !important; } }
   </style>
 </head>
-<body>
+<body x-data="techlabShell()" x-init="init()">
 
   <div class="space" aria-hidden="true">
     <div class="glow g1"></div><div class="glow g2"></div>
@@ -219,39 +294,43 @@
     <div class="planet p1"></div><div class="planet p2"></div>
   </div>
 
+  {{-- Shell: persistent TechLab sidebar on the left, page content on the right.
+       The wrapper is sticky so the rail stays put while the page scrolls. --}}
+  <div class="flex items-start">
+    <div class="sticky top-0 z-30 flex h-screen flex-shrink-0">
+      @include('components.shell.side-bar')
+    </div>
+    <div class="min-w-0 flex-1">
+
   @if ($crew)
     {{-- ============ JOINED: COURSE HUB ============ --}}
-    <div class="app">
-      <aside class="sidebar">
-        <div class="brand">
-          <svg viewBox="0 0 108.89 108.89" aria-hidden="true">
-            <polygon fill="#73b6ff" points="37.55 108.89 52.56 108.89 52.56 90.12 90.12 90.12 90.12 75.09 52.56 75.09 52.56 56.33 37.55 56.33 37.55 108.89"/>
-            <polygon fill="#73b6ff" points="108.89 71.34 108.89 56.33 90.12 56.33 90.12 18.78 75.09 18.78 75.09 56.33 56.33 56.33 56.33 71.34 108.89 71.34"/>
-            <polygon fill="#73b6ff" points="71.34 0 56.33 0 56.33 18.78 18.78 18.78 18.78 33.79 56.33 33.79 56.33 52.56 71.34 52.56 71.34 0"/>
-            <polygon fill="#73b6ff" points="0 37.55 0 52.56 18.78 52.56 18.78 90.12 33.79 90.12 33.79 52.56 52.56 52.56 52.56 37.55 0 37.55"/>
-          </svg>
-          <span class="name">Tech<span>Lab</span></span>
-        </div>
+    <div class="app" x-data="{
+           navCollapsed: true,
+           init() {
+             try { const v = localStorage.getItem('techlab_crew_nav_collapsed'); if (v !== null) this.navCollapsed = v === '1'; } catch (e) {}
+             this.$watch('navCollapsed', v => { try { localStorage.setItem('techlab_crew_nav_collapsed', v ? '1' : '0'); } catch (e) {} });
+           }
+         }">
+      {{-- In-page section nav. Logo and Log out live in the shell sidebar now.
+           Collapsed by default so the course content gets the room; the toggle at the bottom expands it. --}}
+      <aside class="sidebar is-collapsed" :class="{ 'is-collapsed': navCollapsed }" aria-label="On this page">
+        <p class="side-label">On this page</p>
         <nav class="nav">
-          <a class="active" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg> Course</a>
-          <a href="#modules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg> Modules</a>
-          <a href="#quizzes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg> Quizzes</a>
-          <a href="#labs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg> Labs</a>
-          <a href="#grades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg> Grades</a>
+          <a class="active" href="#top" title="Course"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg><span class="nav-txt">Course</span></a>
+          <a href="#modules" title="Modules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg><span class="nav-txt">Modules</span></a>
+          <a href="#quizzes" title="Quizzes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg><span class="nav-txt">Quizzes</span></a>
+          <a href="#labs" title="Labs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg><span class="nav-txt">Labs</span></a>
+          <a href="#grades" title="Grades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16M8 15l3-4 3 2 4-6"/></svg><span class="nav-txt">Grades</span></a>
         </nav>
-        <div class="side-foot">
-          <form method="POST" action="/logout">
-            @csrf
-            <button class="nav-cta" type="submit">Log out</button>
-          </form>
-        </div>
+        <button type="button" class="side-toggle" @click="navCollapsed = !navCollapsed"
+                :aria-expanded="(!navCollapsed).toString()" :aria-label="navCollapsed ? 'Expand page menu' : 'Collapse page menu'"
+                :title="navCollapsed ? 'Expand' : 'Collapse'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          <span class="nav-txt">Collapse</span>
+        </button>
       </aside>
 
       <main class="main" id="top">
-        <a class="back" href="{{ route('student.dashboard') }}">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          Back to Mission Control
-        </a>
         {{-- Course header --}}
         <header class="course-head">
           <span class="eyebrow">TechLab Course</span>
@@ -266,28 +345,40 @@
             <h2>Learning Modules</h2>
             <p>Course materials &amp; study resources</p>
           </div>
+          @if (empty($course['modules']))
+            <div class="card empty-state">
+              <h3>No modules yet</h3>
+              <p class="m-desc">{{ $crew->teacher->name ?? 'Your captain' }} hasn't published any learning modules. Check back soon.</p>
+            </div>
+          @else
           <div class="module-grid">
             @foreach ($course['modules'] as $m)
               <article class="card module">
                 <span class="tag">Module {{ $m['number'] }}</span>
                 <h3>{{ $m['title'] }}</h3>
-                <p class="m-desc">{{ $m['description'] }}</p>
+                @if ($m['description'])<p class="m-desc">{{ $m['description'] }}</p>@endif
+                @if ($m['materials'])
                 <ul class="files">
                   @foreach ($m['materials'] as $file)
-                    <li class="file" data-ext="{{ $file['ext'] }}">
-                      <span class="file-ico">{{ strtoupper($file['ext']) }}</span>
-                      <span class="file-name">{{ $file['name'] }}</span>
-                      <span class="file-go">Open →</span>
+                    <li>
+                      <a class="file" data-ext="{{ $file['ext'] }}" href="{{ $file['url'] }}">
+                        <span class="file-ico">{{ strtoupper(pathinfo($file['name'], PATHINFO_EXTENSION)) }}</span>
+                        <span class="file-name">{{ $file['name'] }}</span>
+                        <span class="file-go">Download ↓</span>
+                      </a>
                     </li>
                   @endforeach
                 </ul>
+                @else
+                  <p class="m-desc">No materials uploaded yet.</p>
+                @endif
                 <div class="card-foot">
-                  <span class="count">{{ $m['material_count'] }} Materials</span>
-                  <a class="cta" href="#">View module →</a>
+                  <span class="count">{{ $m['material_count'] }} {{ Str::plural('Material', $m['material_count']) }}</span>
                 </div>
               </article>
             @endforeach
           </div>
+          @endif
         </section>
 
         {{-- 2 + 3. Quizzes & Lab Activities --}}
@@ -299,36 +390,30 @@
                 <p>Test your understanding</p>
               </div>
               <div class="ql-grid">
-                @foreach ($course['quizzes'] as $q)
+                @forelse ($course['quizzes'] as $q)
                   <article class="card ql">
                     <div class="card-top">
                       <span class="tag">Quiz {{ $q['number'] }}</span>
-                      <span class="pill pill-{{ $q['status'] }}">
-                        {{ $q['status'] === 'in_progress' ? 'In Progress' : ucfirst(str_replace('_', ' ', $q['status'])) }}
-                      </span>
+                      <span class="pill pill-{{ $q['status'] }}">{{ $q['status'] === 'completed' ? 'Completed' : 'Available' }}</span>
                     </div>
                     <h3>{{ $q['title'] }}</h3>
                     <div class="meta">
-                      <span>📝 {{ $q['questions'] }} Questions</span>
-                      <span>⏱ {{ $q['minutes'] }} Minutes</span>
+                      <span>📝 {{ $q['questions'] }} {{ Str::plural('Question', $q['questions']) }}</span>
+                      @if ($q['minutes'])<span>⏱ {{ $q['minutes'] }} Minutes</span>@endif
                     </div>
                     <div class="card-foot">
                       @if ($q['status'] === 'completed')
                         <span class="score">Score <strong>{{ $q['score'] }}/{{ $q['total'] }}</strong> · {{ $q['percent'] }}%</span>
-                        <a class="cta" href="#">View result →</a>
-                      @elseif ($q['status'] === 'available')
-                        <span class="count">Ready to start</span>
-                        <a class="cta" href="#">Start quiz →</a>
-                      @elseif ($q['status'] === 'in_progress')
-                        <span class="count">In progress</span>
-                        <a class="cta" href="#">Continue →</a>
+                        <button type="button" class="cta cta-btn" data-quiz="{{ $q['id'] }}">View result →</button>
                       @else
-                        <span class="count">Locked</span>
-                        <span class="cta" style="opacity:.5">Locked</span>
+                        <span class="count">Ready to start</span>
+                        <button type="button" class="cta cta-btn" data-quiz="{{ $q['id'] }}">Start quiz →</button>
                       @endif
                     </div>
                   </article>
-                @endforeach
+                @empty
+                  <div class="card empty-card">No quizzes yet. When your teacher publishes one, it will show up here.</div>
+                @endforelse
               </div>
             </div>
 
@@ -338,71 +423,51 @@
                 <p>Hands-on practice &amp; application</p>
               </div>
               <div class="ql-grid">
-                @foreach ($course['labs'] as $lab)
-                  <article class="card ql">
-                    <div class="card-top">
-                      <span class="tag">Lab {{ $lab['number'] }}</span>
-                      <span class="pill pill-{{ $lab['status'] }}">
-                        {{ $lab['status'] === 'not_submitted' ? 'Not Submitted' : ucfirst(str_replace('_', ' ', $lab['status'])) }}
-                      </span>
-                    </div>
-                    <h3>{{ $lab['title'] }}</h3>
-                    <p class="m-desc">{{ $lab['description'] }}</p>
-                    <div class="due">Due: {{ $lab['due'] }}</div>
-                    <div class="card-foot">
-                      @if ($lab['status'] === 'graded')
-                        <span class="score">Score <strong>{{ $lab['score'] }}/{{ $lab['total'] }}</strong></span>
-                        <a class="cta" href="#">View feedback →</a>
-                      @elseif ($lab['status'] === 'submitted')
-                        <span class="count">Awaiting grade</span>
-                        <a class="cta" href="#">View submission →</a>
-                      @elseif ($lab['status'] === 'late')
-                        <span class="count">Past due</span>
-                        <a class="cta" href="#">Submit late →</a>
-                      @elseif ($lab['status'] === 'in_progress')
-                        <span class="count">In progress</span>
-                        <a class="cta" href="#">Continue →</a>
-                      @else
-                        <span class="count">Not started</span>
-                        <a class="cta" href="#">Open lab →</a>
-                      @endif
-                    </div>
-                  </article>
-                @endforeach
+                <div class="card empty-card">No lab activities yet.</div>
               </div>
             </div>
           </div>
         </section>
 
-        {{-- 4. My Grades --}}
+        {{-- 4. My Grades: computed from this student's own quiz attempts --}}
         <section class="section" id="grades">
           <div class="section-head">
             <h2>My Grades</h2>
             <p>Your academic performance</p>
           </div>
+          @php $gr = $course['grades']; @endphp
           <div class="grade-grid">
             <div class="card grade-hero">
               <div class="g-label">Current Grade</div>
-              <div class="g-big">{{ $course['grades']['current'] }}%</div>
-              <div class="g-tag">{{ $course['grades']['label'] }}</div>
+              <div class="g-big">{{ $gr['current'] !== null ? rtrim(rtrim(number_format($gr['current'], 1), '0'), '.').'%' : '—' }}</div>
+              <div class="g-tag">{{ $gr['label'] }}</div>
             </div>
             <div class="card grade-break">
-              @foreach ($course['grades']['breakdown'] as $b)
-                <div class="g-row">
-                  <div class="g-row-top">
-                    <span>{{ $b['label'] }} <span class="gw">· {{ $b['weight'] }}%</span></span>
-                    <span class="gv">{{ $b['score'] }}/{{ $b['total'] }}</span>
-                  </div>
-                  <div class="bar"><span style="width:{{ $b['score'] }}%"></span></div>
+              <div class="g-row">
+                <div class="g-row-top">
+                  <span>Quizzes</span>
+                  <span class="gv">{{ $gr['done'] }} of {{ $gr['count'] }} taken</span>
                 </div>
-              @endforeach
+                <div class="bar"><span style="width:{{ $gr['current'] ?? 0 }}%"></span></div>
+              </div>
               <div class="g-overall">
                 <span>Overall</span>
-                <strong>{{ $course['grades']['overall'] }}%</strong>
+                <strong>{{ $gr['current'] !== null ? rtrim(rtrim(number_format($gr['current'], 1), '0'), '.').'%' : '—' }}</strong>
               </div>
             </div>
           </div>
         </section>
+
+        {{-- Quiz player (opened from the cards above) --}}
+        <div class="qz-back" id="qzModal" hidden>
+          <div class="qz-box" role="dialog" aria-modal="true" aria-labelledby="qzTitle">
+            <div class="qz-head">
+              <h3 id="qzTitle"></h3>
+              <button type="button" class="qz-x" id="qzClose" aria-label="Close">×</button>
+            </div>
+            <div id="qzBody"></div>
+          </div>
+        </div>
 
         {{-- Join another crew --}}
         <section class="section" style="margin-bottom: 0;">
@@ -434,18 +499,7 @@
 
       <div class="ship-stage">
         <div class="orbit"></div>
-        <div class="dock"></div>
-        <svg class="ship" viewBox="0 0 120 220" aria-hidden="true">
-          <defs>
-            <linearGradient id="hull" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#eaf2ff"/><stop offset="100%" stop-color="#9fb4e6"/></linearGradient>
-            <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff3b0"/><stop offset="60%" stop-color="#ff9b3d"/><stop offset="100%" stop-color="#ff4d6d"/></linearGradient>
-          </defs>
-          <g class="thruster"><path d="M48 168 q12 34 12 46 q0 -12 12 -46 z" fill="url(#flame)"/></g>
-          <path d="M60 8 q32 42 32 96 q0 44 -32 56 q-32 -12 -32 -56 q0 -54 32 -96z" fill="url(#hull)" stroke="#7c8cc8" stroke-width="2"/>
-          <circle cx="60" cy="74" r="15" fill="#5be1ff" stroke="#1b3a5c" stroke-width="2"/>
-          <path d="M28 120 q-22 8 -22 44 q22 -12 32 -22z" fill="#9b6bff"/>
-          <path d="M92 120 q22 8 22 44 q-22 -12 -32 -22z" fill="#9b6bff"/>
-        </svg>
+        <div class="ship" id="rocket" data-src="{{ asset('images/rocket.svg') }}" aria-hidden="true"></div>
       </div>
 
       @if ($errors->any())
@@ -454,7 +508,7 @@
         </div>
       @endif
 
-      <form class="code-card" method="POST" action="/student/crew/join">
+      <form class="code-card" id="joinForm" method="POST" action="/student/crew/join">
         @csrf
         <label for="code">Crew code</label>
         <div class="code-row">
@@ -465,7 +519,28 @@
     </main>
   @endif
 
+    </div>{{-- /content column --}}
+  </div>{{-- /shell --}}
+
   <script>
+    // techlabShell: sidebar collapsed state, persisted via localStorage and shared
+    // with the chat + planets pages (same key).
+    function techlabShell() {
+      return {
+        collapsed: true,
+
+        init() {
+          const saved = localStorage.getItem('techlab_sidebar_collapsed');
+          this.collapsed = saved === null ? true : saved === '1';
+          this.$watch('collapsed', v =>
+            localStorage.setItem('techlab_sidebar_collapsed', v ? '1' : '0')
+          );
+        },
+
+        toggleTheme() { window.techlabTheme.toggle(); },
+      };
+    }
+
     (function () {
       const field = document.getElementById('stars');
       const count = window.innerWidth < 700 ? 90 : 170;
@@ -481,6 +556,119 @@
         frag.appendChild(s);
       }
       field.appendChild(frag);
+    })();
+
+
+    (function () {
+      const holder = document.getElementById('rocket');
+      const form = document.getElementById('joinForm');
+      if (!holder || !form) return;
+      let svg = null, t = 0.9, dir = 1, rate = 1, last = 0, launching = false, busy = false;
+      const LO = 0.9, HI = 1.65, END = 2.95;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function tick(now) {
+        const dt = Math.min((now - last) / 1000, 0.05); last = now;
+        t += dir * rate * dt;
+        if (!launching) {
+          if (t >= HI) { t = HI; dir = -1; } else if (t <= LO) { t = LO; dir = 1; }
+        } else if (t >= END) { t = END; }
+        svg.setCurrentTime(t);
+        requestAnimationFrame(tick);
+      }
+      fetch(holder.dataset.src).then(r => r.text()).then(txt => {
+        holder.innerHTML = txt;
+        svg = holder.querySelector('svg');
+        svg.pauseAnimations(); svg.setCurrentTime(t);
+        if (!reduce) { last = performance.now(); requestAnimationFrame(tick); }
+      }).catch(() => {});
+
+      let alertEl = document.querySelector('.alert');
+      function showError(msg) {
+        if (!alertEl) {
+          alertEl = document.createElement('div'); alertEl.className = 'alert';
+          form.parentNode.insertBefore(alertEl, form);
+        }
+        alertEl.textContent = msg;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        if (!svg || reduce) return;              // fall back to a normal submit
+        e.preventDefault();
+        if (busy || launching) return;
+        busy = true;
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: new FormData(form),
+            credentials: 'same-origin',
+          });
+          const data = await res.json().catch(() => null);
+          if (res.ok && data && data.redirect) {
+            // Boarded: only now does the rocket lift off.
+            launching = true; dir = 1; rate = 1.4;
+            setTimeout(() => { window.location.href = data.redirect; }, 1500);
+            return;
+          }
+          const msg = (data && (data.message || (data.errors && Object.values(data.errors)[0][0])))
+            || 'Could not board the ship. Please try again.';
+          showError(msg);
+          holder.classList.remove('deny'); void holder.offsetWidth; holder.classList.add('deny');
+        } catch (err) {
+          form.submit();                          // network hiccup: let the server decide
+          return;
+        }
+        busy = false;
+      });
+    })();
+
+
+    (function () {
+      const modal = document.getElementById('qzModal');
+      if (!modal) return;
+      const body = document.getElementById('qzBody'), title = document.getElementById('qzTitle');
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+      const esc = (t) => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
+      const close = () => { modal.hidden = true; };
+      document.getElementById('qzClose').onclick = close;
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+      function renderResult(quiz, r) {
+        const byId = Object.fromEntries(r.review.map(x => [x.id, x]));
+        body.innerHTML = `<div class="qz-score">${r.score}/${r.total} · ${r.percent}%</div>` + quiz.questions.map((q, n) => {
+          const rv = byId[q.id] || {};
+          return `<div class="qz-q"><p>${n + 1}. ${esc(q.prompt)}</p>` + q.options.map((o, i) =>
+            `<div class="qz-opt ${i === rv.correct ? 'ok' : (i === rv.chosen ? 'bad' : '')}">${esc(o)}${i === rv.chosen ? ' <em>(your answer)</em>' : ''}</div>`).join('') + '</div>';
+        }).join('') + '<button type="button" class="mbtn-close cta cta-btn" id="qzDone">Close</button>';
+        document.getElementById('qzDone').onclick = () => location.reload();
+      }
+
+      function renderForm(quiz) {
+        body.innerHTML = (quiz.minutes ? `<p style="color:var(--muted);font-size:.85rem">Suggested time: ${quiz.minutes} minutes. You can take this quiz once.</p>` : '<p style="color:var(--muted);font-size:.85rem">You can take this quiz once.</p>')
+          + '<form id="qzForm">' + quiz.questions.map((q, n) =>
+            `<div class="qz-q"><p>${n + 1}. ${esc(q.prompt)}</p>` + q.options.map((o, i) =>
+              `<label class="qz-opt"><input type="radio" name="q${q.id}" value="${i}"> <span>${esc(o)}</span></label>`).join('') + '</div>').join('')
+          + '<button class="btn btn-primary qz-submit" type="submit">Submit answers</button><div class="qz-err" id="qzErr"></div></form>';
+        document.getElementById('qzForm').onsubmit = async (e) => {
+          e.preventDefault();
+          const answers = {};
+          quiz.questions.forEach(q => { const c = e.target.querySelector(`input[name="q${q.id}"]:checked`); if (c) answers[q.id] = +c.value; });
+          if (Object.keys(answers).length < quiz.questions.length && !confirm('Some questions are unanswered. Submit anyway?')) return;
+          const res = await fetch(`/student/quizzes/${quiz.id}/submit`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf }, body: JSON.stringify({ answers }) });
+          if (!res.ok) { document.getElementById('qzErr').textContent = 'Could not submit. Please try again.'; return; }
+          renderResult(quiz, (await res.json()).result);
+        };
+      }
+
+      document.querySelectorAll('[data-quiz]').forEach(btn => btn.addEventListener('click', async () => {
+        title.textContent = 'Loading…'; body.innerHTML = ''; modal.hidden = false;
+        const res = await fetch(`/student/quizzes/${btn.dataset.quiz}`, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) { title.textContent = 'Quiz unavailable'; return; }
+        const quiz = await res.json();
+        title.textContent = quiz.title;
+        quiz.result ? renderResult(quiz, quiz.result) : renderForm(quiz);
+      }));
     })();
 
     const jaBtn = document.getElementById('joinAnotherBtn');

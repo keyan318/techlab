@@ -32,7 +32,7 @@
           </span>
           <div>
             <h2 class="font-display text-base font-semibold text-ink">Quiz</h2>
-            <p class="text-xs text-muted">Turn your conversation with Astro into a 5-question check.</p>
+            <p class="text-xs text-muted">Turn your conversation with Astro into a quick check.</p>
           </div>
         </div>
         <button type="button" @click="qz.close()" class="grid h-9 w-9 place-items-center rounded-[10px] border border-glassBorder bg-glass text-muted transition hover:text-ink" aria-label="Close">
@@ -44,8 +44,12 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-[#5be1ff]">Configuration</p>
           <div class="inline-flex items-center gap-1 rounded-full border border-glassBorder bg-glass p-1">
-            <span class="rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-3 py-1 text-xs font-semibold text-[#07142e]">5 questions</span>
-            <span class="px-2.5 py-1 text-xs text-muted">Multiple choice · built from this chat</span>
+            <template x-for="n in qz.counts" :key="n">
+              <button type="button" @click="qz.count = n"
+                :class="qz.count === n ? 'bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] font-semibold text-[#07142e]' : 'text-muted hover:text-ink'"
+                class="rounded-full px-3 py-1 text-xs transition" x-text="n"></button>
+            </template>
+            <span class="px-2.5 py-1 text-xs text-muted">questions</span>
           </div>
         </div>
 
@@ -80,7 +84,7 @@
 
         <div class="mt-6 flex items-center justify-between gap-3 border-t border-glassBorder pt-4">
           <button type="button" @click="qz.close()" class="rounded-full border border-glassBorder bg-glass px-4 py-2 text-sm text-muted transition hover:text-ink">Cancel</button>
-          <button type="button" @click="qz.generate()" :disabled="!qz.canGenerate" class="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-6 py-2.5 text-sm font-semibold text-[#07142e] shadow-[0_10px_40px_rgba(115,182,255,0.4)] transition hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0">
+          <button type="button" @click="qz.start()" :disabled="!qz.canGenerate" class="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-6 py-2.5 text-sm font-semibold text-[#07142e] shadow-[0_10px_40px_rgba(115,182,255,0.4)] transition hover:-translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 2.5"/><path d="M12 17h.01"/></svg>
             Generate quiz
           </button>
@@ -99,7 +103,7 @@
         <span class="absolute inset-0 grid place-items-center font-display text-sm font-bold text-ink">?</span>
       </div>
       <p class="font-display text-lg font-semibold text-ink">Building your quiz…</p>
-      <p class="mt-2 max-w-sm text-sm text-muted">Astro is turning your conversation into 5 quick questions. This usually takes 10–20 seconds.</p>
+      <p class="mt-2 max-w-sm text-sm text-muted">Astro is turning your conversation into quick questions. You can close this and keep chatting — we'll tell you when it's ready.</p>
     </section>
 
     {{-- ============ ANSWERING ============ --}}

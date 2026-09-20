@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Dedicated NVIDIA NIM client for Infographic content generation.
@@ -59,13 +60,13 @@ class InfographicNimService
     /**
      * Fail loudly and safely if the dedicated provider is not configured.
      *
-     * @throws NvidiaNimException  CONFIGURATION_ERROR with a safe message.
+     * @throws NvidiaNimException CONFIGURATION_ERROR with a safe message.
      */
     protected function assertConfigured(): void
     {
         if (empty($this->apiKey())) {
             throw new NvidiaNimException(
-                "Infographic generation is unavailable because the NVIDIA API key is missing from the server configuration.",
+                'Infographic generation is unavailable because the NVIDIA API key is missing from the server configuration.',
                 'CONFIGURATION_ERROR'
             );
         }
@@ -124,7 +125,7 @@ class InfographicNimService
      * string values (e.g. code snippets). The previous shared extractor used a
      * recursive regex that broke on such content and produced SCHEMA_ERRORs.
      *
-     * @return array|null  decoded JSON, or null if it could not be parsed
+     * @return array|null decoded JSON, or null if it could not be parsed
      */
     public function completeJson(array $messages, array $options = []): ?array
     {
@@ -180,8 +181,6 @@ class InfographicNimService
     /**
      * Extract the first balanced JSON object from arbitrary model text,
      * respecting string literals so braces inside strings are ignored.
-     *
-     * @return array|null
      */
     protected function extractJsonObject(string $text): ?array
     {
@@ -215,6 +214,7 @@ class InfographicNimService
                 } elseif ($c === '"') {
                     $inString = false;
                 }
+
                 continue;
             }
 
@@ -245,9 +245,9 @@ class InfographicNimService
      *
      * @param  array  $payload  the full request body
      *
-     * @throws NvidiaNimException  after classifying the failure.
+     * @throws NvidiaNimException after classifying the failure.
      */
-    protected function sendRequest(array $payload): \Psr\Http\Message\ResponseInterface
+    protected function sendRequest(array $payload): ResponseInterface
     {
         $requestId = bin2hex(random_bytes(6));
         $attempts = 3;

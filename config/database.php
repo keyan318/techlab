@@ -98,6 +98,9 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
             'search_path' => env('DB_SCHEMA', 'public'),
             'options' => extension_loaded('pdo_pgsql') ? array_filter([
+                // Reuse the connection across requests. With a remote host (Supabase pooler)
+                // a fresh TLS connect costs ~1.4s on every page load otherwise.
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
                 ...(defined('PDO::PGSQL_ATTR_SSL_MODE') ? [PDO::PGSQL_ATTR_SSL_MODE => env('DB_SSLMODE', 'require')] : []),
                 ...(defined('PDO::PGSQL_ATTR_SSL_SNI_SERVER_NAME') ? [PDO::PGSQL_ATTR_SSL_SNI_SERVER_NAME => env('DB_SSL_SNI_SERVER_NAME')] : []),
             ]) : [],

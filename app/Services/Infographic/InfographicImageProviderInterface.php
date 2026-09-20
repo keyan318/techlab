@@ -20,12 +20,12 @@ interface InfographicImageProviderInterface
 {
     /**
      * @param  array<string, mixed>  $artSpec  e.g.
-     *   [
-     *     'title' => string, 'subtitle' => string, 'theme' => string,
-     *     'type' => string, 'visualConcept' => string, 'prompt' => string,
-     *     'keyPoints' => string[], 'elements' => [{name,detail}]
-     *   ]
-     * @return string|null  public URL, or null if generation is unavailable
+     *                                         [
+     *                                         'title' => string, 'subtitle' => string, 'theme' => string,
+     *                                         'type' => string, 'visualConcept' => string, 'prompt' => string,
+     *                                         'keyPoints' => string[], 'elements' => [{name,detail}]
+     *                                         ]
+     * @return string|null public URL, or null if generation is unavailable
      */
     public function generate(array $artSpec): ?string;
 }

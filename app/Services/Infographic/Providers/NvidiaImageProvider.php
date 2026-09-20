@@ -5,6 +5,7 @@ namespace App\Services\Infographic\Providers;
 use App\Services\Infographic\InfographicImageProviderInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\Utils;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -55,7 +56,7 @@ class NvidiaImageProvider implements InfographicImageProviderInterface
 
         try {
             $client = new Client(['timeout' => 120, 'connect_timeout' => 15]);
-            $payload = ['prompt' => $prompt];
+            $payload = $this->payload($prompt);
 
             $response = $client->request('POST', $url, [
                 'headers' => [
@@ -115,6 +116,80 @@ class NvidiaImageProvider implements InfographicImageProviderInterface
         }
     }
 
+    /**
+     * Generate several images concurrently. Keys are preserved; failures are null.
+     *
+     * @param  array<int|string, array<string, mixed>>  $artSpecs
+     * @return array<int|string, string|null>
+     */
+    public function generateBatch(array $artSpecs): array
+    {
+        $model = (string) config('infographic.image_model', '');
+        $baseUrl = (string) config('infographic.image_base_url', '');
+        $key = (string) config('nvidia_nim.api_key', '');
+        $out = array_fill_keys(array_keys($artSpecs), null);
+
+        if ($model === '' || $baseUrl === '' || $key === '') {
+            return $out;
+        }
+
+        $client = new Client([
+            'timeout' => (int) config('infographic.image_timeout', 60),
+            'connect_timeout' => 10,
+        ]);
+        $url = $this->endpointUrl($model, $baseUrl);
+
+        $promises = [];
+        foreach ($artSpecs as $i => $spec) {
+            $prompt = $this->prompt($spec);
+            if ($prompt === '') {
+                continue;
+            }
+            $promises[$i] = $client->requestAsync('POST', $url, [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$key,
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => $this->payload($prompt),
+            ]);
+        }
+
+        foreach (Utils::settle($promises)->wait() as $i => $result) {
+            if (($result['state'] ?? '') !== 'fulfilled') {
+                Log::warning('NVIDIA image request failed', [
+                    'model' => $model,
+                    'error' => isset($result['reason']) && $result['reason'] instanceof \Throwable ? $result['reason']->getMessage() : 'unknown',
+                ]);
+
+                continue;
+            }
+            $body = json_decode((string) $result['value']->getBody(), true);
+            $b64 = is_array($body) ? ($body['artifacts'][0]['base64'] ?? null) : null;
+            if (is_string($b64) && $b64 !== '') {
+                $out[$i] = $this->storeBase64($b64);
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function payload(string $prompt): array
+    {
+        $size = (int) config('infographic.image_size', 768);
+
+        return [
+            'prompt' => $prompt,
+            'width' => $size,
+            'height' => $size,
+            'steps' => (int) config('infographic.image_steps', 4),
+            'seed' => 0,
+        ];
+    }
+
     protected function endpointUrl(string $model, string $baseUrl): string
     {
         $base = rtrim($baseUrl, '/');
@@ -122,6 +197,7 @@ class NvidiaImageProvider implements InfographicImageProviderInterface
         if (str_contains($base, '/v1/genai')) {
             return $base.'/'.ltrim($model, '/');
         }
+
         // Legacy fallback: base/model/images/generations (will 404 for hosted,
         // but provider then falls back to local_art).
         return $base.'/'.ltrim($model, '/').'/images/generations';
@@ -132,6 +208,14 @@ class NvidiaImageProvider implements InfographicImageProviderInterface
         // If the content model already authored a visual prompt, honor it (the
         // reasoning model is the source of truth for what the slide needs).
         if (is_string($artSpec['prompt'] ?? null) && trim($artSpec['prompt']) !== '') {
+            if (($artSpec['style'] ?? '') === 'poster') {
+                $art = ($artSpec['art'] ?? 'cartoon') === 'anime'
+                    ? 'anime style illustration, cel-shaded, expressive cute characters, vivid colors, clean linework'
+                    : 'playful cartoon style illustration, bold outlines, friendly characters, bright flat colors';
+
+                return $art.', soft pastel gradient background, centered subject, no text, no letters, no watermark: '.trim($artSpec['prompt']);
+            }
+
             return 'TechLab educational illustration, deep navy space background, clean vector style, glowing stars, no text, no watermark: '.trim($artSpec['prompt']);
         }
 
@@ -144,9 +228,15 @@ class NvidiaImageProvider implements InfographicImageProviderInterface
         // Build a compact, Flux-friendly visual description from slide visual
         // information only — NOT the full conversation transcript.
         $parts = [];
-        if ($title !== '') $parts[] = $title;
-        if ($subtitle !== '' && $subtitle !== $title) $parts[] = $subtitle;
-        if ($concept !== '') $parts[] = $concept;
+        if ($title !== '') {
+            $parts[] = $title;
+        }
+        if ($subtitle !== '' && $subtitle !== $title) {
+            $parts[] = $subtitle;
+        }
+        if ($concept !== '') {
+            $parts[] = $concept;
+        }
 
         // Add a type hint so Flux renders the right educational framing.
         $hint = match ($type) {
@@ -157,7 +247,9 @@ class NvidiaImageProvider implements InfographicImageProviderInterface
             default => 'educational concept illustration',
         };
         $core = implode(' — ', $parts);
-        if ($core === '') return '';
+        if ($core === '') {
+            return '';
+        }
 
         return 'TechLab educational '.$hint.', '.$theme.' space theme, '
             .'deep navy background with glowing stars and nebula, clean vector style, '

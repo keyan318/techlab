@@ -13,20 +13,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
   {{-- Tailwind Play CDN + tokens (needed for the sidebar component) --}}
+    <meta name="theme-color" content="#06061a">
+  <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
+  <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            void:        '#06061a',
-            blue:        '#73b6ff',
-            violet:      '#9b6bff',
-            cyan:        '#5be1ff',
-            ink:         '#eaeeff',
-            muted:       '#98a2d4',
-            glass:       'rgba(123,142,220,0.07)',
-            glassBorder: 'rgba(150,170,255,0.18)',
+            void:        'rgb(var(--c-void) / <alpha-value>)',
+            blue:        'rgb(var(--c-blue) / <alpha-value>)',
+            violet:      'rgb(var(--c-violet) / <alpha-value>)',
+            cyan:        'rgb(var(--c-cyan) / <alpha-value>)',
+            ink:         'rgb(var(--c-ink) / <alpha-value>)',
+            muted:       'rgb(var(--c-muted) / <alpha-value>)',
+            glass:       'var(--glass)',
+            glassBorder: 'var(--glass-border)',
           },
           fontFamily: {
             sans:    ['Inter', 'system-ui', 'sans-serif'],
@@ -335,9 +338,7 @@
           );
         },
 
-        toggleTheme() {
-          document.documentElement.classList.toggle('dark');
-        },
+        toggleTheme() { window.techlabTheme.toggle(); },
       };
     }
   </script>
