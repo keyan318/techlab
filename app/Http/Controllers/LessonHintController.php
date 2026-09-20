@@ -21,11 +21,12 @@ class LessonHintController extends Controller
     /** GET: price, the student's XP, and the hint itself if they already bought it. */
     public function status(Request $request, string $slug, string $module, string $lesson): JsonResponse
     {
+        [$module, $lesson] = CourseProgressService::normalize($module, $lesson);
         if ($error = $this->guard($request, $slug, $module, $lesson)) {
             return $error;
         }
 
-        $hint = $this->hintFor($module, $lesson);
+        $hint = $this->hintFor($slug, $module, $lesson);
         $bought = $hint !== null && $this->spend($request, $slug, $module, $lesson)->exists();
 
         return response()->json($this->payload($request, $hint, $bought));
@@ -34,11 +35,12 @@ class LessonHintController extends Controller
     /** POST: spend the XP (if they can afford it and have not bought it yet) and reveal the hint. */
     public function buy(Request $request, string $slug, string $module, string $lesson): JsonResponse
     {
+        [$module, $lesson] = CourseProgressService::normalize($module, $lesson);
         if ($error = $this->guard($request, $slug, $module, $lesson)) {
             return $error;
         }
 
-        $hint = $this->hintFor($module, $lesson);
+        $hint = $this->hintFor($slug, $module, $lesson);
         if ($hint === null) {
             return response()->json(['error' => 'This exercise has no hint.'], 404);
         }
@@ -83,9 +85,9 @@ class LessonHintController extends Controller
         ];
     }
 
-    private function hintFor(string $module, string $lesson): ?array
+    private function hintFor(string $slug, string $module, string $lesson): ?array
     {
-        $html = LessonQuizService::source($module, $lesson);
+        $html = LessonQuizService::source($module, $lesson, $slug);
 
         return $html === null ? null : LessonQuizService::hint($html);
     }
@@ -101,7 +103,7 @@ class LessonHintController extends Controller
         if (! $user) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-        if ($slug !== CourseProgressService::COURSE || CourseProgressService::indexOf($module, $lesson, $slug) === null) {
+        if (! CourseProgressService::exists($slug) || CourseProgressService::indexOf($module, $lesson, $slug) === null) {
             return response()->json(['error' => 'Lesson not found.'], 404);
         }
         if (! CourseProgressService::isUnlocked($user, $module, $lesson, $slug)) {

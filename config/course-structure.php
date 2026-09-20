@@ -11,6 +11,10 @@ return [
     | and lessons. Each module contains lessons with their metadata.
     |
     | Structure:
+    |   Each planet also has 'view_base': the view folder its lesson files live in
+    |   (<view_base>.M1.lesson-01). A lesson may set 'lab' => '<lab-id>': it is then
+    |   completed by passing that hands-on simulator lab instead of a coding challenge.
+    |
     |   [
     |       'module_id' => [
     |           'title' => 'Module Title',
@@ -32,6 +36,7 @@ return [
 
     'programming' => [
         'title' => 'Python: Zero to Automation',
+        'view_base' => 'student.planets.programming.python_course',
         'modules' => [
             'M1' => [
                 'title' => 'M1 — Python Foundations',
@@ -320,6 +325,129 @@ return [
                 ]
             ]
         ]
-    ]
+    ],
+
+    'networking' => [
+        'title' => 'Networking 1',
+        'view_base' => 'student.planets.networking.net_course',
+        'modules' => [
+            'M1' => [
+                'title' => 'M1 — Networking Basics',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'First Contact',
+                        'lab' => 'm1-l1',
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Ship\'s Wiring',
+                        'lab' => 'm1-l2',
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Cables & Signals',
+                        'lab' => 'm1-l3',
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Switches, Routers & VLANs',
+                        'lab' => 'm1-l4',
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Servers & Virtualization',
+                        'lab' => 'm1-l5',
+                    ],
+                    'lesson-06' => [
+                        'title' => 'Cloud Relay',
+                        'lab' => 'm1-l6',
+                    ],
+                ],
+            ],
+            'M2' => [
+                'title' => 'M2 — Networking Protocols',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Protocol Models',
+                        'lab' => 'm2-l1',
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Protocols & Standards',
+                        'lab' => 'm2-l2',
+                    ],
+                    'lesson-03' => [
+                        'title' => 'IPv4 & IPv6',
+                        'lab' => 'm2-l3',
+                    ],
+                    'lesson-04' => [
+                        'title' => 'IP Addresses',
+                        'lab' => 'm2-l4',
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Subnetting',
+                        'lab' => 'm2-l5',
+                    ],
+                    'lesson-06' => [
+                        'title' => 'Routing Tables & Static Routes',
+                        'lab' => 'm2-l6',
+                    ],
+                    'lesson-07' => [
+                        'title' => 'Midterm Mission',
+                        'lab' => 'm2-l7',
+                    ],
+                ],
+            ],
+            'M3' => [
+                'title' => 'M3 — TCP/IP Services',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Static & Dynamic Addressing',
+                        'lab' => 'm3-l1',
+                    ],
+                    'lesson-02' => [
+                        'title' => 'The DHCP Lease Process',
+                        'lab' => 'm3-l2',
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Centralized DHCP',
+                        'lab' => 'm3-l3',
+                    ],
+                    'lesson-04' => [
+                        'title' => 'DHCP Server Settings',
+                        'lab' => 'm3-l4',
+                    ],
+                    'lesson-05' => [
+                        'title' => 'DNS Overview',
+                        'lab' => 'm3-l5',
+                    ],
+                ],
+            ],
+            'M4' => [
+                'title' => 'M4 — Network Management & Troubleshooting',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Network Management',
+                        'lab' => 'm4-l1',
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Physical Issues',
+                        'lab' => 'm4-l2',
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Logical Issues',
+                        'lab' => 'm4-l3',
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Wireless Issues',
+                        'lab' => 'm4-l4',
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Troubleshooting Method',
+                        'lab' => 'm4-l5',
+                    ],
+                    'lesson-06' => [
+                        'title' => 'Final Mission: Call Earth',
+                        'lab' => 'm4-l6',
+                    ],
+                ],
+            ],
+        ],
+    ],
 
 ];

@@ -107,6 +107,11 @@ Route::get('/student/planet/{slug}/{module}/{lesson}/fragment', [PlanetControlle
 Route::post('/student/planet/{slug}/lesson/{module}/{lesson}/complete', [LessonProgressController::class, 'complete'])
     ->name('student.planet.lesson.complete');
 
+// A networking lesson's simulator lab reports a pass (the lab id must match the lesson's blueprint entry).
+Route::post('/student/planet/{slug}/lab/{module}/{lesson}/complete', [LessonProgressController::class, 'completeLab'])
+    ->middleware('throttle:30,1')
+    ->name('student.planet.lab.complete');
+
 // Interactive lesson quiz: restore this student's answers, and check + score one answer (first attempt earns XP).
 Route::get('/student/planet/{slug}/quiz/{module}/{lesson}', [LessonQuizController::class, 'status'])->name('student.planet.quiz.status');
 Route::post('/student/planet/{slug}/quiz/{module}/{lesson}', [LessonQuizController::class, 'answer'])->middleware('throttle:60,1')->name('student.planet.quiz.answer');

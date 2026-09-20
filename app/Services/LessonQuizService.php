@@ -35,11 +35,16 @@ class LessonQuizService
         return $key;
     }
 
-    /** The rendered Blade of a Programming lesson (server-side only), or null if it does not exist. */
-    public static function source(string $module, string $lesson): ?string
+    /** The rendered Blade of a lesson (server-side only), or null if it does not exist. */
+    public static function source(string $module, string $lesson, string $course = CourseProgressService::COURSE): ?string
     {
+        $base = CourseProgressService::viewBase($course);
+        if ($base === null) {
+            return null;
+        }
+
         foreach (['lesson-'.preg_replace('/\D/', '', $lesson), $lesson] as $name) {
-            $view = 'student.planets.programming.python_course.'.strtoupper($module).'.'.$name;
+            $view = $base.'.'.strtoupper($module).'.'.$name;
             if (view()->exists($view)) {
                 return view($view)->render();
             }

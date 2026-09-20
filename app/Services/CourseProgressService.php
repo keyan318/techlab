@@ -6,7 +6,8 @@ use App\Models\LessonProgress;
 use App\Models\User;
 
 /**
- * Server-side lesson progression for the Programming (Python) course.
+ * Server-side lesson progression for every planet that has a blueprint in
+ * `config/course-structure.php` (Programming/Python and Networking today).
  *
  * `config/course-structure.php` is the single source of lesson order and the
  * per-lesson answer key (`expected`). Lessons are addressed everywhere in the
@@ -21,7 +22,34 @@ class CourseProgressService
     public const COURSE = 'programming';
 
     /**
-     * Flat, ordered lesson list: [['module' => 'm1', 'lesson' => 'lesson01', 'expected' => ?string], …]
+     * Whether a planet slug has a lesson blueprint (and so tracked, gated lessons).
+     */
+    public static function exists(string $course): bool
+    {
+        return (bool) config("course-structure.{$course}.modules");
+    }
+
+    /**
+     * The view folder a planet's lesson files live in, e.g.
+     * "student.planets.networking.net_course" (lesson views are <base>.M1.lesson-01).
+     */
+    public static function viewBase(string $course): ?string
+    {
+        return config("course-structure.{$course}.view_base");
+    }
+
+    /**
+     * The simulator lab a lesson is completed by, or null (Python lessons use a coding challenge instead).
+     */
+    public static function labFor(string $module, string $lesson, string $course = self::COURSE): ?string
+    {
+        $index = self::indexOf($module, $lesson, $course);
+
+        return $index === null ? null : (self::order($course)[$index]['lab'] ?? null);
+    }
+
+    /**
+     * Flat, ordered lesson list: [['module' => 'm1', 'lesson' => 'lesson01', 'expected' => ?string, 'lab' => ?string], …]
      */
     public static function order(string $course = self::COURSE): array
     {
@@ -35,6 +63,7 @@ class CourseProgressService
                     'module'   => $m,
                     'lesson'   => $l,
                     'expected' => $lesson['expected'] ?? null,
+                    'lab'      => $lesson['lab'] ?? null,
                 ];
             }
         }

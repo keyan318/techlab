@@ -117,33 +117,45 @@ class StudentDashboardService
     }
 
     /**
-     * The next programming lesson to take, or null when there is nothing left.
+     * The next lesson to take, or null when there is nothing left. It is in the planet the student
+     * touched most recently, so a networking student is sent back to networking. A student with no
+     * progress yet starts in Programming.
      */
     public static function currentLesson(User $user, ?Collection $progress = null): ?array
     {
-        $order = CourseProgressService::order();
+        $progress ??= LessonProgress::where('user_id', $user->id)->get(['course', 'module', 'lesson', 'completed_at']);
+
+        $latest = $progress->sortByDesc('completed_at')->first()?->course;
+        $course = $latest && CourseProgressService::exists($latest) ? $latest : CourseProgressService::COURSE;
+
+        return self::nextLessonIn($course, $progress) ?? ($course !== CourseProgressService::COURSE
+            ? self::nextLessonIn(CourseProgressService::COURSE, $progress)
+            : null);
+    }
+
+    private static function nextLessonIn(string $course, Collection $progress): ?array
+    {
+        $order = CourseProgressService::order($course);
 
         if (! $order) {
             return null;
         }
 
-        $done = array_flip($progress
-            ? $progress->where('course', CourseProgressService::COURSE)->map(fn ($r) => $r->module.'/'.$r->lesson)->all()
-            : CourseProgressService::completedKeys($user));
+        $done = array_flip($progress->where('course', $course)->map(fn ($r) => $r->module.'/'.$r->lesson)->all());
         $next = collect($order)->first(fn ($i) => ! isset($done[$i['module'].'/'.$i['lesson']]));
 
         if (! $next) {
             return null;
         }
 
-        foreach (config('course-structure.'.CourseProgressService::COURSE.'.modules') as $mKey => $module) {
+        foreach (config("course-structure.{$course}.modules") as $mKey => $module) {
             foreach ($module['lessons'] as $lKey => $lesson) {
                 if (CourseProgressService::normalize($mKey, $lKey) === [$next['module'], $next['lesson']]) {
                     return [
                         'module' => $module['title'],
                         'title' => $lesson['title'],
                         'url' => route('student.planet.module.lesson', [
-                            'slug' => CourseProgressService::COURSE, 'module' => $next['module'], 'lesson' => $next['lesson'],
+                            'slug' => $course, 'module' => $next['module'], 'lesson' => $next['lesson'],
                         ]),
                     ];
                 }

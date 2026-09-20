@@ -131,10 +131,10 @@ class LessonProgressionTest extends TestCase
     {
         $user = User::factory()->create();
 
-        // The middleware must step aside for non-Programming planets: the request
+        // The middleware must step aside for planets without a lesson blueprint: the request
         // reaches the controller (its own "Lesson not found" 404, not our 403/redirect).
         $this->actingAs($user)
-            ->get(route('student.planet.module.lesson.fragment', ['slug' => 'networking', 'module' => 'm2', 'lesson' => 'lesson04']))
+            ->get(route('student.planet.module.lesson.fragment', ['slug' => 'cybersecurity', 'module' => 'm2', 'lesson' => 'lesson04']))
             ->assertNotFound()
             ->assertSee('Lesson not found', false);
 

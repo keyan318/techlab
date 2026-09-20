@@ -48,7 +48,9 @@ class StudentDashboardTest extends TestCase
         $this->assertSame($m1 + 2, $data['lessonsDone']);
         $this->assertSame(1, $data['modulesDone']);
         $this->assertSame($m1 + 2, $data['planets']['programming']['completed']);
-        $this->assertFalse($data['planets']['networking']['tracked']);
+        $this->assertTrue($data['planets']['networking']['tracked']);
+        $this->assertSame(0, $data['planets']['networking']['completed']);
+        $this->assertFalse($data['planets']['cybersecurity']['tracked']);
 
         $this->actingAs($user)->get('/dashboard')
             ->assertOk()

@@ -18,11 +18,12 @@ class LessonQuizController extends Controller
     /** GET: what this student has already answered in the lesson (so a reload restores the results). */
     public function status(Request $request, string $slug, string $module, string $lesson): JsonResponse
     {
+        [$module, $lesson] = CourseProgressService::normalize($module, $lesson);
         if ($error = $this->guard($request, $slug, $module, $lesson)) {
             return $error;
         }
 
-        $key = $this->key($module, $lesson);
+        $key = $this->key($slug, $module, $lesson);
         $rows = QuizAnswer::where('user_id', $request->user()->id)->where(compact('module', 'lesson') + ['course' => $slug])->get();
 
         return response()->json([
@@ -41,6 +42,7 @@ class LessonQuizController extends Controller
     /** POST {q, choice}: check the first answer to a question, record it, award XP if correct. */
     public function answer(Request $request, string $slug, string $module, string $lesson): JsonResponse
     {
+        [$module, $lesson] = CourseProgressService::normalize($module, $lesson);
         if ($error = $this->guard($request, $slug, $module, $lesson)) {
             return $error;
         }
@@ -50,7 +52,7 @@ class LessonQuizController extends Controller
             'choice' => ['required', 'string', 'in:A,B,C,D'],
         ]);
 
-        $key = $this->key($module, $lesson);
+        $key = $this->key($slug, $module, $lesson);
         $q = (int) $data['q'];
         if (! isset($key[$q])) {
             return response()->json(['error' => 'Question not found.'], 404);
@@ -83,7 +85,7 @@ class LessonQuizController extends Controller
         if (! $user) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-        if ($slug !== CourseProgressService::COURSE || CourseProgressService::indexOf($module, $lesson, $slug) === null) {
+        if (! CourseProgressService::exists($slug) || CourseProgressService::indexOf($module, $lesson, $slug) === null) {
             return response()->json(['error' => 'Lesson not found.'], 404);
         }
         if (! CourseProgressService::isUnlocked($user, $module, $lesson, $slug)) {
@@ -94,9 +96,9 @@ class LessonQuizController extends Controller
     }
 
     /** @return array<int, array{correct: string, explanation: string}> */
-    private function key(string $module, string $lesson): array
+    private function key(string $slug, string $module, string $lesson): array
     {
-        $html = LessonQuizService::source($module, $lesson);
+        $html = LessonQuizService::source($module, $lesson, $slug);
 
         return $html === null ? [] : LessonQuizService::key($html);
     }

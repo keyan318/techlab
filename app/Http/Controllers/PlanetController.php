@@ -209,16 +209,17 @@ class PlanetController extends Controller
 
         $data = ['course' => $this->normalizeCourse($this->courseShell($slug))];
 
-        // The programming shell renders a lesson inside itself. Without these the
-        // view falls back to a guessed name ("…M1.lesson01") that never matches the
+        // Planets with a lesson blueprint render a lesson inside the course shell. Without
+        // these the view falls back to a guessed name that never matches the
         // lesson-01.blade.php files on disk, so the page renders "Lesson not found".
-        // resolveLessonView() already understands both spellings.
-        if ($slug === 'programming') {
+        // The first lesson comes from the blueprint; resolveLessonView() understands both spellings.
+        if (CourseProgressService::exists($slug)) {
+            $first = CourseProgressService::order($slug)[0];
             $data += [
                 'slug' => $slug,
-                'module' => 'm1',
-                'lesson' => 'lesson01',
-                'lessonView' => $this->resolveLessonView($slug, 'm1', 'lesson01'),
+                'module' => $first['module'],
+                'lesson' => $first['lesson'],
+                'lessonView' => $this->resolveLessonView($slug, $first['module'], $first['lesson']),
             ];
         }
 
@@ -326,8 +327,32 @@ class PlanetController extends Controller
      */
     private function resolveLessonView(string $slug, string $module, string $lesson): ?string
     {
-        $moduleKey = strtoupper($module);
-        $base = "student.planets.{$slug}.python_course.{$moduleKey}.";
+        $base = $this->lessonViewPrefix($slug, $module);
+        if ($base === null) {
+            return null;
+        }
+
+        foreach ($this->lessonCandidates($lesson) as $candidate) {
+            $view = $base.$candidate;
+            if (view()->exists($view)) {
+                return $view;
+            }
+        }
+
+        return null;
+    }
+
+    /** "student.planets.programming.python_course.M1." for a planet + module, or null if the planet has no lessons. */
+    private function lessonViewPrefix(string $slug, string $module): ?string
+    {
+        $base = CourseProgressService::viewBase($slug);
+
+        return $base === null ? null : $base.'.'.strtoupper($module).'.';
+    }
+
+    /** @return string[] both spellings of a lesson name ("lesson01" / "lesson-01") */
+    private function lessonCandidates(string $lesson): array
+    {
         $candidates = [$lesson];
 
         if (preg_match('/^lesson(\d+)$/', $lesson, $m)) {
@@ -338,14 +363,7 @@ class PlanetController extends Controller
             $candidates[] = 'lesson'.$m[1];
         }
 
-        foreach ($candidates as $candidate) {
-            $view = $base.$candidate;
-            if (view()->exists($view)) {
-                return $view;
-            }
-        }
-
-        return null;
+        return $candidates;
     }
 
     /**
@@ -393,16 +411,8 @@ class PlanetController extends Controller
 
         if (! $view) {
             // TEMPORARY DEBUG — remove once lessons are confirmed working.
-            $moduleKey = strtoupper($module);
-            $base = "student.planets.{$slug}.python_course.{$moduleKey}.";
-            $tried = [$lesson];
-
-            if (preg_match('/^lesson(\d+)$/', $lesson, $m)) {
-                $tried[] = 'lesson-'.$m[1];
-            }
-            if (preg_match('/^lesson-(\d+)$/', $lesson, $m)) {
-                $tried[] = 'lesson'.$m[1];
-            }
+            $base = $this->lessonViewPrefix($slug, $module) ?? "student.planets.{$slug}.";
+            $tried = $this->lessonCandidates($lesson);
 
             $lines = array_map(function ($candidate) use ($base) {
                 $viewName = $base.$candidate;
