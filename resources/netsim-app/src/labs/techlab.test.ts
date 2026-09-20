@@ -571,3 +571,21 @@ describe('m4-l6 Final Mission: Call Earth', () => {
     expect(allPass(grade(net, s4))).toBe(true);
   });
 });
+
+// ── Typing an address with its mask where only an address belongs ─────────────
+
+describe('ping with a CIDR address', () => {
+  it('fails like Linux does, but tells the student what to change', () => {
+    const net = restoreNetwork(load('m1-l1'));
+    sh(net, dev(net, 'astro'), 'ip addr add 192.168.1.10/24 dev eth0');
+    sh(net, dev(net, 'rivet'), 'ip addr add 192.168.1.20/24 dev eth0');
+
+    const wrong = out(net, dev(net, 'astro'), 'ping -c 2 192.168.1.20/24');
+    expect(wrong).toContain('Temporary failure in name resolution');
+    expect(wrong).toContain('use the address only');
+    expect(wrong).toContain('without the /24');
+
+    const right = out(net, dev(net, 'astro'), 'ping -c 2 192.168.1.20');
+    expect(right).toContain('2 received');
+  });
+});

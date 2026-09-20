@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\CourseProgressService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\Response;
 
 /**
  * The full-page simulator for a lesson's hands-on lab (the "Configure it yourself" button).
@@ -17,7 +17,7 @@ use Illuminate\View\View;
 class LessonLabController extends Controller
 {
     /** GET /student/planet/{slug}/lab/{module}/{lesson}  (gated by the lesson.unlocked middleware) */
-    public function show(Request $request, string $slug, string $module, string $lesson): View|RedirectResponse
+    public function show(Request $request, string $slug, string $module, string $lesson): Response|RedirectResponse
     {
         $user = $request->user();
 
@@ -40,7 +40,8 @@ class LessonLabController extends Controller
         $next = CourseProgressService::nextLesson($module, $lesson, $slug);
         $params = ['slug' => $slug, 'module' => $module, 'lesson' => $lesson];
 
-        return view('student.planets.lab', [
+        // no-store: a restored or cached copy of this page would carry an old CSRF token and could not save a pass.
+        return response()->view('student.planets.lab', [
             'slug' => $slug,
             'lab' => $lab,
             'number' => $this->number($module, $lesson),
@@ -49,7 +50,7 @@ class LessonLabController extends Controller
             'completeUrl' => route('student.planet.lab.complete', $params),
             'nextUrl' => $next ? route('student.planet.module.lesson', ['slug' => $slug] + $next) : null,
             'alreadyDone' => CourseProgressService::isCompleted($user, $module, $lesson, $slug),
-        ]);
+        ], 200, ['Cache-Control' => 'no-store, private']);
     }
 
     /** "m1" + "lesson03" => "1.3" */

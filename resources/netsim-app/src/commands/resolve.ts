@@ -13,6 +13,14 @@ export function resolveHost(
     cb({ ip: literal });
     return { cancel: () => {} };
   }
+  // "192.168.1.20/24" is address/mask notation for configuring an interface. Commands that reach a host
+  // want the address alone, so Linux treats the whole string as a hostname and fails. Say so.
+  if (/^\d{1,3}(\.\d{1,3}){3}\/\d{1,2}$/.test(target)) {
+    cb({
+      error: `${target}: Temporary failure in name resolution (hint: use the address only, without the /${target.split('/')[1]})`,
+    });
+    return { cancel: () => {} };
+  }
   if (device.nameserver === null) {
     cb({ error: `${target}: Temporary failure in name resolution` });
     return { cancel: () => {} };

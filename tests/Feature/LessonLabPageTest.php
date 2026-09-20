@@ -94,4 +94,13 @@ class LessonLabPageTest extends TestCase
         $this->assertStringContainsString($this->labPage('m1', 'lesson01'), $html);
         $this->assertStringNotContainsString('<iframe', $html);
     }
+
+    public function test_the_lab_page_is_never_cached_so_its_csrf_token_stays_fresh(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get($this->labPage('m1', 'lesson01'))->assertOk();
+
+        $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
+    }
 }

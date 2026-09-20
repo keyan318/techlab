@@ -143,11 +143,13 @@
 <script>
 (function () {
     const CFG = @json($labConfig);
-    const CSRF = document.querySelector('meta[name="csrf-token"]').content;
     const frame = document.getElementById('lab-frame');
     const status = document.getElementById('lab-status');
+    let csrf = document.querySelector('meta[name="csrf-token"]').content;
     let done = CFG.alreadyDone;
     let posting = false;
+
+    const sleep = function (ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); };
 
     function say(text, passed) {
         status.className = 'lab-status' + (passed ? ' passed' : '');
@@ -165,9 +167,73 @@
             const a = document.createElement('a');
             a.className = 'lab-next';
             a.href = target;
-            a.textContent = 'Next lesson →';
+            a.textContent = 'Next lesson \u2192';
             status.appendChild(a);
         }
+    }
+
+    function showFailed(reason) {
+        status.className = 'lab-status';
+        status.innerHTML = '';
+        const msg = document.createElement('span');
+        msg.textContent = reason === 'HTTP 401'
+            ? 'Your session ended, so this pass was not saved. Log in again, then reopen the lab.'
+            : 'Your lab is solved, but saving it failed (' + reason + ').';
+        status.appendChild(msg);
+        if (reason !== 'HTTP 401') {
+            const retry = document.createElement('button');
+            retry.type = 'button';
+            retry.className = 'lab-next';
+            retry.textContent = 'Try again';
+            retry.onclick = finish;
+            status.appendChild(retry);
+        }
+    }
+
+    // A long-open or restored page can hold an old CSRF token. The server hands out a fresh one with the page.
+    async function freshToken() {
+        const r = await fetch(window.location.href, { credentials: 'same-origin', cache: 'no-store', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const m = (await r.text()).match(/name="csrf-token" content="([^"]+)"/);
+        if (!m) throw new Error('no token');
+        return m[1];
+    }
+
+    // Saving is idempotent on the server, so retrying is always safe.
+    async function save() {
+        let reason = 'network error';
+        for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+                const r = await fetch(CFG.completeUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
+                    body: JSON.stringify({ lab: CFG.lab }),
+                });
+                if (r.ok) {
+                    // The pass is saved once the server says 200; the body only adds the next-lesson link.
+                    let data = null;
+                    try { data = await r.json(); } catch (e) { /* unreadable body: still saved */ }
+                    return { ok: true, next: data && data.next };
+                }
+                reason = 'HTTP ' + r.status;
+                if (r.status === 419) { csrf = await freshToken(); continue; }
+                if ([401, 403, 404, 422].indexOf(r.status) !== -1) break;   // retrying will not change these
+            } catch (e) {
+                reason = (e && e.message) ? e.message : reason;
+            }
+            await sleep(700 * (attempt + 1));
+        }
+        return { ok: false, reason: reason };
+    }
+
+    async function finish() {
+        if (posting) return;
+        posting = true;
+        say('Saving your progress...', false);
+        const res = await save();
+        posting = false;
+        if (res.ok) { done = true; showPassed(res.next); } else { showFailed(res.reason); }
     }
 
     // The simulator (/netsim-app, same origin) reports progress with postMessage.
@@ -176,22 +242,12 @@
         const m = e.data;
         if (!m || m.source !== 'netsim' || m.lab !== CFG.lab) return;
 
-        if (m.type === 'lab-progress' && !done) {
+        if (m.type === 'lab-progress' && !done && !posting) {
             say('Objectives passed: ' + m.passed + ' of ' + m.total + '. Keep going, Captain.', false);
-        } else if (m.type === 'lab-failed' && !done) {
-            say('Not yet: ' + m.failing.slice(0, 2).join(' · '), false);
-        } else if (m.type === 'lab-passed' && !done && !posting) {
-            posting = true;
-            fetch(CFG.completeUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF, 'X-Requested-With': 'XMLHttpRequest' },
-                body: JSON.stringify({ lab: CFG.lab }),
-            }).then(function (r) { return r.ok ? r.json() : Promise.reject(r); }).then(function (data) {
-                done = true;
-                showPassed(data.next);
-            }).catch(function () {
-                say('The lab passed, but saving your progress failed. Press Check objectives again.', false);
-            }).finally(function () { posting = false; });
+        } else if (m.type === 'lab-failed' && !done && !posting) {
+            say('Not yet: ' + m.failing.slice(0, 2).join(' \u00b7 '), false);
+        } else if (m.type === 'lab-passed' && !done) {
+            finish();
         }
     });
 })();

@@ -2,33 +2,116 @@
   "app": "netsim",
   "version": 1,
   "devices": [
-    { "id": "astro", "kind": "host", "name": "astro", "x": 80, "y": 90, "forwarding": false, "ifaces": [], "routes": [] },
-    { "id": "rivet", "kind": "host", "name": "rivet", "x": 80, "y": 290, "forwarding": false, "ifaces": [], "routes": [] },
-    { "id": "relay", "kind": "switch", "name": "relay", "x": 340, "y": 190, "forwarding": false, "ifaces": [], "routes": [] }
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 80,
+      "y": 90,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 80,
+      "y": 290,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 190,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
   ],
   "links": [
-    { "id": "astro.eth0-relay.eth0", "a": ["astro", "eth0"], "b": ["relay", "eth0"] },
-    { "id": "rivet.eth0-relay.eth1", "a": ["rivet", "eth0"], "b": ["relay", "eth1"] }
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
   ],
   "lab": {
     "id": "m1-l1",
-    "title": "Lesson 1.1 — First Contact",
+    "title": "Lesson 1.1 \u2014 First Contact",
     "blurb": "Connect Astro's console to Rivet's workbench so the crew can talk.",
     "steps": [
       {
         "title": "Give each console an address",
         "body": "Astro's console and Rivet's workbench are both cabled to the ship's relay switch, but neither has an address yet, so neither can be found. Double-click each device to open its terminal and give each one an address from 192.168.1.0/24, for example `ip addr add 192.168.1.10/24 dev eth0` on astro and `ip addr add 192.168.1.20/24 dev eth0` on rivet. Check your work with `ip addr`.",
         "objectives": [
-          { "id": "m1l1-astro-ip", "label": "astro has an address in 192.168.1.0/24", "check": { "type": "iface-ip", "device": "astro", "iface": "eth0", "inSubnet": "192.168.1.0/24" } },
-          { "id": "m1l1-rivet-ip", "label": "rivet has an address in 192.168.1.0/24", "check": { "type": "iface-ip", "device": "rivet", "iface": "eth0", "inSubnet": "192.168.1.0/24" } }
+          {
+            "id": "m1l1-astro-ip",
+            "label": "astro has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m1l1-rivet-ip",
+            "label": "rivet has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          }
         ]
       },
       {
         "title": "Say hello",
-        "body": "From astro, run `ping -c 3` followed by rivet's address. Success means Rivet's workbench answers Astro's console. Then press Check objectives.",
+        "body": "From astro, run `ping -c 3 192.168.1.20` (use the address you gave rivet, and type the address only, without the `/24`). Success means Rivet's workbench answers Astro's console. Then press Check objectives.",
         "objectives": [
-          { "id": "m1l1-ping-ar", "label": "astro can ping rivet", "check": { "type": "ping", "from": "astro", "toDevice": "rivet", "expect": "success" } },
-          { "id": "m1l1-ping-ra", "label": "rivet can ping astro", "check": { "type": "ping", "from": "rivet", "toDevice": "astro", "expect": "success" } }
+          {
+            "id": "m1l1-ping-ar",
+            "label": "astro can ping rivet",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "toDevice": "rivet",
+              "expect": "success"
+            }
+          },
+          {
+            "id": "m1l1-ping-ra",
+            "label": "rivet can ping astro",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "toDevice": "astro",
+              "expect": "success"
+            }
+          }
         ]
       }
     ]
