@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Services\CourseProgressService;
+use App\Services\LessonQuizService;
 use App\Services\StudentDashboardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class NetworkingCourseTest extends TestCase
@@ -129,5 +131,79 @@ class NetworkingCourseTest extends TestCase
         $current = StudentDashboardService::currentLesson(User::factory()->create());
 
         $this->assertStringContainsString('/student/planet/programming/m1/lesson01', $current['url']);
+    }
+
+    // ── Lesson files: every lesson that exists must follow the lesson contract ─────────────
+
+    /**
+     * Found on disk, not from config: data providers run before Laravel boots.
+     *
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function writtenLessons(): array
+    {
+        $cases = [];
+        $files = glob(dirname(__DIR__, 2).'/resources/views/student/planets/networking/net_course/M*/lesson-*.blade.php') ?: [];
+
+        foreach ($files as $file) {
+            if (preg_match('#/(M\d+)/lesson-(\d+)\.blade\.php$#', $file, $m)) {
+                $module = strtolower($m[1]);
+                $lesson = 'lesson'.$m[2];
+                $cases["{$module}/{$lesson}"] = [$module, $lesson];
+            }
+        }
+
+        return $cases;
+    }
+
+    public function test_module_one_is_fully_written(): void
+    {
+        $written = array_keys(self::writtenLessons());
+
+        foreach (['m1/lesson01', 'm1/lesson02', 'm1/lesson03', 'm1/lesson04', 'm1/lesson05', 'm1/lesson06'] as $expected) {
+            $this->assertContains($expected, $written, "{$expected} has no lesson file");
+        }
+    }
+
+    #[DataProvider('writtenLessons')]
+    public function test_each_written_lesson_follows_the_lesson_contract(string $module, string $lesson): void
+    {
+        $html = LessonQuizService::source($module, $lesson, 'networking');
+        $this->assertNotNull($html);
+
+        // Answer key: three questions, each with a correct letter and an explanation.
+        $key = LessonQuizService::key($html);
+        $this->assertCount(3, $key, 'expected 3 quiz questions');
+        foreach ($key as $q => $row) {
+            $this->assertMatchesRegularExpression('/^[A-D]$/', $row['correct']);
+            $this->assertNotSame('', $row['explanation'], "Q{$q} needs an explanation");
+        }
+
+        // The five stages the player builds cards from, plus the lab wired to this lesson.
+        foreach (['Simple Explanation', 'Field Diagram', 'Quiz', 'Relay Lab'] as $heading) {
+            $this->assertStringContainsString('>'.$heading.'</h2>', $html);
+        }
+        $this->assertMatchesRegularExpression('/<h2 class="section-heading">(Rivet\'s |Volt\'s |Crew )[A-Za-z]+<\/h2>/', $html);
+        $lab = CourseProgressService::labFor($module, $lesson, 'networking');
+        $this->assertStringContainsString('data-lab="'.$lab.'"', $html);
+        $this->assertStringContainsString('lab='.$lab.'"', $html);
+        $this->assertFileExists(public_path("netsim-app/labs/{$lab}.json"));
+
+        // What the browser gets must not reveal the answers.
+        $served = LessonQuizService::strip($html);
+        $this->assertStringNotContainsString('quiz-correct', $served);
+        $this->assertStringNotContainsString('✓', $served);
+        $this->assertStringNotContainsString('quiz-explanation', $served);
+    }
+
+    public function test_every_lab_file_matches_its_blueprint_id(): void
+    {
+        foreach (CourseProgressService::order('networking') as $item) {
+            $file = public_path("netsim-app/labs/{$item['lab']}.json");
+            if (! is_file($file)) {
+                continue;   // lesson not written yet
+            }
+            $this->assertSame($item['lab'], json_decode(file_get_contents($file), true)['lab']['id']);
+        }
     }
 }

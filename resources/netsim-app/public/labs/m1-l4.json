@@ -1,0 +1,228 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 50,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.20/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 70,
+      "y": 350,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.30/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "gate",
+      "kind": "router",
+      "name": "gate",
+      "x": 620,
+      "y": 200,
+      "forwarding": true,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "volt.eth0-relay.eth2",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "gate.eth0-relay.eth3",
+      "a": [
+        "gate",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth3"
+      ]
+    },
+    {
+      "id": "gate.eth1-relay.eth4",
+      "a": [
+        "gate",
+        "eth1"
+      ],
+      "b": [
+        "relay",
+        "eth4"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m1-l4",
+    "title": "Lesson 1.4 \u2014 Switches, Routers & VLANs",
+    "blurb": "Volt splits the ship into zones, and Rivet connects them with a router.",
+    "steps": [
+      {
+        "title": "Volt isolates the shield systems",
+        "body": "Right now every device shares one broadcast domain, so anyone can reach Volt's shield console. A **VLAN** splits one physical switch into separate virtual switches. Click the relay switch, find **Port VLANs (access)** and put ports `eth2` (volt) and `eth4` (the router's second cable) into VLAN `20`. Astro and Rivet stay in VLAN 1. Then press Check objectives.",
+        "objectives": [
+          {
+            "id": "m1l4-comms",
+            "label": "astro can still ping rivet",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          },
+          {
+            "id": "m1l4-isolated",
+            "label": "astro can no longer reach volt at 192.168.1.30",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "fail",
+              "toAddr": "192.168.1.30"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rivet connects the zones with a router",
+        "body": "A router joins separate networks. Give the router `gate` an address on each side: `ip addr add 192.168.1.1/24 dev eth0` and `ip addr add 10.0.0.1/24 dev eth1`. Move volt to `10.0.0.30/24` (remove its old address first with `ip addr del 192.168.1.30/24 dev eth0`). Point each host at the router: `ip route add default via 192.168.1.1` on astro and `ip route add default via 10.0.0.1` on volt.",
+        "objectives": [
+          {
+            "id": "m1l4-gate-a",
+            "label": "gate has 192.168.1.1/24 on eth0",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth0",
+              "cidr": "192.168.1.1/24"
+            }
+          },
+          {
+            "id": "m1l4-gate-b",
+            "label": "gate has 10.0.0.1/24 on eth1",
+            "check": {
+              "type": "iface-ip",
+              "device": "gate",
+              "iface": "eth1",
+              "cidr": "10.0.0.1/24"
+            }
+          },
+          {
+            "id": "m1l4-volt-ip",
+            "label": "volt has an address in 10.0.0.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "10.0.0.0/24"
+            }
+          },
+          {
+            "id": "m1l4-def-a",
+            "label": "astro's default route goes via 192.168.1.1",
+            "check": {
+              "type": "default-route",
+              "device": "astro",
+              "via": "192.168.1.1"
+            }
+          },
+          {
+            "id": "m1l4-def-v",
+            "label": "volt's default route goes via 10.0.0.1",
+            "check": {
+              "type": "default-route",
+              "device": "volt",
+              "via": "10.0.0.1"
+            }
+          },
+          {
+            "id": "m1l4-cross",
+            "label": "astro can reach volt through the router",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

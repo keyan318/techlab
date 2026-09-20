@@ -1,0 +1,105 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 80,
+      "y": 90,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 80,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.20/24",
+          "up": false
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 190,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m1-l3",
+    "title": "Lesson 1.3 \u2014 Cables & Signals",
+    "blurb": "Rivet's cable is unseated. Find the dead link and bring it back.",
+    "steps": [
+      {
+        "title": "Find the dead link",
+        "body": "Rivet's workbench has an address, but its cable link is down, like a plug half out of the socket. From astro, run `ping -c 2 192.168.1.20` and watch it fail. Then open rivet's terminal, run `ip link` to see the port state, and bring the link up with `ip link set eth0 up`.",
+        "objectives": [
+          {
+            "id": "m1l3-ping-ar",
+            "label": "astro can ping rivet",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          },
+          {
+            "id": "m1l3-ping-ra",
+            "label": "rivet can ping astro",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "astro"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

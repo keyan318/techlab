@@ -1,0 +1,160 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 50,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 70,
+      "y": 350,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "volt.eth0-relay.eth2",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m1-l2",
+    "title": "Lesson 1.2 \u2014 Ship's Wiring",
+    "blurb": "Bring the whole crew onto one star network.",
+    "steps": [
+      {
+        "title": "Address the whole crew",
+        "body": "Rivet has cabled Astro, Rivet and Volt to the ship's relay switch. This layout is a **star** topology: every device connects to one central point. Give each console an address from 192.168.1.0/24, for example `ip addr add 192.168.1.10/24 dev eth0` on astro, `.20` on rivet and `.30` on volt.",
+        "objectives": [
+          {
+            "id": "m1l2-ip-a",
+            "label": "astro has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m1l2-ip-r",
+            "label": "rivet has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m1l2-ip-v",
+            "label": "volt has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Check every path",
+        "body": "In a star, every conversation passes through the center. From astro, ping rivet and volt. From rivet, ping volt. Watch the packets go into the relay switch and back out. Then press Check objectives.",
+        "objectives": [
+          {
+            "id": "m1l2-ping-ar",
+            "label": "astro can ping rivet",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          },
+          {
+            "id": "m1l2-ping-av",
+            "label": "astro can ping volt",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          },
+          {
+            "id": "m1l2-ping-rv",
+            "label": "rivet can ping volt",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

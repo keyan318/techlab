@@ -1,0 +1,133 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 340,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.50/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "httpServer": {
+        "enabled": false,
+        "port": 80,
+        "body": ""
+      },
+      "dnsServer": {
+        "enabled": false,
+        "records": []
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 340,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth1",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m1-l5",
+    "title": "Lesson 1.5 \u2014 Servers & Virtualization",
+    "blurb": "One ship server, two jobs: a web page and a name service.",
+    "steps": [
+      {
+        "title": "Bring the web service online",
+        "body": "`ship-server` is on the network but not serving anything. A **server** is a machine that answers requests from clients. Click it, open **Web server**, tick **serve HTTP**, and set the page text to `Codexia mission server online`. Then from astro run `curl http://192.168.1.50/`.",
+        "objectives": [
+          {
+            "id": "m1l5-http",
+            "label": "astro can fetch the page from ship-server",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://192.168.1.50/",
+              "expect": "ok",
+              "contains": "Codexia"
+            }
+          }
+        ]
+      },
+      {
+        "title": "One machine, two jobs",
+        "body": "Real servers (and virtual machines) run several services at once. On `ship-server`, also switch on the **DNS server** and add the record `192.168.1.50 codexia.lan`. Then click astro and set its **DNS client** nameserver to `192.168.1.50`. Astro should now open `http://codexia.lan/` by name.",
+        "objectives": [
+          {
+            "id": "m1l5-dns",
+            "label": "astro resolves codexia.lan to 192.168.1.50",
+            "check": {
+              "type": "dns",
+              "from": "astro",
+              "name": "codexia.lan",
+              "expect": "resolves",
+              "addr": "192.168.1.50"
+            }
+          },
+          {
+            "id": "m1l5-http-name",
+            "label": "astro can fetch http://codexia.lan/",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://codexia.lan/",
+              "expect": "ok",
+              "contains": "Codexia"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
