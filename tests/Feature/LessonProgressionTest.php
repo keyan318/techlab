@@ -50,13 +50,16 @@ class LessonProgressionTest extends TestCase
 
     public function test_sidebar_lesson_order_matches_the_server_blueprint(): void
     {
-        $html = file_get_contents(resource_path('views/components/programming-sidebar.blade.php'));
-        preg_match_all('/data-module="(m\d)" data-lesson="(lesson\d+)"/', $html, $m, PREG_SET_ORDER);
+        foreach (['programming', 'networking'] as $slug) {
+            $html = view('components.programming-sidebar', ['slug' => $slug])->render();
+            preg_match_all('/data-module="(m\d+)" data-lesson="(lesson\d+)"/', $html, $m, PREG_SET_ORDER);
 
-        $sidebar = array_map(fn ($x) => $x[1].'/'.$x[2], $m);
-        $server  = array_map(fn ($x) => $x['module'].'/'.$x['lesson'], CourseProgressService::order());
+            $sidebar = array_map(fn ($x) => $x[1].'/'.$x[2], $m);
+            $server  = array_map(fn ($x) => $x['module'].'/'.$x['lesson'], CourseProgressService::order($slug));
 
-        $this->assertSame($server, $sidebar, 'Sidebar DOM order drifted from config/course-structure.php');
+            $this->assertSame($server, $sidebar, "Sidebar DOM order drifted from config/course-structure.php ({$slug})");
+            $this->assertStringContainsString("/student/planet/{$slug}/", $html);
+        }
     }
 
     public function test_m1_lessons_one_through_six_have_answer_keys(): void

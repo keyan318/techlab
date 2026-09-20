@@ -20,6 +20,7 @@ return [
                 'title' => 'Python',
                 'blurb' => 'Zero to Automation',
                 'banner' => 'linear-gradient(180deg,#38b6ff 0%,#8fe0ff 38%,#7bf06a 38%,#18b878 100%)',
+                'logo' => 'python-logo',
             ],
         ],
     ],
@@ -28,9 +29,10 @@ return [
         'blurb' => 'Pick a course to learn how machines talk.',
         'courses' => [
             'networking-fundamentals' => [
-                'title' => 'Networking Fundamentals',
-                'blurb' => 'Packets, protocols and paths',
+                'title' => 'Networking 1',
+                'blurb' => 'Call Earth: from cables to subnets',
                 'banner' => 'linear-gradient(180deg,#0b1f4d 0%,#1d6fd8 45%,#5be1ff 100%)',
+                'logo' => 'networking-logo',
             ],
         ],
     ],

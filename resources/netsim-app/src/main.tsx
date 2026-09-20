@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import '@xyflow/react/dist/style.css';
 import '@xterm/xterm/css/xterm.css';
 import './styles.css';
+import './embed';
 import App from './App';
 import { useStore } from './store';
 

@@ -983,3 +983,6 @@ a.btn {
 .term-host .xterm {
   height: 100%;
 }
+
+/* TechLab embed: no link back to NetSim's own home page inside a lesson. */
+html.embedded .home-link { display: none; }

@@ -123,7 +123,7 @@ return [
                         'type' => 'lesson'
                     ],
                     'lesson-05' => [
-                        'title' => 'Counting Loops',
+                        'title' => 'Repeating With for',
                         'slug' => 'counting-loops',
                         'order' => 5,
                         'view' => 'student.programming.M2.lesson-05',
@@ -156,7 +156,7 @@ return [
                         'type' => 'lesson'
                     ],
                     'lesson-03' => [
-                        'title' => 'Scope',
+                        'title' => 'Returning Results',
                         'slug' => 'scope',
                         'order' => 3,
                         'view' => 'student.programming.M3.lesson-03',

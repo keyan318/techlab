@@ -63,8 +63,8 @@
       @foreach ($courses as $c)
         <a href="{{ $c['url'] }}" class="course-card" aria-label="{{ $c['title'] }} course, {{ $c['percent'] }}% complete">
           <div class="course-banner" style="background: {{ $c['banner'] }}">
-            @if ($c['id'] === 'python')
-              <x-python-logo />
+            @if (! empty($c['logo']))
+              <x-dynamic-component :component="$c['logo']" />
             @endif
           </div>
           <div class="px-6 pb-6 pt-5">

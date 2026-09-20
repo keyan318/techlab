@@ -45,7 +45,19 @@
 
     <div class="course-outline">
 
-        {{-- M1 --}}
+        {{-- One block per module, generated from config/course-structure.php so every planet's
+             course (Python, Networking, ...) gets the same sidebar and it can never drift from
+             the server-side lesson order. --}}
+        @php
+            $outlineSlug = $slug ?? 'programming';
+            $outlineModules = config("course-structure.{$outlineSlug}.modules", []);
+        @endphp
+
+        @foreach ($outlineModules as $moduleKey => $moduleDef)
+            @php
+                $mId = strtolower($moduleKey);
+                $mNum = ltrim($moduleKey, 'Mm');
+            @endphp
 
         <div class="course-module">
 
@@ -54,10 +66,10 @@
                 <div class="module-info">
 
                     <div class="module-title">
-                        M1 — Python Foundations
+                        {{ $moduleDef['title'] }}
                     </div>
 
-                    <div class="module-progress" data-module-progress="m1">
+                    <div class="module-progress" data-module-progress="{{ $mId }}">
 
                         <div class="progress-track">
                             <div class="progress-fill" style="width: 0%;"></div>
@@ -72,7 +84,7 @@
                 <button
                     type="button"
                     class="module-toggle"
-                    onclick="toggleModule('m1', this)"
+                    onclick="toggleModule('{{ $mId }}', this)"
                     aria-expanded="false"
                 >
                     <span>⌄</span>
@@ -82,644 +94,29 @@
 
             {{-- LESSONS --}}
 
-            <div class="module-lessons" id="m1">
+            <div class="module-lessons" id="{{ $mId }}">
 
-                <a href="/student/planet/programming/m1/lesson01" class="lesson-item" data-module="m1" data-lesson="lesson01" data-order="1">
+                @foreach (array_keys($moduleDef['lessons']) as $i => $lessonKey)
+                    @php $lId = str_replace('-', '', strtolower($lessonKey)); @endphp
+
+                <a href="/student/planet/{{ $outlineSlug }}/{{ $mId }}/{{ $lId }}" class="lesson-item" data-module="{{ $mId }}" data-lesson="{{ $lId }}" data-order="{{ $i + 1 }}">
                     <div class="lesson-connector">
                         <span class="lesson-dot"></span>
                     </div>
                     <div class="lesson-name">
-                        <span class="lesson-number">1.1</span>
-                        <span>First Signal</span>
+                        <span class="lesson-number">{{ $mNum }}.{{ $i + 1 }}</span>
+                        <span>{{ $moduleDef['lessons'][$lessonKey]['title'] }}</span>
                         <span class="lesson-lock">🔒</span>
                     </div>
                 </a>
 
-                <a href="/student/planet/programming/m1/lesson02" class="lesson-item" data-module="m1" data-lesson="lesson02" data-order="2">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">1.2</span>
-                        <span>Variables & Memory</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m1/lesson03" class="lesson-item" data-module="m1" data-lesson="lesson03" data-order="3">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">1.3</span>
-                        <span>Data Types</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m1/lesson04" class="lesson-item" data-module="m1" data-lesson="lesson04" data-order="4">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">1.4</span>
-                        <span>Expressions & Operators</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m1/lesson05" class="lesson-item" data-module="m1" data-lesson="lesson05" data-order="5">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">1.5</span>
-                        <span>Talking to the Program</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m1/lesson06" class="lesson-item" data-module="m1" data-lesson="lesson06" data-order="6">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">1.6</span>
-                        <span>Reading Error Messages</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
+                @endforeach
 
             </div>
 
         </div>
 
-
-        {{-- M2 --}}
-
-        <div class="course-module">
-
-            <div class="module-header">
-
-                <div class="module-info">
-
-                    <div class="module-title">
-                        M2 — Conditions & Loops
-                    </div>
-
-                    <div class="module-progress" data-module-progress="m2">
-
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-
-                        <span>0%</span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="module-toggle"
-                    onclick="toggleModule('m2', this)"
-                    aria-expanded="false"
-                >
-                    <span>⌄</span>
-                </button>
-
-            </div>
-
-            <div class="module-lessons" id="m2">
-
-                <a href="/student/planet/programming/m2/lesson01" class="lesson-item" data-module="m2" data-lesson="lesson01" data-order="1">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">2.1</span>
-                        <span>Decision Points</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m2/lesson02" class="lesson-item" data-module="m2" data-lesson="lesson02" data-order="2">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">2.2</span>
-                        <span>Branching Paths</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m2/lesson03" class="lesson-item" data-module="m2" data-lesson="lesson03" data-order="3">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">2.3</span>
-                        <span>Combining Conditions</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m2/lesson04" class="lesson-item" data-module="m2" data-lesson="lesson04" data-order="4">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">2.4</span>
-                        <span>Repeating Signals</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m2/lesson05" class="lesson-item" data-module="m2" data-lesson="lesson05" data-order="5">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">2.5</span>
-                        <span>Repeating With for</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m2/lesson06" class="lesson-item" data-module="m2" data-lesson="lesson06" data-order="6">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">2.6</span>
-                        <span>Breaking the Loop</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-            </div>
-
-        </div>
-
-
-        {{-- M3 --}}
-
-        <div class="course-module">
-
-            <div class="module-header">
-
-                <div class="module-info">
-
-                    <div class="module-title">
-                        M3 — Functions & Error Handling
-                    </div>
-
-                    <div class="module-progress" data-module-progress="m3">
-
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-
-                        <span>0%</span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="module-toggle"
-                    onclick="toggleModule('m3', this)"
-                    aria-expanded="false"
-                >
-                    <span>⌄</span>
-                </button>
-
-            </div>
-
-            <div class="module-lessons" id="m3">
-
-                <a href="/student/planet/programming/m3/lesson01" class="lesson-item" data-module="m3" data-lesson="lesson01" data-order="1">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">3.1</span>
-                        <span>Reusable Routines</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m3/lesson02" class="lesson-item" data-module="m3" data-lesson="lesson02" data-order="2">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">3.2</span>
-                        <span>Passing Information</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m3/lesson03" class="lesson-item" data-module="m3" data-lesson="lesson03" data-order="3">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">3.3</span>
-                        <span>Returning Results</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m3/lesson04" class="lesson-item" data-module="m3" data-lesson="lesson04" data-order="4">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">3.4</span>
-                        <span>Anticipating Failure</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m3/lesson05" class="lesson-item" data-module="m3" data-lesson="lesson05" data-order="5">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">3.5</span>
-                        <span>Sanity Checks</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-            </div>
-
-        </div>
-
-
-        {{-- M4 --}}
-
-        <div class="course-module">
-
-            <div class="module-header">
-
-                <div class="module-info">
-
-                    <div class="module-title">
-                        M4 — Working With Data & Files
-                    </div>
-
-                    <div class="module-progress" data-module-progress="m4">
-
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-
-                        <span>0%</span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="module-toggle"
-                    onclick="toggleModule('m4', this)"
-                    aria-expanded="false"
-                >
-                    <span>⌄</span>
-                </button>
-
-            </div>
-
-            <div class="module-lessons" id="m4">
-
-                <a href="/student/planet/programming/m4/lesson01" class="lesson-item" data-module="m4" data-lesson="lesson01" data-order="1">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.1</span>
-                        <span>Collections</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson02" class="lesson-item" data-module="m4" data-lesson="lesson02" data-order="2">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.2</span>
-                        <span>List Operations</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson03" class="lesson-item" data-module="m4" data-lesson="lesson03" data-order="3">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.3</span>
-                        <span>Labeled Data</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson04" class="lesson-item" data-module="m4" data-lesson="lesson04" data-order="4">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.4</span>
-                        <span>Nested Structures</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson05" class="lesson-item" data-module="m4" data-lesson="lesson05" data-order="5">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.5</span>
-                        <span>Text Manipulation</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson06" class="lesson-item" data-module="m4" data-lesson="lesson06" data-order="6">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.6</span>
-                        <span>Reading Files</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson07" class="lesson-item" data-module="m4" data-lesson="lesson07" data-order="7">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.7</span>
-                        <span>Writing Files</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m4/lesson08" class="lesson-item" data-module="m4" data-lesson="lesson08" data-order="8">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">4.8</span>
-                        <span>Structured Data Formats</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-            </div>
-
-        </div>
-
-
-        {{-- M5 --}}
-
-        <div class="course-module">
-
-            <div class="module-header">
-
-                <div class="module-info">
-
-                    <div class="module-title">
-                        M5 — Python Automation
-                    </div>
-
-                    <div class="module-progress" data-module-progress="m5">
-
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-
-                        <span>0%</span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="module-toggle"
-                    onclick="toggleModule('m5', this)"
-                    aria-expanded="false"
-                >
-                    <span>⌄</span>
-                </button>
-
-            </div>
-
-            <div class="module-lessons" id="m5">
-
-                <a href="/student/planet/programming/m5/lesson01" class="lesson-item" data-module="m5" data-lesson="lesson01" data-order="1">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">5.1</span>
-                        <span>Pattern Matching</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m5/lesson02" class="lesson-item" data-module="m5" data-lesson="lesson02" data-order="2">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">5.2</span>
-                        <span>Practical Regex</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m5/lesson03" class="lesson-item" data-module="m5" data-lesson="lesson03" data-order="3">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">5.3</span>
-                        <span>File System Basics</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m5/lesson04" class="lesson-item" data-module="m5" data-lesson="lesson04" data-order="4">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">5.4</span>
-                        <span>Building a CLI Tool</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m5/lesson05" class="lesson-item" data-module="m5" data-lesson="lesson05" data-order="5">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">5.5</span>
-                        <span>Time & Scheduling Concepts</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-            </div>
-
-        </div>
-
-
-        {{-- M6 --}}
-
-        <div class="course-module">
-
-            <div class="module-header">
-
-                <div class="module-info">
-
-                    <div class="module-title">
-                        M6 — Real-World Projects
-                    </div>
-
-                    <div class="module-progress" data-module-progress="m6">
-
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-
-                        <span>0%</span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="module-toggle"
-                    onclick="toggleModule('m6', this)"
-                    aria-expanded="false"
-                >
-                    <span>⌄</span>
-                </button>
-
-            </div>
-
-            <div class="module-lessons" id="m6">
-
-                <a href="/student/planet/programming/m6/lesson01" class="lesson-item" data-module="m6" data-lesson="lesson01" data-order="1">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">6.1</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m6/lesson02" class="lesson-item" data-module="m6" data-lesson="lesson02" data-order="2">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">6.2</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m6/lesson03" class="lesson-item" data-module="m6" data-lesson="lesson03" data-order="3">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">6.3</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-                <a href="/student/planet/programming/m6/lesson04" class="lesson-item" data-module="m6" data-lesson="lesson04" data-order="4">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">6.4</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-            </div>
-
-        </div>
-
-
-        {{-- M7 --}}
-
-        <div class="course-module">
-
-            <div class="module-header">
-
-                <div class="module-info">
-
-                    <div class="module-title">
-                        M7 — Final Automation Project
-                    </div>
-
-                    <div class="module-progress" data-module-progress="m7">
-
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
-                        </div>
-
-                        <span>0%</span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="module-toggle"
-                    onclick="toggleModule('m7', this)"
-                    aria-expanded="false"
-                >
-                    <span>⌄</span>
-                </button>
-
-            </div>
-
-            <div class="module-lessons" id="m7">
-
-                <a href="/student/planet/programming/m7/lesson01" class="lesson-item" data-module="m7" data-lesson="lesson01" data-order="1">
-                    <div class="lesson-connector">
-                        <span class="lesson-dot"></span>
-                    </div>
-                    <div class="lesson-name">
-                        <span class="lesson-number">7.1</span>
-                        <span>Proposal & Design</span>
-                        <span class="lesson-lock">🔒</span>
-                    </div>
-                </a>
-
-            </div>
-
-        </div>
+        @endforeach
 
     </div>{{-- /outline panel --}}
 
@@ -1355,7 +752,7 @@ function toggleModule(moduleId, button) {
 
 (function () {
     // Completed lessons as "m1/lesson01" keys — the database is the source of truth.
-    const SERVER_COMPLETED = @json(auth()->check() ? \App\Services\CourseProgressService::completedKeys(auth()->user()) : []);
+    const SERVER_COMPLETED = @json(auth()->check() ? \App\Services\CourseProgressService::completedKeys(auth()->user(), $slug ?? 'programming') : []);
 
     // ─── Build flat ordered list of all lessons from the DOM ───────────────
     function buildLessonOrder() {
@@ -1523,6 +920,11 @@ function toggleModule(moduleId, button) {
 
     // ─── Export public API ───────────────────────────────────────────────────
     window.TechLab = window.TechLab || {};
+    window.TechLab.recordLessonComplete = function (moduleId, lessonId) {   // mark done + refresh, no auto-navigation
+        const key = keyFor(moduleId, lessonId);
+        if (completed.indexOf(key) === -1) completed.push(key);
+        refresh();
+    };
     window.TechLab.markLessonComplete  = markLessonComplete;
     window.TechLab.getLessonStatus     = getLessonStatus;
     window.TechLab.refreshProgress     = refresh;

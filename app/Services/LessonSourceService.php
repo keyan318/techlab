@@ -12,10 +12,10 @@ use Illuminate\Support\Str;
  * lesson Blade files on disk (titles come from each file / config), and a
  * lesson's text is read from the same file at chat time.
  *
- * Two lesson formats exist today:
- *  - programming: Blade HTML fragments (<h1 class="lesson-heading">…)
- *  - networking : PHP files that `return $lessonData` (structured array)
- * Cybersecurity has no lesson files yet and yields an empty module list.
+ * Every planet with lessons uses the same format: Blade HTML fragments
+ * (<h1 class="lesson-heading">…), in the folder named by `view_base` in
+ * config/course-structure.php. Cybersecurity has no lesson files yet and
+ * yields an empty module list.
  */
 class LessonSourceService
 {
@@ -34,11 +34,10 @@ class LessonSourceService
     /** planet => directory holding M{n}/lesson-{nn}.blade.php */
     private function baseDir(string $planet): ?string
     {
-        $dir = match ($planet) {
-            'programming' => resource_path('views/student/planets/programming/python_course'),
-            'networking' => resource_path('views/student/planets/networking'),
-            default => resource_path("views/student/planets/{$planet}"),
-        };
+        $viewBase = CourseProgressService::viewBase($planet);
+        $dir = $viewBase
+            ? resource_path('views/'.str_replace('.', '/', $viewBase))
+            : resource_path("views/student/planets/{$planet}");
 
         return is_dir($dir) ? $dir : null;
     }
@@ -114,28 +113,11 @@ class LessonSourceService
         if (! $file) {
             return null;
         }
-        if ($planet === 'networking') {
-            return $this->networkingData($file)['title'] ?? null;
-        }
         if (preg_match('#<h1[^>]*>(.*?)</h1>#s', File::get($file), $m)) {
             return trim(html_entity_decode(strip_tags($m[1])));
         }
 
         return null;
-    }
-
-    private function networkingData(string $file): array
-    {
-        // A broken lesson file (e.g. a PHP parse error) must not take chat down.
-        try {
-            $data = (static fn () => include $file)();
-        } catch (\Throwable $e) {
-            report($e);
-
-            return [];
-        }
-
-        return is_array($data) ? $data : [];
     }
 
     /**
@@ -156,32 +138,19 @@ class LessonSourceService
             $title = $this->title($planet, $module, $lesson) ?? Str::headline($lesson);
             $sources[] = [
                 'label' => self::PLANETS[$planet].' › '.$this->moduleTitle($planet, $module).' › '.$title,
-                'text' => Str::limit($this->text($planet, $file), self::MAX_LESSON_CHARS, '…'),
+                'text' => Str::limit($this->text($file), self::MAX_LESSON_CHARS, '…'),
             ];
         }
 
         return $sources;
     }
 
-    private function text(string $planet, string $file): string
+    private function text(string $file): string
     {
-        if ($planet === 'networking') {
-            $d = $this->networkingData($file);
-            $parts = array_filter([
-                $d['title'] ?? null,
-                isset($d['objective']) ? 'Objective: '.$d['objective'] : null,
-                $d['simple_explanation'] ?? null,
-                $d['astro_explanation'] ?? null,
-                isset($d['code_example']) ? "Code example:\n".$d['code_example'] : null,
-            ]);
-
-            return implode("\n\n", $parts);
-        }
-
-        // Programming: drop Blade comments, forms (exercise plumbing) and scripts, keep the teaching text.
+        // Drop Blade comments, forms (exercise plumbing), scripts, diagrams and the lab iframe; keep the teaching text.
         $html = File::get($file);
         $html = preg_replace('/\{\{--.*?--\}\}/s', '', $html);
-        $html = preg_replace('#<(form|script|style)\b.*?</\1>#is', '', $html);
+        $html = preg_replace('#<(form|script|style|svg|iframe)\b.*?</\1>#is', '', $html);
         $html = preg_replace('/@(csrf|php.*?@endphp)/s', '', $html);
         $html = preg_replace('#</(p|h[1-6]|li|pre|div)>#i', "\n", $html);
         $text = html_entity_decode(strip_tags($html));

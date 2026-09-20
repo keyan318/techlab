@@ -33,3 +33,6 @@ export function postToHost(msg: HostMessage): void {
 export function autosaveKeyFor(base: string): string {
   return embedLab ? `${base}:lab:${embedLab}` : base;
 }
+
+// Embedded in TechLab: mark the page so CSS can hide upstream chrome (the "← home" link).
+if (embedded) document.documentElement.classList.add('embedded');
