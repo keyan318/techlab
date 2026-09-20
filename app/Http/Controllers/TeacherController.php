@@ -31,10 +31,23 @@ class TeacherController extends Controller
         $quizCount = $quizzes->count();
         $submissionCount = $quizzes->sum('attempts_count');
 
+        return view('teacher.teacherDashboard', compact('crew', 'quizCount', 'submissionCount'));
+    }
+
+    /** Classes page — the teacher's weekly schedule (upload it, Astro organizes it; "View Calendar" opens the drawer). */
+    public function classes(): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect(route('login'));
+        }
+        if ((Auth::user()->role ?? 'student') !== 'teacher') {
+            return redirect(route('student.dashboard'));
+        }
+
         $classes = TeacherClass::where('user_id', Auth::id())
             ->orderBy('day')->orderBy('starts_at')->get()->map->toCard();
 
-        return view('teacher.teacherDashboard', compact('crew', 'quizCount', 'submissionCount', 'classes'));
+        return view('teacher.teacherClasses', compact('classes'));
     }
 
     /**

@@ -42,6 +42,7 @@ Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->name(
 // Teacher side: dashboard + crew creation (both were dropped in 807f262 while the
 // controllers, view and every route('teacher.dashboard') call site were left in place).
 Route::get('/teacher/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
+Route::get('/teacher/classes', [TeacherController::class, 'classes'])->name('teacher.classes');
 Route::get('/teacher/chat', [TeacherChatController::class, 'index'])->name('teacher.chat');
 Route::post('/teacher/chat/message', [TeacherChatController::class, 'send'])->name('teacher.chat.message');
 Route::post('/teacher/chat/ppt', [PptController::class, 'generate'])->middleware('throttle:10,1')->name('teacher.chat.ppt');

@@ -157,14 +157,14 @@ class TeacherScheduleTest extends TestCase
         $this->assertDatabaseHas('teacher_classes', ['subject' => 'Keep me']);
     }
 
-    public function test_only_teachers_can_upload_and_dashboard_shows_the_schedule(): void
+    public function test_only_teachers_can_upload_and_the_classes_page_shows_the_schedule(): void
     {
         $student = User::factory()->create(['role' => 'student']);
         $this->actingAs($student)->post(route('teacher.schedule.store'), ['file' => UploadedFile::fake()->createWithContent('a.txt', 'x')], ['Accept' => 'application/json'])->assertForbidden();
 
         $t = $this->teacher();
         TeacherClass::create(['user_id' => $t->id, 'subject' => 'Robotics Lab', 'class_name' => 'Class 07', 'day' => 2, 'starts_at' => '09:30']);
-        $this->actingAs($t)->get(route('teacher.dashboard'))->assertOk()
+        $this->actingAs($t)->get(route('teacher.classes'))->assertOk()
             ->assertSee('Upload schedule')->assertSee('Robotics Lab')->assertSee('Class 07');
 
         $this->actingAs($t)->deleteJson(route('teacher.schedule.destroy'))->assertOk();
@@ -332,17 +332,29 @@ class TeacherScheduleTest extends TestCase
         $t = $this->teacher();
         TeacherClass::create(['user_id' => $t->id, 'subject' => 'Robotics Lab', 'day' => 2, 'starts_at' => '09:30']);
 
-        foreach ([route('teacher.dashboard'), route('teacher.crew'), route('teacher.chat')] as $url) {
+        foreach ([route('teacher.dashboard'), route('teacher.classes'), route('teacher.crew'), route('teacher.chat')] as $url) {
             $this->actingAs($t)->get($url)->assertOk()
                 ->assertSee('aria-label="Calendar"', false)                      // the rail item
                 ->assertSee('calendarDrawer', false)                             // the drawer
                 ->assertSee(json_encode(route('teacher.schedule.index')), false);  // where it lazy-loads from (@json escapes slashes)
         }
 
-        $this->actingAs($t)->get(route('teacher.dashboard'))->assertSee('View Calendar');
+        // The schedule card lives on the Classes page (own rail icon), not on the dashboard.
+        $this->actingAs($t)->get(route('teacher.classes'))->assertOk()->assertSee('View Calendar')->assertSee('aria-label="Classes"', false);
+        $this->actingAs($t)->get(route('teacher.dashboard'))->assertOk()->assertDontSee('Upload schedule')->assertDontSee('Robotics Lab')
+            ->assertSee('Crew Launched');
 
         $student = User::factory()->create(['role' => 'student']);
         $this->actingAs($student)->get(route('student.dashboard'))->assertOk()
             ->assertDontSee('calendarDrawer', false)->assertDontSee('aria-label="Calendar"', false);
+    }
+
+    public function test_classes_page_is_teacher_only_and_needs_no_crew(): void
+    {
+        $this->get(route('teacher.classes'))->assertRedirect(route('login'));
+        $this->actingAs(User::factory()->create(['role' => 'student']))->get(route('teacher.classes'))->assertRedirect(route('student.dashboard'));
+
+        // a teacher who hasn't launched a crew yet can still keep a schedule
+        $this->actingAs(User::factory()->create(['role' => 'teacher']))->get(route('teacher.classes'))->assertOk()->assertSee('Upload schedule');
     }
 }

@@ -208,6 +208,28 @@
     @endif
 
     @if($isTeacher)
+    {{-- Classes: the weekly schedule page --}}
+    @php $on = request()->routeIs('teacher.classes'); @endphp
+    <a href="{{ route('teacher.classes') }}"
+       @if($on) aria-current="page" @endif
+       aria-label="Classes"
+       class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
+              {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
+      @if($on)<span class="absolute -left-2.5 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-[#73b6ff] shadow-[0_0_10px_rgba(115,182,255,0.7)]"></span>@endif
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="tl-ico h-5 w-5 flex-none" aria-hidden="true">
+        <rect class="duo" x="3.5" y="4" width="17" height="11.5" rx="2.8"/>
+        <path d="M7.6 8.4h6.2M7.6 11.6h3.8"/>
+        <path d="M12 15.5v3.2M8.4 20h7.2"/>
+      </svg>
+      <span class="tl-label ml-3 max-w-0 overflow-hidden whitespace-nowrap text-[13.5px] font-medium leading-none tracking-[-0.006em] opacity-0"
+            :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[150px] !opacity-100'"
+            :style="collapsed ? '' : 'transition-delay:90ms'">Classes</span>
+      <span x-show="collapsed" x-cloak aria-hidden="true"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Classes</span>
+    </a>
+
     {{-- Calendar: toggles the schedule drawer (a panel, not a page — so data-on, not aria-current) --}}
     <button type="button"
        @click="$store.calendar.toggle($el)"

@@ -209,7 +209,7 @@
         <p class="cal-empty" x-show="$store.calendar.loading && !$store.calendar.loaded" role="status">Loading your schedule…</p>
         <p class="cal-empty" x-show="$store.calendar.error" x-text="$store.calendar.error" role="alert"></p>
         <p class="cal-empty" x-show="$store.calendar.loaded && !$store.calendar.classes.length && !$store.calendar.error">
-          No classes yet. <a class="cal-link" href="{{ route('teacher.dashboard') }}">Upload your schedule</a> on the dashboard and Astro will lay it out here.
+          No classes yet. <a class="cal-link" href="{{ route('teacher.classes') }}">Upload your schedule</a> on the Classes page and Astro will lay it out here.
         </p>
 
         {{-- Week: a time grid, Monday → Sunday --}}
