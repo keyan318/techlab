@@ -85,27 +85,67 @@ Signal strength: nominal</code></pre>
         <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
             @csrf
             <input type="hidden" name="title"        value="First Signal">
+            <input type="hidden" name="filename"     value="first_signal.py">
             <input type="hidden" name="difficulty"   value="Easy">
-            <input type="hidden" name="xp"           value="10">
-            <input type="hidden" name="starter_code" value="">
-            <input type="hidden" name="instructions" value="Astro's first signal is broken! The message exists, but Python doesn't know it should display it.
+            <input type="hidden" name="xp"           value="{{ \App\Services\StudentDashboardService::XP_PER_LESSON }}">
+            <input type="hidden" name="starter_code" value="# Astro's first signal goes here
+">
+            <input type="hidden" name="instructions" value="Astro crash-landed on Codexia and has no idea if anyone can hear him. Rivet and Volt are still asleep in the wreck.
 
-Fix the code so the output is exactly:
-Ship systems rebooting...
+Your task: use print() to send Astro's first signal.
 
-Use the print() function to make Python display that message.">
+Print exactly:
+Astro to Codexia: comms online.">
             <input type="hidden" name="hint_title"   value="Astro's Hint">
-            <input type="hidden" name="hint_body"    value="print() is Astro's communication button. Whatever you put inside the parentheses (wrapped in quotes) gets displayed on screen.
+            <input type="hidden" name="hint_body"    value="print() is Astro's communication button. Whatever you put inside the parentheses, wrapped in quotes, gets displayed on screen.
 
-Make sure your text matches exactly — spelling, spaces, and the three dots all count.">
-            <input type="hidden" name="hint_code"    value='print("Ship systems rebooting...")'>
+Make sure your text matches exactly: spelling, spaces, the colon and the period all count.">
+            <input type="hidden" name="hint_code"    value="print(&quot;Astro to Codexia: comms online.&quot;)">
             <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson01']) }}">
 
             <button type="submit"
-                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
-                🐍 Code it yourself
+                    class="code-btn">
+                @include('components.python-logo')
+                <span>Code it yourself</span>
+                <span class="code-btn-arrow" aria-hidden="true">→</span>
             </button>
         </form>
+    </div>
+
+    {{-- DRAFT quiz — written for review, edit freely. Format: .quiz-correct marks the answer. --}}
+    <h2 class="section-heading">Quiz</h2>
+
+    <div class="quiz-block" data-q="1">
+        <p class="quiz-prompt">Q1. What does <code>print("Hello, Captain!")</code> display on the screen?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. <code>print("Hello, Captain!")</code></li>
+            <li class="quiz-option">B. <code>"Hello, Captain!"</code> with the quotation marks</li>
+            <li class="quiz-option quiz-correct">C. Hello, Captain! ✓</li>
+            <li class="quiz-option">D. Nothing — print() needs a variable first</li>
+        </ul>
+        <p class="quiz-explanation"><em>print() shows the text inside the quotation marks, without the quotes. The quotes only tell Python where the text starts and ends.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="2">
+        <p class="quiz-prompt">Q2. In <code>print("Astro is online.")</code>, what is <code>"Astro is online."</code> called?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A variable</li>
+            <li class="quiz-option quiz-correct">B. A string ✓</li>
+            <li class="quiz-option">C. A function</li>
+            <li class="quiz-option">D. A comment</li>
+        </ul>
+        <p class="quiz-explanation"><em>A string is text that Python treats as text instead of as a command. Quotation marks are what make something a string.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="3">
+        <p class="quiz-prompt">Q3. You write two <code>print()</code> lines, one after the other. In what order does Python run them?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Bottom to top</li>
+            <li class="quiz-option">B. Randomly</li>
+            <li class="quiz-option">C. Only the last one runs</li>
+            <li class="quiz-option quiz-correct">D. Top to bottom, one at a time ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Python reads a program from the first line to the last, in order — just like following a checklist.</em></p>
     </div>
 
 </div>

@@ -1,76 +1,133 @@
 {{--
   resources/views/teacher/partials/calendar-drawer.blade.php
-  The teacher's weekly calendar: a right-hand drawer opened from the "Calendar" rail icon or the
-  dashboard's "View Calendar" link. Both drive the same Alpine store ($store.calendar), which is also
-  the single source of truth for the schedule — the dashboard card seeds it, the drawer reads it.
+  The teacher's calendar: opened from the "Calendar" rail icon or the Classes page's "View Calendar" link.
+  Both drive the same Alpine store ($store.calendar), which is also the single source of truth for the schedule —
+  the Classes page seeds it, the calendar reads it and edits it (add / edit / delete).
+
+  Year view  → the whole year, 12 small months (today + days with classes marked).
+  Month view → click a month: big month grid on the left, the selected day's classes on the right.
+  A weekly class shows on its weekday from its `from` date onward (the day the schedule was added).
   Included by components/shell/side-bar.blade.php for teachers only, so it exists on every teacher page.
 --}}
 
 <style>
   .cal-scrim { position: fixed; inset: 0; z-index: 60; background: var(--overlay); }
-  .cal-panel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 61; width: min(100vw, 540px); display: flex; flex-direction: column;
-               background: var(--panel-solid); border-left: 1px solid var(--glass-border); color: var(--text);
-               box-shadow: -24px 0 60px -18px rgba(0,0,0,.6); backdrop-filter: blur(24px) saturate(160%); }
-  .cal-t { transition: transform 320ms cubic-bezier(.32,.72,0,1), opacity 220ms ease; }
-  .cal-out { transform: translateX(28px); opacity: 0; }
+  .cal-wrap { position: fixed; inset: 0; z-index: 61; display: grid; place-items: center; padding: 16px; pointer-events: none; }
+  .cal-panel { pointer-events: auto; position: relative; width: min(100%, 1120px); height: min(100%, 800px); display: flex; flex-direction: column; overflow: hidden;
+               background: var(--panel-solid); border: 1px solid var(--glass-border); border-radius: 24px; color: var(--text);
+               box-shadow: 0 30px 90px -20px rgba(0,0,0,.55); }
+  .cal-t { transition: transform 280ms cubic-bezier(.32,.72,0,1), opacity 200ms ease; }
+  .cal-out { transform: translateY(14px) scale(.985); opacity: 0; }
   .cal-in { transform: none; opacity: 1; }
   .cal-fade { transition: opacity 200ms ease; }
   .cal-fade-out { opacity: 0; } .cal-fade-in { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .cal-t { transition: opacity 150ms linear; } .cal-out { transform: none; } }
 
-  .cal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 20px 12px; }
-  .cal-head h2 { font: 700 1.25rem 'Space Grotesk', sans-serif; letter-spacing: -.02em; margin: 0; }
-  .cal-sub { font: 500 .8rem 'Inter', sans-serif; color: var(--muted); margin: 2px 0 0; }
-  .cal-x { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; border: 0; background: transparent; color: var(--muted); cursor: pointer; transition: background .15s ease-out, color .15s ease-out, transform .12s ease-out; }
-  .cal-x:hover { background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text); }
-  .cal-x:active { transform: scale(.94); }
-  .cal-x:focus-visible, .cal-seg button:focus-visible, .cal-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  /* ---- header ---- */
+  .cal-head { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--glass-border); flex: none; }
+  .cal-title { flex: 1; min-width: 0; margin: 0; text-align: center; font: 700 1.3rem 'Space Grotesk', sans-serif; letter-spacing: -.02em; }
+  .cal-title small { display: block; font: 500 .74rem 'Inter', sans-serif; letter-spacing: 0; color: var(--muted); margin-top: 1px; }
+  .cal-ib { display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 999px; border: 0; background: transparent; color: var(--muted); cursor: pointer;
+            transition: background .15s ease-out, color .15s ease-out, transform .12s ease-out; }
+  .cal-ib:hover { background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text); }
+  .cal-ib:active { transform: scale(.94); }
+  .cal-add { background: var(--blue); color: #fff; }
+  .cal-add:hover { background: color-mix(in srgb, var(--blue) 86%, #000); color: #fff; }
+  .cal-pill { border: 1px solid var(--glass-border); background: transparent; color: var(--text); font: 600 .8rem 'Inter', sans-serif; padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: background .15s ease-out; }
+  .cal-pill:hover { background: color-mix(in srgb, var(--text) 7%, transparent); }
+  .cal-back { display: inline-flex; align-items: center; gap: 4px; border: 0; background: transparent; color: var(--blue); font: 600 .9rem 'Inter', sans-serif; padding: 6px 10px 6px 6px; border-radius: 999px; cursor: pointer; }
+  .cal-back:hover { background: color-mix(in srgb, var(--blue) 10%, transparent); }
+  .cal-panel button:focus-visible, .cal-panel input:focus-visible, .cal-panel select:focus-visible, .cal-link:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
-  .cal-seg { display: inline-flex; margin: 0 20px 12px; padding: 3px; border-radius: 11px; background: color-mix(in srgb, var(--text) 6%, transparent); align-self: flex-start; }
-  .cal-seg button { border: 0; background: transparent; color: var(--muted); font: 600 .8rem 'Inter', sans-serif; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: background .15s ease-out, color .15s ease-out; }
-  .cal-seg button[aria-pressed="true"] { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--blue); }
+  /* ---- year ---- */
+  .cal-year { flex: 1; min-height: 0; overflow-y: auto; padding: 22px 24px 28px; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px 22px; align-content: start; }
+  .cal-mini { display: flex; flex-direction: column; justify-content: flex-start; text-align: left; border: 1px solid transparent; background: transparent; border-radius: 16px; padding: 12px 12px 10px; cursor: pointer; color: var(--text); transition: background .15s ease-out, border-color .15s ease-out, transform .15s ease-out; }
+  .cal-mini:hover { background: color-mix(in srgb, var(--text) 5%, transparent); border-color: var(--glass-border); }
+  .cal-mini:active { transform: scale(.985); }
+  .cal-mini h3 { margin: 0 0 8px; font: 700 1rem 'Space Grotesk', sans-serif; }
+  .cal-mini.now h3 { color: var(--blue); }
+  .cal-mg { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; font: 500 .72rem 'Inter', sans-serif; }
+  .cal-mg i { font-style: normal; color: var(--muted); font-weight: 600; font-size: .62rem; padding-bottom: 3px; }
+  .cal-mg span { position: relative; display: grid; place-items: center; height: 24px; }
+  .cal-mg span.today b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 999px; background: var(--blue); color: #fff; font-weight: 700; }
+  .cal-mg span b { font-weight: 500; }
+  .cal-mg span u { position: absolute; bottom: 0; width: 4px; height: 4px; border-radius: 999px; background: var(--violet); }
 
-  .cal-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 0 12px 12px 20px; }
-  .cal-days { display: grid; grid-template-columns: 44px repeat(7, 1fr); position: sticky; top: 0; z-index: 3; background: var(--panel-solid); padding: 4px 0 8px; }
-  .cal-dh { text-align: center; font: 700 .66rem 'Space Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-  .cal-dh b { display: grid; place-items: center; width: 26px; height: 26px; margin: 4px auto 0; border-radius: 999px; font: 600 .8rem 'Inter', sans-serif; letter-spacing: 0; color: var(--text); }
-  .cal-dh.today { color: var(--blue); } .cal-dh.today b { background: var(--blue); color: #fff; }
-  .cal-body { display: grid; grid-template-columns: 44px repeat(7, 1fr); padding-top: 10px; }   /* room for the first hour label under the sticky header */
-  .cal-hrs > div { height: var(--h); position: relative; font: 500 .66rem 'Inter', sans-serif; color: var(--muted); }
-  .cal-hrs > div span { position: absolute; top: -7px; right: 8px; white-space: nowrap; }
-  .cal-col { position: relative; height: calc(var(--h) * var(--n)); border-left: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
-             background-image: linear-gradient(to bottom, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px); background-size: 100% var(--h); }
-  .cal-col.today { background-color: color-mix(in srgb, var(--blue) 6%, transparent); }
-  .cal-blk { position: absolute; box-sizing: border-box; padding: 3px 4px 3px 5px; overflow: hidden; border-radius: 7px; border-left: 3px solid var(--k);
-             background: color-mix(in srgb, var(--k) 22%, var(--panel-solid)); color: var(--text); font: 600 .68rem/1.2 'Inter', sans-serif; cursor: default; }
-  .cal-blk small { display: block; margin-top: 1px; font-weight: 500; font-size: .62rem; opacity: .75; }
-  .cal-blk:hover, .cal-blk:focus-visible { z-index: 2; overflow: visible; outline: 2px solid var(--k); }
-  .cal-now { position: absolute; left: 0; right: 0; height: 0; border-top: 2px solid var(--red); z-index: 2; pointer-events: none; }
-  .cal-now::before { content: ""; position: absolute; left: -4px; top: -5px; width: 8px; height: 8px; border-radius: 999px; background: var(--red); }
+  /* ---- month ---- */
+  .cal-month { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr); }
+  .cal-left { padding: 18px 24px 24px; overflow-y: auto; border-right: 1px solid var(--glass-border); }
+  .cal-wk { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font: 600 .78rem 'Inter', sans-serif; color: var(--muted); padding: 4px 0 10px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 6px; }
+  .cal-day { position: relative; display: grid; place-items: center; height: 58px; border: 0; background: transparent; padding: 0; cursor: pointer; color: var(--text); }
+  .cal-day b { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 999px; font: 500 1.02rem 'Inter', sans-serif; transition: background .15s ease-out, color .15s ease-out, transform .12s ease-out; }
+  .cal-day:hover b { background: color-mix(in srgb, var(--text) 7%, transparent); }
+  .cal-day:active b { transform: scale(.94); }
+  .cal-day.sel b { background: color-mix(in srgb, var(--blue) 18%, transparent); color: var(--blue); font-weight: 700; }
+  .cal-day.today b { background: var(--blue); color: #fff; font-weight: 700; }
+  .cal-day.today.sel b { box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 30%, transparent); }
+  .cal-day u { position: absolute; bottom: 2px; display: flex; gap: 3px; text-decoration: none; }
+  .cal-day u s { width: 5px; height: 5px; border-radius: 999px; background: var(--violet); }
+  .cal-day.today u s { background: var(--blue); }
+  .cal-day.blank { pointer-events: none; }
 
-  .cal-ag { display: grid; gap: 6px; padding-top: 4px; }
-  .cal-ag h3 { font: 700 .68rem 'Space Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 14px 2px 2px; display: flex; gap: 8px; align-items: center; }
-  .cal-ag h3 em { font-style: normal; color: #fff; background: var(--blue); border-radius: 999px; padding: 1px 8px; letter-spacing: .06em; }
-  .cal-row { display: grid; grid-template-columns: 70px 1fr; border-radius: 12px; overflow: hidden; background: color-mix(in srgb, var(--text) 4%, transparent); border-left: 3px solid var(--k); }
-  .cal-row .t { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 6px; background: color-mix(in srgb, var(--k) 16%, transparent); font: 600 .9rem/1.25 'Inter', sans-serif; }
-  .cal-row .t small { font-size: .72rem; opacity: .8; }
-  .cal-row .m { padding: 10px 12px; min-width: 0; }
-  .cal-row .m b { display: block; font: 600 .98rem 'Space Grotesk', sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .cal-row .m span { font-size: .82rem; color: var(--muted); }
+  .cal-right { display: flex; flex-direction: column; min-height: 0; }
+  .cal-dayhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 22px 10px; flex: none; }
+  .cal-dayhead h3 { margin: 0; font: 700 1.1rem 'Space Grotesk', sans-serif; letter-spacing: -.01em; }
+  .cal-dayhead small { display: block; font: 500 .78rem 'Inter', sans-serif; color: var(--muted); margin-top: 2px; }
+  .cal-list { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 22px 22px; display: grid; gap: 12px; align-content: start; }
+  .cal-slot { display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: start; }
+  .cal-slot > time { font: 600 .74rem 'Inter', sans-serif; color: var(--muted); padding-top: 12px; text-align: right; white-space: nowrap; }
+  .cal-card { position: relative; border-radius: 16px; padding: 12px 14px; background: color-mix(in srgb, var(--k) 15%, transparent); border: 1px solid color-mix(in srgb, var(--k) 26%, transparent); }
+  .cal-card b { display: block; padding-right: 64px; font: 700 1rem 'Space Grotesk', sans-serif; color: color-mix(in srgb, var(--k) 70%, var(--text)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cal-card p { margin: 4px 0 0; display: flex; align-items: center; gap: 6px; font: 500 .8rem 'Inter', sans-serif; color: var(--muted); }
+  .cal-card p + p { margin-top: 2px; }
+  .cal-acts { position: absolute; top: 8px; right: 8px; display: flex; gap: 2px; }
+  .cal-acts button { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; transition: background .15s ease-out, color .15s ease-out; }
+  .cal-acts button:hover { background: color-mix(in srgb, var(--text) 10%, transparent); color: var(--text); }
+  .cal-acts button.del:hover { background: color-mix(in srgb, var(--red) 16%, transparent); color: var(--red); }
 
-  .cal-empty { text-align: center; color: var(--muted); padding: 56px 24px; font-size: .95rem; }
+  .cal-empty { text-align: center; color: var(--muted); padding: 44px 24px; font-size: .92rem; }
+  .cal-empty .cal-pill { margin-top: 12px; }
   .cal-link { color: var(--blue); font-weight: 600; text-decoration: none; }
   .cal-link:hover { text-decoration: underline; }
-  .cal-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px 16px; border-top: 1px solid var(--glass-border); font-size: .8rem; color: var(--muted); }
+
+  /* ---- form ---- */
+  .cal-formscrim { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 16px; background: color-mix(in srgb, var(--panel-solid) 55%, rgba(0,0,0,.45)); backdrop-filter: blur(3px); }
+  .cal-form { width: min(100%, 440px); max-height: 100%; overflow-y: auto; border-radius: 20px; padding: 20px; background: var(--panel-solid); border: 1px solid var(--glass-border); box-shadow: 0 24px 70px -18px rgba(0,0,0,.5); }
+  .cal-form h3 { margin: 0 0 14px; font: 700 1.1rem 'Space Grotesk', sans-serif; }
+  .cal-form label { display: block; margin-bottom: 12px; font: 600 .74rem 'Inter', sans-serif; color: var(--muted); }
+  .cal-form input, .cal-form select { display: block; width: 100%; margin-top: 5px; box-sizing: border-box; padding: 9px 11px; border-radius: 11px; border: 1px solid var(--glass-border); background: color-mix(in srgb, var(--text) 4%, transparent); color: var(--text); font: 500 .9rem 'Inter', sans-serif; color-scheme: inherit; }
+  .cal-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .cal-err { margin: 0 0 10px; color: var(--red); font: 500 .82rem 'Inter', sans-serif; }
+  .cal-frow { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+  .cal-primary { border: 0; background: var(--blue); color: #fff; font: 600 .85rem 'Inter', sans-serif; padding: 9px 18px; border-radius: 999px; cursor: pointer; transition: background .15s ease-out, opacity .15s; }
+  .cal-primary:hover { background: color-mix(in srgb, var(--blue) 86%, #000); }
+  .cal-primary:disabled { opacity: .55; cursor: default; }
+
+  .cal-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 20px 14px; border-top: 1px solid var(--glass-border); font-size: .8rem; color: var(--muted); flex: none; }
   .cal-foot button { border: 0; background: transparent; color: var(--muted); font: 500 .8rem 'Inter', sans-serif; padding: 6px 10px; border-radius: 999px; cursor: pointer; transition: background .15s ease-out, color .15s ease-out; }
   .cal-foot button:hover { background: color-mix(in srgb, var(--red) 14%, transparent); color: var(--red); }
+
+  @media (max-width: 860px) {
+    .cal-wrap { padding: 0; }
+    .cal-panel { border-radius: 0; height: 100%; }
+    .cal-month { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); overflow-y: auto; }
+    .cal-left { border-right: 0; border-bottom: 1px solid var(--glass-border); overflow: visible; }
+    .cal-day { height: 50px; } .cal-day b { width: 40px; height: 40px; }
+  }
 </style>
 
 <script>
   document.addEventListener('alpine:init', () => {
-    // Single source of truth for the teacher's schedule. The dashboard card seeds it via set(); other pages load it on first open.
+    const pad = n => String(n).padStart(2, '0');
+    const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    const csrf = @json(csrf_token());
+
+    // Single source of truth for the teacher's schedule. The Classes page seeds it via set(); other pages load it on first open.
     Alpine.store('calendar', {
-      open: false, classes: [], loaded: false, loading: false, error: '', view: 'week', now: new Date(), trigger: null, _tick: null,
+      open: false, classes: [], loaded: false, loading: false, error: '', now: new Date(), trigger: null, _tick: null,
+      year: new Date().getFullYear(), month: null, sel: iso(new Date()), form: null,
+
       set(list) { this.classes = Array.isArray(list) ? list : []; this.loaded = true; },
       async load() {
         if (this.loading) return;
@@ -85,90 +142,139 @@
       show(el) {
         this.trigger = el || document.activeElement;
         this.now = new Date();
-        if (window.innerWidth < 640) this.view = 'agenda';
+        this.year = this.now.getFullYear(); this.month = null; this.sel = iso(this.now); this.form = null;   // always opens on the whole year
         this.open = true;
         if (!this.loaded) this.load();
         clearInterval(this._tick); this._tick = setInterval(() => (this.now = new Date()), 30000);
       },
       hide() {
-        this.open = false; clearInterval(this._tick); this._tick = null;
+        this.open = false; this.form = null; clearInterval(this._tick); this._tick = null;
         const t = this.trigger; this.trigger = null;
         if (t && t.focus && document.contains(t)) t.focus();
       },
       toggle(el) { this.open ? this.hide() : this.show(el); },
-      async remove() {
-        if (!confirm('Remove your schedule?')) return false;
+
+      // ---- CRUD ----
+      async api(method, url, body) {
+        const r = await fetch(url, { method, credentials: 'same-origin', body: body ? JSON.stringify(body) : undefined,
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' } });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || (j.errors && Object.values(j.errors)[0][0]) || 'Something went wrong. Please try again.');
+        return j;
+      },
+      async saveClass() {
+        const f = this.form; if (!f || f.saving) return;
+        if (!f.subject.trim()) { f.err = 'Add a subject.'; return; }
+        if (!f.start) { f.err = 'Pick a start time.'; return; }
+        if (f.end && f.end <= f.start) { f.err = 'The end time must be after the start time.'; return; }
+        f.saving = true; f.err = '';
+        const body = { subject: f.subject, class: f.class, day: Number(f.day), start: f.start, end: f.end || null, room: f.room, from: f.from || null };
         try {
-          const r = await fetch(@json(route('teacher.schedule.destroy')), { method: 'DELETE', credentials: 'same-origin', headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': @json(csrf_token()), 'X-Requested-With': 'XMLHttpRequest' } });
-          if (!r.ok) throw new Error('bad status');
-          this.set([]); return true;
-        } catch (e) { this.error = 'Could not remove it. Please try again.'; return false; }
+          const base = @json(route('teacher.schedule.class.store'));
+          const j = f.id ? await this.api('PUT', base + '/' + f.id, body) : await this.api('POST', base, body);
+          this.set(j.classes);
+          this.form = null;
+        } catch (e) { f.err = e.message; f.saving = false; }
+      },
+      async removeClass(c) {
+        if (!confirm('Delete "' + c.subject + '"? It will be removed from every week.')) return;
+        try { const j = await this.api('DELETE', @json(route('teacher.schedule.class.store')) + '/' + c.id); this.set(j.classes); this.form = null; }
+        catch (e) { this.error = e.message; }
+      },
+      async remove() {
+        if (!confirm('Remove your whole schedule?')) return false;
+        try { await this.api('DELETE', @json(route('teacher.schedule.destroy'))); this.set([]); return true; }
+        catch (e) { this.error = 'Could not remove it. Please try again.'; return false; }
       },
     });
 
     Alpine.data('calendarDrawer', () => {
       const DAYS = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const COLORS = ['--blue', '--violet', '--cyan', '--green', '--red'];
-      const H = 48;   // px per hour
+      const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const COLORS = ['--violet', '--green', '--blue', '--cyan', '--red'];
       const mins = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
       const colorOf = s => 'var(' + COLORS[[...String(s)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7) % COLORS.length] + ')';
+      const isoDay = d => ((d.getDay() + 6) % 7) + 1;                          // JS Sun=0 → ISO Mon=1 … Sun=7
+      const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+
       return {
-        H,
+        MONTHS,
         get cal() { return Alpine.store('calendar'); },
         init() { this.$watch(() => Alpine.store('calendar').open, v => { if (v) this.$nextTick(() => this.$refs.close && this.$refs.close.focus()); }); },
-        hm(t) { return String(Math.floor(mins(t) / 60) % 12 || 12).padStart(2, '0') + ':' + t.slice(3, 5); },
-        ap(t) { return mins(t) >= 720 ? 'PM' : 'AM'; },
-        span(c) { return c.start ? this.hm(c.start) + ' ' + this.ap(c.start) + (c.end ? ' – ' + this.hm(c.end) + ' ' + this.ap(c.end) : '') : ''; },
-        get todayIso() { const d = this.cal.now.getDay(); return d === 0 ? 7 : d; },
-        get monday() { const n = this.cal.now; return new Date(n.getFullYear(), n.getMonth(), n.getDate() - ((n.getDay() + 6) % 7)); },
-        get weekDays() {
-          return [1, 2, 3, 4, 5, 6, 7].map(i => { const d = new Date(this.monday); d.setDate(d.getDate() + i - 1); return { day: i, name: DAYS[i].slice(0, 3), date: d.getDate(), today: i === this.todayIso }; });
+
+        // ---- schedule lookups ----
+        classesOn(dateStr) {
+          const day = isoDay(parse(dateStr));
+          return this.cal.classes.filter(c => c.day === day && (!c.from || dateStr >= c.from)).sort((a, b) => mins(a.start) - mins(b.start));
         },
-        get rangeLabel() {
-          const a = this.monday, b = new Date(a); b.setDate(b.getDate() + 6);
-          return MONTHS[a.getMonth()] + ' ' + a.getDate() + ' – ' + (a.getMonth() === b.getMonth() ? '' : MONTHS[b.getMonth()] + ' ') + b.getDate();
+        t12(t) { const h = Math.floor(mins(t) / 60); return (h % 12 || 12) + ':' + t.slice(3, 5) + ' ' + (h < 12 ? 'AM' : 'PM'); },
+        span(c) { return this.t12(c.start) + (c.end ? ' – ' + this.t12(c.end) : ''); },
+        dur(c) {
+          if (!c.end) return '';
+          const m = mins(c.end) - mins(c.start); if (m <= 0) return '';
+          const h = Math.floor(m / 60), r = m % 60;
+          return (h ? h + ' hr' + (h > 1 ? 's' : '') : '') + (h && r ? ' ' : '') + (r ? r + ' min' : '');
         },
-        // Visible hour range: from the earliest start to the latest end, at least 6 hours tall.
-        get range() {
-          const cs = this.cal.classes;
-          if (!cs.length) return { from: 8, to: 14 };
-          let from = Math.floor(Math.min(...cs.map(c => mins(c.start))) / 60);
-          let to = Math.ceil(Math.max(...cs.map(c => c.end ? mins(c.end) : mins(c.start) + 60)) / 60);
-          to = Math.min(24, Math.max(to, from + 6));
-          from = Math.max(0, Math.min(from, to - 6));
-          return { from, to };
+        k(c) { return colorOf(c.subject); },
+
+        // ---- navigation ----
+        get todayStr() { return iso(this.cal.now); },
+        get yearLabel() { return String(this.cal.year); },
+        get title() { return this.cal.month === null ? String(this.cal.year) : MONTHS[this.cal.month] + ' ' + this.cal.year; },
+        get subtitle() { return this.cal.month === null ? 'Tap a month to see your classes' : ''; },
+        openMonth(m) {
+          const c = this.cal; c.month = m;
+          const t = this.cal.now;
+          // land on today when it is in this month, otherwise on the 1st
+          c.sel = (t.getFullYear() === c.year && t.getMonth() === m) ? iso(t) : iso(new Date(c.year, m, 1));
         },
-        get hours() { const r = this.range; return Array.from({ length: r.to - r.from }, (_, i) => r.from + i); },
-        hourLabel(h) { return (h % 12 || 12) + ' ' + (h < 12 ? 'AM' : 'PM'); },
-        blocks(day) {
-          const from = this.range.from * 60;
-          const items = this.cal.classes.filter(c => c.day === day)
-            .map(c => ({ c, s: mins(c.start), e: c.end ? mins(c.end) : mins(c.start) + 60 }))
-            .sort((a, b) => a.s - b.s || a.e - b.e);
-          const lanes = [];   // overlapping classes sit side by side
-          items.forEach(it => { let l = lanes.findIndex(end => end <= it.s); if (l < 0) { l = lanes.length; lanes.push(0); } lanes[l] = it.e; it.lane = l; });
-          const n = Math.max(1, lanes.length);
-          return items.map(it => {
-            const height = Math.max((it.e - it.s) / 60 * H - 2, 24);
-            return { id: it.c.id, c: it.c, tall: height >= 40,
-              style: 'top:' + ((it.s - from) / 60 * H + 1) + 'px;height:' + height + 'px;left:' + (it.lane / n * 100) + '%;width:calc(' + (100 / n) + '% - 2px);--k:' + colorOf(it.c.subject) };
-          });
+        toYear() { this.cal.month = null; this.cal.form = null; },
+        step(dir) {
+          const c = this.cal;
+          if (c.month === null) { c.year += dir; return; }
+          let m = c.month + dir, y = c.year;
+          if (m < 0) { m = 11; y--; } else if (m > 11) { m = 0; y++; }
+          c.year = y; c.month = m;
+          const t = c.now;
+          c.sel = (t.getFullYear() === y && t.getMonth() === m) ? iso(t) : iso(new Date(y, m, 1));
         },
-        get nowTop() {
-          const n = this.cal.now, m = n.getHours() * 60 + n.getMinutes(), from = this.range.from * 60;
-          return m >= from && m <= this.range.to * 60 ? (m - from) / 60 * H : null;
+        goToday() { const t = this.cal.now = new Date(); this.cal.year = t.getFullYear(); if (this.cal.month !== null) { this.cal.month = t.getMonth(); this.cal.sel = iso(t); } },
+        back() { this.cal.form ? (this.cal.form = null) : (this.cal.month !== null ? this.toYear() : this.cal.hide()); },
+
+        // ---- grids ----
+        // Sun-first month matrix: leading blanks, then every day with today / has-class flags.
+        monthCells(y, m, withCounts = true) {
+          const lead = new Date(y, m, 1).getDay(), n = new Date(y, m + 1, 0).getDate(), out = [];
+          for (let i = 0; i < lead; i++) out.push({ key: 'b' + i, blank: true });
+          for (let d = 1; d <= n; d++) {
+            const s = y + '-' + pad(m + 1) + '-' + pad(d);
+            out.push({ key: s, d, s, today: s === this.todayStr, sel: s === this.cal.sel, n: withCounts ? this.classesOn(s).length : 0 });
+          }
+          return out;
         },
-        // Agenda: today first, then the rest of the week in order.
-        get agenda() {
-          const by = {}; this.cal.classes.forEach(c => (by[c.day] ||= []).push(c));
-          return Object.keys(by).map(Number)
-            .sort((a, b) => ((a - this.todayIso + 7) % 7) - ((b - this.todayIso + 7) % 7))
-            .map(day => ({ day, name: DAYS[day], today: day === this.todayIso, items: by[day].sort((a, b) => mins(a.start) - mins(b.start)).map(c => ({ ...c, k: colorOf(c.subject) })) }));
+        get bigCells() { return this.cal.month === null ? [] : this.monthCells(this.cal.year, this.cal.month); },
+        get selDate() { return parse(this.cal.sel); },
+        get selTitle() { const d = this.selDate; return DAYS[isoDay(d)] + ', ' + MONTHS[d.getMonth()].slice(0, 3) + ' ' + d.getDate(); },
+        get selItems() { return this.classesOn(this.cal.sel); },
+        get selSub() {
+          const n = this.selItems.length;
+          return (this.cal.sel === this.todayStr ? 'Today · ' : '') + (n ? n + (n === 1 ? ' class' : ' classes') : 'No classes');
         },
-        label(c) { return [c.subject, c.class, c.room].filter(Boolean).join(' · ') + ', ' + DAYS[c.day] + ' ' + this.span(c); },
+        cellLabel(c) { const d = parse(c.s); return MONTHS[d.getMonth()] + ' ' + c.d + ', ' + d.getFullYear() + (c.n ? ', ' + c.n + (c.n === 1 ? ' class' : ' classes') : ''); },
+
+        // ---- form ----
+        blank(dateStr) {
+          const d = parse(dateStr);
+          return { id: null, subject: '', class: '', day: isoDay(d), start: '08:00', end: '09:00', room: '', from: dateStr, err: '', saving: false };
+        },
+        add() { this.cal.form = this.blank(this.cal.month === null ? this.todayStr : this.cal.sel); this.focusForm(); },
+        edit(c) { this.cal.form = { id: c.id, subject: c.subject, class: c.class || '', day: c.day, start: c.start, end: c.end || '', room: c.room || '', from: c.from || this.todayStr, err: '', saving: false }; this.focusForm(); },
+        focusForm() { this.$nextTick(() => this.$refs.fSubject && this.$refs.fSubject.focus()); },
+        DAYS,
+        get formNote() { const f = this.cal.form; return f ? 'Repeats every ' + DAYS[Number(f.day)] + (f.from ? ' from ' + MONTHS[parse(f.from).getMonth()].slice(0, 3) + ' ' + parse(f.from).getDate() + ', ' + parse(f.from).getFullYear() : '') + '.' : ''; },
+
         trap(e) {
-          const f = [...this.$root.querySelectorAll('button, a[href], [tabindex="0"]')].filter(x => x.offsetParent !== null);
+          const f = [...this.$root.querySelectorAll('button, a[href], input, select, [tabindex="0"]')].filter(x => x.offsetParent !== null && !x.disabled);
           if (!f.length) return;
           const first = f[0], last = f[f.length - 1];
           if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
@@ -185,80 +291,166 @@
          x-transition:enter="cal-fade" x-transition:enter-start="cal-fade-out" x-transition:enter-end="cal-fade-in"
          x-transition:leave="cal-fade" x-transition:leave-start="cal-fade-in" x-transition:leave-end="cal-fade-out" aria-hidden="true"></div>
 
-    <aside class="cal-panel" x-show="$store.calendar.open" role="dialog" aria-modal="true" aria-labelledby="calTitle"
-           @keydown.escape.window="$store.calendar.open && $store.calendar.hide()" @keydown.tab="trap($event)"
-           x-transition:enter="cal-t" x-transition:enter-start="cal-out" x-transition:enter-end="cal-in"
-           x-transition:leave="cal-t" x-transition:leave-start="cal-in" x-transition:leave-end="cal-out">
+    <div class="cal-wrap" x-show="$store.calendar.open"
+         x-transition:enter="cal-t" x-transition:enter-start="cal-out" x-transition:enter-end="cal-in"
+         x-transition:leave="cal-t" x-transition:leave-start="cal-in" x-transition:leave-end="cal-out">
+      <section class="cal-panel" role="dialog" aria-modal="true" aria-labelledby="calTitle"
+               @keydown.escape.window="$store.calendar.open && back()" @keydown.tab="trap($event)">
 
-      <header class="cal-head">
-        <div>
-          <h2 id="calTitle">Calendar</h2>
-          <p class="cal-sub" x-text="rangeLabel"></p>
-        </div>
-        <button type="button" class="cal-x" x-ref="close" @click="$store.calendar.hide()" aria-label="Close calendar">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
-      </header>
+        <header class="cal-head">
+          <button type="button" class="cal-back" x-show="$store.calendar.month !== null" @click="toYear()" aria-label="Back to the whole year">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+            <span x-text="yearLabel"></span>
+          </button>
+          <button type="button" class="cal-ib" @click="step(-1)" :aria-label="$store.calendar.month === null ? 'Previous year' : 'Previous month'">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+          </button>
+          <h2 id="calTitle" class="cal-title"><span x-text="title"></span><small x-show="subtitle" x-text="subtitle"></small></h2>
+          <button type="button" class="cal-ib" @click="step(1)" :aria-label="$store.calendar.month === null ? 'Next year' : 'Next month'">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+          <button type="button" class="cal-pill" @click="goToday()">Today</button>
+          <button type="button" class="cal-ib cal-add" @click="add()" aria-label="Add a class" title="Add a class">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <button type="button" class="cal-ib" x-ref="close" @click="$store.calendar.hide()" aria-label="Close calendar">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </header>
 
-      <div class="cal-seg" role="group" aria-label="Calendar view" x-show="$store.calendar.classes.length">
-        <button type="button" :aria-pressed="($store.calendar.view === 'week').toString()" @click="$store.calendar.view = 'week'">Week</button>
-        <button type="button" :aria-pressed="($store.calendar.view === 'agenda').toString()" @click="$store.calendar.view = 'agenda'">Agenda</button>
-      </div>
-
-      <div class="cal-scroll">
         <p class="cal-empty" x-show="$store.calendar.loading && !$store.calendar.loaded" role="status">Loading your schedule…</p>
         <p class="cal-empty" x-show="$store.calendar.error" x-text="$store.calendar.error" role="alert"></p>
-        <p class="cal-empty" x-show="$store.calendar.loaded && !$store.calendar.classes.length && !$store.calendar.error">
-          No classes yet. <a class="cal-link" href="{{ route('teacher.classes') }}">Upload your schedule</a> on the Classes page and Astro will lay it out here.
-        </p>
 
-        {{-- Week: a time grid, Monday → Sunday --}}
-        {{-- object-form :style — a string :style would overwrite the display:none that x-show sets --}}
-        <div x-show="$store.calendar.classes.length && $store.calendar.view === 'week'" :style="{ '--h': H + 'px', '--n': hours.length }">
-          <div class="cal-days">
-            <div></div>
-            <template x-for="d in weekDays" :key="d.day">
-              <div class="cal-dh" :class="d.today ? 'today' : ''"><span x-text="d.name"></span><b x-text="d.date"></b></div>
-            </template>
-          </div>
-          <div class="cal-body">
-            <div class="cal-hrs" aria-hidden="true">
-              <template x-for="h in hours" :key="h"><div><span x-text="hourLabel(h)"></span></div></template>
-            </div>
-            <template x-for="d in weekDays" :key="d.day">
-              <div class="cal-col" :class="d.today ? 'today' : ''" role="list" :aria-label="d.name">
-                <template x-for="b in blocks(d.day)" :key="b.id">
-                  <div class="cal-blk" role="listitem" tabindex="0" :style="b.style" :title="label(b.c)" :aria-label="label(b.c)">
-                    <span x-text="b.c.subject"></span>
-                    <small x-show="b.tall" x-text="b.c.class || hm(b.c.start)"></small>
-                  </div>
+        {{-- ================= YEAR: all 12 months ================= --}}
+        <div class="cal-year" x-show="$store.calendar.month === null && ($store.calendar.loaded || !$store.calendar.loading)">
+          <template x-for="(name, m) in MONTHS" :key="name + $store.calendar.year">
+            <button type="button" class="cal-mini" :class="($store.calendar.now.getFullYear() === $store.calendar.year && $store.calendar.now.getMonth() === m) ? 'now' : ''"
+                    @click="openMonth(m)" :aria-label="name + ' ' + $store.calendar.year">
+              <h3 x-text="name"></h3>
+              <div class="cal-mg" aria-hidden="true">
+                <template x-for="(l, i) in ['S','M','T','W','T','F','S']" :key="i"><i x-text="l"></i></template>
+                <template x-for="c in monthCells($store.calendar.year, m)" :key="c.key">
+                  <span :class="c.today ? 'today' : ''"><b x-show="!c.blank" x-text="c.d"></b><u x-show="c.n && !c.today"></u></span>
                 </template>
-                <div class="cal-now" x-show="d.today && nowTop !== null" :style="{ top: nowTop + 'px' }" aria-hidden="true"></div>
               </div>
-            </template>
-          </div>
-        </div>
-
-        {{-- Agenda: a list, best on phones --}}
-        <div class="cal-ag" x-show="$store.calendar.classes.length && $store.calendar.view === 'agenda'">
-          <template x-for="g in agenda" :key="g.day">
-            <div style="display:contents">
-              <h3><span x-text="g.name"></span><em x-show="g.today">Today</em></h3>
-              <template x-for="c in g.items" :key="c.id">
-                <div class="cal-row" :style="'--k:' + c.k">
-                  <div class="t"><span x-text="hm(c.start)"></span><small x-text="ap(c.start)"></small></div>
-                  <div class="m"><b x-text="c.subject"></b><span x-text="[c.class, c.room].filter(Boolean).join(' · ') + (c.end ? (c.class || c.room ? ' · ' : '') + 'until ' + hm(c.end) + ' ' + ap(c.end) : '') || ' '"></span></div>
-                </div>
-              </template>
-            </div>
+            </button>
           </template>
         </div>
-      </div>
 
-      <footer class="cal-foot" x-show="$store.calendar.classes.length">
-        <span x-text="$store.calendar.classes.length + ($store.calendar.classes.length === 1 ? ' class' : ' classes') + ' per week'"></span>
-        <button type="button" @click="$store.calendar.remove()">Remove schedule</button>
-      </footer>
-    </aside>
+        {{-- ================= MONTH: grid + the selected day ================= --}}
+        <div class="cal-month" x-show="$store.calendar.month !== null" x-cloak>
+          <div class="cal-left">
+            <div class="cal-wk" aria-hidden="true">
+              <template x-for="w in ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']" :key="w"><span x-text="w"></span></template>
+            </div>
+            <div class="cal-grid">
+              <template x-for="c in bigCells" :key="c.key">
+                <button type="button" class="cal-day" :class="[c.blank ? 'blank' : '', c.today ? 'today' : '', c.sel ? 'sel' : ''].join(' ')"
+                        :tabindex="c.blank ? -1 : 0" :aria-hidden="c.blank ? 'true' : null" :aria-label="c.blank ? null : cellLabel(c)" :aria-pressed="c.blank ? null : c.sel.toString()"
+                        @click="!c.blank && ($store.calendar.sel = c.s)">
+                  <b x-show="!c.blank" x-text="c.d"></b>
+                  <u x-show="c.n"><s></s></u>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div class="cal-right">
+            <div class="cal-dayhead">
+              <div><h3 x-text="selTitle"></h3><small x-text="selSub"></small></div>
+              <button type="button" class="cal-pill" @click="add()">+ Add class</button>
+            </div>
+            <div class="cal-list">
+              <template x-for="c in selItems" :key="c.id">
+                <div class="cal-slot">
+                  <time x-text="t12(c.start)"></time>
+                  <div class="cal-card" :style="'--k:' + k(c)">
+                    <b x-text="c.subject" :title="c.subject"></b>
+                    <p>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                      <span x-text="span(c) + (dur(c) ? ' · ' + dur(c) : '')"></span>
+                    </p>
+                    <p x-show="c.class || c.room">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                      <span x-text="[c.class, c.room].filter(Boolean).join(' · ')"></span>
+                    </p>
+                    <div class="cal-acts">
+                      <button type="button" @click="edit(c)" :aria-label="'Edit ' + c.subject" title="Edit">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>
+                      </button>
+                      <button type="button" class="del" @click="$store.calendar.removeClass(c)" :aria-label="'Delete ' + c.subject" title="Delete">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <div class="cal-empty" x-show="!selItems.length">
+                <template x-if="!$store.calendar.classes.length">
+                  <span>No classes yet. <a class="cal-link" href="{{ route('teacher.classes') }}">Upload your schedule</a> and Astro will lay it out here, or add one yourself.</span>
+                </template>
+                <template x-if="$store.calendar.classes.length">
+                  <span>Nothing scheduled this day.</span>
+                </template>
+                <div><button type="button" class="cal-pill" @click="add()">+ Add a class</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="cal-foot" x-show="$store.calendar.classes.length">
+          <span x-text="$store.calendar.classes.length + ($store.calendar.classes.length === 1 ? ' class' : ' classes') + ' per week'"></span>
+          <button type="button" @click="$store.calendar.remove()">Remove schedule</button>
+        </footer>
+
+        {{-- ================= ADD / EDIT ================= --}}
+        <div class="cal-formscrim" x-show="$store.calendar.form" x-cloak @click.self="$store.calendar.form = null">
+          <form class="cal-form" x-show="$store.calendar.form" @submit.prevent="$store.calendar.saveClass()" aria-labelledby="calFormTitle">
+            <template x-if="$store.calendar.form">
+              <div>
+                <h3 id="calFormTitle" x-text="$store.calendar.form.id ? 'Edit class' : 'Add a class'"></h3>
+                <label>Subject
+                  <input type="text" x-ref="fSubject" x-model="$store.calendar.form.subject" maxlength="120" placeholder="e.g. Computer Science" required>
+                </label>
+                <div class="cal-two">
+                  <label>Class / section
+                    <input type="text" x-model="$store.calendar.form.class" maxlength="120" placeholder="e.g. 8-A">
+                  </label>
+                  <label>Room
+                    <input type="text" x-model="$store.calendar.form.room" maxlength="60" placeholder="e.g. Lab 2">
+                  </label>
+                </div>
+                <div class="cal-two">
+                  <label>Starts
+                    <input type="time" x-model="$store.calendar.form.start" required>
+                  </label>
+                  <label>Ends
+                    <input type="time" x-model="$store.calendar.form.end">
+                  </label>
+                </div>
+                <div class="cal-two">
+                  <label>Repeats every
+                    <select x-model="$store.calendar.form.day">
+                      <template x-for="i in [1,2,3,4,5,6,7]" :key="i"><option :value="i" x-text="DAYS[i]" :selected="Number($store.calendar.form.day) === i"></option></template>
+                    </select>
+                  </label>
+                  <label>Starting on
+                    <input type="date" x-model="$store.calendar.form.from">
+                  </label>
+                </div>
+                <p class="cal-sub" style="margin:-2px 0 12px;font:500 .78rem 'Inter',sans-serif;color:var(--muted)" x-text="formNote"></p>
+                <p class="cal-err" x-show="$store.calendar.form.err" x-text="$store.calendar.form.err" role="alert"></p>
+                <div class="cal-frow">
+                  <button type="button" class="cal-pill" @click="$store.calendar.form = null">Cancel</button>
+                  <button type="submit" class="cal-primary" :disabled="$store.calendar.form.saving" x-text="$store.calendar.form.saving ? 'Saving…' : 'Save'"></button>
+                </div>
+              </div>
+            </template>
+          </form>
+        </div>
+
+      </section>
+    </div>
   </div>
 </template>

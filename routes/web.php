@@ -4,14 +4,16 @@ use App\Http\Controllers\AstroController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CourseModuleController;
+use App\Http\Controllers\CrewQuizController;
 use App\Http\Controllers\FlashcardController;
-use App\Http\Controllers\KeyTermsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfographicController;
+use App\Http\Controllers\KeyTermsController;
+use App\Http\Controllers\LessonHintController;
 use App\Http\Controllers\LessonProgressController;
+use App\Http\Controllers\LessonQuizController;
 use App\Http\Controllers\PlanetController;
 use App\Http\Controllers\PptController;
-use App\Http\Controllers\CrewQuizController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
@@ -49,6 +51,9 @@ Route::post('/teacher/chat/ppt', [PptController::class, 'generate'])->middleware
 Route::get('/teacher/schedule', [TeacherScheduleController::class, 'index'])->name('teacher.schedule.index');
 Route::post('/teacher/schedule', [TeacherScheduleController::class, 'store'])->middleware('throttle:8,1')->name('teacher.schedule.store');
 Route::delete('/teacher/schedule', [TeacherScheduleController::class, 'destroy'])->name('teacher.schedule.destroy');
+Route::post('/teacher/schedule/classes', [TeacherScheduleController::class, 'storeClass'])->name('teacher.schedule.class.store');
+Route::put('/teacher/schedule/classes/{class}', [TeacherScheduleController::class, 'updateClass'])->name('teacher.schedule.class.update');
+Route::delete('/teacher/schedule/classes/{class}', [TeacherScheduleController::class, 'destroyClass'])->name('teacher.schedule.class.destroy');
 Route::get('/teacher/crew', [TeacherController::class, 'crew'])->name('teacher.crew');
 Route::post('/teacher/crew', [TeacherController::class, 'createCrew'])->name('teacher.crew.create');
 
@@ -80,7 +85,12 @@ Route::post('/chat/report', [ReportController::class, 'generate'])->name('chat.r
 Route::get('/astro/ping', [AstroController::class, 'ping'])->name('astro.ping');
 
 // Planet / course selection (the onboarding track choice).
-Route::get('/student/planet/{slug}', [PlanetController::class, 'show'])->name('student.planet');
+// Step 1: pick a course on the planet (Python, and later Java, C++, ...).
+Route::get('/student/planet/{slug}', [PlanetController::class, 'courses'])->name('student.planet');
+
+// Step 2: the chosen course itself. Declared before the {module}/{lesson} route
+// below, which would otherwise swallow "course/python" as a module and lesson.
+Route::get('/student/planet/{slug}/course/{course}', [PlanetController::class, 'show'])->name('student.planet.play');
 
 // New route for module/lesson format: /student/planet/{slug}/{module}/{lesson}
 // Both are gated: a Programming lesson stays locked until the previous lesson's
@@ -97,13 +107,21 @@ Route::get('/student/planet/{slug}/{module}/{lesson}/fragment', [PlanetControlle
 Route::post('/student/planet/{slug}/lesson/{module}/{lesson}/complete', [LessonProgressController::class, 'complete'])
     ->name('student.planet.lesson.complete');
 
+// Interactive lesson quiz: restore this student's answers, and check + score one answer (first attempt earns XP).
+Route::get('/student/planet/{slug}/quiz/{module}/{lesson}', [LessonQuizController::class, 'status'])->name('student.planet.quiz.status');
+Route::post('/student/planet/{slug}/quiz/{module}/{lesson}', [LessonQuizController::class, 'answer'])->middleware('throttle:60,1')->name('student.planet.quiz.answer');
+
+// Astro's hint in the editor is bought with XP: status (price / balance / hint if already bought) and buy.
+Route::get('/student/planet/{slug}/hint/{module}/{lesson}', [LessonHintController::class, 'status'])->name('student.planet.hint.status');
+Route::post('/student/planet/{slug}/hint/{module}/{lesson}', [LessonHintController::class, 'buy'])->middleware('throttle:30,1')->name('student.planet.hint.buy');
+
 // Learning-plan generation for a track. Placeholder payload until the
 // Nemotron roadmap generator lands — same response contract, instant reply.
 Route::post('/student/planet/{slug}/plan', [PlanetController::class, 'generatePlan'])->name('student.planet.plan');
 
 // Course-player alias for `/planets/{slug}` — keeps existing onboarding links
 // working while exposing the course player at the URL referenced in the spec.
-Route::get('/planets/{slug}', [PlanetController::class, 'show'])->name('student.planet.course');
+Route::get('/planets/{slug}', [PlanetController::class, 'courses'])->name('student.planet.course');
 
 // Python interactive editor page.
 // NOTE: {lessonId} was dropped from this route on purpose — the "Code it

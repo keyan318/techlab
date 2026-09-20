@@ -26,33 +26,33 @@ print(fuel_level + 10)
         <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
             @csrf
             <input type="hidden" name="title"        value="Reading Error Messages">
+            <input type="hidden" name="filename"     value="fuel_level.py">
             <input type="hidden" name="difficulty"   value="Easy">
-            <input type="hidden" name="xp"           value="10">
-            <input type="hidden" name="starter_code" value="fuel_level = &quot;87&quot;
-print(fuel_level + 10)
+            <input type="hidden" name="xp"           value="{{ \App\Services\StudentDashboardService::XP_PER_LESSON }}">
+            <input type="hidden" name="starter_code" value="shield_level = &quot;87&quot;
+print(shield_level + 10)
 ">
-            <input type="hidden" name="instructions" value="This code should add 10 to the fuel level, but it crashes.
+            <input type="hidden" name="instructions" value="Alien scouts are close! Volt's shield boost script should add 10 to the shield level, but it crashes and Astro can't wait.
 
-Click Run and read the LAST line of the error — it names the problem. Then fix the code.
+Your task: click Run, read the LAST line of the error (it names the problem), then fix the code.
 
-Once fixed, your output must be exactly:
+Once fixed, print exactly:
 97">
             <input type="hidden" name="hint_title"   value="Astro's Hint">
-            <input type="hidden" name="hint_body"    value="The last line says you can&#x27;t add a str and an int. fuel_level is text (&quot;87&quot;), not a number. Convert it with int() before adding.">
-            <input type="hidden" name="hint_code"    value="fuel_level = &quot;87&quot;
-print(int(fuel_level) + 10)">
-            <input type="hidden" name="challenge"    value="Given a 10-line program with two intentional bugs, run it, read both tracebacks, fix both bugs, and get it running cleanly.">
+            <input type="hidden" name="hint_body"    value="The last line says you can't add a str and an int. shield_level is text (&quot;87&quot;), not a number. Convert it with int() before adding.">
+            <input type="hidden" name="hint_code"    value="shield_level = &quot;87&quot;
+print(int(shield_level) + 10)">
             <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson06']) }}">
 
             <button type="submit"
-                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
-                🐍 Code it yourself
+                    class="code-btn">
+                @include('components.python-logo')
+                <span>Code it yourself</span>
+                <span class="code-btn-arrow" aria-hidden="true">→</span>
             </button>
         </form>
     </div>
 
-    <h2 class="section-heading">Challenge</h2>
-    <p class="body-text">Given a 10-line program with two intentional bugs, run it, read both tracebacks, fix both bugs, and get it running cleanly.</p>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -39,7 +39,7 @@ return [
                     'lesson-01' => [
                         'title' => 'First Signal',
                         'slug' => 'first-signal',
-                        'expected' => 'Ship systems rebooting...',
+                        'expected' => 'Astro to Codexia: comms online.',
                         'order' => 1,
                         'view' => 'student.programming.M1.lesson-01',
                         'type' => 'lesson'
@@ -71,7 +71,7 @@ return [
                     'lesson-05' => [
                         'title' => 'Talking to the Program',
                         'slug' => 'talking-program',
-                        'expected' => 'Wanderer needs 8 ration packs',
+                        'expected' => "Astro's crew needs 8 ration packs",
                         'order' => 5,
                         'view' => 'student.programming.M1.lesson-05',
                         'type' => 'lesson'

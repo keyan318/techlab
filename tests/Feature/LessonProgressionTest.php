@@ -149,10 +149,30 @@ class LessonProgressionTest extends TestCase
         // "…python_course.M1.lesson01" while the file is lesson-01.blade.php,
         // and the page rendered the "Lesson not found" placeholder instead.
         $this->actingAs(User::factory()->create())
-            ->get(route('student.planet', ['slug' => 'programming']))
+            ->get(route('student.planet.play', ['slug' => 'programming', 'course' => 'python']))
             ->assertOk()
             ->assertSee('Lesson 1.1: First Signal')
             ->assertDontSee('The selected lesson file does not exist yet.');
+    }
+
+    public function test_planet_shows_a_course_picker_before_the_course(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('student.planet', ['slug' => 'programming']))
+            ->assertOk()
+            ->assertSee('Python')
+            ->assertSee('0% Complete')
+            ->assertSee(route('student.planet.play', ['slug' => 'programming', 'course' => 'python']), false);
+
+        foreach (['networking', 'cybersecurity'] as $slug) {
+            $this->actingAs($user)->get(route('student.planet', ['slug' => $slug]))->assertOk()->assertSee('Course');
+        }
+
+        $this->actingAs($user)
+            ->get('/student/planet/programming/course/java')
+            ->assertNotFound();
     }
 
     public function test_lesson_route_passes_course_to_every_planet_shell(): void
@@ -190,7 +210,7 @@ class LessonProgressionTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => "Ship systems rebooting...\n"])
+            ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => "Astro to Codexia: comms online.\n"])
             ->assertOk()
             ->assertJson(['ok' => true, 'next' => $this->lessonUrl('m1', 'lesson02')]);
 
@@ -241,7 +261,7 @@ class LessonProgressionTest extends TestCase
 
         foreach (range(1, 2) as $_) {
             $this->actingAs($user)
-                ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'Ship systems rebooting...'])
+                ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'Astro to Codexia: comms online.'])
                 ->assertOk();
         }
 
@@ -294,7 +314,7 @@ class LessonProgressionTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'Ship systems rebooting...'])
+            ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'Astro to Codexia: comms online.'])
             ->assertOk();
 
         // "Another browser": no session, no cookies, no localStorage — just the account.

@@ -10,6 +10,7 @@ use App\Services\Schedule\ScheduleExtractor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -33,13 +34,14 @@ class TeacherScheduleController extends Controller
 
         set_time_limit(0);
         $file = $request->file('file');
+        $startsOn = $this->startDate($request->input('today'));
 
         // Live mode: the page asks for NDJSON and gets a status line per stage ("reading" → "organizing") and then the result.
         // Anything else (tests, old cached pages) gets one plain JSON response.
         if (str_contains((string) $request->header('Accept'), 'application/x-ndjson')) {
             $userId = Auth::id();
 
-            return response()->stream(function () use ($file, $userId) {
+            return response()->stream(function () use ($file, $userId, $startsOn) {
                 $emit = function (array $line) {
                     echo json_encode($line)."\n";
                     if (ob_get_level() > 0) {
@@ -47,12 +49,12 @@ class TeacherScheduleController extends Controller
                     }
                     flush();
                 };
-                [$status, $payload] = $this->handle($file, $userId, fn (string $stage) => $emit(['stage' => $stage]));
+                [$status, $payload] = $this->handle($file, $userId, $startsOn, fn (string $stage) => $emit(['stage' => $stage]));
                 $emit(['done' => $status < 400] + $payload + ['status' => $status]);
             }, 200, ['Content-Type' => 'application/x-ndjson', 'Cache-Control' => 'no-cache', 'X-Accel-Buffering' => 'no']);
         }
 
-        [$status, $payload] = $this->handle($file, Auth::id());
+        [$status, $payload] = $this->handle($file, Auth::id(), $startsOn);
 
         return response()->json($payload, $status);
     }
@@ -70,7 +72,7 @@ class TeacherScheduleController extends Controller
     /**
      * @return array{0: int, 1: array<string, mixed>} [HTTP status, JSON body]
      */
-    private function handle(UploadedFile $file, int $userId, ?callable $onStage = null): array
+    private function handle(UploadedFile $file, int $userId, string $startsOn, ?callable $onStage = null): array
     {
         try {
             $rows = $this->extractor->extract($file, $onStage);
@@ -95,12 +97,87 @@ class TeacherScheduleController extends Controller
         }
 
         // Replace the old schedule in one go, so a half-saved upload never mixes with the previous one.
-        DB::transaction(function () use ($rows, $userId) {
+        DB::transaction(function () use ($rows, $userId, $startsOn) {
             TeacherClass::where('user_id', $userId)->delete();
-            TeacherClass::insert(array_map(fn ($r) => $r + ['user_id' => $userId, 'created_at' => now(), 'updated_at' => now()], $rows));
+            TeacherClass::insert(array_map(fn ($r) => $r + ['user_id' => $userId, 'starts_on' => $startsOn, 'created_at' => now(), 'updated_at' => now()], $rows));
         });
 
         return [200, ['ok' => true, 'classes' => $this->current($userId)]];
+    }
+
+    /** Add one class by hand. It repeats weekly from `starts_on` (default: today). */
+    public function storeClass(Request $request): JsonResponse
+    {
+        if (! $this->isTeacher()) {
+            return response()->json(['error' => 'Teachers only.'], 403);
+        }
+
+        $class = TeacherClass::create($this->classData($request) + ['user_id' => Auth::id()]);
+
+        return response()->json(['ok' => true, 'class' => $class->toCard(), 'classes' => $this->current()], 201);
+    }
+
+    public function updateClass(Request $request, TeacherClass $class): JsonResponse
+    {
+        if (! $this->isTeacher() || $class->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+
+        $class->update($this->classData($request));
+
+        return response()->json(['ok' => true, 'class' => $class->fresh()->toCard(), 'classes' => $this->current()]);
+    }
+
+    public function destroyClass(TeacherClass $class): JsonResponse
+    {
+        if (! $this->isTeacher() || $class->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Not found.'], 404);
+        }
+
+        $class->delete();
+
+        return response()->json(['ok' => true, 'classes' => $this->current()]);
+    }
+
+    /** @return array<string, mixed> */
+    private function classData(Request $request): array
+    {
+        $d = $request->validate([
+            'subject' => ['required', 'string', 'max:120'],
+            'class' => ['nullable', 'string', 'max:120'],
+            'day' => ['required', 'integer', 'between:1,7'],
+            'start' => ['required', 'date_format:H:i'],
+            'end' => ['nullable', 'date_format:H:i', 'after:start'],
+            'room' => ['nullable', 'string', 'max:60'],
+            'from' => ['nullable', 'date_format:Y-m-d'],
+        ]);
+
+        return [
+            'subject' => trim($d['subject']),
+            'class_name' => filled($d['class'] ?? null) ? trim($d['class']) : null,
+            'day' => (int) $d['day'],
+            'starts_at' => $d['start'],
+            'ends_at' => $d['end'] ?? null,
+            'room' => filled($d['room'] ?? null) ? trim($d['room']) : null,
+            'starts_on' => $d['from'] ?? $this->startDate(null),
+        ];
+    }
+
+    /** The teacher's own "today" (the browser sends it), trusted only within a day or two of the server's clock. */
+    private function startDate(?string $today): string
+    {
+        $server = now();
+        if (is_string($today) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $today)) {
+            try {
+                $d = Carbon::createFromFormat('Y-m-d', $today)->startOfDay();
+                if (abs($d->diffInDays($server->copy()->startOfDay(), false)) <= 2) {
+                    return $d->toDateString();
+                }
+            } catch (\Throwable) {
+            }
+        }
+
+        return $server->toDateString();
     }
 
     public function destroy(): JsonResponse

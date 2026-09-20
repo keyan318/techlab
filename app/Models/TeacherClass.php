@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** One weekly slot in a teacher's schedule (day is ISO: 1 = Monday … 7 = Sunday). */
+/** One weekly slot in a teacher's schedule (day is ISO: 1 = Monday … 7 = Sunday), repeating from starts_on onward. */
 class TeacherClass extends Model
 {
-    protected $fillable = ['user_id', 'subject', 'class_name', 'day', 'starts_at', 'ends_at', 'room'];
+    protected $fillable = ['user_id', 'subject', 'class_name', 'day', 'starts_at', 'ends_at', 'room', 'starts_on'];
 
-    protected $casts = ['day' => 'integer'];
+    protected $casts = ['day' => 'integer', 'starts_on' => 'date:Y-m-d'];
 
     public function user(): BelongsTo
     {
@@ -28,6 +28,7 @@ class TeacherClass extends Model
             'start' => $this->starts_at,
             'end' => $this->ends_at,
             'room' => $this->room,
+            'from' => $this->starts_on?->toDateString() ?? $this->created_at?->toDateString(),
         ];
     }
 }

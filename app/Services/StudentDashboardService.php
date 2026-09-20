@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Crew;
 use App\Models\LessonProgress;
+use App\Models\QuizAnswer;
 use App\Models\StudyActivity;
 use App\Models\User;
+use App\Models\XpSpend;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -20,6 +22,12 @@ class StudentDashboardService
 {
     public const XP_PER_LESSON = 100;
 
+    /** A correct first answer on a lesson quiz. A 3-question quiz is worth 30, so a lesson's coding challenge (100) stays the big prize. */
+    public const XP_PER_QUIZ_QUESTION = 10;
+
+    /** Price of Astro's hint on an exercise. Bought once per lesson; a fifth of what finishing that lesson pays. */
+    public const XP_HINT_COST = 20;
+
     /** Planets shown on the dashboard. Only those with a config blueprint have trackable lessons. */
     private const PLANETS = [
         'programming' => ['name' => 'Programming',   'world' => 'Python Planet',      'accent' => '#73b6ff'],
@@ -27,9 +35,20 @@ class StudentDashboardService
         'cybersecurity' => ['name' => 'Cybersecurity', 'world' => 'Cybersecurity Citadel', 'accent' => '#9b6bff'],
     ];
 
-    public static function xpFor(int $completedLessons): int
+    /** Net XP: earned (lessons + quiz answers) minus what was spent. Never negative. */
+    public static function xpFor(int $completedLessons, int $quizXp = 0, int $spent = 0): int
     {
-        return $completedLessons * self::XP_PER_LESSON;
+        return max(0, $completedLessons * self::XP_PER_LESSON + $quizXp - $spent);
+    }
+
+    /** What this student can spend right now. */
+    public static function balance(User $user): int
+    {
+        return self::xpFor(
+            $user->lessonProgress()->count(),
+            (int) QuizAnswer::where('user_id', $user->id)->sum('xp'),
+            (int) XpSpend::where('user_id', $user->id)->sum('cost'),
+        );
     }
 
     public static function build(User $user): array
@@ -49,7 +68,7 @@ class StudentDashboardService
 
         return [
             'user' => $user,
-            'xp' => self::xpFor($lessonsDone),
+            'xp' => self::xpFor($lessonsDone, (int) QuizAnswer::where('user_id', $user->id)->sum('xp'), (int) XpSpend::where('user_id', $user->id)->sum('cost')),
             'lessonsDone' => $lessonsDone,
             'lessonsTotal' => $lessonsTotal,
             'modulesDone' => $modulesDone,
@@ -146,8 +165,10 @@ class StudentDashboardService
         $rows = User::where('crew_id', $user->crew_id)
             ->where('role', 'student')
             ->withCount('lessonProgress')
+            ->withSum('quizAnswers', 'xp')
+            ->withSum('xpSpends', 'cost')
             ->get()
-            ->map(fn (User $u) => ['id' => $u->id, 'name' => $u->name, 'xp' => self::xpFor($u->lesson_progress_count)])
+            ->map(fn (User $u) => ['id' => $u->id, 'name' => $u->name, 'xp' => self::xpFor($u->lesson_progress_count, (int) $u->quiz_answers_sum_xp, (int) $u->xp_spends_sum_cost)])
             ->sortBy([['xp', 'desc'], ['name', 'asc']])
             ->values();
 
@@ -218,6 +239,22 @@ class StudentDashboardService
                 $i = (int) floor($first->diffInDays($row->completed_at->copy()->startOfDay(), false) / 7);
                 if ($i >= 0 && $i < $weeks) {
                     $xp[$i] += self::XP_PER_LESSON;
+                }
+            });
+
+        QuizAnswer::where('user_id', $user->id)->where('xp', '>', 0)->where('created_at', '>=', $first)->get(['xp', 'created_at'])
+            ->each(function ($row) use (&$xp, $first, $weeks) {
+                $i = (int) floor($first->diffInDays($row->created_at->copy()->startOfDay(), false) / 7);
+                if ($i >= 0 && $i < $weeks) {
+                    $xp[$i] += $row->xp;
+                }
+            });
+
+        XpSpend::where('user_id', $user->id)->where('created_at', '>=', $first)->get(['cost', 'created_at'])
+            ->each(function ($row) use (&$xp, $first, $weeks) {
+                $i = (int) floor($first->diffInDays($row->created_at->copy()->startOfDay(), false) / 7);
+                if ($i >= 0 && $i < $weeks) {
+                    $xp[$i] = max(0, $xp[$i] - $row->cost);
                 }
             });
 

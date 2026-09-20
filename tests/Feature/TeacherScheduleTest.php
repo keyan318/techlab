@@ -327,6 +327,49 @@ class TeacherScheduleTest extends TestCase
         }
     }
 
+    public function test_teacher_can_add_edit_and_delete_a_class_and_it_repeats_from_its_start_date(): void
+    {
+        $t = $this->teacher();
+
+        $res = $this->actingAs($t)->postJson(route('teacher.schedule.class.store'), [
+            'subject' => 'Robotics Lab', 'class' => '8-A', 'day' => 2, 'start' => '09:30', 'end' => '10:30', 'room' => 'Lab 2', 'from' => '2026-09-20',
+        ])->assertCreated()->assertJsonPath('class.subject', 'Robotics Lab')->assertJsonPath('class.from', '2026-09-20');
+        $id = $res->json('class.id');
+
+        $this->actingAs($t)->putJson(route('teacher.schedule.class.update', $id), [
+            'subject' => 'Robotics', 'day' => 3, 'start' => '10:00', 'end' => '11:00',
+        ])->assertOk()->assertJsonPath('class.day', 3)->assertJsonPath('class.start', '10:00')->assertJsonPath('class.class', null);
+
+        $this->actingAs($t)->getJson(route('teacher.schedule.index'))->assertOk()->assertJsonCount(1, 'classes');
+
+        $this->actingAs($t)->deleteJson(route('teacher.schedule.class.destroy', $id))->assertOk()->assertJsonCount(0, 'classes');
+        $this->assertDatabaseCount('teacher_classes', 0);
+    }
+
+    public function test_class_input_is_validated_and_other_teachers_classes_are_off_limits(): void
+    {
+        $t = $this->teacher();
+        $this->actingAs($t)->postJson(route('teacher.schedule.class.store'), ['subject' => '', 'day' => 9, 'start' => 'x'])->assertStatus(422);
+        $this->actingAs($t)->postJson(route('teacher.schedule.class.store'), ['subject' => 'Math', 'day' => 1, 'start' => '10:00', 'end' => '09:00'])->assertStatus(422);
+
+        $mine = TeacherClass::create(['user_id' => $t->id, 'subject' => 'Math', 'day' => 1, 'starts_at' => '08:00']);
+        $other = User::factory()->create(['role' => 'teacher']);
+        $this->actingAs($other)->putJson(route('teacher.schedule.class.update', $mine->id), ['subject' => 'Hacked', 'day' => 1, 'start' => '08:00'])->assertNotFound();
+        $this->actingAs($other)->deleteJson(route('teacher.schedule.class.destroy', $mine->id))->assertNotFound();
+        $this->assertSame('Math', $mine->fresh()->subject);
+
+        $student = User::factory()->create(['role' => 'student']);
+        $this->actingAs($student)->postJson(route('teacher.schedule.class.store'), ['subject' => 'X', 'day' => 1, 'start' => '08:00'])->assertForbidden();
+    }
+
+    public function test_new_classes_default_to_the_browsers_today(): void
+    {
+        $t = $this->teacher();
+        $today = now()->toDateString();
+        $this->actingAs($t)->postJson(route('teacher.schedule.class.store'), ['subject' => 'Math', 'day' => 1, 'start' => '08:00'])
+            ->assertCreated()->assertJsonPath('class.from', $today);
+    }
+
     public function test_teachers_get_the_calendar_rail_item_and_drawer_on_every_page_students_do_not(): void
     {
         $t = $this->teacher();

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Conversation;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -33,6 +32,22 @@ class User extends Authenticatable
     public function lessonProgress(): HasMany
     {
         return $this->hasMany(LessonProgress::class);
+    }
+
+    /**
+     * Lesson-quiz answers (first attempt per question; correct ones carry XP).
+     */
+    public function quizAnswers(): HasMany
+    {
+        return $this->hasMany(QuizAnswer::class);
+    }
+
+    /**
+     * XP this student has spent (e.g. on Astro's hints).
+     */
+    public function xpSpends(): HasMany
+    {
+        return $this->hasMany(XpSpend::class);
     }
 
     /**

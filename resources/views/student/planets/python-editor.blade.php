@@ -11,6 +11,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ session('editor_title', 'Exercise') }} · Python Editor · TechLab</title>
+    <meta name="theme-color" content="#06061a">
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -26,42 +28,25 @@
             flex-direction: column;
         }
 
-        /* ── Top nav bar ─────────────────────────────────────────────── */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            height: 52px;
-            background: #090d1f;
-            border-bottom: 1px solid #1e2a45;
-            flex-shrink: 0;
-        }
-        .top-bar-left { display: flex; align-items: center; gap: 12px; }
-        .top-bar-logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #22c98a;
-            text-decoration: none;
-        }
-        .top-bar-breadcrumb { color: #475569; font-size: 0.8rem; }
-        .top-bar-breadcrumb span { color: #94a3b8; }
-        .top-bar-back {
+
+        /* ── Back link (top of left panel) ──────────────────────────── */
+        .back-link {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 14px;
-            border-radius: 999px;
-            background: #1e293b;
-            color: #94a3b8;
+            margin: 16px 20px 0;
+            padding: 6px 10px 6px 6px;
+            align-self: flex-start;
+            border-radius: 8px;
+            color: #8aa0c0;
             text-decoration: none;
-            font-size: 0.8rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
             font-weight: 600;
-            border: 1px solid #334155;
-            transition: background 0.15s, color 0.15s;
+            transition: color 0.15s, background 0.15s;
         }
-        .top-bar-back:hover { background: #334155; color: #fff; }
+        .back-link:hover { color: #73b6ff; background: rgba(115,182,255,0.08); }
+        .back-link svg { width: 16px; height: 16px; }
 
         /* ── Split layout ────────────────────────────────────────────── */
         .editor-layout {
@@ -69,7 +54,7 @@
             grid-template-columns: 360px 1fr;
             flex: 1;
             overflow: hidden;
-            height: calc(100vh - 52px);
+            height: 100vh;
         }
 
         /* ── LEFT PANEL ──────────────────────────────────────────────── */
@@ -111,8 +96,8 @@
 
         /* Front — instructions */
         .card-front {
-            background: linear-gradient(145deg, #131d3b 0%, #0e1a36 100%);
-            border: 1px solid #1e3a5f;
+            background: #101833;
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .card-meta {
             display: flex;
@@ -139,9 +124,9 @@
             display: inline-block;
             padding: 3px 12px;
             border-radius: 999px;
-            background: rgba(34,201,138,0.12);
-            border: 1px solid rgba(34,201,138,0.35);
-            color: #22c98a;
+            background: rgba(115,182,255,0.12);
+            border: 1px solid rgba(115,182,255,0.35);
+            color: #73b6ff;
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.06em;
@@ -163,8 +148,8 @@
             white-space: pre-line;
         }
         .card-instructions code {
-            background: rgba(34,201,138,0.12);
-            color: #22c98a;
+            background: rgba(115,182,255,0.12);
+            color: #73b6ff;
             padding: 1px 5px;
             border-radius: 4px;
             font-family: 'Space Mono', monospace;
@@ -175,35 +160,22 @@
             background: #1e2a45;
             margin: 18px 0;
         }
-        .card-challenge-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #7c3aed;
-            margin-bottom: 8px;
-        }
-        .card-challenge {
-            font-size: 0.88rem;
-            line-height: 1.65;
-            color: #a78bfa;
-            white-space: pre-line;
-        }
 
         /* Back — Astro hint */
         .card-back {
-            background: linear-gradient(145deg, #1a1040 0%, #160d38 100%);
-            border: 1px solid #2d1f6e;
+            background: #101833;
+            border: 1px solid rgba(115,182,255,0.22);
             transform: rotateY(180deg);
         }
         .astro-avatar {
             width: 52px; height: 52px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #7c3aed, #22c98a);
+            background: rgba(115,182,255,0.14);
+            border: 1px solid rgba(115,182,255,0.3);
+            color: #73b6ff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
             margin-bottom: 14px;
         }
         .hint-title {
@@ -216,21 +188,47 @@
         .hint-body {
             font-size: 0.88rem;
             line-height: 1.7;
-            color: #c4b5fd;
+            color: #b9c6dd;
             margin-bottom: 18px;
             white-space: pre-line;
         }
         .hint-code-block {
-            background: #0e0a2a;
-            border: 1px solid #2d1f6e;
+            background: #0a1024;
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 10px;
             padding: 14px 16px;
             font-family: 'Space Mono', monospace;
             font-size: 0.82rem;
-            color: #22c98a;
+            color: #73b6ff;
             white-space: pre-wrap;
             line-height: 1.6;
         }
+
+        /* Hint shop: Astro's hint costs XP */
+        .hint-price {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            margin: 0 0 14px; padding: 10px 14px; border-radius: 10px;
+            background: rgba(255,212,59,.08); border: 1px solid rgba(255,212,59,.25);
+            font-size: .85rem; color: #ffe58a;
+        }
+        .hint-price b { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+        .hint-balance-row { background: rgba(115,182,255,.08); border-color: rgba(115,182,255,.25); color: #e2e8f0; }
+        .hint-buy {
+            width: 100%; justify-content: center;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 11px 16px; border-radius: 10px; border: none; cursor: pointer;
+            background: #73b6ff; color: #0e1230;
+            font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .9rem;
+            transition: background .15s, transform .12s cubic-bezier(.34,1.56,.64,1), opacity .15s;
+        }
+        .hint-buy:hover { background: #8cc4ff; }
+        .hint-buy:active { transform: scale(.97); }
+        .hint-buy:disabled { opacity: .45; cursor: not-allowed; }
+        .hint-buy:focus-visible { outline: 2px solid #73b6ff; outline-offset: 2px; }
+        .hint-msg { min-height: 1.2em; margin-top: 10px; font-size: .82rem; line-height: 1.5; color: #b9c6dd; }
+        .hint-msg.err { color: #ff8aa0; }
+        .hint-msg.ok  { color: #7cffb2; }
+        [hidden] { display: none !important; }
 
         /* Flip button */
         .flip-btn {
@@ -252,9 +250,9 @@
             transition: border-color 0.15s, color 0.15s, background 0.15s;
         }
         .flip-btn:hover {
-            border-color: #7c3aed;
-            color: #a78bfa;
-            background: rgba(124,58,237,0.08);
+            border-color: rgba(115,182,255,0.5);
+            color: #73b6ff;
+            background: rgba(115,182,255,0.08);
         }
         .flip-icon { display: inline-block; transition: transform 0.3s; }
         .flip-btn:hover .flip-icon { transform: rotate(180deg); }
@@ -277,13 +275,14 @@
             height: 40px;
             flex-shrink: 0;
         }
+        .file-tab .python-logo { width: 16px; height: 16px; }
         .file-tab {
             display: flex;
             align-items: center;
             gap: 7px;
             padding: 0 16px;
             height: 40px;
-            border-bottom: 2px solid #22c98a;
+            border-bottom: 2px solid #73b6ff;
             font-family: 'Space Mono', monospace;
             font-size: 0.8rem;
             color: #e2e8f0;
@@ -329,7 +328,7 @@
         #python-code {
             background: transparent;
             color: transparent;
-            caret-color: #22c98a;
+            caret-color: #73b6ff;
         }
         #python-code::selection { background: rgba(115,182,255,0.28); }
 
@@ -350,7 +349,7 @@
             margin-right: auto;
             font-family: 'Space Mono', monospace;
         }
-        .editor-status.ready   { color: #22c98a; }
+        .editor-status.ready   { color: #73b6ff; }
         .editor-status.running { color: #fbbf24; }
         .editor-status.error   { color: #f87171; }
 
@@ -378,7 +377,7 @@
             gap: 7px;
             padding: 9px 22px;
             border-radius: 8px;
-            background: #22c98a;
+            background: #73b6ff;
             border: none;
             color: #0e1230;
             font-family: 'Space Grotesk', sans-serif;
@@ -387,7 +386,10 @@
             cursor: pointer;
             transition: opacity 0.15s;
         }
-        .btn-submit:hover { opacity: 0.85; }
+        .btn-submit:hover { background: #8cc4ff; }
+        .btn-submit:active, .btn-run:active, .btn-next:active { transform: scale(0.97); }
+        .btn-submit, .btn-run, .btn-next { transition: background 0.15s, transform 0.12s cubic-bezier(.34,1.56,.64,1), opacity 0.15s; }
+        .btn-submit:focus-visible, .btn-run:focus-visible, .btn-next:focus-visible, .flip-btn:focus-visible { outline: 2px solid #73b6ff; outline-offset: 2px; }
         .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
 
         .btn-next {
@@ -396,7 +398,7 @@
             gap: 7px;
             padding: 9px 22px;
             border-radius: 8px;
-            background: linear-gradient(100deg, #5be1ff, #73b6ff 55%, #9b6bff);
+            background: #73b6ff;
             border: none;
             color: #0e1230;
             font-family: 'Space Grotesk', sans-serif;
@@ -412,7 +414,7 @@
         /* Toast stack (XP + success), Codedex-style */
         .toast-stack {
             position: fixed;
-            top: 64px;
+            top: 52px;   /* below the tab bar so the Theme button stays clickable */
             right: 20px;
             z-index: 50;
             display: flex;
@@ -441,12 +443,13 @@
             border: 1px solid #bcdcff;
         }
         .toast-card.success-toast {
-            background: #f2fbe6;
-            border: 1px solid #cdeaa0;
+            background: #f4f9ff;
+            border: 1px solid #cfe4ff;
         }
         .toast-icon {
-            font-size: 1.6rem;
-            line-height: 1;
+            width: 28px; height: 28px;
+            display: grid; place-items: center;
+            color: #2f7de1;
             flex-shrink: 0;
         }
         .toast-body { flex: 1; min-width: 0; }
@@ -508,7 +511,7 @@
             border-radius: 50%;
             background: #1e2a45;
         }
-        .terminal-dot.active { background: #22c98a; }
+        .terminal-dot.active { background: #73b6ff; }
         .terminal-label {
             font-family: 'Space Mono', monospace;
             font-size: 0.72rem;
@@ -542,8 +545,111 @@
             font-family: 'Space Mono', monospace;
             font-size: 0.75rem;
         }
-        .out-success { color: #22c98a; }
+        .out-success { color: #73b6ff; }
         .out-error   { color: #f87171; }
+
+        /* ── Theme button (matches the sidebar's Theme item) ─────────── */
+        .theme-btn {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            height: 32px;
+            padding: 0 12px;
+            border: none;
+            border-radius: 11px;
+            background: transparent;
+            color: #8aa0c0;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 13.5px;
+            font-weight: 500;
+            letter-spacing: -0.006em;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, transform 0.12s cubic-bezier(.34,1.56,.64,1);
+        }
+        .theme-btn svg { width: 20px; height: 20px; flex: none; transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); }
+        .theme-btn:hover { background: rgba(123,142,220,0.09); color: #e2e8f0; }
+        .theme-btn:hover svg { transform: rotate(180deg); }
+        .theme-btn:active { transform: scale(0.97); }
+        .theme-btn:focus-visible { outline: 2px solid #73b6ff; outline-offset: 2px; }
+
+        /* ── Light theme (same palette as the sidebar light theme) ───── */
+        html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *::after {
+            transition: background-color .3s ease, border-color .3s ease, color .3s ease !important;
+        }
+        html[data-theme="light"] body            { background: #ffffff; color: #0d0d0d; }
+        html[data-theme="light"] .left-panel,
+        html[data-theme="light"] .file-tab-bar,
+        html[data-theme="light"] .action-bar,
+        html[data-theme="light"] .line-numbers   { background: #f9f9f9; }
+        html[data-theme="light"] .left-panel,
+        html[data-theme="light"] .file-tab-bar,
+        html[data-theme="light"] .action-bar,
+        html[data-theme="light"] .line-numbers,
+        html[data-theme="light"] .terminal-panel,
+        html[data-theme="light"] .terminal-header,
+        html[data-theme="light"] .card-divider   { border-color: rgba(0,0,0,.09); }
+        html[data-theme="light"] .right-panel,
+        html[data-theme="light"] .code-stack     { background: #ffffff; }
+        html[data-theme="light"] .card-front,
+        html[data-theme="light"] .card-back      { background: #ffffff; border: 1px solid rgba(0,0,0,.09); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+        html[data-theme="light"] .card-back      { border-color: rgba(47,125,225,.3); }
+        html[data-theme="light"] .card-title     { color: #0d0d0d; }
+        /* Same neutral surfaces + black primary button as the chat's light theme */
+        html[data-theme="light"] .hint-price     { background: rgba(0,0,0,.045); border-color: rgba(0,0,0,.09); color: #676767; }
+        html[data-theme="light"] .hint-price b   { color: #0d0d0d; }
+        html[data-theme="light"] .hint-balance-row { background: rgba(0,0,0,.045); border-color: rgba(0,0,0,.09); color: #676767; }
+        html[data-theme="light"] .hint-buy       { background: #0d0d0d; color: #fff; }
+        html[data-theme="light"] .hint-buy:hover { background: #2a2a2a; }
+        html[data-theme="light"] .hint-msg       { color: #676767; }
+        html[data-theme="light"] .hint-msg.err   { color: #d6325a; }
+        html[data-theme="light"] .hint-msg.ok    { color: #0f9d63; }
+        html[data-theme="light"] .hint-title     { color: #0d0d0d; }
+        html[data-theme="light"] .card-instructions,
+        html[data-theme="light"] .hint-body      { color: #3d3d3d; }
+        html[data-theme="light"] .card-section-label,
+        html[data-theme="light"] .editor-status,
+        html[data-theme="light"] .terminal-label { color: #676767; }
+        html[data-theme="light"] .card-xp        { color: #b7791f; }
+        html[data-theme="light"] .card-difficulty { background: rgba(47,125,225,.1); border-color: rgba(47,125,225,.3); color: #2f7de1; }
+        html[data-theme="light"] .card-instructions code { background: rgba(47,125,225,.1); color: #2f7de1; }
+        html[data-theme="light"] .astro-avatar   { background: rgba(47,125,225,.1); border-color: rgba(47,125,225,.3); color: #2f7de1; }
+        html[data-theme="light"] .hint-code-block { background: #f3f3f3; border-color: rgba(0,0,0,.09); color: #1f4fa8; }
+        html[data-theme="light"] .back-link      { color: #676767; }
+        html[data-theme="light"] .back-link:hover,
+        html[data-theme="light"] .flip-btn:hover { color: #2f7de1; background: rgba(47,125,225,.08); }
+        html[data-theme="light"] .flip-btn       { border-color: rgba(0,0,0,.12); color: #676767; }
+        html[data-theme="light"] .flip-btn:hover { border-color: rgba(47,125,225,.5); }
+        html[data-theme="light"] .file-tab       { color: #0d0d0d; border-bottom-color: #2f7de1; }
+        html[data-theme="light"] .theme-btn      { color: #676767; }
+        html[data-theme="light"] .theme-btn:hover { background: rgba(0,0,0,.05); color: #0d0d0d; }
+        html[data-theme="light"] .line-numbers   { color: #a0a0a0; }
+        html[data-theme="light"] #code-hl        { color: #0d0d0d; }
+        html[data-theme="light"] #python-code    { caret-color: #2f7de1; }
+        html[data-theme="light"] #python-code::selection { background: rgba(47,125,225,.22); }
+        html[data-theme="light"] .btn-run        { background: #ffffff; border-color: rgba(0,0,0,.15); color: #0d0d0d; }
+        html[data-theme="light"] .btn-run:hover  { background: #f3f3f3; border-color: rgba(0,0,0,.25); }
+        html[data-theme="light"] .btn-submit,
+        html[data-theme="light"] .btn-next       { background: #2f7de1; color: #ffffff; }
+        html[data-theme="light"] .btn-submit:hover { background: #276cc4; }
+        html[data-theme="light"] .editor-status.ready,
+        html[data-theme="light"] .out-success    { color: #2f7de1; }
+        html[data-theme="light"] .terminal-panel { background: #f9f9f9; }
+        html[data-theme="light"] .terminal-output { color: #3d3d3d; }
+        html[data-theme="light"] .terminal-dot   { background: rgba(0,0,0,.15); }
+        html[data-theme="light"] .terminal-dot.active { background: #2f7de1; }
+        html[data-theme="light"] .terminal-empty { color: #a0a0a0; }
+        html[data-theme="light"] .card-scene::-webkit-scrollbar-thumb,
+        html[data-theme="light"] .terminal-output::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); }
+        /* code colours tuned for a white background */
+        html[data-theme="light"] .tok-comment { color: #7a8194; }
+        html[data-theme="light"] .tok-kw, html[data-theme="light"] .tok-op { color: #c2255c; }
+        html[data-theme="light"] .tok-const, html[data-theme="light"] .tok-num, html[data-theme="light"] .tok-interp { color: #b25e00; }
+        html[data-theme="light"] .tok-builtin { color: #0b7285; }
+        html[data-theme="light"] .tok-fn       { color: #2f5fd0; }
+        html[data-theme="light"] .tok-str      { color: #2b8a3e; }
+        html[data-theme="light"] .tok-var      { color: #0d0d0d; }
+        html[data-theme="light"] .tok-punct    { color: #676767; }
 
         @media (max-width: 768px) {
             .editor-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; }
@@ -551,7 +657,7 @@
             .card-flipper { min-height: unset; }
             .card-face { position: relative; min-height: unset; }
             .right-panel { height: 70vh; }
-            .toast-stack { left: 12px; right: 12px; width: auto; top: 60px; }
+            .toast-stack { left: 12px; right: 12px; width: auto; top: 52px; }
         }
     </style>
 </head>
@@ -566,32 +672,27 @@
     $hintTitle   = session('editor_hint_title',   "Astro's Hint");
     $hintBody    = session('editor_hint_body',    '');
     $hintCode    = session('editor_hint_code',    '');
-    $challenge   = session('editor_challenge',    '');
-    $returnTo    = session('editor_return_to',    route('student.planet', ['slug' => $slug ?? 'programming']));
+    $fileName    = session('editor_filename', '') ?: (\Illuminate\Support\Str::snake($title) ?: 'main');
+    $fileName    = preg_replace('/[^a-z0-9_]/', '', strtolower(pathinfo($fileName, PATHINFO_FILENAME))) ?: 'main';
+    $fileName   .= '.py';
+    $returnTo    = session('editor_return_to',    route('student.planet.play', ['slug' => $slug ?? 'programming', 'course' => array_key_first(config('course-catalog.'.($slug ?? 'programming').'.courses', [])) ?? 'python']));
 
     // Server-verified completion endpoint for this lesson's challenge, flashed
     // by PlanetController::launchEditor. Null when the exercise has no
     // output-checkable challenge — the editor then only offers Run.
     // The answer key itself is never sent to the browser.
     $completeUrl = session('editor_complete_url', null);
-@endphp
 
-{{-- Top nav --}}
-<nav class="top-bar">
-    <div class="top-bar-left">
-        <a href="{{ route('student.planet', ['slug' => $slug ?? 'programming']) }}"
-           class="top-bar-logo">🚀 TechLab</a>
-        <span class="top-bar-breadcrumb">
-            / Python / <span>{{ $title }}</span>
-        </span>
-    </div>
-    <a href="{{ $returnTo }}" class="top-bar-back">← Back to lesson</a>
-</nav>
+    // Programming lessons: Astro's hint is bought with XP (text served by the server after purchase).
+    $hintStatusUrl = session('editor_hint_status_url', null);
+    $hintBuyUrl    = session('editor_hint_buy_url', null);
+    $hintCost      = \App\Services\StudentDashboardService::XP_HINT_COST;
+@endphp
 
 {{-- Toast stack: XP + success, appear together on a correct submission --}}
 <div class="toast-stack" id="toast-stack">
     <div class="toast-card xp-toast" id="xp-toast">
-        <span class="toast-icon">✴️</span>
+        <span class="toast-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></svg></span>
         <div class="toast-body">
             <div class="toast-title">+{{ $xp ?: 0 }} XP</div>
             <div class="toast-text">You earned XP for this exercise. Keep it up!</div>
@@ -599,7 +700,7 @@
         <button class="toast-close" type="button" data-dismiss="xp-toast">✕</button>
     </div>
     <div class="toast-card success-toast" id="success-toast">
-        <span class="toast-icon">🎉</span>
+        <span class="toast-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg></span>
         <div class="toast-body">
             <div class="toast-title">You got it!</div>
             <div class="toast-text">Press "Next" to continue.</div>
@@ -612,13 +713,17 @@
 
     {{-- LEFT — instruction card --}}
     <aside class="left-panel">
+        <a href="{{ $returnTo }}" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            Back to lesson
+        </a>
         <div class="card-scene">
             <div class="card-flipper" id="card-flipper">
 
                 {{-- FRONT: Instructions --}}
                 <div class="card-face card-front">
                     <div class="card-meta">
-                        <div class="card-title">🐍 {{ $title }}</div>
+                        <div class="card-title">{{ $title }}</div>
                         @if($xp)
                             <div class="card-xp">{{ $xp }} XP</div>
                         @endif
@@ -631,21 +736,36 @@
                     <div class="card-section-label">Instructions</div>
                     <div class="card-instructions">{{ $instructions }}</div>
 
-                    @if($challenge)
-                        <div class="card-divider"></div>
-                        <div class="card-challenge-label">🚀 Captain's Challenge</div>
-                        <div class="card-challenge">{{ $challenge }}</div>
-                    @endif
                 </div>
 
                 {{-- BACK: Astro's hint --}}
                 <div class="card-face card-back">
-                    <div class="astro-avatar">🤖</div>
-                    <div class="hint-title">{{ $hintTitle }}</div>
-                    <div class="hint-body">{{ $hintBody }}</div>
-                    @if($hintCode)
-                        <div class="card-section-label" style="margin-top:4px;">Example</div>
-                        <div class="hint-code-block">{{ $hintCode }}</div>
+                    <div class="astro-avatar"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></svg></div>
+                    @if($hintBuyUrl)
+                        {{-- Earned the hard way: the hint text is not in this page until it is bought. --}}
+                        <div id="hint-locked">
+                            <div class="hint-title">{{ $hintTitle }}</div>
+                            <div class="hint-body">Stuck? Astro can help, but XP is earned the hard way. A hint costs XP, and it comes out of your total.</div>
+                            <div class="hint-price"><span>Price</span><b>{{ $hintCost }} XP</b></div>
+                            <div class="hint-price hint-balance-row"><span>Your XP</span><b id="hint-balance">…</b></div>
+                            <button class="hint-buy" id="hint-buy" type="button" disabled>Unlock hint · −{{ $hintCost }} XP</button>
+                            <div class="hint-msg" id="hint-msg" role="status" aria-live="polite"></div>
+                        </div>
+                        <div id="hint-open" hidden>
+                            <div class="hint-title" id="hint-open-title"></div>
+                            <div class="hint-body" id="hint-open-body"></div>
+                            <div id="hint-open-code-wrap" hidden>
+                                <div class="card-section-label" style="margin-top:4px;">Example</div>
+                                <div class="hint-code-block" id="hint-open-code"></div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="hint-title">{{ $hintTitle }}</div>
+                        <div class="hint-body">{{ $hintBody }}</div>
+                        @if($hintCode)
+                            <div class="card-section-label" style="margin-top:4px;">Example</div>
+                            <div class="hint-code-block">{{ $hintCode }}</div>
+                        @endif
                     @endif
                 </div>
 
@@ -653,8 +773,8 @@
         </div>
 
         <button class="flip-btn" id="flip-btn" type="button">
-            <span class="flip-icon">🔄</span>
-            <span id="flip-label">Flip to get help from Astro</span>
+            <span class="flip-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8"/><path d="M18.5 2v4h-4M5.5 22v-4h4"/></svg></span>
+            <span id="flip-label">Flip to get help from Astro{{ $hintBuyUrl ? ' · '.$hintCost.' XP' : '' }}</span>
         </button>
     </aside>
 
@@ -662,7 +782,14 @@
     <section class="right-panel">
 
         <div class="file-tab-bar">
-            <div class="file-tab">🐍 script.py</div>
+            <div class="file-tab">@include('components.python-logo') <span>{{ $fileName }}</span></div>
+            <button type="button" class="theme-btn" onclick="window.techlabTheme.toggle()" aria-label="Toggle theme">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8.5"/>
+                    <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" fill-opacity="0.85"/>
+                </svg>
+                <span>Theme</span>
+            </button>
         </div>
 
         <div class="code-area-wrapper">
@@ -682,7 +809,7 @@
 
         <div class="action-bar">
             <span id="editor-status" class="editor-status">Loading Python…</span>
-            <button id="run-btn" class="btn-run" disabled>▶ Run</button>
+            <button id="run-btn" class="btn-run" disabled><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg> Run</button>
             @if($completeUrl)
                 <button id="submit-btn" class="btn-submit" disabled>Submit answer</button>
                 {{-- href is set from the server's response once the answer is verified --}}
@@ -769,11 +896,59 @@
 
     /* Card flip */
     let isFlipped = false;
+    let hintBought = false;
+    const HINT_STATUS_URL = @json($hintStatusUrl);
+    const HINT_BUY_URL    = @json($hintBuyUrl);
+    const HINT_COST       = @json($hintCost);
+    const flipLabelFront  = () => 'Flip to get help from Astro' + (HINT_BUY_URL && !hintBought ? ' · ' + HINT_COST + ' XP' : '');
     flipBtn.addEventListener('click', () => {
         isFlipped = !isFlipped;
         flipper.classList.toggle('flipped', isFlipped);
-        flipLabel.textContent = isFlipped ? 'Flip back to instructions' : 'Flip to get help from Astro';
+        flipLabel.textContent = isFlipped ? 'Flip back to instructions' : flipLabelFront();
     });
+
+    /* Astro's hint costs XP: the text only comes from the server once it is bought. */
+    if (HINT_BUY_URL) {
+        const hBuy = document.getElementById('hint-buy'), hMsg = document.getElementById('hint-msg'), hBal = document.getElementById('hint-balance');
+        const hLocked = document.getElementById('hint-locked'), hOpen = document.getElementById('hint-open');
+        const say = (t, cls) => { hMsg.textContent = t || ''; hMsg.className = 'hint-msg' + (cls ? ' ' + cls : ''); };
+        const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN, 'X-Requested-With': 'XMLHttpRequest' };
+
+        function render(st) {
+            if (st.bought && st.hint) {
+                hintBought = true;
+                document.getElementById('hint-open-title').textContent = st.hint.title;
+                document.getElementById('hint-open-body').textContent  = st.hint.body;
+                document.getElementById('hint-open-code').textContent  = st.hint.code;
+                document.getElementById('hint-open-code-wrap').hidden  = !st.hint.code;
+                hLocked.hidden = true; hOpen.hidden = false;
+                if (!isFlipped) flipLabel.textContent = flipLabelFront();
+                return;
+            }
+            hBal.textContent = st.balance + ' XP';
+            if (st.hasHint === false) { hBuy.disabled = true; say('No hint for this exercise.', ''); return; }
+            hBuy.disabled = !st.canAfford;
+            say(st.canAfford ? '' : 'Not enough XP yet. You have ' + st.balance + ' and need ' + st.cost + '. Finish lessons and answer quiz questions to earn more.', st.canAfford ? '' : 'err');
+        }
+
+        fetch(HINT_STATUS_URL, { headers })
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(render)
+            .catch(() => { hBal.textContent = '—'; say('Could not load your XP. Tap Unlock to try again.', 'err'); hBuy.disabled = false; });
+
+        hBuy.addEventListener('click', async () => {
+            hBuy.disabled = true;
+            say('Unlocking…');
+            try {
+                const r = await fetch(HINT_BUY_URL, { method: 'POST', headers, body: '{}' });
+                const st = await r.json().catch(() => ({}));
+                if (r.status === 402) { render(st); return; }
+                if (!r.ok || !st.ok) throw new Error('bad');
+                render(st);
+                if (st.spent) { const t = document.getElementById('flip-label'); t.textContent = 'Flip back to instructions'; }
+            } catch (e) { say('Could not unlock the hint. Please try again.', 'err'); hBuy.disabled = false; }
+        });
+    }
 
     /* Toasts */
     function showToast(el) {
@@ -905,10 +1080,10 @@
                 submitBtn.disabled = false;
                 showFail(res.status === 422
                     ? '❌ Not quite — check the output above and try again.'
-                    : '⚠️ Could not verify your answer (' + res.status + '). Please try again.');
+                    : 'Could not verify your answer (' + res.status + '). Please try again.');
             } catch (e) {
                 submitBtn.disabled = false;
-                showFail('⚠️ Could not reach the server. Check your connection and try again.');
+                showFail('Could not reach the server. Check your connection and try again.');
             }
         });
     }

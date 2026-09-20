@@ -162,6 +162,7 @@
         this.busy = true; this.label = this.labels.reading; this.fade = true;
         try {
           const fd = new FormData(); fd.append('file', file);
+          const t = new Date(); fd.append('today', t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'));
           const { ok, j } = await this.upload_(fd);
           if (!ok) { this.msg = j.error || (j.errors && Object.values(j.errors)[0][0]) || 'Astro could not read that file. Please try again.'; return; }
           Alpine.store('calendar').set(j.classes); this.ok = true;

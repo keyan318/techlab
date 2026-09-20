@@ -4,7 +4,7 @@
 
     <div class="sidebar-tabs">
 
-        <button class="sidebar-tab active" type="button">
+        <button class="sidebar-tab active" type="button" data-sidebar-tab="outline" aria-selected="true">
 
             <svg class="tab-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 3v18"/><rect x="11" y="7" width="6" height="4" rx="1"/><path d="M11 15h6"/></svg>
 
@@ -12,7 +12,7 @@
 
         </button>
 
-        <button class="sidebar-tab" type="button">
+        <button class="sidebar-tab" type="button" data-sidebar-tab="resources" aria-selected="false">
 
             <svg class="tab-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
 
@@ -21,6 +21,8 @@
         </button>
 
     </div>
+
+    <div class="sidebar-panel active" data-sidebar-panel="outline">
 
     {{-- SEARCH --}}
 
@@ -719,6 +721,69 @@
 
         </div>
 
+    </div>{{-- /outline panel --}}
+
+
+    {{-- RESOURCES PANEL
+         Read-only for students and teachers. Only admins will manage these
+         (future admin panel). Pass $resources as [['title'=>..., 'url'=>..., 'type'=>...], ...]. --}}
+
+    @php $courseResources = $resources ?? []; @endphp
+
+    <div class="sidebar-panel" data-sidebar-panel="resources">
+
+        <div class="sidebar-search resources-search">
+            <div class="search-wrapper">
+                <input type="text" id="resourceSearch" placeholder="Search Resources" autocomplete="off">
+                <span class="search-icon search-icon-right">⌕</span>
+            </div>
+        </div>
+
+        <div class="resources-body">
+
+            <div class="resources-header">
+                <span>Course Resources</span>
+                <button type="button" class="resources-toggle open" id="resourcesToggle" aria-expanded="true" aria-label="Toggle course resources">
+                    <span>⌃</span>
+                </button>
+            </div>
+
+            <div class="resources-content" id="resourcesContent">
+
+                @if (count($courseResources))
+                    <ul class="resource-list" id="resourceList">
+                        @foreach ($courseResources as $resource)
+                            <li class="resource-item" data-title="{{ strtolower($resource['title']) }}">
+                                <a href="{{ $resource['url'] }}" target="_blank" rel="noopener">
+                                    <span class="resource-type">{{ strtoupper($resource['type'] ?? 'file') }}</span>
+                                    <span>{{ $resource['title'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                <div class="resources-empty" id="resourcesEmpty" @if (count($courseResources)) hidden @endif>
+                    <div class="resources-empty-art" aria-hidden="true">
+                        <svg viewBox="0 0 200 200" width="200" height="200">
+                            <circle cx="100" cy="100" r="100" fill="#ececec"/>
+                            <rect x="82" y="46" width="66" height="88" rx="6" fill="#dcdcdc"/>
+                            <rect x="128" y="66" width="12" height="4" rx="2" fill="#2f7de1"/>
+                            <rect x="128" y="78" width="12" height="4" rx="2" fill="#2f7de1"/>
+                            <rect x="52" y="70" width="70" height="92" rx="6" fill="#ffffff"/>
+                            <rect x="64" y="92" width="46" height="5" rx="2.5" fill="#2f7de1"/>
+                            <rect x="64" y="104" width="46" height="5" rx="2.5" fill="#2f7de1"/>
+                            <rect x="64" y="116" width="46" height="5" rx="2.5" fill="#2f7de1"/>
+                            <rect x="64" y="128" width="26" height="5" rx="2.5" fill="#2f7de1"/>
+                        </svg>
+                    </div>
+                    <p id="resourcesEmptyText">No Resources Available</p>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </aside>
@@ -1131,6 +1196,116 @@
 
 }
 
+/* =========================
+   SIDEBAR PANELS + RESOURCES
+========================= */
+
+.sidebar-panel {
+    display: none;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+}
+
+.sidebar-panel.active {
+    display: flex;
+}
+
+.resources-search .search-wrapper input {
+    padding: 0 52px 0 18px;
+}
+
+.search-icon-right {
+    left: auto;
+    right: 17px;
+}
+
+.resources-body {
+    flex: 1;
+    overflow-y: auto;
+    border-top: 1px solid rgba(0,0,0,.09);
+}
+
+.resources-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0,0,0,.09);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #0d0d0d;
+}
+
+.resources-toggle {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: #2f7de1;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resources-toggle span {
+    font-size: 26px;
+    transition: transform 0.25s ease;
+}
+
+.resources-toggle:not(.open) span {
+    transform: rotate(180deg);
+}
+
+.resources-content[hidden] { display: none; }
+
+.resources-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 28px;
+    background: #ffffff;
+    color: #0d0d0d;
+    font-size: 22px;
+    text-align: center;
+}
+
+.resources-empty[hidden] { display: none; }
+
+.resource-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 28px 16px;
+    background: #ffffff;
+}
+
+.resource-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0;
+    font-size: 18px;
+    color: #0d0d0d;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.resource-item a:hover { color: #2f7de1; }
+
+.resource-type {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2f7de1;
+    background: #eaf2fd;
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+
 </style>
 
 
@@ -1392,5 +1567,62 @@ document.addEventListener('click', function (e) {
         window.location.href = link.getAttribute('href');
     }
 });
+
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR TABS + RESOURCES
+|--------------------------------------------------------------------------
+*/
+
+(function () {
+    const tabs   = document.querySelectorAll('[data-sidebar-tab]');
+    const panels = document.querySelectorAll('[data-sidebar-panel]');
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            const target = tab.dataset.sidebarTab;
+            tabs.forEach(function (t) {
+                const on = t === tab;
+                t.classList.toggle('active', on);
+                t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            panels.forEach(function (p) {
+                p.classList.toggle('active', p.dataset.sidebarPanel === target);
+            });
+        });
+    });
+
+    const toggle  = document.getElementById('resourcesToggle');
+    const content = document.getElementById('resourcesContent');
+    if (toggle && content) {
+        toggle.addEventListener('click', function () {
+            const open = toggle.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            content.hidden = !open;
+        });
+    }
+
+    const search = document.getElementById('resourceSearch');
+    if (search) {
+        search.addEventListener('input', function () {
+            const q     = search.value.trim().toLowerCase();
+            const items = document.querySelectorAll('#resourceList .resource-item');
+            const empty = document.getElementById('resourcesEmpty');
+            const text  = document.getElementById('resourcesEmptyText');
+            let shown = 0;
+
+            items.forEach(function (li) {
+                const match = li.dataset.title.indexOf(q) !== -1;
+                li.hidden = !match;
+                if (match) shown++;
+            });
+
+            if (empty) {
+                empty.hidden = shown > 0;
+                if (text) text.textContent = items.length ? 'No matching resources' : 'No Resources Available';
+            }
+        });
+    }
+})();
 
 </script>

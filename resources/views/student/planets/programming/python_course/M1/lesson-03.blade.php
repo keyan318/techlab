@@ -25,34 +25,34 @@ print(type(fuel), type(crew), type(ship_name), type(airlock_sealed))</code></pre
         <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
             @csrf
             <input type="hidden" name="title"        value="Data Types">
+            <input type="hidden" name="filename"     value="convert_value.py">
             <input type="hidden" name="difficulty"   value="Easy">
-            <input type="hidden" name="xp"           value="10">
-            <input type="hidden" name="starter_code" value="value = &quot;12&quot;
+            <input type="hidden" name="xp"           value="{{ \App\Services\StudentDashboardService::XP_PER_LESSON }}">
+            <input type="hidden" name="starter_code" value="scan_text = &quot;12&quot;
 
-# convert value to an int, add 8, then print the result
+# convert scan_text to an int, add 8, then print the result
 ">
-            <input type="hidden" name="instructions" value="Astro received a reading as text: &quot;12&quot;. Text and numbers can&#x27;t be added directly.
+            <input type="hidden" name="instructions" value="Volt's scanner sends Astro the alien distance as text: &quot;12&quot;. Astro wants to know the distance after the aliens move 8 units closer, but text and numbers can't be added directly.
 
-Convert value to an int using int(), add 8 to it, then print the result.
+Your task: convert scan_text to an int with int(), add 8, then print the result.
 
-Your output must be exactly:
+Print exactly:
 20">
             <input type="hidden" name="hint_title"   value="Astro's Hint">
-            <input type="hidden" name="hint_body"    value="int() turns a numeric-looking string into a whole number. Wrap the variable in int(...) first, then add 8 — and print the whole expression.">
-            <input type="hidden" name="hint_code"    value="value = &quot;12&quot;
-print(int(value) + 8)">
-            <input type="hidden" name="challenge"    value="Given a mixed set of variables (a number stored as text, a decimal, a whole number), write code that converts each to the correct type and prints their sum where mathematically valid.">
+            <input type="hidden" name="hint_body"    value="int() turns a numeric-looking string into a whole number. Wrap the variable in int(...) first, then add 8, and print the whole expression.">
+            <input type="hidden" name="hint_code"    value="scan_text = &quot;12&quot;
+print(int(scan_text) + 8)">
             <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson03']) }}">
 
             <button type="submit"
-                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
-                🐍 Code it yourself
+                    class="code-btn">
+                @include('components.python-logo')
+                <span>Code it yourself</span>
+                <span class="code-btn-arrow" aria-hidden="true">→</span>
             </button>
         </form>
     </div>
 
-    <h2 class="section-heading">Challenge</h2>
-    <p class="body-text">Given a mixed set of variables (a number stored as text, a decimal, a whole number), write code that converts each to the correct type and prints their sum where mathematically valid.</p>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -28,9 +28,10 @@
     @endphp
     <div class="cta-wrap">
         <a href="{{ $editorUrl }}"
-           class="btn-code-yourself"
-           style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;text-decoration:none;font-family:'Space Grotesk',sans-serif;">
-            🐍 Code it yourself
+           class="code-btn">
+                @include('components.python-logo')
+                <span>Code it yourself</span>
+                <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
     </div>
 

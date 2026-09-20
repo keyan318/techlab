@@ -26,37 +26,37 @@ print("In 10 years you'll be", age + 10)</code></pre>
         <form method="POST" action="{{ route('student.planet.editor.launch', ['slug' => 'programming']) }}">
             @csrf
             <input type="hidden" name="title"        value="Talking to the Program">
+            <input type="hidden" name="filename"     value="ration_packs.py">
             <input type="hidden" name="difficulty"   value="Easy">
-            <input type="hidden" name="xp"           value="10">
-            <input type="hidden" name="starter_code" value="ship_name = &quot;Wanderer&quot;
+            <input type="hidden" name="xp"           value="{{ \App\Services\StudentDashboardService::XP_PER_LESSON }}">
+            <input type="hidden" name="starter_code" value="captain_name = &quot;Astro&quot;
 crew_text = &quot;4&quot;
 
 # convert crew_text to an int, then print the status line
 ">
-            <input type="hidden" name="instructions" value="Astro&#x27;s ship name and crew count are stored as text:
-ship_name = &quot;Wanderer&quot;
+            <input type="hidden" name="instructions" value="Rivet is counting supplies for the shelter. Astro's crew size is stored as text:
+captain_name = &quot;Astro&quot;
 crew_text = &quot;4&quot;
 
-Convert crew_text to an int. Each crew member needs 2 ration packs. Print one status line combining the ship name and the total packs.
+Your task: convert crew_text to an int. Each crew member needs 2 ration packs. Print one line combining the captain's name and the total packs.
 
-Your output must be exactly:
-Wanderer needs 8 ration packs">
+Print exactly:
+Astro's crew needs 8 ration packs">
             <input type="hidden" name="hint_title"   value="Astro's Hint">
-            <input type="hidden" name="hint_body"    value="You can&#x27;t multiply or add to text like a number, so convert first with int(crew_text). To glue numbers into a sentence, turn the result back into text with str() — or use an f-string.">
+            <input type="hidden" name="hint_body"    value="You can't multiply text like a number, so convert first with int(crew_text). To glue a number into a sentence, turn it back into text with str(). Because the sentence has an apostrophe, wrap it in double quotes.">
             <input type="hidden" name="hint_code"    value="total = int(crew_text) * 2
-print(ship_name + &quot; needs &quot; + str(total) + &quot; ration packs&quot;)">
-            <input type="hidden" name="challenge"    value="Build a mini &quot;launch checklist&quot; that asks 3 separate input() questions (fuel amount, crew ready y/n, destination) and prints a final go/no-go style summary using all three answers.">
+print(captain_name + &quot;'s crew needs &quot; + str(total) + &quot; ration packs&quot;)">
             <input type="hidden" name="return_to"    value="{{ route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson05']) }}">
 
             <button type="submit"
-                    style="display:inline-block;padding:12px 28px;border-radius:8px;background:#22c98a;color:#0e1230;font-weight:700;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:1rem;">
-                🐍 Code it yourself
+                    class="code-btn">
+                @include('components.python-logo')
+                <span>Code it yourself</span>
+                <span class="code-btn-arrow" aria-hidden="true">→</span>
             </button>
         </form>
     </div>
 
-    <h2 class="section-heading">Challenge</h2>
-    <p class="body-text">Build a mini "launch checklist" that asks 3 separate input() questions (fuel amount, crew ready y/n, destination) and prints a final go/no-go style summary using all three answers.</p>
 
     <h2 class="section-heading">Quiz</h2>
 
