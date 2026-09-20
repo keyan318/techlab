@@ -1,0 +1,193 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 110,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 240,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 70,
+      "y": 370,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 380,
+      "y": 70,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "dhcpServer": {
+        "enabled": true,
+        "rangeStart": "192.168.1.100",
+        "rangeEnd": "192.168.1.101",
+        "router": null,
+        "dns": null
+      },
+      "dnsServer": {
+        "enabled": true,
+        "records": [
+          [
+            "codexia.lan",
+            "192.168.1.2"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 380,
+      "y": 250,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "volt.eth0-relay.eth2",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth3",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth3"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m3-l4",
+    "title": "Lesson 3.4 \u2014 DHCP Server Settings",
+    "blurb": "A pool that is too small, and options nobody was told about.",
+    "steps": [
+      {
+        "title": "The pool is too small",
+        "body": "The server's pool holds only two addresses, `192.168.1.100` to `.101`, and three consoles want one. Run `dhclient` on astro, rivet and volt and see who is left out (it prints `No DHCPOFFERS received`). Click ship-server, open **DHCP server**, change the range end to `192.168.1.150`, and run `dhclient` again on the console that failed.",
+        "objectives": [
+          {
+            "id": "m3l4-astro",
+            "label": "astro has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l4-rivet",
+            "label": "rivet has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l4-volt",
+            "label": "volt has an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Hand out the options",
+        "body": "An address alone is not enough. In the same panel set **router** to `192.168.1.1` (the way out) and **dns** to `192.168.1.2` (the name server). Clients pick options up when they lease, so run `dhclient` on astro again. Then astro should have a default route and be able to look up `codexia.lan`.",
+        "objectives": [
+          {
+            "id": "m3l4-gw",
+            "label": "astro's default route goes via 192.168.1.1",
+            "check": {
+              "type": "default-route",
+              "device": "astro",
+              "via": "192.168.1.1"
+            }
+          },
+          {
+            "id": "m3l4-dns",
+            "label": "astro resolves codexia.lan to 192.168.1.2",
+            "check": {
+              "type": "dns",
+              "from": "astro",
+              "name": "codexia.lan",
+              "expect": "resolves",
+              "addr": "192.168.1.2"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

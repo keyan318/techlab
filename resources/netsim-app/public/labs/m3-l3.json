@@ -1,0 +1,224 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 60,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 60,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 330,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "dhcpServer": {
+        "enabled": true,
+        "rangeStart": "192.168.1.100",
+        "rangeEnd": "192.168.1.150",
+        "router": "192.168.1.1",
+        "dns": null
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 330,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "gate",
+      "kind": "router",
+      "name": "gate",
+      "x": 560,
+      "y": 170,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.2.1/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 560,
+      "y": 340,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth2",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "gate.eth0-relay.eth3",
+      "a": [
+        "gate",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth3"
+      ]
+    },
+    {
+      "id": "volt.eth0-gate.eth1",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "gate",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m3-l3",
+    "title": "Lesson 3.3 \u2014 Centralized DHCP",
+    "blurb": "One DHCP server for the comms deck, and a broadcast that stops at the router.",
+    "steps": [
+      {
+        "title": "One server, many clients",
+        "body": "`ship-server` is the central DHCP server for the comms deck. Run `dhclient` on astro, then on rivet. Each gets an address and a default gateway from the same server.",
+        "objectives": [
+          {
+            "id": "m3l3-astro",
+            "label": "astro leased an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l3-rivet",
+            "label": "rivet leased an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l3-gw",
+            "label": "astro received the gateway 192.168.1.1 from DHCP",
+            "check": {
+              "type": "default-route",
+              "device": "astro",
+              "via": "192.168.1.1"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Broadcasts stop at the router",
+        "body": "Volt is on the shield deck, a different network (192.168.2.0/24). Run `dhclient` on volt: it gets no answer, because a DHCP Discover is a broadcast and routers do not forward broadcasts. Real networks fix this with a **relay agent**. This simulator has none, so put a DHCP server on the router instead: click **gate**, open **DHCP server**, tick **serve leases**, set the range to `192.168.2.100` to `192.168.2.150` and the router to `192.168.2.1`. Run `dhclient` on volt again. (Do not re-run it on astro or rivet.)",
+        "objectives": [
+          {
+            "id": "m3l3-volt",
+            "label": "volt leased an address in 192.168.2.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "192.168.2.0/24"
+            }
+          },
+          {
+            "id": "m3l3-volt-gw",
+            "label": "volt received the gateway 192.168.2.1",
+            "check": {
+              "type": "default-route",
+              "device": "volt",
+              "via": "192.168.2.1"
+            }
+          },
+          {
+            "id": "m3l3-cross",
+            "label": "volt can reach astro across the router",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "astro"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

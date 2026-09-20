@@ -1,0 +1,153 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 380,
+      "y": 70,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "dhcpServer": {
+        "enabled": true,
+        "rangeStart": "192.168.1.100",
+        "rangeEnd": "192.168.1.150",
+        "router": null,
+        "dns": "192.168.1.2"
+      },
+      "dnsServer": {
+        "enabled": false,
+        "records": []
+      },
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Codexia mission portal online"
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 380,
+      "y": 250,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth1",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m3-l5",
+    "title": "Lesson 3.5 \u2014 DNS Overview",
+    "blurb": "Give the crew names instead of numbers.",
+    "steps": [
+      {
+        "title": "Get an address and a resolver",
+        "body": "Run `dhclient` on astro. The DHCP server hands out an address and also tells astro which **DNS server** to ask. Then check with `ping -c 2 192.168.1.2`.",
+        "objectives": [
+          {
+            "id": "m3l5-astro",
+            "label": "astro leased an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l5-ping",
+            "label": "astro can ping ship-server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "ship-server"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Teach the name server",
+        "body": "The portal page works by number, but nobody wants to remember numbers. Click ship-server, open **DNS server**, tick it on, and add the record `192.168.1.2 portal.codexia.lan` (then click outside the box to save it). Try `dig portal.codexia.lan` on astro, then open the page by name.",
+        "objectives": [
+          {
+            "id": "m3l5-dns",
+            "label": "astro resolves portal.codexia.lan to 192.168.1.2",
+            "check": {
+              "type": "dns",
+              "from": "astro",
+              "name": "portal.codexia.lan",
+              "expect": "resolves",
+              "addr": "192.168.1.2"
+            }
+          },
+          {
+            "id": "m3l5-nx",
+            "label": "an unknown name gets NXDOMAIN",
+            "check": {
+              "type": "dns",
+              "from": "astro",
+              "name": "nosuch.codexia.lan",
+              "expect": "nxdomain"
+            }
+          },
+          {
+            "id": "m3l5-http",
+            "label": "astro can open http://portal.codexia.lan/",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://portal.codexia.lan/",
+              "expect": "ok",
+              "contains": "portal"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

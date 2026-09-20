@@ -1,0 +1,171 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 110,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 240,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 70,
+      "y": 370,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 380,
+      "y": 70,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 380,
+      "y": 250,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "volt.eth0-relay.eth2",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth3",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth3"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m3-l1",
+    "title": "Lesson 3.1 \u2014 Static and Dynamic",
+    "blurb": "A static address for the server, automatic addresses for the crew.",
+    "steps": [
+      {
+        "title": "A static address for the server",
+        "body": "Everyone must be able to find the ship server, so it gets a **static** address that never changes. On ship-server run `ip addr add 192.168.1.2/24 dev eth0`.",
+        "objectives": [
+          {
+            "id": "m3l1-server",
+            "label": "ship-server has the static address 192.168.1.2/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "ship-server",
+              "iface": "eth0",
+              "cidr": "192.168.1.2/24"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Dynamic addresses for the crew",
+        "body": "Typing an address into every console after every raid is slow. Let the server hand them out. Click ship-server, open **DHCP server**, and tick **serve leases on this device**. Then run `dhclient` on astro, rivet and volt.",
+        "objectives": [
+          {
+            "id": "m3l1-astro",
+            "label": "astro got an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l1-rivet",
+            "label": "rivet got an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l1-volt",
+            "label": "volt got an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "volt",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l1-ping",
+            "label": "astro can ping volt",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

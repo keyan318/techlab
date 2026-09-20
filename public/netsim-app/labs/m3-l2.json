@@ -1,0 +1,153 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 70,
+      "y": 120,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 70,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "ship-server",
+      "kind": "server",
+      "name": "ship-server",
+      "x": 380,
+      "y": 70,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.1.2/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "dhcpServer": {
+        "enabled": false,
+        "rangeStart": "192.168.1.100",
+        "rangeEnd": "192.168.1.150",
+        "router": null,
+        "dns": null
+      }
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 380,
+      "y": 230,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-relay.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-relay.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth1"
+      ]
+    },
+    {
+      "id": "ship-server.eth0-relay.eth2",
+      "a": [
+        "ship-server",
+        "eth0"
+      ],
+      "b": [
+        "relay",
+        "eth2"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "m3-l2",
+    "title": "Lesson 3.2 \u2014 The DHCP Lease Process",
+    "blurb": "Watch Discover, Offer, Request and Acknowledge happen.",
+    "steps": [
+      {
+        "title": "Discover with no server listening",
+        "body": "Open astro's terminal and run `dhclient`. It shouts DHCPDISCOVER three times and gets no answer, because the DHCP server on ship-server is switched off. Click ship-server, open **DHCP server**, tick **serve leases on this device**, then run `dhclient` on astro again. Read the four messages it prints: DISCOVER, OFFER, REQUEST, ACK.",
+        "objectives": [
+          {
+            "id": "m3l2-astro",
+            "label": "astro leased an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "astro",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l2-ping",
+            "label": "astro can ping ship-server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "ship-server"
+            }
+          }
+        ]
+      },
+      {
+        "title": "A second client",
+        "body": "Run `dhclient` on rivet. The server must give it a different address from astro's. Open the server's **DHCP server** panel and find the lease table: one line per client MAC address.",
+        "objectives": [
+          {
+            "id": "m3l2-rivet",
+            "label": "rivet leased an address in 192.168.1.0/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "rivet",
+              "iface": "eth0",
+              "inSubnet": "192.168.1.0/24"
+            }
+          },
+          {
+            "id": "m3l2-ping-ra",
+            "label": "rivet can ping astro (so the addresses differ)",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "astro"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

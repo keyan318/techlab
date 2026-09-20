@@ -36,12 +36,22 @@ function sh(net: Network, d: IpDevice, line: string): void {
   expect(done, line).toBe(true);
 }
 
+// Like sh(), but returns what the command printed (dhclient reports each DHCP step).
+function out(net: Network, d: IpDevice, line: string): string {
+  let text = '';
+  let done = false;
+  new Shell(d).exec(line, { write: (t: string) => (text += t) }, () => (done = true));
+  net.scheduler.advanceTo(net.scheduler.now + 60_000);
+  expect(done, line).toBe(true);
+  return text;
+}
+
 const steps = (f: SaveFile) => f.lab!.steps.map((s) => s.objectives);
 const all = (f: SaveFile) => f.lab!.steps.flatMap((s) => s.objectives);
 const allPass = (r: Record<string, CheckResult>) => Object.values(r).every((x) => x.pass);
 
 describe('every TechLab lab file is well formed', () => {
-  for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm1-l6', 'm2-l1', 'm2-l2', 'm2-l3', 'm2-l4', 'm2-l5', 'm2-l6', 'm2-l7']) {
+  for (const id of ['m1-l1', 'm1-l2', 'm1-l3', 'm1-l4', 'm1-l5', 'm1-l6', 'm2-l1', 'm2-l2', 'm2-l3', 'm2-l4', 'm2-l5', 'm2-l6', 'm2-l7', 'm3-l1', 'm3-l2', 'm3-l3', 'm3-l4', 'm3-l5']) {
     it(`${id}: lab id matches the file name and objective ids are unique`, () => {
       const f = load(id);
       expect(f.lab!.id).toBe(id);
@@ -291,5 +301,128 @@ describe('m2-l7 Midterm Mission', () => {
     sh(net, dev(net, 'volt'), 'ip route add default via 192.168.20.129');
     expect(allPass(grade(net, s2))).toBe(true);
     expect(allPass(grade(net, s3))).toBe(true);
+  });
+});
+
+// ── Module 3: TCP/IP Services ─────────────────────────────────────────────────
+
+const pool = (start: string, end: string, router: string | null = null, dns: string | null = null) => ({
+  enabled: true,
+  rangeStart: ip(start),
+  rangeEnd: ip(end),
+  router: router ? ip(router) : null,
+  dns: dns ? ip(dns) : null,
+  leases: new Map<string, number>(),
+});
+
+describe('m3-l1 Static and Dynamic', () => {
+  it('needs a static server, then a DHCP server before the crew can lease', () => {
+    const f = load('m3-l1');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, dev(net, 'ship-server'), 'ip addr add 192.168.1.2/24 dev eth0');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // Without a DHCP server the crew stays unaddressed.
+    for (const n of ['astro', 'rivet', 'volt']) expect(out(net, dev(net, n), 'dhclient')).toContain('No DHCPOFFERS');
+    expect(allPass(grade(net, s2))).toBe(false);
+
+    // Same defaults the Inspector creates when you tick "serve leases".
+    dev(net, 'ship-server').dhcpServer = pool('192.168.1.100', '192.168.1.150', '192.168.1.2');
+    for (const n of ['astro', 'rivet', 'volt']) sh(net, dev(net, n), 'dhclient');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+describe('m3-l2 The DHCP Lease Process', () => {
+  it('shows the four steps once the server is on, and hands different clients different addresses', () => {
+    const f = load('m3-l2');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    expect(out(net, dev(net, 'astro'), 'dhclient')).toContain('No DHCPOFFERS');
+    expect(allPass(grade(net, s1))).toBe(false);
+
+    dev(net, 'ship-server').dhcpServer!.enabled = true;
+    const text = out(net, dev(net, 'astro'), 'dhclient');
+    for (const step of ['DHCPDISCOVER', 'DHCPOFFER', 'DHCPREQUEST', 'DHCPACK']) expect(text).toContain(step);
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    expect(allPass(grade(net, s2))).toBe(false);
+    sh(net, dev(net, 'rivet'), 'dhclient');
+    expect(allPass(grade(net, s2))).toBe(true);
+    expect(dev(net, 'ship-server').dhcpServer!.leases.size).toBe(2);
+  });
+});
+
+describe('m3-l3 Centralized DHCP', () => {
+  it('serves the comms deck, then shows broadcasts stopping at the router until gate serves the far deck', () => {
+    const f = load('m3-l3');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, dev(net, 'astro'), 'dhclient');
+    sh(net, dev(net, 'rivet'), 'dhclient');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // The broadcast does not cross the router.
+    expect(out(net, dev(net, 'volt'), 'dhclient')).toContain('No DHCPOFFERS');
+    expect(allPass(grade(net, s2))).toBe(false);
+
+    // Enabled with the Inspector's defaults (range copied from eth0's network): wrong subnet for volt.
+    dev(net, 'gate').dhcpServer = pool('192.168.1.100', '192.168.1.150', '192.168.1.1');
+    sh(net, dev(net, 'volt'), 'dhclient');
+    expect(grade(net, s2)['m3l3-volt'].pass).toBe(false);
+
+    // Range and gateway set for the far deck.
+    dev(net, 'gate').dhcpServer = pool('192.168.2.100', '192.168.2.150', '192.168.2.1');
+    dev(net, 'volt').getInterface('eth0')!.ip = null;
+    sh(net, dev(net, 'volt'), 'dhclient');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+describe('m3-l4 DHCP Server Settings', () => {
+  it('leaves the third client without an address until the pool grows, then needs the options', () => {
+    const f = load('m3-l4');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    const results = ['astro', 'rivet', 'volt'].map((n) => out(net, dev(net, n), 'dhclient'));
+    expect(results[0]).toContain('DHCPACK');
+    expect(results[1]).toContain('DHCPACK');
+    expect(results[2]).toContain('No DHCPOFFERS');
+    expect(allPass(grade(net, s1))).toBe(false);
+
+    dev(net, 'ship-server').dhcpServer!.rangeEnd = ip('192.168.1.150');
+    sh(net, dev(net, 'volt'), 'dhclient');
+    expect(allPass(grade(net, s1))).toBe(true);
+
+    // Addresses only: no gateway and no resolver yet.
+    expect(allPass(grade(net, s2))).toBe(false);
+    dev(net, 'ship-server').dhcpServer!.router = ip('192.168.1.1');
+    dev(net, 'ship-server').dhcpServer!.dns = ip('192.168.1.2');
+    sh(net, dev(net, 'astro'), 'dhclient');
+    expect(allPass(grade(net, s2))).toBe(true);
+  });
+});
+
+describe('m3-l5 DNS Overview', () => {
+  it('needs the DNS server on with a record before names resolve, and unknown names give NXDOMAIN', () => {
+    const f = load('m3-l5');
+    const net = restoreNetwork(f);
+    const [s1, s2] = steps(f);
+    expect(allPass(grade(net, s1))).toBe(false);
+    sh(net, dev(net, 'astro'), 'dhclient');
+    expect(allPass(grade(net, s1))).toBe(true);
+    // DHCP told astro who its resolver is.
+    expect(dev(net, 'astro').nameserver).toBe(ip('192.168.1.2'));
+
+    expect(allPass(grade(net, s2))).toBe(false);
+    const server = dev(net, 'ship-server');
+    server.dnsServer = { enabled: true, records: new Map() };
+    // Server on but no record yet: the name is unknown.
+    expect(grade(net, s2)['m3l5-dns'].pass).toBe(false);
+    server.dnsServer.records.set('portal.codexia.lan', ip('192.168.1.2'));
+    expect(allPass(grade(net, s2))).toBe(true);
   });
 });

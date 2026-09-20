@@ -174,6 +174,15 @@ class NetworkingCourseTest extends TestCase
         }
     }
 
+    public function test_module_three_is_fully_written(): void
+    {
+        $written = array_keys(self::writtenLessons());
+
+        foreach (['m3/lesson01', 'm3/lesson02', 'm3/lesson03', 'm3/lesson04', 'm3/lesson05'] as $expected) {
+            $this->assertContains($expected, $written, "{$expected} has no lesson file");
+        }
+    }
+
     #[DataProvider('writtenLessons')]
     public function test_each_written_lesson_follows_the_lesson_contract(string $module, string $lesson): void
     {
