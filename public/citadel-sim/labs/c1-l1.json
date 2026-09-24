@@ -1,0 +1,78 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c1-l1",
+  "title": "Lesson 1.1: Know Your Citadel",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "02:47 · INTRUSION ALARM · CITADEL CORE",
+    "vex": "Captain. Your walls are paper. Tonight we only looked. Tomorrow we take. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. Vex's scouts pull back: they know the Citadel is watching. Astro: \"Now we know what we protect and how they hit us. Next, we shut the door they used.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nThe alarm went off at 02:47. Before we fight, we name what we protect.\n\n1. Read inventory.txt and classify what you find.\n2. Read logs\\night.log and decide what each attack broke:\n   Confidentiality (C), Integrity (I) or Availability (A).\n3. Volt thinks the intruder left something behind. Find it.\n\nType help if you forget a command.\n",
+    "C:\\Citadel\\inventory.txt": "CITADEL INVENTORY (kept by Rivet)\n---------------------------------\nstarmap           The only map home to Earth. Without it, we are lost.\ndoom-hackers      Commander Vex's hacking squad. They probe our network every night.\nfactory-password  The old relay console still uses its factory password: admin\nvex-plan          Intel: Vex wants to use that factory password to get in and steal the starmap.\n\nUse: classify <item> <asset|threat|vulnerability|risk>\n",
+    "C:\\Citadel\\logs\\night.log": "CITADEL SECURITY LOG · night shift\n[01:47] ALERT  event-1  crew-records.txt was opened by an unknown account from 203.0.113.66\n[02:13] ALERT  event-2  shield-settings.cfg was changed: shield power 100% -> 5%\n[02:31] ALERT  event-3  the comms relay was flooded with junk traffic and went offline for 7 minutes\n[02:44] NOTE   the unknown account left a file in the temp folder\n[02:47] ALARM  Volt's sensors tripped. Intruder disconnected.\n\nUse: classify <event> <C|I|A>\n",
+    "C:\\Citadel\\shield-settings.cfg": "shield_power=5\n# Rivet: this was 100 before last night.\n",
+    "C:\\Citadel\\temp\\note.txt": "To the Captain of Codexia,\nWe read your secrets. We bent your shields. We cut your voice.\nYour walls are paper.\n            (Vex)\n\nFLAG{WALLS-ARE-PAPER}\n"
+  },
+  "users": [
+    { "name": "astro", "fullName": "Astro (Captain)", "groups": ["Administrators"], "passwordSet": "09/01/2026", "lastLogon": "09/23/2026 06:10 PM" },
+    { "name": "rivet", "fullName": "Rivet (Engineer)", "groups": ["Administrators"], "passwordSet": "09/01/2026", "lastLogon": "09/23/2026 07:42 PM" },
+    { "name": "volt", "fullName": "Volt (Shield Tech)", "groups": ["Administrators"], "passwordSet": "09/01/2026", "lastLogon": "09/24/2026 02:47 AM" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "services": [
+    { "name": "relay-console", "port": 23, "process": "relayd.exe" },
+    { "name": "shield-panel", "port": 443, "process": "shieldd.exe" }
+  ],
+  "processes": [
+    { "name": "shieldd.exe", "pid": 1044, "mem": "18,220 K" },
+    { "name": "relayd.exe", "pid": 1188, "mem": "9,764 K" },
+    { "name": "cmd.exe", "pid": 2410, "mem": "4,112 K" }
+  ],
+  "classify": {
+    "starmap": "Inventory item",
+    "doom-hackers": "Inventory item",
+    "factory-password": "Inventory item",
+    "vex-plan": "Inventory item",
+    "event-1": "Night log event",
+    "event-2": "Night log event",
+    "event-3": "Night log event"
+  },
+  "flags": ["FLAG{WALLS-ARE-PAPER}"],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Name what we protect",
+      "body": "Astro: \"Before we fight, we name what we protect.\" Open the inventory with `type inventory.txt`. Then record each item: something valuable is an asset, someone who can harm it is a threat, a weakness they can use is a vulnerability, and the chance that a threat uses a weakness to hurt an asset is a risk. Example: `classify starmap asset`.",
+      "objectives": [
+        { "id": "read-inventory", "label": "Read inventory.txt", "check": { "type": "read", "file": "C:\\Citadel\\inventory.txt" } },
+        { "id": "starmap", "label": "starmap classified correctly", "check": { "type": "classified", "item": "starmap", "as": "asset" } },
+        { "id": "hackers", "label": "doom-hackers classified correctly", "check": { "type": "classified", "item": "doom-hackers", "as": "threat" } },
+        { "id": "factory", "label": "factory-password classified correctly", "check": { "type": "classified", "item": "factory-password", "as": "vulnerability" } },
+        { "id": "plan", "label": "vex-plan classified correctly", "check": { "type": "classified", "item": "vex-plan", "as": "risk" } }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Read the night logs",
+      "body": "Volt: \"Three attacks last night. Each one broke a different promise of the CIA triad.\" Go into the logs folder (`cd logs`) and read `night.log`. A secret that was seen breaks Confidentiality (C). Data that was changed breaks Integrity (I). A service that went down breaks Availability (A). Example: `classify event-1 C`.",
+      "objectives": [
+        { "id": "read-log", "label": "Read logs\\night.log", "check": { "type": "read", "file": "C:\\Citadel\\logs\\night.log" } },
+        { "id": "e1", "label": "event-1 matched to C, I or A", "check": { "type": "classified", "item": "event-1", "as": "confidentiality" } },
+        { "id": "e2", "label": "event-2 matched to C, I or A", "check": { "type": "classified", "item": "event-2", "as": "integrity" } },
+        { "id": "e3", "label": "event-3 matched to C, I or A", "check": { "type": "classified", "item": "event-3", "as": "availability" } }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Volt's Drill: find the calling card",
+      "body": "Volt: \"The log says the intruder left a file behind. Astro authorized us to search our own machine, so let's look.\" You're still standing in the `logs` folder, and `temp` isn't inside it — so first step back out. Type these one at a time:\n1. `cd ..` — go back up to `C:\\Citadel`\n2. `dir` — see what's there (you should spot `temp` in the list)\n3. `cd temp` — walk into the `temp` folder\n4. `dir` — see what file is inside\n5. `type note.txt` — read the file on screen\n6. `submit` then the flag exactly as it appears in the file, including the `FLAG{...}` part",
+      "objectives": [
+        { "id": "read-note", "label": "Found and read the intruder's file", "check": { "type": "read", "file": "C:\\Citadel\\temp\\note.txt" } },
+        { "id": "flag", "label": "Submitted the flag", "check": { "type": "flag", "value": "FLAG{WALLS-ARE-PAPER}" } }
+      ]
+    }
+  ]
+}

@@ -1,11 +1,16 @@
 @php
     $labConfig = [
         'lab' => $lab,
+        'source' => $sim['source'],
         'completeUrl' => $completeUrl,
         'lessonUrl' => $lessonUrl,
         'nextUrl' => $nextUrl,
         'xp' => \App\Services\StudentDashboardService::XP_PER_LESSON,
         'alreadyDone' => $alreadyDone,
+        'labHelpStatusUrl' => $labHelpStatusUrl,
+        'labHelpUnlockUrl' => $labHelpUnlockUrl,
+        'labHelpAskUrl' => $labHelpAskUrl,
+        'simHint' => $sim['hint'],
     ];
 @endphp
 <!DOCTYPE html>
@@ -14,7 +19,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Lesson {{ $number }}: {{ $title }} · Relay Lab · TechLab</title>
+    <title>Lesson {{ $number }}: {{ $title }} · {{ $sim['name'] }} · TechLab</title>
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -116,7 +121,7 @@
     </a>
 
     <div class="lab-heading">
-        <div class="lab-kicker">Relay Lab · Lesson {{ $number }}</div>
+        <div class="lab-kicker">{{ $sim['name'] }} · Lesson {{ $number }}</div>
         <div class="lab-title">{{ $title }}</div>
     </div>
 
@@ -127,7 +132,7 @@
                 <a class="lab-next" href="{{ $nextUrl }}">Next lesson →</a>
             @endif
         @else
-            <span>Press <strong>Check objectives</strong> in the simulator when you are ready.</span>
+            <span>{!! $sim['hint'] !!}</span>
         @endif
     </div>
 </header>
@@ -135,8 +140,8 @@
 <iframe
     class="lab-frame"
     id="lab-frame"
-    src="{{ asset('netsim-app/app.html') }}?lab={{ $lab }}"
-    title="Relay Lab simulator for lesson {{ $number }}"
+    src="{{ asset($sim['path']) }}?lab={{ $lab }}&u={{ auth()->id() }}"
+    title="{{ $sim['name'] }} simulator for lesson {{ $number }}"
     allow="clipboard-read; clipboard-write"
 ></iframe>
 
@@ -199,32 +204,53 @@
         return m[1];
     }
 
-    // Saving is idempotent on the server, so retrying is always safe.
-    async function save() {
+    // Authenticated JSON fetch with CSRF-refresh-and-retry, shared by lab-complete and the Ask-Astro
+    // bridge below. Retries only a network error or an expired token; a real API error (402/403/422...)
+    // comes straight back with its body so the caller can show the server's own message.
+    async function authFetch(url, method, body) {
         let reason = 'network error';
         for (let attempt = 0; attempt < 3; attempt++) {
             try {
-                const r = await fetch(CFG.completeUrl, {
-                    method: 'POST',
+                const r = await fetch(url, {
+                    method: method,
                     credentials: 'same-origin',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
-                    body: JSON.stringify({ lab: CFG.lab }),
+                    headers: Object.assign(
+                        { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
+                        body !== undefined ? { 'Content-Type': 'application/json' } : {}
+                    ),
+                    body: body !== undefined ? JSON.stringify(body) : undefined,
                 });
-                if (r.ok) {
-                    // The pass is saved once the server says 200; the body only adds the next-lesson link.
-                    let data = null;
-                    try { data = await r.json(); } catch (e) { /* unreadable body: still saved */ }
-                    return { ok: true, next: data && data.next };
-                }
-                reason = 'HTTP ' + r.status;
+                let data = null;
+                try { data = await r.json(); } catch (e) { /* unreadable/empty body */ }
+                if (r.ok) return { ok: true, status: r.status, data: data };
                 if (r.status === 419) { csrf = await freshToken(); continue; }
-                if ([401, 403, 404, 422].indexOf(r.status) !== -1) break;   // retrying will not change these
+                return { ok: false, status: r.status, data: data, reason: 'HTTP ' + r.status };
             } catch (e) {
                 reason = (e && e.message) ? e.message : reason;
             }
             await sleep(700 * (attempt + 1));
         }
-        return { ok: false, reason: reason };
+        return { ok: false, status: 0, data: null, reason: reason };
+    }
+
+    // Saving is idempotent on the server, so retrying is always safe.
+    async function save() {
+        const res = await authFetch(CFG.completeUrl, 'POST', { lab: CFG.lab });
+        return res.ok ? { ok: true, next: res.data && res.data.next } : { ok: false, reason: res.reason };
+    }
+
+    // Ask-Astro bridge: the citadel-sim iframe has the lab state (mission + transcript) but no Laravel
+    // session; this page has the session but no lab state. Each request/response pair carries the sim's
+    // own reqId so the iframe can match a reply to the call that triggered it.
+    function postToFrame(type, extra) {
+        frame.contentWindow.postMessage(Object.assign({ source: CFG.source, lab: CFG.lab, type: type }, extra), window.location.origin);
+    }
+
+    async function relay(url, method, body) {
+        if (!url) return { ok: false, data: null, error: 'Ask Astro is not available for this lab.' };
+        const res = await authFetch(url, method, body);
+
+        return { ok: res.ok, data: res.data, error: (res.data && res.data.error) || (!res.ok ? "Astro couldn't respond — try again." : null) };
     }
 
     async function finish() {
@@ -236,11 +262,11 @@
         if (res.ok) { done = true; showPassed(res.next); } else { showFailed(res.reason); }
     }
 
-    // The simulator (/netsim-app, same origin) reports progress with postMessage.
+    // The simulator (same origin) reports progress with postMessage.
     window.addEventListener('message', function (e) {
         if (e.origin !== window.location.origin || e.source !== frame.contentWindow) return;
         const m = e.data;
-        if (!m || m.source !== 'netsim' || m.lab !== CFG.lab) return;
+        if (!m || m.source !== CFG.source || m.lab !== CFG.lab) return;
 
         if (m.type === 'lab-progress' && !done && !posting) {
             say('Objectives passed: ' + m.passed + ' of ' + m.total + '. Keep going, Captain.', false);
@@ -248,6 +274,18 @@
             say('Not yet: ' + m.failing.slice(0, 2).join(' \u00b7 '), false);
         } else if (m.type === 'lab-passed' && !done) {
             finish();
+        } else if (m.type === 'astro-status-request') {
+            relay(CFG.labHelpStatusUrl, 'GET').then(function (res) {
+                postToFrame('astro-status-response', Object.assign({ reqId: m.reqId, simHint: CFG.simHint }, res));
+            });
+        } else if (m.type === 'astro-unlock-request') {
+            relay(CFG.labHelpUnlockUrl, 'POST', {}).then(function (res) {
+                postToFrame('astro-unlock-response', Object.assign({ reqId: m.reqId, simHint: CFG.simHint }, res));
+            });
+        } else if (m.type === 'astro-ask-request') {
+            relay(CFG.labHelpAskUrl, 'POST', Object.assign({ lab: CFG.lab }, m.payload)).then(function (res) {
+                postToFrame('astro-ask-response', Object.assign({ reqId: m.reqId }, res));
+            });
         }
     });
 })();

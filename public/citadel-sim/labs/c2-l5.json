@@ -1,0 +1,49 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c2-l5",
+  "title": "Lesson 2.5: Computer Security",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "01:05 · TARGETING VOLT'S GUARD POST · CITADEL CORE",
+    "vex": "Even the shield guard leaves a door open. Especially the shield guard. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. Volt's own post is now the hardest door in the Citadel. Astro: \"Harden your own house first, Volt. You just did.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nVex is targeting Volt's own guard post, the weakest machine in the Citadel. Harden it:\n1. Disable the Guest account.\n2. Give Volt a real, strong password.\n3. Stop the unused relay-legacy service still running.\n4. Volt's Drill: try to log in as Guest afterward. It should fail.\n"
+  },
+  "users": [
+    { "name": "guest", "fullName": "Guest (should not be enabled)", "groups": ["Guests"], "password": "", "passwordSet": "never set", "lastLogon": "never" },
+    { "name": "volt", "fullName": "Volt (Shield Tech)", "groups": ["Administrators"], "password": "volt", "passwordSet": "never changed", "lastLogon": "09/24/2026" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "services": [
+    { "name": "relay-legacy", "port": 2323, "process": "relaylegacy.exe" }
+  ],
+  "processes": [
+    { "name": "relaylegacy.exe", "pid": 3301, "mem": "5,140 K" },
+    { "name": "shieldd.exe", "pid": 1044, "mem": "18,220 K" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Harden the post",
+      "body": "Volt: \"My own post, the weakest machine. Fix that.\" Disable Guest (`net user guest /active:no`), give volt a strong password (`net user volt <new-password>`), and stop the old relay-legacy service (`taskkill /im relaylegacy.exe /f`).",
+      "objectives": [
+        { "id": "guest", "label": "Guest account is disabled", "check": { "type": "user-disabled", "user": "guest" } },
+        { "id": "volt-pw", "label": "volt has a strong password", "check": { "type": "password-changed", "user": "volt" } },
+        { "id": "legacy", "label": "relay-legacy service was stopped", "check": { "type": "process-killed", "name": "relaylegacy.exe" } }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Volt's Drill: re-scan",
+      "body": "Volt: \"Run it again. Prove the wall holds.\" Try `login guest anything` now that it's disabled. It should fail.",
+      "objectives": [
+        { "id": "rescan", "label": "Guest login now fails", "check": { "type": "login", "user": "guest", "password": "anything", "expect": "fail" } }
+      ]
+    }
+  ]
+}

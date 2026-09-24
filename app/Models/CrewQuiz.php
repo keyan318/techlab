@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/** A quiz authored by a teacher for their crew. Scored server-side; one attempt per student. */
+/** A quiz authored by a faculty member for their crew. Scored server-side; one attempt per student. */
 class CrewQuiz extends Model
 {
     protected $fillable = ['crew_id', 'title', 'minutes'];

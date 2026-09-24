@@ -119,12 +119,12 @@
   ],
   "lab": {
     "id": "m2-l6",
-    "title": "Lesson 2.6 \u2014 Static Routes",
+    "title": "Lesson 2.6 — Static Routes",
     "blurb": "Teach two routers the way to Earth, and the way back.",
     "steps": [
       {
         "title": "Set the hosts' way out",
-        "body": "Two routers stand between astro and Earth. Each host needs a default gateway: `ip route add default via 192.168.1.1` on astro and `ip route add default via 172.16.0.1` on earth-cloud.",
+        "body": "Two routers stand between astro and Earth. Each host needs a default gateway: `route add 0.0.0.0 mask 0.0.0.0 192.168.1.1` on astro and `route add 0.0.0.0 mask 0.0.0.0 172.16.0.1` on earth-cloud.",
         "objectives": [
           {
             "id": "m2l6-def-a",
@@ -148,7 +148,7 @@
       },
       {
         "title": "Teach each router the far network",
-        "body": "r1 only knows the networks it touches. Tell it where Earth's network is: on r1 run `ip route add 172.16.0.0/24 via 10.0.12.2`. Tell r2 the way back: on r2 run `ip route add 192.168.1.0/24 via 10.0.12.1`. Check with `ip route`, then ping and fetch the page from astro.",
+        "body": "r1 only knows the networks it touches. Tell it where Earth's network is: on r1 run `route add 172.16.0.0 mask 255.255.255.0 10.0.12.2`. Tell r2 the way back: on r2 run `route add 192.168.1.0 mask 255.255.255.0 10.0.12.1`. Check with `route print`, then ping and fetch the page from astro.",
         "objectives": [
           {
             "id": "m2l6-ping",

@@ -1,0 +1,39 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c4-l4",
+  "title": "Lesson 4.4: Digital Rights Management",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "17:40 · STOLEN BLUEPRINTS SPOTTED · CITADEL CORE",
+    "vex": "Nice engine design. We're already handing out copies. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The stolen copy is proven, traced, and disowned. Astro: \"Rivet's mark was hidden in plain sight. That's how you prove a theft.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nDoom is sharing a copy of Rivet's engine blueprints. Compare the original to the leaked copy, and find the hidden watermark that proves it's ours.\n\n1. type blueprints-original.txt\n2. type blueprints-leaked.txt\n3. submit the watermark code found in both files\n",
+    "C:\\Citadel\\blueprints-original.txt": "RIVET'S RELAY ENGINE — SPEC SHEET\n[watermark: WMK-RIVET-7734]\nCore output: 4.2 stellar units. Coolant: closed-loop. Do not distribute outside the Citadel.\n",
+    "C:\\Citadel\\blueprints-leaked.txt": "RELAY ENGINE — SPEC SHEET (found circulating on a Doom relay)\n[watermark: WMK-RIVET-7734]\nCore output: 4.2 stellar units. Coolant: closed-loop.\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {
+    "blueprints-original.txt": "blueprints-original.txt",
+    "blueprints-leaked.txt": "blueprints-leaked.txt"
+  },
+  "flags": ["WMK-RIVET-7734"],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Compare original to leaked",
+      "body": "Rivet: \"I hide a watermark in every blueprint I ship. If it shows up somewhere it shouldn't, that proves it's mine.\" Read both files, classify the first as `licensed` and the leaked one as `stolen`, then submit the watermark code that appears in both.",
+      "objectives": [
+        { "id": "read-orig", "label": "Read blueprints-original.txt", "check": { "type": "read", "file": "C:\\Citadel\\blueprints-original.txt" } },
+        { "id": "read-leak", "label": "Read blueprints-leaked.txt", "check": { "type": "read", "file": "C:\\Citadel\\blueprints-leaked.txt" } },
+        { "id": "class-orig", "label": "Original file classified licensed", "check": { "type": "classified", "item": "blueprints-original.txt", "as": "licensed" } },
+        { "id": "class-leak", "label": "Leaked copy classified stolen", "check": { "type": "classified", "item": "blueprints-leaked.txt", "as": "stolen" } },
+        { "id": "watermark", "label": "Submitted the matching watermark code", "check": { "type": "flag", "value": "WMK-RIVET-7734" } }
+      ]
+    }
+  ]
+}

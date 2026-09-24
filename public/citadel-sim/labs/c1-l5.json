@@ -1,0 +1,49 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c1-l5",
+  "title": "Lesson 1.5: Security Policy (AUP)",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "16:30 · POLICY REVIEW · CITADEL CORE",
+    "vex": "Rules only work if someone follows them. Your crew doesn't. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. No more shared logins, no more games on shield duty, no more open files. Astro: \"A rule nobody follows isn't a rule. From today, the Citadel follows its own.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead policy\\AUP.txt, Astro's three Citadel rules. Then find and fix every place the crew is breaking one:\n1. A shared login nobody should still be using.\n2. A program that has no business running on shield duty.\n3. A file the whole crew can read that should be locked to Rivet only.\n",
+    "C:\\Citadel\\policy\\AUP.txt": "CITADEL ACCEPTABLE USE POLICY (Astro's three rules)\n----------------------------------------------------\n1. One account per crew member. No shared logins, ever.\n2. Shield-duty consoles run shield software only. No games, no side projects.\n3. Files marked CONFIDENTIAL are locked to the crew member who owns them.\n",
+    "C:\\Citadel\\engine-specs.txt": "CONFIDENTIAL — Rivet's engine specifications. Anyone reading this should not be able to.\n"
+  },
+  "users": [
+    { "name": "shift-shared", "fullName": "(shared login — breaks Rule 1)", "groups": ["Users"], "passwordSet": "unknown, used by 3 different people", "lastLogon": "09/24/2026" },
+    { "name": "rivet", "fullName": "Rivet (Engineer)", "groups": ["Administrators"], "passwordSet": "09/01/2026", "lastLogon": "09/23/2026" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "services": [],
+  "processes": [
+    { "name": "starcrawler.exe", "pid": 5510, "mem": "88,412 K" },
+    { "name": "shieldd.exe", "pid": 1044, "mem": "18,220 K" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Astro's three rules",
+      "body": "Astro: \"Read the policy before you fix anything. Then find every place the crew is already breaking it.\" Start with `type policy\\AUP.txt`.",
+      "objectives": [
+        { "id": "read-aup", "label": "Read policy\\AUP.txt", "check": { "type": "read", "file": "C:\\Citadel\\policy\\AUP.txt" } }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Find and fix every break",
+      "body": "Volt: \"Three rules, three breaks. Fix them.\" Disable the shared login (`net user shift-shared /active:no`). Stop the game running on shield duty (`taskkill /im starcrawler.exe /f`). Lock the confidential file to Rivet (`icacls engine-specs.txt /deny cadet:F`, since everyone but Rivet should be denied).",
+      "objectives": [
+        { "id": "shared", "label": "The shared login is disabled", "check": { "type": "user-disabled", "user": "shift-shared" } },
+        { "id": "game", "label": "The game process was stopped", "check": { "type": "process-killed", "name": "starcrawler.exe" } },
+        { "id": "locked", "label": "engine-specs.txt is locked away from the crew", "check": { "type": "denied", "file": "C:\\Citadel\\engine-specs.txt", "user": "cadet" } }
+      ]
+    }
+  ]
+}

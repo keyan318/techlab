@@ -28,7 +28,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
         Four habits make it work:
     </p>
     <ul class="body-list">
-        <li><strong>Monitoring</strong>: check devices continually with tools such as <code>ping</code>, <code>traceroute</code>, <strong>SNMP</strong> (a manager polling devices for their status) and <strong>syslog</strong> (devices sending event messages to one place).</li>
+        <li><strong>Monitoring</strong>: check devices continually with tools such as <code>ping</code>, <code>tracert</code>, <strong>SNMP</strong> (a manager polling devices for their status) and <strong>syslog</strong> (devices sending event messages to one place).</li>
         <li><strong>Baselines</strong>: record what "normal" looks like, such as usual delay and load, so you can tell when something is wrong.</li>
         <li><strong>Documentation</strong>: a network diagram, an <strong>address plan</strong> (which range is for which kind of device), and an inventory of devices.</li>
         <li><strong>Change control</strong>: plan a change, get it approved, test it, keep a way to undo it, then record it, and keep backups of device configurations.</li>
@@ -129,7 +129,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

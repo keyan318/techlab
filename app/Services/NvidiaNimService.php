@@ -62,7 +62,7 @@ class NvidiaNimService
     /**
      * The configured model id (defaults to a working NVIDIA NIM free-tier model).
      */
-    /** Which Astro is talking: 'student' (default tutor) or 'teacher' (teaching assistant). */
+    /** Which Astro is talking: 'student' (default tutor) or 'faculty' (teaching assistant). */
     protected string $persona = 'student';
 
     /** A copy of this service speaking as the given persona (never mutates the shared instance). */
@@ -114,8 +114,8 @@ class NvidiaNimService
      */
     public function systemPrompt(array $options = []): string
     {
-        $base = $this->persona === 'teacher'
-            ? config('nvidia_nim.teacher_system_prompt', config('nvidia_nim.system_prompt', ''))
+        $base = $this->persona === 'faculty'
+            ? config('nvidia_nim.faculty_system_prompt', config('nvidia_nim.system_prompt', ''))
             : config('nvidia_nim.system_prompt', '');
 
         $extras = [];

@@ -55,7 +55,7 @@ class LessonProgressionTest extends TestCase
             preg_match_all('/data-module="(m\d+)" data-lesson="(lesson\d+)"/', $html, $m, PREG_SET_ORDER);
 
             $sidebar = array_map(fn ($x) => $x[1].'/'.$x[2], $m);
-            $server  = array_map(fn ($x) => $x['module'].'/'.$x['lesson'], CourseProgressService::order($slug));
+            $server = array_map(fn ($x) => $x['module'].'/'.$x['lesson'], CourseProgressService::order($slug));
 
             $this->assertSame($server, $sidebar, "Sidebar DOM order drifted from config/course-structure.php ({$slug})");
             $this->assertStringContainsString("/student/planet/{$slug}/", $html);
@@ -134,12 +134,12 @@ class LessonProgressionTest extends TestCase
     {
         $user = User::factory()->create();
 
-        // The middleware must step aside for planets without a lesson blueprint: the request
-        // reaches the controller (its own "Lesson not found" 404, not our 403/redirect).
+        // Now that cybersecurity has a real blueprint (like programming/networking), a lesson
+        // outside it 404s straight from the gating middleware, same as any other course —
+        // there is no longer a "planet without a blueprint" to bypass the gate entirely.
         $this->actingAs($user)
-            ->get(route('student.planet.module.lesson.fragment', ['slug' => 'cybersecurity', 'module' => 'm2', 'lesson' => 'lesson04']))
-            ->assertNotFound()
-            ->assertSee('Lesson not found', false);
+            ->get(route('student.planet.module.lesson.fragment', ['slug' => 'cybersecurity', 'module' => 'm1', 'lesson' => 'lesson99']))
+            ->assertNotFound();
 
         $this->assertDatabaseCount('lesson_progress', 0);
     }
@@ -166,7 +166,7 @@ class LessonProgressionTest extends TestCase
             ->get(route('student.planet', ['slug' => 'programming']))
             ->assertOk()
             ->assertSee('Python')
-            ->assertSee('0% Complete')
+            ->assertSee('0% complete')
             ->assertSee(route('student.planet.play', ['slug' => 'programming', 'course' => 'python']), false);
 
         foreach (['networking', 'cybersecurity'] as $slug) {
@@ -176,6 +176,9 @@ class LessonProgressionTest extends TestCase
         $this->actingAs($user)
             ->get('/student/planet/programming/course/java')
             ->assertNotFound();
+
+        $this->actingAs($user)->get(route('student.planet', ['slug' => 'programming']))->assertSee('Coming soon');
+        $this->actingAs($user)->get('/student/planet/programming/course/next-language')->assertNotFound();
     }
 
     public function test_lesson_route_passes_course_to_every_planet_shell(): void
@@ -332,7 +335,7 @@ class LessonProgressionTest extends TestCase
     public function test_progress_is_per_user(): void
     {
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
 
         CourseProgressService::markComplete($alice, 'm1', 'lesson01');
 
@@ -359,7 +362,7 @@ class LessonProgressionTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('student.planet.editor.launch', ['slug' => 'programming']), [
-                'title'     => 'First Signal',
+                'title' => 'First Signal',
                 'return_to' => $this->lessonUrl('m1', 'lesson01'),
             ])
             ->assertRedirect(route('student.planet.editor', ['slug' => 'programming']))
@@ -374,8 +377,8 @@ class LessonProgressionTest extends TestCase
 
         $this->actingAs($user)
             ->withSession([
-                'editor_title'        => 'Data Types',
-                'editor_return_to'    => $this->lessonUrl('m1', 'lesson03'),
+                'editor_title' => 'Data Types',
+                'editor_return_to' => $this->lessonUrl('m1', 'lesson03'),
                 'editor_complete_url' => $this->completeUrl('m1', 'lesson03'),
             ])
             ->get(route('student.planet.editor', ['slug' => 'programming']))

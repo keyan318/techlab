@@ -22,17 +22,18 @@ class StudentDashboardTest extends TestCase
         }
     }
 
-    private function crewWithTeacher(): Crew
+    private function crewWithFaculty(): Crew
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
+        $faculty = User::factory()->create(['role' => 'faculty']);
 
-        return Crew::create(['name' => 'Sasa Crew', 'code' => 'SASA01', 'teacher_id' => $teacher->id]);
+        return Crew::create(['name' => 'Sasa Crew', 'code' => 'SASA01', 'teacher_id' => $faculty->id]);
     }
 
-    public function test_guests_go_to_login_and_teachers_to_their_dashboard(): void
+    public function test_guests_go_to_login_and_facultys_to_their_dashboard(): void
     {
         $this->get('/dashboard')->assertRedirect(route('login'));
-        $this->actingAs(User::factory()->create(['role' => 'teacher']))->get('/dashboard')->assertRedirect(route('teacher.dashboard'));
+        $this->actingAs(User::factory()->create(['role' => 'faculty']))->get('/dashboard')->assertRedirect(route('faculty.dashboard'));
+        $this->get('/progress')->assertRedirect(route('faculty.dashboard'));
     }
 
     public function test_dashboard_shows_real_xp_lessons_and_modules(): void
@@ -50,9 +51,10 @@ class StudentDashboardTest extends TestCase
         $this->assertSame($m1 + 2, $data['planets']['programming']['completed']);
         $this->assertTrue($data['planets']['networking']['tracked']);
         $this->assertSame(0, $data['planets']['networking']['completed']);
-        $this->assertFalse($data['planets']['cybersecurity']['tracked']);
+        $this->assertTrue($data['planets']['cybersecurity']['tracked']);
+        $this->assertSame(0, $data['planets']['cybersecurity']['completed']);
 
-        $this->actingAs($user)->get('/dashboard')
+        $this->actingAs($user)->get('/progress')
             ->assertOk()
             ->assertSee('Hello,', false)
             ->assertSee(number_format(($m1 + 2) * 100))
@@ -62,7 +64,7 @@ class StudentDashboardTest extends TestCase
 
     public function test_leaderboard_ranks_crewmates_by_xp_and_excludes_other_crews(): void
     {
-        $crew = $this->crewWithTeacher();
+        $crew = $this->crewWithFaculty();
         $other = Crew::create(['name' => 'Other', 'code' => 'OTHER1', 'teacher_id' => $crew->teacher_id]);
 
         $keyan = User::factory()->create(['name' => 'Keyan', 'crew_id' => $crew->id]);
@@ -82,12 +84,12 @@ class StudentDashboardTest extends TestCase
         $this->assertSame([500, 200, 200], array_column($board, 'xp'));
         $this->assertTrue($board[1]['me']);
 
-        $this->actingAs($sasa)->get('/dashboard')->assertOk()->assertSee('Sasa Crew leaderboard')->assertDontSee('Outsider');
+        $this->actingAs($sasa)->get('/progress')->assertOk()->assertSee('Sasa Crew leaderboard')->assertDontSee('Outsider');
     }
 
     public function test_no_crew_renders_a_join_prompt(): void
     {
-        $this->actingAs(User::factory()->create())->get('/dashboard')->assertOk()->assertSee("haven't joined a crew", false);
+        $this->actingAs(User::factory()->create())->get('/progress')->assertOk()->assertSee("haven't joined a crew", false);
     }
 
     public function test_activity_ping_accumulates_minutes_and_is_rate_limited(): void

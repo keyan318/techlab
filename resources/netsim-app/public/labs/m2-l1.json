@@ -76,12 +76,12 @@
   ],
   "lab": {
     "id": "m2-l1",
-    "title": "Lesson 2.1 \u2014 Climb the Layers",
+    "title": "Lesson 2.1 — Climb the Layers",
     "blurb": "Bring a dead server up one layer at a time.",
     "steps": [
       {
         "title": "Layers 1 to 3: link and address",
-        "body": "The ship server is dead at the bottom of the stack. Its cable link is down (Layer 1) and it has no IP address (Layer 3). Open its terminal, bring the link up with `ip link set eth0 up`, and give it `ip addr add 192.168.1.50/24 dev eth0`. Then ping it from astro.",
+        "body": "The ship server is dead at the bottom of the stack. Its cable link is down (Layer 1) and it has no IP address (Layer 3). Open its Command Prompt, bring the link up with `netsh interface set interface \"Ethernet\" admin=enabled`, and give it `netsh interface ip set address \"Ethernet\" static 192.168.1.50 255.255.255.0`. Then ping it from astro.",
         "objectives": [
           {
             "id": "m2l1-ip",

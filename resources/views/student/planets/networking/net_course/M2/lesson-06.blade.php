@@ -15,7 +15,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l6.json) complete
     <h2 class="section-heading">Simple Explanation</h2>
 
     <p class="body-text">
-        A router keeps a <strong>routing table</strong>: a list of networks it knows how to reach. Each line has a <strong>destination network</strong>, the <strong>next hop</strong> (the next router, written <code>via</code>) or <em>connected</em>, and the interface to use. On Linux, <code>ip route</code> shows it.
+        A router keeps a <strong>routing table</strong>: a list of networks it knows how to reach. Each line has a <strong>destination network</strong>, the <strong>next hop</strong> (the next router, the <em>Gateway</em> column) or <em>On-link</em> for a network it touches directly, and the interface to use. On Windows, <code>route print</code> shows it, and <code>route add &lt;network&gt; mask &lt;mask&gt; &lt;next hop&gt;</code> adds a line.
     </p>
     <p class="body-text">
         For each packet the router picks the <strong>most specific match</strong>: the route with the longest prefix. If a router has <code>10.0.0.0/8</code> and <code>10.1.1.0/24</code>, a packet for <code>10.1.1.5</code> uses the <code>/24</code> route. The <strong>default route</strong> <code>0.0.0.0/0</code> matches everything and is used only when nothing more specific does.
@@ -119,7 +119,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l6.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

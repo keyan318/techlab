@@ -146,12 +146,12 @@
   ],
   "lab": {
     "id": "m3-l3",
-    "title": "Lesson 3.3 \u2014 Centralized DHCP",
+    "title": "Lesson 3.3 — Centralized DHCP",
     "blurb": "One DHCP server for the comms deck, and a broadcast that stops at the router.",
     "steps": [
       {
         "title": "One server, many clients",
-        "body": "`ship-server` is the central DHCP server for the comms deck. Run `dhclient` on astro, then on rivet. Each gets an address and a default gateway from the same server.",
+        "body": "`ship-server` is the central DHCP server for the comms deck. Run `ipconfig /renew` on astro, then on rivet. Each gets an address and a default gateway from the same server.",
         "objectives": [
           {
             "id": "m3l3-astro",
@@ -186,7 +186,7 @@
       },
       {
         "title": "Broadcasts stop at the router",
-        "body": "Volt is on the shield deck, a different network (192.168.2.0/24). Run `dhclient` on volt: it gets no answer, because a DHCP Discover is a broadcast and routers do not forward broadcasts. Real networks fix this with a **relay agent**. This simulator has none, so put a DHCP server on the router instead: click **gate**, open **DHCP server**, tick **serve leases**, set the range to `192.168.2.100` to `192.168.2.150` and the router to `192.168.2.1`. Run `dhclient` on volt again. (Do not re-run it on astro or rivet.)",
+        "body": "Volt is on the shield deck, a different network (192.168.2.0/24). Run `ipconfig /renew` on volt: it gets no answer, because a DHCP Discover is a broadcast and routers do not forward broadcasts. Real networks fix this with a **relay agent**. This simulator has none, so put a DHCP server on the router instead: click **gate**, open **DHCP server**, tick **serve leases**, set the range to `192.168.2.100` to `192.168.2.150` and the router to `192.168.2.1`. Run `ipconfig /renew` on volt again. (Do not re-run it on astro or rivet.)",
         "objectives": [
           {
             "id": "m3l3-volt",

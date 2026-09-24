@@ -1,0 +1,47 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c2-l1",
+  "title": "Lesson 2.1: Data-Centric Security",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "11:20 · UNCLASSIFIED FILES FOUND · CITADEL CORE",
+    "vex": "You never even sorted your own secrets. We didn't have to break in. We just walked up. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. Every secret file now stays with its owner. Astro: \"Protect the data itself, not just the door. That is data-centric security.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nWe found files sitting around unsorted, readable by anyone who's logged in — including a captured Doom intern account. Classify each one, then lock the secret ones down.\n\n1. type starmap-copy.txt and crew-roster.txt\n2. classify each file: secret or public\n3. icacls the secret ones so only the crew (not doom_intern) can read them\n",
+    "C:\\Citadel\\starmap-copy.txt": "A working copy of the route home. If Doom gets this, they get everything.\n",
+    "C:\\Citadel\\crew-roster.txt": "Public roster: Astro (Captain), Rivet (Engineer), Volt (Shield Tech), Cadet (Shield Cadet). No addresses, no codes.\n"
+  },
+  "users": [
+    { "name": "doom_intern", "fullName": "(captured Doom account — Volt's Drill target)", "groups": ["Users"], "passwordSet": "unknown", "lastLogon": "09/24/2026" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {
+    "starmap-copy.txt": "starmap-copy.txt",
+    "crew-roster.txt": "crew-roster.txt"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: prove the leak",
+      "body": "Volt: \"A captured Doom intern account can still read our files. That's the leak. Prove it, then we fix it.\" Read both files with `type`, so we know exactly what's exposed.",
+      "objectives": [
+        { "id": "read-starmap", "label": "Read starmap-copy.txt", "check": { "type": "read", "file": "C:\\Citadel\\starmap-copy.txt" } },
+        { "id": "read-roster", "label": "Read crew-roster.txt", "check": { "type": "read", "file": "C:\\Citadel\\crew-roster.txt" } }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Classify and lock it down",
+      "body": "Astro: \"Data-centric security means the protection travels with the data, not just the door.\" Classify each file (`classify starmap-copy.txt secret` or `public`), then deny the captured account access to whichever one is secret: `icacls starmap-copy.txt /deny doom_intern:F`.",
+      "objectives": [
+        { "id": "class-starmap", "label": "starmap-copy.txt classified secret", "check": { "type": "classified", "item": "starmap-copy.txt", "as": "secret" } },
+        { "id": "class-roster", "label": "crew-roster.txt classified public", "check": { "type": "classified", "item": "crew-roster.txt", "as": "public" } },
+        { "id": "deny-intern", "label": "doom_intern is denied access to the starmap copy", "check": { "type": "denied", "file": "C:\\Citadel\\starmap-copy.txt", "user": "doom_intern" } }
+      ]
+    }
+  ]
+}

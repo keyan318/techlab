@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Crew extends Model
 {
-    protected $fillable = ['name', 'code', 'teacher_id'];
+    protected $fillable = ['name', 'code', 'teacher_id', 'planet', 'course_slug'];
 
-    public function teacher(): BelongsTo
+    public function faculty(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
@@ -30,7 +30,13 @@ class Crew extends Model
         return $this->hasMany(User::class);
     }
 
-    // Explicit roster: every crew member (teacher + students) with their role.
+    // Students asking to join this course; the faculty member accepts or declines them.
+    public function joinRequests(): HasMany
+    {
+        return $this->hasMany(CourseJoinRequest::class);
+    }
+
+    // Explicit roster: every crew member (faculty + students) with their role.
     public function roster()
     {
         return $this->belongsToMany(User::class, 'crew_members')

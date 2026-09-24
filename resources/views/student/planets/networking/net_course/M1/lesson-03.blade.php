@@ -23,7 +23,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l3.json) complete
         <li><strong>Wireless</strong>: uses radio waves, as in Wi-Fi. No cable is needed, but the air is shared and the signal can be blocked or jammed.</li>
     </ul>
     <p class="body-text">
-        Every device connects to the medium through a <strong>NIC</strong> (network interface card). Each NIC has a unique hardware address called a <strong>MAC address</strong>. On Linux the first NIC is named <code>eth0</code>.
+        Every device connects to the medium through a <strong>NIC</strong> (network interface card). Each NIC has a unique hardware address called a <strong>MAC address</strong>. On Windows the first NIC is called <code>Ethernet</code>, the second <code>Ethernet 2</code>, and <code>ipconfig /all</code> shows each one's MAC address (its <em>Physical Address</em>).
     </p>
     <p class="body-text">
         Two numbers describe a link. <strong>Bandwidth</strong> is how much data it can carry per second (for example 1 Gbps). <strong>Latency</strong> is the delay for one trip, which is the time <code>ping</code> reports.
@@ -119,7 +119,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l3.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

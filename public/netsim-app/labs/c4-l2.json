@@ -1,0 +1,106 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "dock-gate",
+      "kind": "host",
+      "name": "dock-gate",
+      "x": 60,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [{ "name": "eth0", "ip": "10.0.0.10/24", "up": true }],
+      "routes": [{ "dest": "0.0.0.0/0", "via": "10.0.0.1", "dev": "eth0" }]
+    },
+    {
+      "id": "citadel-fw",
+      "kind": "firewall",
+      "name": "citadel-fw",
+      "x": 280,
+      "y": 180,
+      "forwarding": true,
+      "ifaces": [
+        { "name": "eth0", "ip": "10.0.0.1/24", "up": true },
+        { "name": "eth1", "ip": "192.168.2.1/24", "up": true }
+      ],
+      "routes": []
+    },
+    {
+      "id": "deck-relay",
+      "kind": "switch",
+      "name": "deck-relay",
+      "x": 500,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "command-deck",
+      "kind": "host",
+      "name": "command-deck",
+      "x": 700,
+      "y": 80,
+      "forwarding": false,
+      "ifaces": [{ "name": "eth0", "ip": "192.168.2.10/24", "up": true }],
+      "routes": [{ "dest": "0.0.0.0/0", "via": "192.168.2.1", "dev": "eth0" }],
+      "services": { "tcp": [445], "udp": [] }
+    },
+    {
+      "id": "web-server",
+      "kind": "server",
+      "name": "web-server",
+      "x": 700,
+      "y": 280,
+      "forwarding": false,
+      "ifaces": [{ "name": "eth0", "ip": "192.168.2.20/24", "up": true }],
+      "routes": [{ "dest": "0.0.0.0/0", "via": "192.168.2.1", "dev": "eth0" }],
+      "services": { "tcp": [80], "udp": [] }
+    }
+  ],
+  "links": [
+    { "id": "dock-gate.eth0-citadel-fw.eth0", "a": ["dock-gate", "eth0"], "b": ["citadel-fw", "eth0"] },
+    { "id": "citadel-fw.eth1-deck-relay.eth0", "a": ["citadel-fw", "eth1"], "b": ["deck-relay", "eth0"] },
+    { "id": "command-deck.eth0-deck-relay.eth1", "a": ["command-deck", "eth0"], "b": ["deck-relay", "eth1"] },
+    { "id": "web-server.eth0-deck-relay.eth2", "a": ["web-server", "eth0"], "b": ["deck-relay", "eth2"] }
+  ],
+  "lab": {
+    "id": "c4-l2",
+    "title": "Lesson 4.2: Enterprise Security Architecture",
+    "blurb": "Doom got onto the public dock network. Build zones of trust so they can't walk straight into the command deck.",
+    "story": {
+      "alert": "06:20 · UNKNOWN DEVICE ON THE PUBLIC DOCK · CITADEL NETWORK",
+      "vex": "Every network is one flat room if nobody bothers to build walls inside it. (Commander Vex, Planet Doom)",
+      "victory": "DOOM ATTACK REPELLED. The dock is still public, but the command deck is now its own locked room. Astro: \"Zones of trust, Cadet. Not every device on our network deserves the same trust.\""
+    },
+    "steps": [
+      {
+        "title": "Astro Says: build the wall between zones",
+        "body": "Astro: \"Doom's device sits on the public dock network now. It must not be able to walk straight onto the command deck.\" On `citadel-fw`, set the default policy to block: `netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound`.",
+        "objectives": [
+          {
+            "id": "c4l2-default-block",
+            "label": "citadel-fw blocks routed traffic between zones by default",
+            "check": { "type": "fw-policy", "device": "citadel-fw", "hook": "forward", "policy": "drop" }
+          }
+        ]
+      },
+      {
+        "title": "Rivet's Workbench: open only what the crew needs",
+        "body": "Rivet: \"The dock still needs the web service. Nothing else.\" On `citadel-fw`, allow only the web port through: `netsh advfirewall firewall add rule name=AllowWeb dir=in action=allow protocol=TCP localport=80`.",
+        "objectives": [
+          {
+            "id": "c4l2-web-open",
+            "label": "dock-gate can still reach web-server on port 80",
+            "check": { "type": "tcp", "from": "dock-gate", "toDevice": "web-server", "port": 80, "expect": "open" }
+          },
+          {
+            "id": "c4l2-deck-blocked",
+            "label": "dock-gate is blocked from command-deck's port 445",
+            "check": { "type": "tcp", "from": "dock-gate", "toDevice": "command-deck", "port": 445, "expect": "filtered" }
+          }
+        ]
+      }
+    ]
+  }
+}

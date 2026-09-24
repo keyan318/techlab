@@ -46,7 +46,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
             <text x="170" y="16" text-anchor="middle" font-size="13.5" font-weight="700" fill="#14306b">Test, in this order</text>
             <text x="500" y="16" text-anchor="middle" font-size="13.5" font-weight="700" fill="#14306b">If it fails, suspect</text>
             <rect x="10" y="28" width="320" height="34" rx="12" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/>
-            <text x="170.0" y="50.0" text-anchor="middle" font-size="15" font-weight="700" fill="#14306b">1   ip addr, ping your own address</text>
+            <text x="170.0" y="50.0" text-anchor="middle" font-size="15" font-weight="700" fill="#14306b">1   ipconfig, ping your own address</text>
             <line x1="330" y1="45" x2="366" y2="45" stroke="#7c5cff" stroke-width="3" stroke-linecap="round"/>
             <polygon points="372,45 361,39 361,51" fill="#7c5cff"/>
             <rect x="376" y="28" width="274" height="34" rx="12" fill="#fff4e0" stroke="#f08c1a" stroke-width="2"/>
@@ -64,7 +64,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
             <rect x="376" y="112" width="274" height="34" rx="12" fill="#fff4e0" stroke="#f08c1a" stroke-width="2"/>
             <text x="513.0" y="134.0" text-anchor="middle" font-size="15" font-weight="700" fill="#6b3a00">gateway, routes, the far end</text>
             <rect x="10" y="154" width="320" height="34" rx="12" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/>
-            <text x="170.0" y="176.0" text-anchor="middle" font-size="15" font-weight="700" fill="#14306b">4   ping or dig the name</text>
+            <text x="170.0" y="176.0" text-anchor="middle" font-size="15" font-weight="700" fill="#14306b">4   ping or nslookup the name</text>
             <line x1="330" y1="171" x2="366" y2="171" stroke="#7c5cff" stroke-width="3" stroke-linecap="round"/>
             <polygon points="372,171 361,165 361,177" fill="#7c5cff"/>
             <rect x="376" y="154" width="274" height="34" rx="12" fill="#fff4e0" stroke="#f08c1a" stroke-width="2"/>
@@ -128,7 +128,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

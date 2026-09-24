@@ -46,7 +46,8 @@ class NetworkingCourseTest extends TestCase
     {
         $this->assertSame('student.planets.networking.net_course', CourseProgressService::viewBase('networking'));
         $this->assertSame('student.planets.programming.python_course', CourseProgressService::viewBase('programming'));
-        $this->assertNull(CourseProgressService::viewBase('cybersecurity'));
+        $this->assertSame('student.planets.cybersecurity.infosec_course', CourseProgressService::viewBase('cybersecurity'));
+        $this->assertNull(CourseProgressService::viewBase('deep-space'));
     }
 
     public function test_a_locked_networking_lesson_is_refused(): void
@@ -102,7 +103,7 @@ class NetworkingCourseTest extends TestCase
         $this->postJson($this->labUrl('m1', 'lesson01'), ['lab' => 'm1-l1'])->assertUnauthorized();
 
         $this->actingAs(User::factory()->create())
-            ->postJson(route('student.planet.lab.complete', ['slug' => 'cybersecurity', 'module' => 'm1', 'lesson' => 'lesson01']), ['lab' => 'm1-l1'])
+            ->postJson(route('student.planet.lab.complete', ['slug' => 'deep-space', 'module' => 'm1', 'lesson' => 'lesson01']), ['lab' => 'm1-l1'])
             ->assertNotFound();
     }
 

@@ -130,12 +130,12 @@
   ],
   "lab": {
     "id": "m1-l4",
-    "title": "Lesson 1.4 \u2014 Switches, Routers & VLANs",
+    "title": "Lesson 1.4 — Switches, Routers & VLANs",
     "blurb": "Volt splits the ship into zones, and Rivet connects them with a router.",
     "steps": [
       {
         "title": "Volt isolates the shield systems",
-        "body": "Right now every device shares one broadcast domain, so anyone can reach Volt's shield console. A **VLAN** splits one physical switch into separate virtual switches. Click the relay switch, find **Port VLANs (access)**. Set the port `eth2 \u2192 volt` and the port `eth4 \u2192 gate` (the router's second cable) to `20`, typing the number and pressing Enter. Leave `eth3 \u2192 gate` in VLAN 1. Astro and Rivet stay in VLAN 1. Then press Check objectives.",
+        "body": "Right now every device shares one broadcast domain, so anyone can reach Volt's shield console. A **VLAN** splits one physical switch into separate virtual switches. Click the relay switch, find **Port VLANs (access)**. Set the port `eth2 → volt` and the port `eth4 → gate` (the router's second cable) to `20`, typing the number and pressing Enter. Leave `eth3 → gate` in VLAN 1. Astro and Rivet stay in VLAN 1. Then press Check objectives.",
         "objectives": [
           {
             "id": "m1l4-comms",
@@ -161,11 +161,11 @@
       },
       {
         "title": "Rivet connects the zones with a router",
-        "body": "A router joins separate networks. Give the router `gate` an address on each side: `ip addr add 192.168.1.1/24 dev eth0` and `ip addr add 10.0.0.1/24 dev eth1`. Move volt to `10.0.0.30/24` (remove its old address first with `ip addr del 192.168.1.30/24 dev eth0`). Point each host at the router: `ip route add default via 192.168.1.1` on astro and `ip route add default via 10.0.0.1` on volt.",
+        "body": "A router joins separate networks. Give the router `gate` an address on each side: `netsh interface ip set address \"Ethernet\" static 192.168.1.1 255.255.255.0` and `netsh interface ip set address \"Ethernet 2\" static 10.0.0.1 255.255.255.0`. Move volt to `10.0.0.30/24` (`set address` replaces its old address). Point each host at the router: `route add 0.0.0.0 mask 0.0.0.0 192.168.1.1` on astro and `route add 0.0.0.0 mask 0.0.0.0 10.0.0.1` on volt.",
         "objectives": [
           {
             "id": "m1l4-gate-a",
-            "label": "gate has 192.168.1.1/24 on eth0",
+            "label": "gate has 192.168.1.1/24 on \"Ethernet\"",
             "check": {
               "type": "iface-ip",
               "device": "gate",
@@ -175,7 +175,7 @@
           },
           {
             "id": "m1l4-gate-b",
-            "label": "gate has 10.0.0.1/24 on eth1",
+            "label": "gate has 10.0.0.1/24 on \"Ethernet 2\"",
             "check": {
               "type": "iface-ip",
               "device": "gate",

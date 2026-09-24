@@ -335,7 +335,7 @@
         <header class="course-head">
           <span class="eyebrow">TechLab Course</span>
           <h1>{{ $crew->name }}</h1>
-          <div class="ch-meta">Instructor: <strong>{{ $crew->teacher->name ?? 'Captain' }}</strong></div>
+          <div class="ch-meta">Instructor: <strong>{{ $crew->faculty->name ?? 'Captain' }}</strong></div>
           <p class="ch-desc">{{ $course['description'] }}</p>
         </header>
 
@@ -348,7 +348,7 @@
           @if (empty($course['modules']))
             <div class="card empty-state">
               <h3>No modules yet</h3>
-              <p class="m-desc">{{ $crew->teacher->name ?? 'Your captain' }} hasn't published any learning modules. Check back soon.</p>
+              <p class="m-desc">{{ $crew->faculty->name ?? 'Your captain' }} hasn't published any learning modules. Check back soon.</p>
             </div>
           @else
           <div class="module-grid">
@@ -412,7 +412,7 @@
                     </div>
                   </article>
                 @empty
-                  <div class="card empty-card">No quizzes yet. When your teacher publishes one, it will show up here.</div>
+                  <div class="card empty-card">No quizzes yet. When your faculty member publishes one, it will show up here.</div>
                 @endforelse
               </div>
             </div>
@@ -477,7 +477,7 @@
           </button>
           <div class="code-card join-another" id="joinAnother" hidden>
             <label for="anotherCode">Join another crew</label>
-            <p class="sub" style="margin: 0 0 14px;">Got a code from another teacher or captain? Board that crew too.</p>
+            <p class="sub" style="margin: 0 0 14px;">Got a code from another faculty member or captain? Board that crew too.</p>
             <form method="POST" action="/student/crew/join">
               @csrf
               <div class="code-row">
@@ -495,7 +495,7 @@
     <main class="wrap">
       <span class="eyebrow-pill">Crew · Boarding</span>
       <h1 class="big">Join your <span class="accent">crew</span></h1>
-      <p class="sub">Got a crew code from your teacher or captain? Enter it below to board the ship and join your class.</p>
+      <p class="sub">Got a crew code from your faculty member or captain? Enter it below to board the ship and join your class.</p>
 
       <div class="ship-stage">
         <div class="orbit"></div>

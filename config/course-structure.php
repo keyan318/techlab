@@ -47,7 +47,7 @@ return [
                         'expected' => 'Astro to Codexia: comms online.',
                         'order' => 1,
                         'view' => 'student.programming.M1.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-02' => [
                         'title' => 'Variables & Memory',
@@ -55,7 +55,7 @@ return [
                         'expected' => '42',
                         'order' => 2,
                         'view' => 'student.programming.M1.lesson-02',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-03' => [
                         'title' => 'Data Types',
@@ -63,7 +63,7 @@ return [
                         'expected' => '20',
                         'order' => 3,
                         'view' => 'student.programming.M1.lesson-03',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-04' => [
                         'title' => 'Expressions & Operators',
@@ -71,7 +71,7 @@ return [
                         'expected' => '20.0',
                         'order' => 4,
                         'view' => 'student.programming.M1.lesson-04',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-05' => [
                         'title' => 'Talking to the Program',
@@ -79,7 +79,7 @@ return [
                         'expected' => "Astro's crew needs 8 ration packs",
                         'order' => 5,
                         'view' => 'student.programming.M1.lesson-05',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-06' => [
                         'title' => 'Reading Error Messages',
@@ -87,9 +87,9 @@ return [
                         'expected' => '97',
                         'order' => 6,
                         'view' => 'student.programming.M1.lesson-06',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
+                ],
             ],
             'M2' => [
                 'title' => 'M2 — Conditions & Loops',
@@ -99,44 +99,44 @@ return [
                         'slug' => 'decision-points',
                         'order' => 1,
                         'view' => 'student.programming.M2.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-02' => [
                         'title' => 'Branching Paths',
                         'slug' => 'branching-paths',
                         'order' => 2,
                         'view' => 'student.programming.M2.lesson-02',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-03' => [
                         'title' => 'Combining Conditions',
                         'slug' => 'combining-conditions',
                         'order' => 3,
                         'view' => 'student.programming.M2.lesson-03',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-04' => [
                         'title' => 'Repeating Signals',
                         'slug' => 'repeating-signals',
                         'order' => 4,
                         'view' => 'student.programming.M2.lesson-04',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-05' => [
                         'title' => 'Repeating With for',
                         'slug' => 'counting-loops',
                         'order' => 5,
                         'view' => 'student.programming.M2.lesson-05',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-06' => [
                         'title' => 'Breaking the Loop',
                         'slug' => 'breaking-loop',
                         'order' => 6,
                         'view' => 'student.programming.M2.lesson-06',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
+                ],
             ],
             'M3' => [
                 'title' => 'M3 — Functions & Error Handling',
@@ -146,37 +146,37 @@ return [
                         'slug' => 'reusable-routines',
                         'order' => 1,
                         'view' => 'student.programming.M3.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-02' => [
                         'title' => 'Passing Information',
                         'slug' => 'passing-information',
                         'order' => 2,
                         'view' => 'student.programming.M3.lesson-02',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-03' => [
                         'title' => 'Returning Results',
                         'slug' => 'scope',
                         'order' => 3,
                         'view' => 'student.programming.M3.lesson-03',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-04' => [
                         'title' => 'Anticipating Failure',
                         'slug' => 'anticipating-failure',
                         'order' => 4,
                         'view' => 'student.programming.M3.lesson-04',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-05' => [
                         'title' => 'Sanity Checks',
                         'slug' => 'sanity-checks',
                         'order' => 5,
                         'view' => 'student.programming.M3.lesson-05',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
+                ],
             ],
             'M4' => [
                 'title' => 'M4 — Working With Data & Files',
@@ -186,58 +186,58 @@ return [
                         'slug' => 'collections',
                         'order' => 1,
                         'view' => 'student.programming.M4.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-02' => [
                         'title' => 'List Operations',
                         'slug' => 'list-operations',
                         'order' => 2,
                         'view' => 'student.programming.M4.lesson-02',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-03' => [
                         'title' => 'Labeled Data',
                         'slug' => 'labeled-data',
                         'order' => 3,
                         'view' => 'student.programming.M4.lesson-03',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-04' => [
                         'title' => 'Nested Structures',
                         'slug' => 'nested-structures',
                         'order' => 4,
                         'view' => 'student.programming.M4.lesson-04',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-05' => [
                         'title' => 'Text Manipulation',
                         'slug' => 'text-manipulation',
                         'order' => 5,
                         'view' => 'student.programming.M4.lesson-05',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-06' => [
                         'title' => 'Reading Files',
                         'slug' => 'reading-files',
                         'order' => 6,
                         'view' => 'student.programming.M4.lesson-06',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-07' => [
                         'title' => 'Writing Files',
                         'slug' => 'writing-files',
                         'order' => 7,
                         'view' => 'student.programming.M4.lesson-07',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-08' => [
                         'title' => 'Structured Data Formats',
                         'slug' => 'structured-data',
                         'order' => 8,
                         'view' => 'student.programming.M4.lesson-08',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
+                ],
             ],
             'M5' => [
                 'title' => 'M5 — Python Automation',
@@ -247,37 +247,37 @@ return [
                         'slug' => 'pattern-matching',
                         'order' => 1,
                         'view' => 'student.programming.M5.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-02' => [
                         'title' => 'Practical Regex',
                         'slug' => 'practical-regex',
                         'order' => 2,
                         'view' => 'student.programming.M5.lesson-02',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-03' => [
                         'title' => 'File System Basics',
                         'slug' => 'file-system-basics',
                         'order' => 3,
                         'view' => 'student.programming.M5.lesson-03',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-04' => [
                         'title' => 'Building a CLI Tool',
                         'slug' => 'building-cli',
                         'order' => 4,
                         'view' => 'student.programming.M5.lesson-04',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-05' => [
                         'title' => 'Time & Scheduling Concepts',
                         'slug' => 'time-scheduling',
                         'order' => 5,
                         'view' => 'student.programming.M5.lesson-05',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
+                ],
             ],
             'M6' => [
                 'title' => 'M6 — Real-World Projects',
@@ -287,30 +287,30 @@ return [
                         'slug' => 'web-basics',
                         'order' => 1,
                         'view' => 'student.programming.M6.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-02' => [
                         'title' => '6B: Spreadsheet Automation',
                         'slug' => 'spreadsheet-automation',
                         'order' => 2,
                         'view' => 'student.programming.M6.lesson-02',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-03' => [
                         'title' => '6C: Mini Database',
                         'slug' => 'mini-database',
                         'order' => 3,
                         'view' => 'student.programming.M6.lesson-03',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
                     'lesson-04' => [
                         'title' => '6D: Document Automation',
                         'slug' => 'document-automation',
                         'order' => 4,
                         'view' => 'student.programming.M6.lesson-04',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
+                ],
             ],
             'M7' => [
                 'title' => 'M7 — Final Automation Project',
@@ -320,15 +320,23 @@ return [
                         'slug' => 'proposal-design',
                         'order' => 1,
                         'view' => 'student.programming.M7.lesson-01',
-                        'type' => 'lesson'
+                        'type' => 'lesson',
                     ],
-                ]
-            ]
-        ]
+                ],
+            ],
+        ],
     ],
 
     'networking' => [
         'title' => 'Networking 1',
+        'resources' => [
+            [
+                'title' => 'Networking 1 (ITP422) OBE Course Syllabus — Catanduanes State University',
+                'url' => '/resources/networking-1-syllabus-ITP422.pdf',
+                'type' => 'pdf',
+                'source' => 'Source: Catanduanes State University, OBE Course Syllabus (CatSU-F-ACAD-07, AY 2026–2027)',
+            ],
+        ],
         'view_base' => 'student.planets.networking.net_course',
         'modules' => [
             'M1' => [
@@ -445,6 +453,65 @@ return [
                         'title' => 'Final Mission: Call Earth',
                         'lab' => 'm4-l6',
                     ],
+                ],
+            ],
+        ],
+    ],
+
+    // Information Security 1 (ITP1232 Information Assurance and Security 1): "Siege of the Citadel".
+    // Every lesson ends in a "Defend it yourself" lab; `sim` picks the simulator (citadel = Citadel Sim,
+    // netsim = the network simulator). Citadel lab files: public/citadel-sim/labs/<lab>.json.
+    'cybersecurity' => [
+        'title' => 'Information Security 1',
+        'view_base' => 'student.planets.cybersecurity.infosec_course',
+        'modules' => [
+            'M1' => [
+                'title' => 'M1 — First Contact with the Enemy',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Know Your Citadel', 'lab' => 'c1-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Attacks & Vulnerabilities', 'lab' => 'c1-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Anatomy of an Attack', 'lab' => 'c1-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Awareness & Management Commitment', 'lab' => 'c1-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Security Policy (AUP)', 'lab' => 'c1-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M2' => [
+                'title' => 'M2 — The Data Heist',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Data-Centric Security', 'lab' => 'c2-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Data Masking', 'lab' => 'c2-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Cybersecurity Standards', 'lab' => 'c2-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Global Surveillance & Privacy', 'lab' => 'c2-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Computer Security', 'lab' => 'c2-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M3' => [
+                'title' => 'M3 — Traitors and Pirates',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'IT Risks', 'lab' => 'c3-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Cybercrime & the Law', 'lab' => 'c3-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'ITIL Security Management', 'lab' => 'c3-l3', 'sim' => 'citadel'],
+                ],
+            ],
+            'M4' => [
+                'title' => 'M4 — The Network War',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Cryptography Basics', 'lab' => 'c4-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Enterprise Security Architecture', 'lab' => 'c4-l2', 'sim' => 'netsim'],
+                    'lesson-03' => ['title' => 'Network Security', 'lab' => 'c4-l3', 'sim' => 'netsim'],
+                    'lesson-04' => ['title' => 'Digital Rights Management', 'lab' => 'c4-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Copyright Infringement', 'lab' => 'c4-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M5' => [
+                'title' => 'M5 — The Final Siege',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Confidentiality & Data Integrity', 'lab' => 'c5-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Authentication & Non-Repudiation', 'lab' => 'c5-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Symmetric Key Cryptography', 'lab' => 'c5-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Public Key Cryptography', 'lab' => 'c5-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Cryptanalysis & Strong Cryptography', 'lab' => 'c5-l5', 'sim' => 'citadel'],
+                    'lesson-06' => ['title' => 'Data & Network Security Services', 'lab' => 'c5-l6', 'sim' => 'citadel'],
                 ],
             ],
         ],

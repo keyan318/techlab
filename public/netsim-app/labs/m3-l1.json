@@ -101,12 +101,12 @@
   ],
   "lab": {
     "id": "m3-l1",
-    "title": "Lesson 3.1 \u2014 Static and Dynamic",
+    "title": "Lesson 3.1 — Static and Dynamic",
     "blurb": "A static address for the server, automatic addresses for the crew.",
     "steps": [
       {
         "title": "A static address for the server",
-        "body": "Everyone must be able to find the ship server, so it gets a **static** address that never changes. On ship-server run `ip addr add 192.168.1.2/24 dev eth0`.",
+        "body": "Everyone must be able to find the ship server, so it gets a **static** address that never changes. On ship-server run `netsh interface ip set address \"Ethernet\" static 192.168.1.2 255.255.255.0`.",
         "objectives": [
           {
             "id": "m3l1-server",
@@ -122,7 +122,7 @@
       },
       {
         "title": "Dynamic addresses for the crew",
-        "body": "Typing an address into every console after every raid is slow. Let the server hand them out. Click ship-server, open **DHCP server**, and tick **serve leases on this device**. Then run `dhclient` on astro, rivet and volt.",
+        "body": "Typing an address into every console after every raid is slow. Let the server hand them out. Click ship-server, open **DHCP server**, and tick **serve leases on this device**. Then run `ipconfig /renew` on astro, rivet and volt.",
         "objectives": [
           {
             "id": "m3l1-astro",

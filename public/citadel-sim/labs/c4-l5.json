@@ -1,0 +1,40 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c4-l5",
+  "title": "Lesson 4.5: Copyright Infringement",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "12:00 · COUNCIL REQUEST · CODEXIA HIGH COUNCIL",
+    "vex": "Steal a little, call it inspiration. Steal a lot, call it a remix. Let's see your council split hairs. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED (this one was never Doom's to begin with): the council trusts the crew's judgment now on every case that follows. Astro: \"Fair use has real edges, Cadet. Now you can see them.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nCodexia's council asked the crew to judge four cases of copied crew work. Read cases.txt, then classify each one: allowed or not-allowed.\n",
+    "C:\\Citadel\\cases.txt": "FOUR CASES FOR THE COUNCIL\n----------------------------\ncase-1  A cadet quotes two lines of Rivet's public engine notes in a class report, with credit given.\ncase-2  A trader copies Rivet's entire blueprint set and sells it as their own, no credit, no permission.\ncase-3  Volt's shield-drill manual, marked 'crew use only', is leaked and reprinted by a rival crew for profit.\ncase-4  A student remixes a public Codexia anthem for a school project, not sold, credited to the original.\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {
+    "case-1": "case-1",
+    "case-2": "case-2",
+    "case-3": "case-3",
+    "case-4": "case-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Judge the four cases",
+      "body": "Astro: \"Fair use has real edges. Small, credited excerpts for learning are usually fine. Wholesale copies sold for profit, or 'crew only' material leaked and resold, are not.\" Read `cases.txt`, then classify each case `allowed` or `not-allowed`.",
+      "objectives": [
+        { "id": "read", "label": "Read cases.txt", "check": { "type": "read", "file": "C:\\Citadel\\cases.txt" } },
+        { "id": "c1", "label": "case-1 (small credited quote): allowed", "check": { "type": "classified", "item": "case-1", "as": "allowed" } },
+        { "id": "c2", "label": "case-2 (resold whole copy, no credit): not-allowed", "check": { "type": "classified", "item": "case-2", "as": "not-allowed" } },
+        { "id": "c3", "label": "case-3 (leaked crew-only manual, resold): not-allowed", "check": { "type": "classified", "item": "case-3", "as": "not-allowed" } },
+        { "id": "c4", "label": "case-4 (non-commercial credited remix): allowed", "check": { "type": "classified", "item": "case-4", "as": "allowed" } }
+      ]
+    }
+  ]
+}

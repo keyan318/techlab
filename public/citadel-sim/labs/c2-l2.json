@@ -1,0 +1,35 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c2-l2",
+  "title": "Lesson 2.2: Data Masking",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "13:05 · OUTBOUND TRANSFER PENDING · CITADEL CORE",
+    "vex": "Send it. We're listening on every channel you have. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The intercepted copy shows nothing but stars. Astro: \"Rivet, that's how you send data through hostile space: strip what doesn't need to travel.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRivet must send the crew list to our Codexia allies, but Doom is listening on the channel. Mask the crew IDs and access codes before it goes out.\n\n1. type crew-export.csv\n2. mask crew-export.csv\n3. Confirm crew-export.masked.csv has no raw ID numbers left\n",
+    "C:\\Citadel\\crew-export.csv": "name,crew_id,access_code\nastro,4471-2290,998877\nrivet,4471-2291,998812\nvolt,4471-2292,998845\ncadet,4471-2293,998801\n"
+  },
+  "masks": {
+    "c:\\citadel\\crew-export.csv": { "pattern": "\\d{4}-?\\d{2,4}", "replace": "****", "output": "C:\\Citadel\\crew-export.masked.csv" }
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: mask before you send",
+      "body": "Rivet: \"Doom is listening on this channel. What they can't read, they can't use.\" Read `crew-export.csv` first, so you see exactly what's at risk, then run `mask crew-export.csv`. It writes a redacted copy, `crew-export.masked.csv`.",
+      "objectives": [
+        { "id": "read-export", "label": "Read crew-export.csv", "check": { "type": "read", "file": "C:\\Citadel\\crew-export.csv" } },
+        { "id": "masked", "label": "crew-export.masked.csv has no raw ID or access-code numbers left", "check": { "type": "masked", "file": "C:\\Citadel\\crew-export.masked.csv", "mustNotMatch": "\\d{4}" } }
+      ]
+    }
+  ]
+}

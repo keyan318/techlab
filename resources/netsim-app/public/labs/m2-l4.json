@@ -71,12 +71,12 @@
   ],
   "lab": {
     "id": "m2-l4",
-    "title": "Lesson 2.4 \u2014 Network or Host?",
+    "title": "Lesson 2.4 — Network or Host?",
     "blurb": "A wrong mask makes Volt think Astro is on another network.",
     "steps": [
       {
         "title": "Repair the mask",
-        "body": "Astro uses mask `/24`. Volt uses `/25`, so Volt believes its network is 192.168.1.128 to 192.168.1.255 and treats Astro as being somewhere else. Run `ip addr` on volt, then set the correct mask: `ip addr del 192.168.1.130/25 dev eth0` and `ip addr add 192.168.1.130/24 dev eth0`.",
+        "body": "Astro uses mask `/24`. Volt uses `/25`, so Volt believes its network is 192.168.1.128 to 192.168.1.255 and treats Astro as being somewhere else. Run `ipconfig` on volt, then set the correct mask: `netsh interface ip set address \"Ethernet\" static 192.168.1.130 255.255.255.0`.",
         "objectives": [
           {
             "id": "m2l4-mask",

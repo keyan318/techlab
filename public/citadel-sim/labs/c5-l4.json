@@ -1,0 +1,46 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c5-l4",
+  "title": "Lesson 5.4: Public Key Cryptography",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "18:45 · TWO MESSAGES, ONE ALLY · COMMS RELAY",
+    "vex": "Signing your name is easy when nobody checks the signature. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The forged ally message is exposed; the real one is trusted. Astro: \"A shared secret can leak. A signature only the real sender could make cannot be faked without the private key. That's the difference.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nTwo messages arrived claiming to be from Codexia's allies. Read both signature reports, classify each as valid or forged, then submit the id of the genuine one.\n\n1. type message-A.txt and message-B.txt\n2. classify message-A valid/forged, same for message-B\n3. submit the id of the real one\n",
+    "C:\\Citadel\\message-A.txt": "MESSAGE-A\nFrom: Codexia Allied Fleet\nBody: Rendezvous confirmed at the third moon.\nSignature check: signed with the Allied Fleet's public key on file. Verified.\n",
+    "C:\\Citadel\\message-B.txt": "MESSAGE-B\nFrom: Codexia Allied Fleet\nBody: Redirect to Doom-controlled coordinates immediately.\nSignature check: no matching public key on file. Signature does not verify.\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {
+    "message-a": "message-a",
+    "message-b": "message-b"
+  },
+  "flags": ["MESSAGE-A"],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: check the signatures",
+      "body": "Rivet: \"With public-key crypto, only the real sender's private key could make a signature that verifies against their public key. Doom doesn't have Codexia's private key, no matter how well they copy the letterhead.\" Read both messages, then classify each: `classify message-a valid` or `forged`, same for `message-b`.",
+      "objectives": [
+        { "id": "read-a", "label": "Read message-A.txt", "check": { "type": "read", "file": "C:\\Citadel\\message-A.txt" } },
+        { "id": "read-b", "label": "Read message-B.txt", "check": { "type": "read", "file": "C:\\Citadel\\message-B.txt" } },
+        { "id": "class-a", "label": "message-A classified valid", "check": { "type": "classified", "item": "message-a", "as": "valid" } },
+        { "id": "class-b", "label": "message-B classified forged", "check": { "type": "classified", "item": "message-b", "as": "forged" } }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Trust the genuine one",
+      "body": "Astro: \"Act only on what's actually signed.\" Submit the id of the genuinely signed message.",
+      "objectives": [
+        { "id": "genuine", "label": "Submitted the genuine message's id", "check": { "type": "flag", "value": "MESSAGE-A" } }
+      ]
+    }
+  ]
+}

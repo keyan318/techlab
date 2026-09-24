@@ -10,7 +10,7 @@ use App\Services\Quiz\QuizNimService;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Astro as the content writer for teacher PPT decks.
+ * Astro as the content writer for faculty member PPT decks.
  *
  * The model only picks layouts and writes short text; everything it returns is
  * cleaned here (caps, allowed layouts, required fields) before the builder draws it.
@@ -21,14 +21,14 @@ class PptContentService
 
     public function __construct(protected QuizNimService $nim) {}
 
-    /** Teacher/Astro transcript, newest part kept when it is too long (style wishes are usually recent). */
+    /** Faculty/Astro transcript, newest part kept when it is too long (style wishes are usually recent). */
     public function transcript(Conversation $conversation): string
     {
         $lines = [];
         foreach ($conversation->messages()->orderBy('id')->get(['role', 'content']) as $m) {
             $text = trim(preg_replace('/\s+/', ' ', (string) $m->content));
             if ($text !== '') {
-                $lines[] = ($m->role === 'assistant' ? 'Astro' : 'Teacher').': '.$text;
+                $lines[] = ($m->role === 'assistant' ? 'Astro' : 'Faculty').': '.$text;
             }
         }
 

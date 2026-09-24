@@ -81,12 +81,12 @@
   ],
   "lab": {
     "id": "m3-l5",
-    "title": "Lesson 3.5 \u2014 DNS Overview",
+    "title": "Lesson 3.5 — DNS Overview",
     "blurb": "Give the crew names instead of numbers.",
     "steps": [
       {
         "title": "Get an address and a resolver",
-        "body": "Run `dhclient` on astro. The DHCP server hands out an address and also tells astro which **DNS server** to ask. Then check with `ping -c 2 192.168.1.2`.",
+        "body": "Run `ipconfig /renew` on astro. The DHCP server hands out an address and also tells astro which **DNS server** to ask. Then check with `ping -n 2 192.168.1.2`.",
         "objectives": [
           {
             "id": "m3l5-astro",
@@ -112,7 +112,7 @@
       },
       {
         "title": "Teach the name server",
-        "body": "The portal page works by number, but nobody wants to remember numbers. Click ship-server, open **DNS server**, tick it on, and add the record `192.168.1.2 portal.codexia.lan` (then click outside the box to save it). Try `dig portal.codexia.lan` on astro, then open the page by name.",
+        "body": "The portal page works by number, but nobody wants to remember numbers. Click ship-server, open **DNS server**, tick it on, and add the record `192.168.1.2 portal.codexia.lan` (then click outside the box to save it). Try `nslookup portal.codexia.lan` on astro, then open the page by name.",
         "objectives": [
           {
             "id": "m3l5-dns",

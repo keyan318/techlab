@@ -25,7 +25,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
         <li><strong>Services</strong>: DNS must know the name, and the web server must answer.</li>
     </ul>
     <p class="body-text">
-        Work in four steps: Physical, Addressing, Routing, Services. After each fix, run the test again before you move up. Some fixes are in the terminals and some are in the Inspector panels.
+        Work in four steps: Physical, Addressing, Routing, Services. After each fix, run the test again before you move up. Some fixes are in the Command Prompt and some are in the Inspector panels.
     </p>
 
     <h2 class="section-heading">Crew Briefing</h2>
@@ -46,7 +46,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
             <text x="82" y="60" text-anchor="middle" font-size="22" font-weight="800" fill="#b3261e">1</text>
             <text x="82" y="82" text-anchor="middle" font-size="15" font-weight="700" fill="#14306b">Physical</text>
             <text x="82" y="102" text-anchor="middle" font-size="11.5" font-weight="500" fill="#33406b">link light</text>
-            <text x="82" y="117" text-anchor="middle" font-size="11.5" font-weight="500" fill="#33406b">ip link</text>
+            <text x="82" y="117" text-anchor="middle" font-size="11.5" font-weight="500" fill="#33406b">netsh interface</text>
             <line x1="155" y1="80" x2="169" y2="80" stroke="#7c5cff" stroke-width="3" stroke-linecap="round"/>
             <polygon points="175,80 164,74 164,86" fill="#7c5cff"/>
             <rect x="175" y="34" width="145" height="92" rx="14" fill="#fff4e0" stroke="#f08c1a" stroke-width="2"/>
@@ -122,7 +122,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

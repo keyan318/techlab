@@ -80,12 +80,12 @@
   ],
   "lab": {
     "id": "m1-l2",
-    "title": "Lesson 1.2 \u2014 Ship's Wiring",
+    "title": "Lesson 1.2 — Ship's Wiring",
     "blurb": "Bring the whole crew onto one star network.",
     "steps": [
       {
         "title": "Address the whole crew",
-        "body": "Rivet has cabled Astro, Rivet and Volt to the ship's relay switch. This layout is a **star** topology: every device connects to one central point. Give each console an address from 192.168.1.0/24, for example `ip addr add 192.168.1.10/24 dev eth0` on astro, `.20` on rivet and `.30` on volt.",
+        "body": "Rivet has cabled Astro, Rivet and Volt to the ship's relay switch. This layout is a **star** topology: every device connects to one central point. Give each console an address from 192.168.1.0/24, for example `netsh interface ip set address \"Ethernet\" static 192.168.1.10 255.255.255.0` on astro, `.20` on rivet and `.30` on volt.",
         "objectives": [
           {
             "id": "m1l2-ip-a",

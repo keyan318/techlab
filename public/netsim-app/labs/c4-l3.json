@@ -1,0 +1,74 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 80,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [{ "name": "eth0", "ip": "192.168.5.10/24", "up": true }],
+      "routes": []
+    },
+    {
+      "id": "relay",
+      "kind": "switch",
+      "name": "relay",
+      "x": 250,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [],
+      "routes": []
+    },
+    {
+      "id": "outer-hull",
+      "kind": "server",
+      "name": "outer-hull",
+      "x": 420,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [{ "name": "eth0", "ip": "192.168.5.20/24", "up": true }],
+      "routes": [],
+      "services": { "tcp": [21, 80, 3389], "udp": [] }
+    }
+  ],
+  "links": [
+    { "id": "volt.eth0-relay.eth0", "a": ["volt", "eth0"], "b": ["relay", "eth0"] },
+    { "id": "outer-hull.eth0-relay.eth1", "a": ["outer-hull", "eth0"], "b": ["relay", "eth1"] }
+  ],
+  "lab": {
+    "id": "c4-l3",
+    "title": "Lesson 4.3: Network Security",
+    "blurb": "Vex scans every door of the Citadel's outer hull. Scan it yourself first, then block every port that shouldn't be open.",
+    "story": {
+      "alert": "23:50 · PORT SWEEP DETECTED · OUTER HULL",
+      "vex": "Twenty-one, eighty, three-three-eight-nine. Three doors, and only one should even exist. (Commander Vex, Planet Doom)",
+      "victory": "DOOM ATTACK REPELLED. The re-scan shows two doors welded shut and one, the one we need, still open. Astro: \"Scan your own walls before Doom does. Now you know how.\""
+    },
+    "steps": [
+      {
+        "title": "Volt's Drill: scan the outer hull, then block every door that shouldn't be open",
+        "body": "Volt: \"Astro authorized this: scan our own hull first, so Doom finds nothing we haven't already found.\" From `volt`, check what's listening on `outer-hull`: `Test-NetConnection 192.168.5.20 -Port 21`, `-Port 80`, and `-Port 3389`. FTP (21) and RDP (3389) have no business being open to the network; the web port (80) does. Rivet: \"Turning the firewall on blocks everything by default, so allowlist exactly what the crew needs.\" On `outer-hull`: `netsh advfirewall set allprofiles state on`, then `netsh advfirewall firewall add rule name=BlockFTP dir=in action=block protocol=TCP localport=21`, the same for `localport=3389`, and finally `netsh advfirewall firewall add rule name=AllowWeb dir=in action=allow protocol=TCP localport=80` so the one service the crew needs stays reachable.",
+        "objectives": [
+          {
+            "id": "c4l3-ftp-blocked",
+            "label": "Port 21 (FTP) is now filtered",
+            "check": { "type": "tcp", "from": "volt", "toDevice": "outer-hull", "port": 21, "expect": "filtered" }
+          },
+          {
+            "id": "c4l3-rdp-blocked",
+            "label": "Port 3389 (RDP) is now filtered",
+            "check": { "type": "tcp", "from": "volt", "toDevice": "outer-hull", "port": 3389, "expect": "filtered" }
+          },
+          {
+            "id": "c4l3-web-open",
+            "label": "Port 80 (the web service) is still open",
+            "check": { "type": "tcp", "from": "volt", "toDevice": "outer-hull", "port": 80, "expect": "open" }
+          }
+        ]
+      }
+    ]
+  }
+}

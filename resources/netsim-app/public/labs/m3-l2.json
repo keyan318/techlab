@@ -93,12 +93,12 @@
   ],
   "lab": {
     "id": "m3-l2",
-    "title": "Lesson 3.2 \u2014 The DHCP Lease Process",
+    "title": "Lesson 3.2 — The DHCP Lease Process",
     "blurb": "Watch Discover, Offer, Request and Acknowledge happen.",
     "steps": [
       {
         "title": "Discover with no server listening",
-        "body": "Open astro's terminal and run `dhclient`. It shouts DHCPDISCOVER three times and gets no answer, because the DHCP server on ship-server is switched off. Click ship-server, open **DHCP server**, tick **serve leases on this device**, then run `dhclient` on astro again. Read the four messages it prints: DISCOVER, OFFER, REQUEST, ACK.",
+        "body": "Open astro's Command Prompt and run `ipconfig /renew`. It asks for an address and gets no answer (\"unable to contact your DHCP server\"), because the DHCP server on ship-server is switched off. Click ship-server, open **DHCP server**, tick **serve leases on this device**, then run `ipconfig /renew` on astro again. Read the `[NetSim] DHCP` line it prints: the four steps DISCOVER, OFFER, REQUEST, ACK.",
         "objectives": [
           {
             "id": "m3l2-astro",
@@ -124,7 +124,7 @@
       },
       {
         "title": "A second client",
-        "body": "Run `dhclient` on rivet. The server must give it a different address from astro's. Open the server's **DHCP server** panel and find the lease table: one line per client MAC address.",
+        "body": "Run `ipconfig /renew` on rivet. The server must give it a different address from astro's. Open the server's **DHCP server** panel and find the lease table: one line per client MAC address.",
         "objectives": [
           {
             "id": "m3l2-rivet",

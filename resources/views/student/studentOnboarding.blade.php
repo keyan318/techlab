@@ -96,7 +96,7 @@
     /* ---------- Onboarding content ---------- */
     .onboard-wrap {
       position: relative; z-index: 2;
-      max-width: 1080px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: clamp(40px, 7vw, 90px) clamp(20px, 5vw, 64px) 80px;
     }
@@ -106,7 +106,8 @@
     .planets-head h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.02em; }
     .planets-head p  { color: var(--muted); margin: 10px auto 0; max-width: 620px; }
 
-    .planet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    /* Two big cards on top so the art has room; Cybersecurity is a slim row underneath */
+    .planet-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
     .planet-card {
       position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 20px;
@@ -126,6 +127,40 @@
     .planet-card.cyber:hover { border-color: var(--violet); box-shadow: 0 22px 52px rgba(155,107,255,.34); }
 
     .planet-stage { width: 116px; height: 116px; margin: 2px auto 12px; transform: translateZ(28px); }
+    /* Programming City: the whole pixel-art scene on top (never cropped), small text underneath.
+       The art is dark in both themes, so this card's text is always light. */
+    .planet-card.prog { padding: 0; gap: 0; overflow: hidden; isolation: isolate; color: #fff; border-radius: 24px;
+      background: #140c42; border-color: rgba(150,170,255,.22); border-top-color: rgba(255,255,255,.3);
+      box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 18px 40px -18px rgba(0,0,0,.65);
+      transition: transform .35s cubic-bezier(.32,.72,0,1), border-color .25s, box-shadow .35s cubic-bezier(.32,.72,0,1); }
+    .planet-card.prog:active { transform: scale(.985); transition-duration: .1s; }   /* feedback on press, not release */
+    .planet-card.prog:focus-visible { outline: 3px solid #9ad0ff; outline-offset: 3px; }
+    .pc-scene { position: relative; aspect-ratio: 926 / 516; overflow: hidden; }
+    .pc-art { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+    .pc-body { padding: 14px 20px 20px; background: linear-gradient(180deg, #1a0f4d, #0e0832); border-top: 1px solid rgba(255,255,255,.08); }
+    /* Code-style chip: monospace, in a little bracket-ish pill, echoing the "</>" glyph on the tower screen. */
+    .planet-card.prog h3 {
+      display: inline-flex; align-items: center;
+      font-family: 'Space Mono', monospace; font-size: 13px; line-height: 1.2; letter-spacing: -.01em; font-weight: 700;
+      padding: 4px 9px; border-radius: 6px;
+      background: rgba(115,182,255,.14); border: 1px solid rgba(115,182,255,.28); color: #bfe0ff;
+    }
+    .planet-card.prog p { margin-top: 4px; font-size: 12.5px; line-height: 1.45; color: rgba(255,255,255,.78); }
+    .pc-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+    .pc-pct { font-size: 12.5px; font-weight: 600; }
+    .planet-card.prog .pc-go { margin: 0; padding: 0; font-size: 12.5px; color: #8fd0ff; }
+    .pc-bar { height: 4px; margin-top: 8px; border-radius: 99px; overflow: hidden; background: rgba(255,255,255,.2); }
+    .pc-bar > i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5be1ff, #73b6ff 55%, #b48bff); }
+
+    /* Minimal twinkling stars: tiny, steady most of the time, then one quick, soft twinkle and a long rest.
+       Each star has its own length and offset so they never blink together. */
+    .pc-tw { position: absolute; width: var(--s); aspect-ratio: 1; min-width: 2px; margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+      background: #fff; pointer-events: none; opacity: .85; animation: pc-tw var(--t, 6s) ease-in-out var(--d, 0s) infinite; }
+    @keyframes pc-tw { 0%,55%,100% { opacity: .85; scale: 1; } 70% { opacity: .1; scale: .5; } 82% { opacity: 1; scale: 1.15; } }
+    @media (prefers-reduced-motion: reduce) {
+      .pc-tw { animation: none; }
+      .planet-card.prog { transition: none; }
+    }
     .planet-svg   { width: 100%; height: 100%; animation: floatY 6s ease-in-out infinite; }
     .planet-card.prog  .planet-svg { filter: drop-shadow(0 10px 26px rgba(115,182,255,.45)); }
     .planet-card.net   .planet-svg { filter: drop-shadow(0 10px 26px rgba(91,225,255,.45));  }
@@ -142,7 +177,17 @@
     .join-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 50px rgba(115,182,255,.6); }
     .crew-join p { color: var(--muted); margin-top: 14px; font-size: .92rem; }
 
-    @media (max-width: 760px) { .planet-grid { grid-template-columns: 1fr; } }
+    .planet-card.net { min-height: 270px; align-items: center; text-align: center; justify-content: center; }
+    .planet-card.net .planet-stage { width: 128px; height: 128px; margin-bottom: 6px; }
+    .planet-card.net .pc-go { margin-top: 4px; }
+    .planet-card.cyber { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 22px; padding: 16px 24px; }
+    .planet-card.cyber .planet-stage { flex: none; width: 72px; height: 72px; margin: 0; }
+    .planet-card.cyber .pc-text { flex: 1; min-width: 0; }
+    .planet-card.cyber .pc-go { margin: 0; padding: 0; flex: none; }
+    @media (max-width: 760px) {
+      .planet-grid { grid-template-columns: 1fr; }
+      .planet-card.cyber { flex-direction: column; text-align: center; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .planets, .planet-card, .planet-svg, .crew-join, .join-btn { animation: none !important; }
     }
@@ -186,34 +231,37 @@
           <div class="planet-grid">
 
             {{-- Programming City --}}
-            <a class="planet-card prog" data-tilt href="{{ route('student.planet', 'programming') }}">
-              <div class="planet-stage">
-                <svg class="planet-svg" viewBox="0 0 200 200" aria-hidden="true">
-                  <defs>
-                    <radialGradient id="pg" cx="38%" cy="30%" r="80%">
-                      <stop offset="0%"   stop-color="#cfe6ff"/>
-                      <stop offset="55%"  stop-color="#73b6ff"/>
-                      <stop offset="100%" stop-color="#235bbf"/>
-                    </radialGradient>
-                  </defs>
-                  <circle cx="100" cy="100" r="60" fill="url(#pg)"/>
-                  <g opacity=".5">
-                    <path d="M52 96 q18 -12 38 -5 t40 3" stroke="#eaf4ff" stroke-width="4" fill="none" stroke-linecap="round"/>
-                    <rect x="74"  y="112" width="22" height="11" rx="2" fill="#0b2c63"/>
-                    <rect x="104" y="120" width="15" height="9"  rx="2" fill="#0b2c63"/>
-                    <circle cx="120" cy="86" r="6" fill="#0b2c63"/>
-                  </g>
-                  <g>
-                    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="30s" repeatCount="indefinite"/>
-                    <circle cx="100" cy="30" r="6" fill="#cfe6ff"/>
-                  </g>
-                </svg>
+            @if (auth()->user()->isEnrolledIn('programming'))
+            @php
+              // Tiny stars scattered over the sky, clear of the tower, robot and planet: [left %, top %, size %, kind]
+              $cityStars = [
+                [8, 10, 0.7, 'sq'], [19, 22, 0.55, 'sq'], [29, 8, 0.8, 'sq'], [45, 6, 0.55, 'sq'],
+                [55, 17, 0.6, 'sq'], [66, 9, 0.75, 'sq'], [72, 29, 0.5, 'sq'], [88, 10, 0.9, 'sq'],
+                [95, 21, 0.55, 'sq'], [4, 36, 0.5, 'sq'], [24, 41, 0.6, 'sq'], [12, 56, 0.5, 'sq'],
+              ];
+            @endphp
+            <a class="planet-card prog" data-tilt href="{{ route('student.planet', 'programming') }}"
+               aria-label="Programming City, {{ $programmingPercent }}% complete">
+              <div class="pc-scene" aria-hidden="true">
+                <img class="pc-art" src="{{ asset('images/programming-city-planet.png') }}" width="926" height="516" alt="" decoding="async">
+                @foreach ($cityStars as $i => [$l, $t, $sz, $kind])
+                  <i class="pc-tw {{ $kind }}" style="left: {{ $l }}%; top: {{ $t }}%; --s: {{ $sz }}%; --d: {{ number_format(-(($i * 1.9) % 7), 2) }}s; --t: {{ number_format(5.5 + ($i % 5) * 0.9, 1) }}s"></i>
+                @endforeach
               </div>
-              <h3>Programming City</h3>
-              <p>Build with code — logic, apps, and the foundations of software.</p>
-              <span class="pc-go">Enter planet →</span>
+              <div class="pc-body">
+                <h3>Programming City</h3>
+                <p>Build with code — logic, apps, and the foundations of software.</p>
+                <div class="pc-row">
+                  <span class="pc-pct">{{ $programmingPercent }}% complete</span>
+                  <span class="pc-go">{{ $programmingPercent > 0 ? 'Continue' : 'Start' }} <span aria-hidden="true">→</span></span>
+                </div>
+                <div class="pc-bar" role="progressbar" aria-valuenow="{{ $programmingPercent }}" aria-valuemin="0" aria-valuemax="100"><i style="width: {{ $programmingPercent }}%"></i></div>
+              </div>
             </a>
 
+            @endif
+
+            @if (auth()->user()->isEnrolledIn('networking'))
             {{-- Networking Nebula --}}
             <a class="planet-card net" data-tilt href="{{ route('student.planet', 'networking') }}">
               <div class="planet-stage">
@@ -245,6 +293,9 @@
               <span class="pc-go">Enter planet →</span>
             </a>
 
+            @endif
+
+            @if (auth()->user()->isEnrolledIn('cybersecurity'))
             {{-- Cybersecurity Citadel --}}
             <a class="planet-card cyber" data-tilt href="{{ route('student.planet', 'cybersecurity') }}">
               <div class="planet-stage">
@@ -269,10 +320,13 @@
                   </g>
                 </svg>
               </div>
-              <h3>Cybersecurity Citadel</h3>
-              <p>Defend systems — threats, encryption, and secure design.</p>
+              <div class="pc-text">
+                <h3>Cybersecurity Citadel</h3>
+                <p>Defend systems — threats, encryption, and secure design.</p>
+              </div>
               <span class="pc-go">Enter planet →</span>
             </a>
+            @endif
 
           </div>
         </section>

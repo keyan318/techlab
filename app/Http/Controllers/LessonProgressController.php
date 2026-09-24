@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CourseProgressService;
+use App\Services\PlanetUnlockService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -49,13 +50,14 @@ class LessonProgressController extends Controller
         }
 
         CourseProgressService::markComplete($user, $module, $lesson, $slug);
+        PlanetUnlockService::checkAndUnlock($user, $slug);
 
         $next = CourseProgressService::nextLesson($module, $lesson, $slug);
 
         return response()->json([
-            'ok'   => true,
+            'ok' => true,
             'next' => $next ? route('student.planet.module.lesson', [
-                'slug'   => $slug,
+                'slug' => $slug,
                 'module' => $next['module'],
                 'lesson' => $next['lesson'],
             ]) : null,
@@ -104,13 +106,14 @@ class LessonProgressController extends Controller
         }
 
         CourseProgressService::markComplete($user, $module, $lesson, $slug);
+        PlanetUnlockService::checkAndUnlock($user, $slug);
 
         $next = CourseProgressService::nextLesson($module, $lesson, $slug);
 
         return response()->json([
-            'ok'   => true,
+            'ok' => true,
             'next' => $next ? route('student.planet.module.lesson', [
-                'slug'   => $slug,
+                'slug' => $slug,
                 'module' => $next['module'],
                 'lesson' => $next['lesson'],
             ]) : null,

@@ -1,0 +1,49 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c1-l2",
+  "title": "Lesson 1.2: Attacks & Vulnerabilities",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "19:02 · PROBE DETECTED · RELAY CONSOLE",
+    "vex": "Your relay still answers to the name the factory gave it. Old habits sink ships. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The scouts' next knock finds a locked door. Astro: \"One weak door found and welded shut. Volt, what else are we still shipping with the factory settings?\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nVolt's sensors caught someone knocking on the relay console. Read relay-notes.txt, then run Volt's Drill: try the door yourself before Doom does.\n\n1. type relay-notes.txt\n2. login relay admin        (Volt's Drill: prove the hole is real)\n3. net user relay <a strong password>   (Rivet: patch it)\n4. login relay admin        (prove the old key no longer works)\n",
+    "C:\\Citadel\\relay-notes.txt": "RELAY CONSOLE — maintenance card (Rivet)\n-----------------------------------------\nInstalled: three tours ago, in a hurry, before the last supply run.\nAccount: relay\nPassword: never changed since the factory image. Still the default.\n\nA vulnerability is a weakness a threat can use. A factory password left in place\nis one of the oldest ones in the book — Doom's scouts try it on every door they find.\n"
+  },
+  "users": [
+    { "name": "relay", "fullName": "Relay Console (service account)", "groups": ["Users"], "password": "admin", "passwordSet": "never changed", "lastLogon": "3 tours ago" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "password": "cadet-issued", "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: prove the hole is real",
+      "body": "Volt: \"Astro authorized this: we attack our own door first, so Doom can't.\" Read `relay-notes.txt` for the account name and its known password, then try it yourself: `login relay admin`. If it works, you've proven the vulnerability — write it down, don't celebrate yet.",
+      "objectives": [
+        { "id": "read-notes", "label": "Read relay-notes.txt", "check": { "type": "read", "file": "C:\\Citadel\\relay-notes.txt" } },
+        { "id": "exploit", "label": "Logged in as relay with the factory password", "check": { "type": "login", "user": "relay", "password": "admin", "expect": "success" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: patch it",
+      "body": "Rivet: \"Found is fixed, Cadet. Give `relay` a real password.\" Run `net user relay <new-password>`, using at least 12 characters, a mix of upper and lower case, a number and a symbol, and nothing that spells out the account name or a common word.",
+      "objectives": [
+        { "id": "fix", "label": "relay's password was changed to a strong one", "check": { "type": "password-changed", "user": "relay" } }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Astro Says: prove the wall holds",
+      "body": "Astro: \"Run it again. If the old key still turns, we've fixed nothing.\" Try `login relay admin` one more time. It should fail now.",
+      "objectives": [
+        { "id": "confirm", "label": "The old factory password no longer works", "check": { "type": "login", "user": "relay", "password": "admin", "expect": "fail" } }
+      ]
+    }
+  ]
+}

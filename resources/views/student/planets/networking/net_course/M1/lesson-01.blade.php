@@ -126,8 +126,8 @@ The Relay Lab is the NetSim simulator; passing it (see public/netsim-app/labs/m1
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there, such as
-            <code>ip addr add</code> and <code>ping</code>; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), such as
+            <code>netsh</code>, <code>ipconfig</code> and <code>ping</code>; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

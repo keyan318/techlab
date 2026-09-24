@@ -1,0 +1,43 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c1-l4",
+  "title": "Lesson 1.4: Awareness & Management Commitment",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "08:00 · INBOX FLOOD · CREW COMMS",
+    "vex": "Your Captain writes such convincing orders. Funny, since he never wrote these. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. Every fake order is quarantined, every real one obeyed. Astro: \"A hacker only needs one crew member to click. Now every one of you knows how to look twice.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nSix messages landed in the crew inbox overnight. Some are real orders. Some are Doom, wearing my name. Type `inbox` to see them, `open <id>` to read one, then `report <id>` for a fake or `keep <id>` for a real order.\n\nLook for what does not match: an address that is almost right, a link to somewhere the Citadel does not own, or urgency that skips every normal step.\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "inbox": [
+    { "id": "msg1", "from": "astro@codexia.fleet", "subject": "Shield rotation at 12:00", "body": "Crew, rotate shield duty at 12:00 as scheduled. Standard sign-off. — Astro" },
+    { "id": "msg2", "from": "astro@codexia-fleet.support", "subject": "URGENT: reset your password NOW", "body": "Click this link immediately or lose access: doom-relay.example/reset. Do not wait. — \"Astro\"" },
+    { "id": "msg3", "from": "supply@codexia.fleet", "subject": "Rations manifest attached", "body": "Standard weekly manifest, matches the printed copy Rivet keeps. No action needed." },
+    { "id": "msg4", "from": "astro@c0dexia.fleet", "subject": "Send the shield override code", "body": "Reply with the override code right away, skip the usual verification. — \"Astro\" (note the zero in c0dexia)" },
+    { "id": "msg5", "from": "volt@codexia.fleet", "subject": "Drill results filed", "body": "Volt's Drill results are filed under logs\\breach.log. Nothing further needed." },
+    { "id": "msg6", "from": "prize-center@doom-relay.example", "subject": "Cadet, you won a free upgrade!", "body": "Claim your free shield upgrade by entering your login here: doom-relay.example/claim" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Triage the inbox",
+      "body": "Astro: \"A hacker only needs one of you to click. Read every message before you decide.\" Use `inbox` to list all six, `open <id>` to read each one, then mark it: `report <id>` for a Doom phish, `keep <id>` for a real order. Real Citadel mail comes from `@codexia.fleet`, never asks you to skip a step, and never rushes you.",
+      "objectives": [
+        { "id": "t1", "label": "msg1 (real shield rotation) kept", "check": { "type": "triaged", "id": "msg1", "as": "keep" } },
+        { "id": "t2", "label": "msg2 (fake urgent reset) reported", "check": { "type": "triaged", "id": "msg2", "as": "report" } },
+        { "id": "t3", "label": "msg3 (real rations manifest) kept", "check": { "type": "triaged", "id": "msg3", "as": "keep" } },
+        { "id": "t4", "label": "msg4 (spoofed domain, c0dexia) reported", "check": { "type": "triaged", "id": "msg4", "as": "report" } },
+        { "id": "t5", "label": "msg5 (real drill results) kept", "check": { "type": "triaged", "id": "msg5", "as": "keep" } },
+        { "id": "t6", "label": "msg6 (prize scam) reported", "check": { "type": "triaged", "id": "msg6", "as": "report" } }
+      ]
+    }
+  ]
+}

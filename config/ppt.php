@@ -4,10 +4,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Teacher PPT Studio — configuration
+    | Faculty PPT Studio — configuration
     |--------------------------------------------------------------------------
     |
-    | Turns the teacher's CURRENT Astro conversation (topic + any style wishes they
+    | Turns the faculty member's CURRENT Astro conversation (topic + any style wishes they
     | typed, e.g. "dark and bold, for 14-year-olds") into a designed .pptx.
     | Split in two on purpose:
     |   1. The AI only writes CONTENT (which layout each slide uses + short text).
@@ -28,7 +28,7 @@ return [
     'timeout' => (int) env('PPT_NIM_TIMEOUT', 90),
     'max_source_chars' => 12000,
 
-    // Looks the teacher can ask for in chat (names must match THEMES in build.mjs).
+    // Looks the faculty member can ask for in chat (names must match THEMES in build.mjs).
     'themes' => [
         'midnight' => 'dark navy, glowing blue/violet accents — techy, modern, bold',
         'paper' => 'warm off-white with navy + red-orange — editorial, calm, serious',
@@ -37,7 +37,7 @@ return [
     ],
 
     'system_prompt' => <<<'PROMPT'
-You are Astro, a presentation designer who works with teachers. You turn a conversation between a Teacher and Astro into the CONTENT of a slide deck. Another program draws the slides, so you choose a layout for each slide and write the short text for it.
+You are Astro, a presentation designer who works with faculty. You turn a conversation between a Faculty member and Astro into the CONTENT of a slide deck. Another program draws the slides, so you choose a layout for each slide and write the short text for it.
 
 WHAT MAKES A DECK GOOD (follow strictly):
 - Tell a story: hook -> big idea -> a few focused points/examples -> recap. Not a list of everything.
@@ -46,12 +46,12 @@ WHAT MAKES A DECK GOOD (follow strictly):
 - Vary layouts. Never use the same layout twice in a row (except "section"). Use every layout only where it fits.
 - Be concrete: real examples, numbers, tiny code samples for programming topics. No filler, no "Introduction/Conclusion/Thank you" slides, no generic clip-art wording.
 - Use ONLY facts from the conversation or well-known basics of the topic. Never invent statistics or quotes; use "quote" only for a real, famous, correctly attributed quote, otherwise use "statement".
-- Add "notes": 1-3 sentences of speaker notes for the teacher on every slide (what to say/ask).
-- Match the language of the conversation and the audience level the teacher mentioned.
+- Add "notes": 1-3 sentences of speaker notes for the faculty member on every slide (what to say/ask).
+- Match the language of the conversation and the audience level the faculty member mentioned.
 
-LOOK: read the teacher's messages for style wishes. Set "theme" to the best match of: {themes}. If they name a colour, set "accent" to a 6-digit hex (no #) that matches it; otherwise omit "accent". If they said nothing, pick the theme that fits the topic and audience.
+LOOK: read the faculty member's messages for style wishes. Set "theme" to the best match of: {themes}. If they name a colour, set "accent" to a 6-digit hex (no #) that matches it; otherwise omit "accent". If they said nothing, pick the theme that fits the topic and audience.
 
-SLIDE COUNT: {min}-{max} slides, or the number the teacher asked for.
+SLIDE COUNT: {min}-{max} slides, or the number the faculty member asked for.
 
 LAYOUTS and their fields (use exactly these keys):
 - {"layout":"cover","kicker":"<subject · audience, <=40 chars>","title":"<<=60 chars>","subtitle":"<<=80 chars>"}   (first slide only)

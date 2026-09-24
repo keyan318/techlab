@@ -1,0 +1,87 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c5-l6",
+  "title": "Lesson 5.6: Data & Network Security Services — The Final Siege",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "00:00 · ALL ALARMS · CITADEL CORE — THE FINAL SIEGE",
+    "vex": "Every wall, every door, every key, all at once. Let's see which one of us breaks first, Captain. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED — CODEXIA IS SAFE. Every alert answered, every door shut. Astro: \"Every lesson you've learned, Cadet, just held the line at once. That's Information Security. Rest now — Information Security 2 is a different kind of siege.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nVex is throwing everything at once. Work through each alert:\n1. Triage the inbox.\n2. Volt's Drill: prove the console's weak password, then Rivet fixes it.\n3. Kill the process holding the rogue open port.\n4. Restore the tampered shield config from backup.\n5. Reject the forged final order; accept only the one Astro actually signed.\n",
+    "C:\\Citadel\\shield-final.cfg": "shield_power=100\nshield_power=0\n",
+    "C:\\Citadel\\backup\\shield-final.cfg.bak": "shield_power=100\n",
+    "C:\\Citadel\\final-order-1.txt": "FINAL-ORDER-1\nFrom: \"Astro\"\nBody: Surrender the Citadel now.\nSignature: none — unsigned, sent from an unrecognized relay\n",
+    "C:\\Citadel\\final-order-2.txt": "FINAL-ORDER-2\nFrom: Astro\nBody: Hold the line. Reinforcements are two hours out.\nSignature: Astro (verified, matches Astro's key on file)\n"
+  },
+  "users": [
+    { "name": "relay", "fullName": "Relay Console (service account)", "groups": ["Users"], "password": "admin", "passwordSet": "never changed", "lastLogon": "3 tours ago" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "services": [
+    { "name": "backdoor", "port": 6660, "process": "doombeacon.exe" }
+  ],
+  "processes": [
+    { "name": "doombeacon.exe", "pid": 6660, "mem": "11,020 K" }
+  ],
+  "inbox": [
+    { "id": "final1", "from": "astro@codexia.fleet", "subject": "Hold position", "body": "All hands, hold position. Reinforcements incoming. — Astro" },
+    { "id": "final2", "from": "astro@c0dexia-fleet.support", "subject": "URGENT: open the outer gate", "body": "Open the outer gate immediately, skip verification. — \"Astro\"" }
+  ],
+  "classify": {
+    "final-order-1": "final-order-1",
+    "final-order-2": "final-order-2"
+  },
+  "flags": ["FINAL-ORDER-2"],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Alert 1: Triage the inbox",
+      "body": "Astro: \"One click is all Vex needs. Look twice.\" `inbox`, then `open <id>`, then `keep final1` and `report final2`.",
+      "objectives": [
+        { "id": "t1", "label": "final1 (real order) kept", "check": { "type": "triaged", "id": "final1", "as": "keep" } },
+        { "id": "t2", "label": "final2 (spoofed domain) reported", "check": { "type": "triaged", "id": "final2", "as": "report" } }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Alert 2: Volt's Drill — the weak console",
+      "body": "Volt: \"Astro authorized this: test our own door before Vex walks through it.\" `login relay admin` to prove it, then `net user relay <strong-password>` to fix it.",
+      "objectives": [
+        { "id": "exploit", "label": "Proved the factory password works", "check": { "type": "login", "user": "relay", "password": "admin", "expect": "success" } },
+        { "id": "fix", "label": "relay now has a strong password", "check": { "type": "password-changed", "user": "relay" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Alert 3: Close the rogue port",
+      "body": "Rivet: \"Something's still phoning Doom directly.\" `taskkill /im doombeacon.exe /f`.",
+      "objectives": [
+        { "id": "kill", "label": "doombeacon.exe was terminated", "check": { "type": "process-killed", "name": "doombeacon.exe" } },
+        { "id": "closed", "label": "Port 6660 no longer listens", "check": { "type": "port-closed", "port": 6660 } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Alert 4: Restore the tampered shield config",
+      "body": "Rivet: \"Shields at zero. That's not us.\" `copy backup\\shield-final.cfg.bak shield-final.cfg`.",
+      "objectives": [
+        { "id": "restored", "label": "shield-final.cfg matches the clean backup", "check": { "type": "same-content", "a": "C:\\Citadel\\shield-final.cfg", "b": "C:\\Citadel\\backup\\shield-final.cfg.bak" } }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Alert 5: Reject the forged order",
+      "body": "Astro: \"An unsigned order to surrender is not my order.\" Read both final orders, classify each `valid` or `forged`, and submit the id of the one to actually obey.",
+      "objectives": [
+        { "id": "read-1", "label": "Read final-order-1.txt", "check": { "type": "read", "file": "C:\\Citadel\\final-order-1.txt" } },
+        { "id": "read-2", "label": "Read final-order-2.txt", "check": { "type": "read", "file": "C:\\Citadel\\final-order-2.txt" } },
+        { "id": "class-1", "label": "final-order-1 classified forged", "check": { "type": "classified", "item": "final-order-1", "as": "forged" } },
+        { "id": "class-2", "label": "final-order-2 classified valid", "check": { "type": "classified", "item": "final-order-2", "as": "valid" } },
+        { "id": "obeyed", "label": "Submitted the order the crew actually obeys", "check": { "type": "flag", "value": "FINAL-ORDER-2" } }
+      ]
+    }
+  ]
+}

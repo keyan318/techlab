@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Teacher-authored course content: modules and the files (docx, pptx, pdf, ...) inside them.
+ * Faculty-authored course content: modules and the files (docx, pptx, pdf, ...) inside them.
  * Files live on the private local disk and are only served through download(), which
  * checks the requester belongs to the module's crew.
  */
@@ -20,23 +20,23 @@ class CourseModuleController extends Controller
 {
     private const MAX_KB = 51200; // 50 MB per file
 
-    private function ownCrew(): Crew
+    private function ownCrew(Crew $crew): Crew
     {
-        abort_unless(Auth::check() && (Auth::user()->role ?? 'student') === 'teacher', 403);
+        abort_unless(Auth::check() && (Auth::user()->role ?? 'student') === 'faculty' && $crew->teacher_id === Auth::id(), 403);
 
-        return Crew::where('teacher_id', Auth::id())->firstOrFail();
+        return $crew;
     }
 
     private function ownModule(CourseModule $module): CourseModule
     {
-        abort_unless($module->crew_id === $this->ownCrew()->id, 403);
+        $this->ownCrew($module->crew);
 
         return $module;
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, Crew $crew): RedirectResponse
     {
-        $crew = $this->ownCrew();
+        $this->ownCrew($crew);
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
@@ -44,7 +44,7 @@ class CourseModuleController extends Controller
 
         $module = $crew->modules()->create($data + ['position' => ($crew->modules()->max('position') ?? 0) + 1]);
 
-        return redirect(route('teacher.crew').'#module-'.$module->id);
+        return redirect(route('faculty.course', $crew).'#module-'.$module->id);
     }
 
     public function update(Request $request, CourseModule $module): RedirectResponse
@@ -54,16 +54,17 @@ class CourseModuleController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
         ]));
 
-        return redirect(route('teacher.crew').'#module-'.$module->id);
+        return redirect(route('faculty.course', $module->crew_id).'#module-'.$module->id);
     }
 
     public function destroy(CourseModule $module): RedirectResponse
     {
         $this->ownModule($module);
+        $crewId = $module->crew_id;
         Storage::disk('local')->deleteDirectory($this->dir($module));
         $module->delete();
 
-        return redirect(route('teacher.crew').'#modules');
+        return redirect(route('faculty.course', $crewId).'#modules');
     }
 
     public function storeMaterials(Request $request, CourseModule $module): RedirectResponse
@@ -88,7 +89,7 @@ class CourseModuleController extends Controller
             ]);
         }
 
-        return redirect(route('teacher.crew').'#module-'.$module->id);
+        return redirect(route('faculty.course', $module->crew_id).'#module-'.$module->id);
     }
 
     public function destroyMaterial(ModuleMaterial $material): RedirectResponse
@@ -97,14 +98,14 @@ class CourseModuleController extends Controller
         Storage::disk('local')->delete($material->path);
         $material->delete();
 
-        return redirect(route('teacher.crew').'#module-'.$module->id);
+        return redirect(route('faculty.course', $module->crew_id).'#module-'.$module->id);
     }
 
-    /** Teacher or a member of the module's crew may download. */
+    /** Faculty or a member of the module's crew may download. */
     public function download(ModuleMaterial $material): StreamedResponse
     {
         $user = Auth::user();
-        abort_unless($user && (int) $user->crew_id === (int) $material->module->crew_id, 403);
+        abort_unless($user && $user->belongsToCrew($material->module->crew_id), 403);
         abort_unless(Storage::disk('local')->exists($material->path), 404);
 
         return Storage::disk('local')->download($material->path, $material->name);

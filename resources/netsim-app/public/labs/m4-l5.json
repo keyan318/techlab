@@ -175,12 +175,12 @@
   ],
   "lab": {
     "id": "m4-l5",
-    "title": "Lesson 4.5 \u2014 Follow the Trail",
+    "title": "Lesson 4.5 — Follow the Trail",
     "blurb": "Nothing reaches Earth. Divide and conquer to find every break.",
     "steps": [
       {
         "title": "Find the breaks, one at a time",
-        "body": "Astro cannot reach Earth, and there are three routers in between. Do not guess: **divide and conquer**. Run `traceroute 172.16.0.10` on astro and see how far the packets get. Fix what stops them, then test again. Change one thing at a time, because one fault can hide another. Routers print their routes with `ip route` and take new ones with `ip route add <network> via <next hop>`.",
+        "body": "Astro cannot reach Earth, and there are three routers in between. Do not guess: **divide and conquer**. Run `tracert 172.16.0.10` on astro and see how far the packets get. Fix what stops them, then test again. Change one thing at a time, because one fault can hide another. Routers print their routes with `route print` and take new ones with `route add <network> mask <mask> <next hop>`.",
         "objectives": [
           {
             "id": "m4l5-ping",

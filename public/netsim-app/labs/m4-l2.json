@@ -125,12 +125,12 @@
   ],
   "lab": {
     "id": "m4-l2",
-    "title": "Lesson 4.2 \u2014 Physical Issues",
+    "title": "Lesson 4.2 — Physical Issues",
     "blurb": "Two links are dead. Find them without blaming the wrong console.",
     "steps": [
       {
         "title": "Scope the problem, then fix the bottom layer",
-        "body": "Astro and Volt both report that the file server is unreachable, and Astro cannot find Rivet either. Ask first: is it one device or many? Ping between astro and volt to see whether the two reporters can reach each other (they can). That points at the far devices, not at the reporters. Check the link state of `rivet` and `file-server` with `ip link` and repair what is down.",
+        "body": "Astro and Volt both report that the file server is unreachable, and Astro cannot find Rivet either. Ask first: is it one device or many? Ping between astro and volt to see whether the two reporters can reach each other (they can). That points at the far devices, not at the reporters. Check the link state of `rivet` and `file-server` with `netsh interface show interface` and repair what is down.",
         "objectives": [
           {
             "id": "m4l2-control",

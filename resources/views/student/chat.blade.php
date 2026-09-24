@@ -1,10 +1,10 @@
-@php $isTeacherChat = ($chatMode ?? 'student') === 'teacher'; @endphp
+@php $isFacultyChat = ($chatMode ?? 'student') === 'faculty'; @endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TechLab · {{ $isTeacherChat ? 'Astro for Captains' : 'Chat with Astro' }}</title>
+  <title>TechLab · {{ $isFacultyChat ? 'Astro for Captains' : 'Chat with Astro' }}</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -307,11 +307,13 @@
       });
 
       // Saved Studio outputs (shown under the cards in the Studio panel). Kept in
-      // localStorage per browser; every access is guarded so private mode still works.
+      // localStorage per browser AND per user, so accounts sharing a browser never
+      // see each other's outputs; every access is guarded so private mode still works.
       Alpine.store('studioOutputs', {
         items: [],
-        key: 'astro.studio.outputs.v1',
+        key: 'astro.studio.outputs.v1:u{{ auth()->id() }}',
         init() {
+          try { localStorage.removeItem('astro.studio.outputs.v1'); } catch (e) {}
           try { this.items = JSON.parse(localStorage.getItem(this.key) || '[]') || []; } catch (e) { this.items = []; }
           if (!Array.isArray(this.items)) this.items = [];
         },
@@ -674,16 +676,19 @@
         planet: null,       // catalog entry being browsed
         draft: [],          // keys ticked in the picker, "planet|module|lesson"
 
+        storageKey: 'techlab_planet_sources:u{{ auth()->id() }}',
+
         init() {
+          try { localStorage.removeItem('techlab_planet_sources'); } catch (e) {}
           try {
-            const saved = JSON.parse(localStorage.getItem('techlab_planet_sources') || '[]');
+            const saved = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
             if (Array.isArray(saved)) this.items = saved.filter(i => i && i.planet && i.module && i.lesson);
           } catch (e) {}
           @if($preselectSource)
           this.addByRef(@json($preselectSource));
           @endif
           Alpine.effect(() => {
-            try { localStorage.setItem('techlab_planet_sources', JSON.stringify(this.items)); } catch (e) {}
+            try { localStorage.setItem(this.storageKey, JSON.stringify(this.items)); } catch (e) {}
           });
         },
 
@@ -1333,7 +1338,7 @@
     @include('student.chat.partials.studio-panel')
 
     {{-- ── Overlays ──────────────────────────────────── --}}
-    @unless($isTeacherChat)
+    @unless($isFacultyChat)
     @include('student.chat.partials.planet-picker')
     @endunless
     @include('student.chat.partials.infographic-viewer')

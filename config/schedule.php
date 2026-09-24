@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // Fail-fast limits for the teacher schedule upload (seconds). NIM latency spikes, so never wait minutes.
+    // Fail-fast limits for the faculty member schedule upload (seconds). NIM latency spikes, so never wait minutes.
     'vision_timeout' => (int) env('SCHEDULE_VISION_TIMEOUT', 12),   // per request
     'text_timeout' => (int) env('SCHEDULE_TEXT_TIMEOUT', 20),       // per model in the failover chain
 

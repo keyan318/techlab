@@ -1,0 +1,50 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c3-l2",
+  "title": "Lesson 3.2: Cybercrime & the Law",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "20:14 · SUPPLY LOGS LOCKED · CITADEL CORE",
+    "vex": "Pay the toll or the supply logs stay scrambled forever. Your call, Captain. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED without paying a single credit. Astro: \"We never pay pirates. We back up, we restore, and we remember who did this — that's what the law is for.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nA pirate crew hired by Doom scrambled the supply logs and wants payment. Do not pay. First preserve the evidence exactly as it is (hash it), then restore from backup. Then decide the right moment to call Codexia's authorities.\n\n1. certutil -hashfile supply-logs.txt SHA256    (preserve evidence FIRST, before touching anything)\n2. copy backup\\supply-logs.txt.bak supply-logs.txt\n3. type law-notice.txt, then submit the correct answer\n",
+    "C:\\Citadel\\supply-logs.txt": "###SCRAMBLED### pay 500 credits to unlock these supply logs or lose them forever ###SCRAMBLED###\n",
+    "C:\\Citadel\\backup\\supply-logs.txt.bak": "SUPPLY LOGS (clean backup, taken before the attack)\nrations: 340 units\nfuel cells: 88 units\nspare parts: 55 units\n",
+    "C:\\Citadel\\law-notice.txt": "CODEXIA LAW NOTE (mirrors real-world cybercrime law, e.g. Philippine RA 10175)\n--------------------------------------------------------------------------------\nRansom attacks are a crime, not a negotiation. Report to Codexia's authorities:\nA) Immediately, even before you've restored anything, so the trail stays fresh.\nB) Only after you've paid, to prove the pirates broke their word.\nC) Only after you've secured the evidence and restored service, so you have something solid to report, and you are not still mid-crisis.\nD) Never; the crew should handle it alone.\n\nsubmit the letter of the correct answer, e.g. submit A\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": ["C"],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Preserve the evidence first",
+      "body": "Volt: \"Before we touch anything, we prove what it looked like right now.\" Fingerprint the scrambled file before restoring it: `certutil -hashfile supply-logs.txt SHA256`. Do this before the restore, not after — order matters for evidence.",
+      "objectives": [
+        { "id": "order", "label": "Evidence was hashed before the restore", "check": { "type": "ordered", "before": "^(certutil|hash)", "after": "^copy" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Restore from backup",
+      "body": "Rivet: \"We never pay pirates. We restore.\" Copy the clean backup over the scrambled file: `copy backup\\supply-logs.txt.bak supply-logs.txt`.",
+      "objectives": [
+        { "id": "restored", "label": "supply-logs.txt matches the clean backup", "check": { "type": "same-content", "a": "C:\\Citadel\\supply-logs.txt", "b": "C:\\Citadel\\backup\\supply-logs.txt.bak" } }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Choose the right moment to report",
+      "body": "Astro: \"Ransom is a crime, not a negotiation.\" Read `law-notice.txt` and submit the letter of the right moment to call Codexia's authorities.",
+      "objectives": [
+        { "id": "read-law", "label": "Read law-notice.txt", "check": { "type": "read", "file": "C:\\Citadel\\law-notice.txt" } },
+        { "id": "answer", "label": "Chose the right moment to report", "check": { "type": "flag", "value": "C" } }
+      ]
+    }
+  ]
+}

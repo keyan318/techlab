@@ -37,12 +37,14 @@ export interface FilterRule {
   handle: number;
   match: RuleMatch;
   verdict: Verdict;
+  comment?: string; // rule name (Windows Firewall rules are managed by name)
 }
 
 export interface NatRule {
   handle: number;
   match: RuleMatch;
   action: NatAction;
+  comment?: string;
 }
 
 export interface FilterChain {
@@ -179,16 +181,18 @@ export class FirewallModel {
     return null;
   }
 
-  addFilterRule(hook: FilterHook, match: RuleMatch, verdict: Verdict, atHead = false): number {
+  addFilterRule(hook: FilterHook, match: RuleMatch, verdict: Verdict, atHead = false, comment?: string): number {
     const rule: FilterRule = { handle: ++this.handleSeq, match, verdict };
+    if (comment) rule.comment = comment;
     const rules = this.filter[hook].rules;
     if (atHead) rules.unshift(rule);
     else rules.push(rule);
     return rule.handle;
   }
 
-  addNatRule(hook: NatHook, match: RuleMatch, action: NatAction, atHead = false): number {
+  addNatRule(hook: NatHook, match: RuleMatch, action: NatAction, atHead = false, comment?: string): number {
     const rule: NatRule = { handle: ++this.handleSeq, match, action };
+    if (comment) rule.comment = comment;
     const rules = this.nat[hook].rules;
     if (atHead) rules.unshift(rule);
     else rules.push(rule);
@@ -259,9 +263,11 @@ interface MatchJSON {
 interface FilterRuleJSON {
   match: MatchJSON;
   verdict: Verdict;
+  comment?: string;
 }
 
 interface NatRuleJSON {
+  comment?: string;
   match: MatchJSON;
   action: { type: 'masquerade' } | { type: 'snat'; addr: string } | { type: 'dnat'; addr: string; port?: number };
 }
@@ -315,7 +321,11 @@ export function firewallToJSON(fw: FirewallModel): FirewallJSON | null {
     j.filter[hook] = {
       name: c.name,
       policy: c.policy,
-      rules: c.rules.map((r) => ({ match: matchToJSON(r.match), verdict: r.verdict })),
+      rules: c.rules.map((r) => ({
+        match: matchToJSON(r.match),
+        verdict: r.verdict,
+        ...(r.comment ? { comment: r.comment } : {}),
+      })),
     };
   }
   for (const hook of Object.keys(fw.nat) as NatHook[]) {
@@ -324,6 +334,7 @@ export function firewallToJSON(fw: FirewallModel): FirewallJSON | null {
     j.nat[hook] = {
       name: c.name,
       rules: c.rules.map((r) => ({
+        ...(r.comment ? { comment: r.comment } : {}),
         match: matchToJSON(r.match),
         action:
           r.action.type === 'masquerade'
@@ -344,7 +355,7 @@ export function firewallFromJSON(fw: FirewallModel, j: FirewallJSON): void {
     const c = j.filter[hook];
     if (!c) continue;
     fw.declareFilter(hook, c.name, c.policy);
-    for (const r of c.rules) fw.addFilterRule(hook, matchFromJSON(r.match), r.verdict);
+    for (const r of c.rules) fw.addFilterRule(hook, matchFromJSON(r.match), r.verdict, false, r.comment);
   }
   for (const hook of Object.keys(j.nat ?? {}) as NatHook[]) {
     const c = j.nat[hook];
@@ -358,7 +369,7 @@ export function firewallFromJSON(fw: FirewallModel, j: FirewallJSON): void {
           : a.type === 'snat'
             ? { type: 'snat', addr: parseIp(a.addr) ?? 0 }
             : { type: 'dnat', addr: parseIp(a.addr) ?? 0, port: a.port };
-      fw.addNatRule(hook, matchFromJSON(r.match), action);
+      fw.addNatRule(hook, matchFromJSON(r.match), action, false, r.comment);
     }
   }
 }

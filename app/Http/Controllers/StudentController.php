@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CourseJoinRequest;
 use App\Models\Crew;
 use App\Models\CrewQuizAttempt;
 use App\Services\StudentDashboardService;
@@ -15,7 +16,7 @@ class StudentController extends Controller
 {
     /**
      * Student dashboard — overall learning progress across every planet, the
-     * crew XP leaderboard and activity charts. A teacher who lands here is
+     * crew XP leaderboard and activity charts. A faculty member who lands here is
      * bounced to their own dashboard.
      */
     public function dashboard(): View|RedirectResponse
@@ -23,11 +24,27 @@ class StudentController extends Controller
         if (! Auth::check()) {
             return redirect(route('login'));
         }
-        if ((Auth::user()->role ?? 'student') === 'teacher') {
-            return redirect(route('teacher.dashboard'));
+        if ((Auth::user()->role ?? 'student') === 'faculty') {
+            return redirect(route('faculty.dashboard'));
         }
 
-        return view('student.dashboard', StudentDashboardService::build(Auth::user()));
+        return view('student.dashboard', StudentDashboardService::home(Auth::user()));
+    }
+
+    /**
+     * The full stats view: XP, lessons and modules done, weekly activity, performance,
+     * every planet and the crew leaderboard. The dashboard links here.
+     */
+    public function progress(): View|RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect(route('login'));
+        }
+        if ((Auth::user()->role ?? 'student') === 'faculty') {
+            return redirect(route('faculty.dashboard'));
+        }
+
+        return view('student.progress', StudentDashboardService::build(Auth::user()));
     }
 
     /**
@@ -38,8 +55,8 @@ class StudentController extends Controller
         if (! Auth::check()) {
             return redirect(route('login'));
         }
-        if ((Auth::user()->role ?? 'student') === 'teacher') {
-            return redirect(route('teacher.dashboard'));
+        if ((Auth::user()->role ?? 'student') === 'faculty') {
+            return redirect(route('faculty.dashboard'));
         }
 
         $nodes = [
@@ -74,7 +91,9 @@ class StudentController extends Controller
             ],
         ];
 
-        return view('student.studentOnboarding', compact('nodes', 'student'));
+        $programmingPercent = StudentDashboardService::planets(Auth::user())['programming']['percent'] ?? 0;
+
+        return view('student.studentOnboarding', compact('nodes', 'student', 'programmingPercent'));
     }
 
     /**
@@ -92,7 +111,7 @@ class StudentController extends Controller
 
         $crew = Auth::user()->crew_id ? Crew::find(Auth::user()->crew_id) : null;
 
-        // Modules, materials and quizzes are real (teacher-authored); grades are computed from
+        // Modules, materials and quizzes are real (faculty-authored); grades are computed from
         // the student's own quiz attempts. There are no lab/exam models yet, so none are shown.
         $modules = $crew
             ? $crew->modules()->with('materials')->get()->values()->map(fn ($m, $i) => [
@@ -176,6 +195,18 @@ class StudentController extends Controller
                 : back()->withInput()->withErrors(['code' => $message]);
         }
 
+        // A course's code only works for a student its faculty member has accepted,
+        // so a code shared around a group chat lets nobody else in.
+        $user = Auth::user();
+        if ($crew->course_slug && ($user->role ?? 'student') === 'student' && ! $user->belongsToCrew($crew->id)
+            && ! $crew->joinRequests()->where('user_id', $user->id)->where('status', CourseJoinRequest::ACCEPTED)->exists()) {
+            $message = "Ask to join {$crew->name} first. Your code works once ".($crew->faculty?->name ?? 'the faculty member').' accepts you.';
+
+            return $request->expectsJson()
+                ? response()->json(['message' => $message], 422)
+                : back()->withInput()->withErrors(['code' => $message]);
+        }
+
         Auth::user()->update(['crew_id' => $crew->id]);
         if (! $crew->roster()->where('user_id', Auth::id())->exists()) {
             $crew->roster()->attach(Auth::id(), ['role' => 'student']);
@@ -192,7 +223,7 @@ class StudentController extends Controller
      * This is the post-login destination. The actual AI conversation, persistent
      * chat history, and crew functionality are not built yet; the page renders a
      * ChatGPT-style shell with placeholder history so the UI/navigation is ready.
-     * Students who land here are bounced to the teacher dashboard if misrouted.
+     * Students who land here are bounced to the faculty member dashboard if misrouted.
      */
     public function chat(): View|RedirectResponse
     {
@@ -200,8 +231,8 @@ class StudentController extends Controller
             return redirect(route('login'));
         }
 
-        if ((Auth::user()->role ?? 'student') === 'teacher') {
-            return redirect(route('teacher.dashboard'));
+        if ((Auth::user()->role ?? 'student') === 'faculty') {
+            return redirect(route('faculty.dashboard'));
         }
 
         // PLACEHOLDER chat history. Replace with a real query (e.g. auth()->user()

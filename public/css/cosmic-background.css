@@ -1,0 +1,100 @@
+/*
+ * Cosmic background for the public front doors (landing, faculty page, sign in / sign up).
+ * Three layers of stars drift upward at different speeds (parallax), plus a small far-away planet and
+ * the odd shooting star. Pure CSS animation; resources/views/components/cosmic-background.blade.php
+ * scatters the stars and launches the shooting stars. Everything sits behind the page (fixed, z-index 0, no pointer events).
+ */
+:root { --animation-iteration: infinite; }
+
+.cosmic {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% -10%, #241456 0%, rgba(36,20,86,0) 55%),
+    radial-gradient(100% 80% at 85% 110%, #1a0f4d 0%, rgba(26,15,77,0) 60%),
+    linear-gradient(160deg, #0a0826 0%, #120a33 45%, #1e1259 100%);
+}
+
+/* Star layers: a 1/2/3px dot whose box-shadow is the whole star field. ::after is the same field
+   one screen lower, so the loop has no gap. --stars is filled in by the component's script. */
+.cosmic-stars, .cosmic-stars-medium, .cosmic-stars-large { position: absolute; top: 0; left: 0; background: transparent; will-change: transform; }
+.cosmic-stars::after, .cosmic-stars-medium::after, .cosmic-stars-large::after { content: ""; position: absolute; top: 2000px; left: 0; background: transparent; width: inherit; height: inherit; box-shadow: var(--stars); }
+.cosmic-stars        { width: 1px; height: 1px; box-shadow: var(--stars); animation: cosmicStar 90s linear var(--animation-iteration); }
+.cosmic-stars-medium { width: 2px; height: 2px; box-shadow: var(--stars); animation: cosmicStar 140s linear var(--animation-iteration); }
+.cosmic-stars-large  { width: 3px; height: 3px; box-shadow: var(--stars); animation: cosmicStar 200s linear var(--animation-iteration); border-radius: 50%; }
+.cosmic-stars-large::after { border-radius: 50%; }
+@keyframes cosmicStar { from { transform: translateY(0); } to { transform: translateY(-2000px); } }
+
+/* The planet: a pixel-art canvas globe (surface, lighting and ring are drawn by the component's script).
+   The button is just the planet's disc, so only clicking the planet counts, not its ring or the empty sky around it.
+   It lives outside .cosmic so it sits above the page and can be clicked. */
+.cosmic-planet {
+  position: fixed; z-index: 2; top: 15%; right: 6%; width: clamp(64px, 8vw, 116px); aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%;
+  background: none; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent;
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1);
+}
+.cosmic-planet:hover { transform: scale(1.05); }
+.cosmic-planet:active { transform: scale(.94); transition-duration: .1s; }   /* answers the moment you press */
+.cosmic-planet-float { display: block; position: relative; width: 100%; height: 100%; animation: cosmicFloat 14s ease-in-out infinite; }
+.cosmic-planet canvas { image-rendering: pixelated; image-rendering: crisp-edges; position: absolute; left: 50%; top: 50%; width: 200%; height: 200%; transform: translate(-50%, -50%); pointer-events: none; }
+@keyframes cosmicFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+/* Click pulse: a ring that swells off the planet and fades */
+.cosmic-pulse { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(214,196,255,.85); transform: translate(-50%, -50%); pointer-events: none; animation: cosmicPulse .95s cubic-bezier(.16, 1, .3, 1) forwards; }
+@keyframes cosmicPulse { to { transform: translate(-50%, -50%) scale(2.8); opacity: 0; border-width: 1px; } }
+@media (max-width: 640px) { .cosmic-planet { display: none; } }   /* too little room on phones */
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-stars, .cosmic-stars-medium, .cosmic-stars-large, .cosmic-planet-float { animation: none; }
+  .cosmic-pulse { display: none; }
+}
+
+/*
+ * Brand mark (<x-brand />): a big logo with a small animated wordmark, sitting straight on the space
+ * (no header bar). Motion rules: critically damped (no overshoot), feedback on press, and hover/press
+ * are plain transitions so they can be interrupted and reversed from wherever they are.
+ */
+.tl-brand { --tl-ease: cubic-bezier(.16, 1, .3, 1); display: inline-flex; align-items: center; gap: 14px; color: var(--ink, #eaeeff); -webkit-tap-highlight-color: transparent; }
+.tl-logo {
+  width: 56px; height: 56px; border-radius: 14px; flex: none; transform-origin: 50% 60%;
+  filter: drop-shadow(0 6px 18px rgba(47,125,225,.5));
+  animation: tlLogoIn .8s var(--tl-ease) backwards;
+  transition: transform .35s var(--tl-ease);
+}
+.tl-word { display: inline-flex; font-family: var(--display, 'Space Grotesk', system-ui, sans-serif); font-weight: 600; font-size: 17px; line-height: 1; letter-spacing: .03em; }
+.tl-word span { display: inline-block; animation: tlLetterIn .75s var(--tl-ease) backwards; animation-delay: calc(220ms + var(--i) * 45ms); transition: transform .35s var(--tl-ease); transition-delay: calc(var(--i) * 18ms); }
+.tl-badge { font-family: var(--text, 'Inter', system-ui, sans-serif); font-weight: 600; font-size: 12px; letter-spacing: 0; color: #7db4ff; background: rgba(47,125,225,.22); padding: 3px 9px; border-radius: 999px; animation: tlLetterIn .75s var(--tl-ease) 520ms backwards; }
+
+/* Hover: the logo leans in and the letters lift one after another. Press: it answers immediately. */
+.tl-brand:hover .tl-logo { transform: scale(1.07) rotate(-5deg); }
+.tl-brand:hover .tl-word span { transform: translateY(-2px); }
+.tl-brand:active .tl-logo { transform: scale(.94); transition-duration: .1s; }
+.tl-brand:active .tl-word span { transform: translateY(0); transition-duration: .1s; transition-delay: 0s; }
+
+@keyframes tlLogoIn { from { opacity: 0; transform: scale(.7) rotate(-12deg); filter: blur(6px) drop-shadow(0 6px 18px rgba(47,125,225,0)); } }
+@keyframes tlLetterIn { from { opacity: 0; transform: translateY(.7em); filter: blur(6px); } }
+
+@media (max-width: 640px) { .tl-logo { width: 44px; height: 44px; border-radius: 11px; } .tl-word { font-size: 16px; } }
+
+/* Reduced motion: a short fade only, no movement */
+@media (prefers-reduced-motion: reduce) {
+  .tl-logo, .tl-word span, .tl-badge { animation: tlFade .3s ease backwards; animation-delay: 0s; transition: none; }
+  .tl-brand:hover .tl-logo, .tl-brand:hover .tl-word span, .tl-brand:active .tl-logo { transform: none; }
+}
+@keyframes tlFade { from { opacity: 0; } }
+
+/* Shooting star: one short bright streak, made by the component's script every so often (never more than one at a time). */
+.cosmic-shoot {
+  position: absolute; left: 0; top: 0; width: 150px; height: 2px; border-radius: 2px; opacity: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(190,220,255,.7) 70%, #fff);
+  filter: drop-shadow(0 0 6px rgba(160,210,255,.9));
+  will-change: transform, opacity;
+  animation: cosmicShoot var(--dur, 1s) cubic-bezier(.35,.05,.75,.6) forwards;
+}
+.cosmic-shoot::after { content: ""; position: absolute; right: -2px; top: -2px; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px rgba(190,225,255,.9); }
+@keyframes cosmicShoot {
+  0%   { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--a)); }
+  10%  { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy))) rotate(var(--a)); }
+}
+@media (prefers-reduced-motion: reduce) { .cosmic-shoot { display: none; } }

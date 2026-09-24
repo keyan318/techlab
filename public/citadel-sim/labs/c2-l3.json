@@ -1,0 +1,42 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c2-l3",
+  "title": "Lesson 2.3: Cybersecurity Standards",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "09:15 · DEFENSE AUDIT · CITADEL CORE",
+    "vex": "Improvised walls fall to a patient enemy. Show me your rulebook, Captain — oh, you don't have one. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every gap is mapped and closed. Astro: \"Guesses don't scale. A framework does. Now we can prove it, not just hope it.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nAstro wants proof our defenses follow a real rulebook, not guesses. Read nist-mapping.txt, then map each Citadel defense to its NIST CSF function: Identify, Protect, Detect, Respond or Recover.\n",
+    "C:\\Citadel\\nist-mapping.txt": "NIST Cybersecurity Framework — the five functions\n---------------------------------------------------\nIdentify  — know your assets and risks (the inventory from Lesson 1.1)\nProtect   — lock things down before an attack (passwords, icacls, the AUP)\nDetect    — notice an attack while it's happening (Volt's sensors, the logs)\nRespond   — act once you've detected something (disabling accounts, killing processes)\nRecover   — get back to normal after (restoring from backup)\n\nCitadel defenses to map:\nasset-inventory   -> the crew's list of what to protect\nrelay-password    -> the strong password policy on the relay console\nvolt-sensors      -> the alarm that first caught the 02:47 intrusion\nincident-response -> disabling svc_update and closing its port\nbackup-restore     -> currently MISSING — we have no Detect step for it yet\n"
+  },
+  "classify": {
+    "asset-inventory": "asset-inventory",
+    "relay-password": "relay-password",
+    "volt-sensors": "volt-sensors",
+    "incident-response": "incident-response",
+    "backup-restore": "backup-restore"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Map five defenses to five functions",
+      "body": "Astro: \"Guesses don't scale. A framework does.\" Read `nist-mapping.txt`, then classify each defense to its function: `classify asset-inventory identify`, `classify relay-password protect`, and so on. The note flags `backup-restore` as missing a Detect step — fix that one by giving it the function it's actually missing, `detect`.",
+      "objectives": [
+        { "id": "read", "label": "Read nist-mapping.txt", "check": { "type": "read", "file": "C:\\Citadel\\nist-mapping.txt" } },
+        { "id": "m1", "label": "asset-inventory mapped to Identify", "check": { "type": "classified", "item": "asset-inventory", "as": "identify" } },
+        { "id": "m2", "label": "relay-password mapped to Protect", "check": { "type": "classified", "item": "relay-password", "as": "protect" } },
+        { "id": "m3", "label": "volt-sensors mapped to Detect", "check": { "type": "classified", "item": "volt-sensors", "as": "detect" } },
+        { "id": "m4", "label": "incident-response mapped to Respond", "check": { "type": "classified", "item": "incident-response", "as": "respond" } },
+        { "id": "m5", "label": "backup-restore given its missing Detect coverage", "check": { "type": "classified", "item": "backup-restore", "as": "detect" } }
+      ]
+    }
+  ]
+}

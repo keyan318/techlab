@@ -188,12 +188,12 @@
   ],
   "lab": {
     "id": "m4-l6",
-    "title": "Lesson 4.6 \u2014 Final Mission: Call Earth",
+    "title": "Lesson 4.6 — Final Mission: Call Earth",
     "blurb": "Six faults across four layers stand between the crew and home.",
     "steps": [
       {
         "title": "1. Physical: the bottom of the stack",
-        "body": "Start at Layer 1. Something on the comms deck has no link. Use `ip link` on the devices and ping from `ship-server` to find it, and bring it up.",
+        "body": "Start at Layer 1. Something on the comms deck has no link. Use `netsh interface show interface` on the devices and ping from `ship-server` to find it, and bring it up.",
         "objectives": [
           {
             "id": "m4l6-rivet",
@@ -209,7 +209,7 @@
       },
       {
         "title": "2. Addressing: DHCP for the crew",
-        "body": "Astro and volt use DHCP. Run `dhclient` on both and see who is left out. Then look at everything the crew needs from a lease: an address, a way out (router) and a name server (dns). Fix the DHCP server in the Inspector, then renew both consoles with `dhclient`. The router is `192.168.20.1` and the name server is `192.168.20.2`.",
+        "body": "Astro and volt use DHCP. Run `ipconfig /renew` on both and see who is left out. Then look at everything the crew needs from a lease: an address, a way out (router) and a name server (dns). Fix the DHCP server in the Inspector, then renew both consoles with `ipconfig /renew`. The router is `192.168.20.1` and the name server is `192.168.20.2`.",
         "objectives": [
           {
             "id": "m4l6-astro",
@@ -253,7 +253,7 @@
       },
       {
         "title": "3. Routing: reach Earth by number",
-        "body": "Try `ping 203.0.113.10` from astro. If it fails, remember: traffic needs a route there and a route back. Check every hop with `ip route` and `traceroute`.",
+        "body": "Try `ping 203.0.113.10` from astro. If it fails, remember: traffic needs a route there and a route back. Check every hop with `route print` and `tracert`.",
         "objectives": [
           {
             "id": "m4l6-earth-a",
@@ -279,7 +279,7 @@
       },
       {
         "title": "4. Services: send the distress call",
-        "body": "Now by name. Earth's relay is `earth.relay`. `dig earth.relay` on astro shows whether the ship's name server knows it. Teach it, then open `http://earth.relay/` from astro and read Earth's reply.",
+        "body": "Now by name. Earth's relay is `earth.relay`. `nslookup earth.relay` on astro shows whether the ship's name server knows it. Teach it, then open `http://earth.relay/` from astro and read Earth's reply.",
         "objectives": [
           {
             "id": "m4l6-dns",

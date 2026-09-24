@@ -71,7 +71,7 @@
   ],
   "lab": {
     "id": "m2-l2",
-    "title": "Lesson 2.2 \u2014 Standard Ports",
+    "title": "Lesson 2.2 — Standard Ports",
     "blurb": "Open the standard ports and keep the insecure one closed.",
     "steps": [
       {

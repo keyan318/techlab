@@ -1,7 +1,8 @@
-import type { DragEvent } from 'react';
+import { useState, type DragEvent } from 'react';
 import { useStore } from '../store';
 import type { DeviceKind } from '../engine/device';
 import { DeviceIcon } from './DeviceNode';
+import { LabPanel } from './LabPanel';
 
 const ITEMS: { kind: DeviceKind; label: string; blurb: string }[] = [
   { kind: 'host', label: 'Host', blurb: 'Linux workstation' },
@@ -12,7 +13,7 @@ const ITEMS: { kind: DeviceKind; label: string; blurb: string }[] = [
   { kind: 'ap', label: 'Wi-Fi AP', blurb: 'wireless bridge (SSID)' },
 ];
 
-export function Palette() {
+function DeviceList() {
   const addDeviceAt = useStore((s) => s.addDeviceAt);
   const nodeCount = useStore((s) => s.nodes.length);
 
@@ -22,8 +23,7 @@ export function Palette() {
   };
 
   return (
-    <aside className="palette">
-      <div className="palette-title">Devices</div>
+    <>
       {ITEMS.map((it) => (
         <button
           key={it.kind}
@@ -46,6 +46,48 @@ export function Palette() {
         Drag between the dots on two devices to cable them. Double-click a host or router for its
         terminal.
       </div>
+    </>
+  );
+}
+
+export function Palette() {
+  const lab = useStore((s) => s.lab);
+  const results = useStore((s) => s.labResults);
+  const [tab, setTab] = useState<'mission' | 'devices'>('mission');
+
+  if (!lab) {
+    return (
+      <aside className="palette">
+        <div className="palette-title">Devices</div>
+        <DeviceList />
+      </aside>
+    );
+  }
+
+  // TechLab: in a lab the steps live here, in a tab beside the devices, so they never cover the map.
+  const objectives = lab.steps.flatMap((s) => s.objectives);
+  const passed = objectives.filter((o) => results[o.id]?.pass).length;
+
+  return (
+    <aside className="palette with-lab">
+      <div className="side-tabs">
+        <button className={`side-tab${tab === 'mission' ? ' active' : ''}`} onClick={() => setTab('mission')}>
+          Mission{' '}
+          <span className="side-tab-count">
+            {passed}/{objectives.length}
+          </span>
+        </button>
+        <button className={`side-tab${tab === 'devices' ? ' active' : ''}`} onClick={() => setTab('devices')}>
+          Devices
+        </button>
+      </div>
+      {tab === 'mission' ? (
+        <LabPanel />
+      ) : (
+        <div className="side-devices">
+          <DeviceList />
+        </div>
+      )}
     </aside>
   );
 }

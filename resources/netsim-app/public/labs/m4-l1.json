@@ -125,7 +125,7 @@
   ],
   "lab": {
     "id": "m4-l1",
-    "title": "Lesson 4.1 \u2014 Network Management",
+    "title": "Lesson 4.1 — Network Management",
     "blurb": "Find what is down, then make the configuration match the address plan.",
     "steps": [
       {
@@ -166,7 +166,7 @@
       },
       {
         "title": "Configuration: match the address plan",
-        "body": "The ship's **address plan** says: servers use `.2` to `.9`, printers use `.10` to `.19`, and DHCP hands out `.100` to `.150`. The printer sits at `.150`, inside the DHCP pool, which risks a conflict. Bring it into line: give the printer `192.168.1.10/24` (delete the old address first with `ip addr del`), then confirm astro can still reach it.",
+        "body": "The ship's **address plan** says: servers use `.2` to `.9`, printers use `.10` to `.19`, and DHCP hands out `.100` to `.150`. The printer sits at `.150`, inside the DHCP pool, which risks a conflict. Bring it into line: give the printer `192.168.1.10/24` (`netsh interface ip set address \"Ethernet\" static 192.168.1.10 255.255.255.0` replaces the old one), then confirm astro can still reach it.",
         "objectives": [
           {
             "id": "m4l1-plan",

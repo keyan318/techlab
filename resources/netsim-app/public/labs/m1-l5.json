@@ -80,7 +80,7 @@
   ],
   "lab": {
     "id": "m1-l5",
-    "title": "Lesson 1.5 \u2014 Servers & Virtualization",
+    "title": "Lesson 1.5 — Servers & Virtualization",
     "blurb": "One ship server, two jobs: a web page and a name service.",
     "steps": [
       {

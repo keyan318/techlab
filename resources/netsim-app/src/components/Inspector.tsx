@@ -7,6 +7,12 @@ import { cidrToString, ipToString } from '../engine/ip';
 import { formatNeigh, formatRoutes } from '../commands/ip-cmd';
 import { formatConntrack } from '../commands/shell';
 import { listRuleset } from '../engine/firewall-fmt';
+import { shellOs } from '../os';
+import { panelArp, panelFirewall, panelRoutes } from '../commands/windows/panel';
+import { formatGetNetTcp } from '../commands/windows/tools';
+import { adapterNameOf } from '../commands/windows/util';
+
+const WIN = () => shellOs() === 'windows';
 
 // A small controlled input that commits on blur/Enter and reverts on error.
 function CommitInput({
@@ -95,7 +101,7 @@ function DhcpPanel({ device }: { device: IpDevice }) {
               {[...cfg.leases.entries()].map(([mac, ip]) => `${ipToString(ip)}  ${mac}\n`).join('')}
             </pre>
           )}
-          <span className="hint">Clients run `dhclient` to get a lease.</span>
+          <span className="hint">Clients run {WIN() ? '`ipconfig /renew`' : '`dhclient`'} to get a lease.</span>
         </>
       )}
     </details>
@@ -240,12 +246,16 @@ function IfaceRow({ deviceId, ifaceName }: { deviceId: string; ifaceName: string
       <button
         className={`iface-state ${iface.up ? 'up' : 'down'}`}
         onClick={() => toggleIface(deviceId, ifaceName)}
-        title={`ip link set ${ifaceName} ${iface.up ? 'down' : 'up'}`}
+        title={
+          WIN()
+            ? `netsh interface set interface "${adapterNameOf(device as IpDevice, ifaceName)}" admin=${iface.up ? 'disabled' : 'enabled'}`
+            : `ip link set ${ifaceName} ${iface.up ? 'down' : 'up'}`
+        }
       >
         {iface.up ? 'UP' : 'DOWN'}
       </button>
       <div className="iface-name">
-        {ifaceName}
+        {WIN() ? adapterNameOf(device as IpDevice, ifaceName) : ifaceName}
         <span className="iface-mac">{iface.mac}</span>
         {iface.link ? null : <span className="iface-unplugged">unplugged</span>}
       </div>
@@ -296,7 +306,7 @@ export function Inspector() {
       {ipd && (
         <div className="inspector-forwarding">
           IP forwarding: <strong>{ipd.forwarding ? 'on' : 'off'}</strong>
-          <span className="hint"> (sysctl net.ipv4.ip_forward)</span>
+          <span className="hint">{WIN() ? ' (netsh interface ipv4 set interface … forwarding=enabled)' : ' (sysctl net.ipv4.ip_forward)'}</span>
         </div>
       )}
 
@@ -339,9 +349,9 @@ export function Inspector() {
       {ipd && (
         <section>
           <h3>Routing table</h3>
-          <pre className="table-pre">{formatRoutes(ipd) || '(empty)\n'}</pre>
+          <pre className="table-pre">{(WIN() ? panelRoutes(ipd) : formatRoutes(ipd)) || '(empty)\n'}</pre>
           <h3>Neighbours (ARP)</h3>
-          <pre className="table-pre">{formatNeigh(ipd) || '(empty)\n'}</pre>
+          <pre className="table-pre">{(WIN() ? panelArp(ipd) : formatNeigh(ipd)) || '(empty)\n'}</pre>
         </section>
       )}
 
@@ -353,7 +363,7 @@ export function Inspector() {
             <CommitInput
               key={ipd.id + (ipd.nameserver ?? 'ns')}
               value={ipd.nameserver !== null ? ipToString(ipd.nameserver) : ''}
-              placeholder="none (set by dhclient)"
+              placeholder={WIN() ? 'none (set by ipconfig /renew)' : 'none (set by dhclient)'}
               onCommit={(t) => useStore.getState().setNameserver(ipd.id, t)}
             />
           </div>
@@ -369,23 +379,25 @@ export function Inspector() {
           <h3 style={{ marginTop: 10 }}>Extra open ports</h3>
           <ServicesRow key={ipd.id + 'tcp'} deviceId={ipd.id} proto="tcp" />
           <ServicesRow key={ipd.id + 'udp'} deviceId={ipd.id} proto="udp" />
-          <span className="hint">Open ports answer TCP connects / accept UDP; test them with nc.</span>
+          <span className="hint">Open ports answer TCP connects / accept UDP; test them with {WIN() ? 'Test-NetConnection <host> -Port <port>' : 'nc'}.</span>
         </section>
       )}
 
       {ipd && (
         <section>
           <h3>
-            Firewall (nftables)
-            <button className="mini-btn" onClick={() => useStore.getState().copyDeviceConfig(ipd.id)}>
-              copy config
-            </button>
+            {WIN() ? 'Windows Defender Firewall' : 'Firewall (nftables)'}
+            {!WIN() && (
+              <button className="mini-btn" onClick={() => useStore.getState().copyDeviceConfig(ipd.id)}>
+                copy config
+              </button>
+            )}
           </h3>
-          <pre className="table-pre">{listRuleset(ipd.fw)}</pre>
+          <pre className="table-pre">{WIN() ? panelFirewall(ipd) : listRuleset(ipd.fw)}</pre>
           {ipd.fw.active() && (
             <>
               <h3>Conntrack</h3>
-              <pre className="table-pre">{formatConntrack(ipd)}</pre>
+              <pre className="table-pre">{WIN() ? formatGetNetTcp(ipd) : formatConntrack(ipd)}</pre>
             </>
           )}
           {ipd.fwLog.length > 0 && (
@@ -441,7 +453,7 @@ export function Inspector() {
       {ipd && (
         <section className="inspector-arp-note">
           <span className="hint">
-            Addresses set here run the same code as <code>ip address add</code> in the terminal.
+            Addresses set here run the same code as <code>{WIN() ? 'netsh interface ip set address' : 'ip address add'}</code> in the terminal.
           </span>
         </section>
       )}

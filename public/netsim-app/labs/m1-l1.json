@@ -59,12 +59,12 @@
   ],
   "lab": {
     "id": "m1-l1",
-    "title": "Lesson 1.1 \u2014 First Contact",
+    "title": "Lesson 1.1 — First Contact",
     "blurb": "Connect Astro's console to Rivet's workbench so the crew can talk.",
     "steps": [
       {
         "title": "Give each console an address",
-        "body": "Astro's console and Rivet's workbench are both cabled to the ship's relay switch, but neither has an address yet, so neither can be found. Double-click each device to open its terminal and give each one an address from 192.168.1.0/24, for example `ip addr add 192.168.1.10/24 dev eth0` on astro and `ip addr add 192.168.1.20/24 dev eth0` on rivet. Check your work with `ip addr`.",
+        "body": "Astro's console and Rivet's workbench are both cabled to the ship's relay switch, but neither has an address yet, so neither can be found. Double-click each device to open its Command Prompt and give each one an address from 192.168.1.0/24, for example `netsh interface ip set address \"Ethernet\" static 192.168.1.10 255.255.255.0` on astro and `netsh interface ip set address \"Ethernet\" static 192.168.1.20 255.255.255.0` on rivet. Check your work with `ipconfig`.",
         "objectives": [
           {
             "id": "m1l1-astro-ip",
@@ -90,7 +90,7 @@
       },
       {
         "title": "Say hello",
-        "body": "From astro, run `ping -c 3 192.168.1.20` (use the address you gave rivet, and type the address only, without the `/24`). Success means Rivet's workbench answers Astro's console. Then press Check objectives.",
+        "body": "From astro, run `ping -n 3 192.168.1.20` (use the address you gave rivet, and type the address only, without the `/24`). Success means Rivet's workbench answers Astro's console. Then press Check objectives.",
         "objectives": [
           {
             "id": "m1l1-ping-ar",

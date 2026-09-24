@@ -123,12 +123,12 @@
   ],
   "lab": {
     "id": "m3-l4",
-    "title": "Lesson 3.4 \u2014 DHCP Server Settings",
+    "title": "Lesson 3.4 — DHCP Server Settings",
     "blurb": "A pool that is too small, and options nobody was told about.",
     "steps": [
       {
         "title": "The pool is too small",
-        "body": "The server's pool holds only two addresses, `192.168.1.100` to `.101`, and three consoles want one. Run `dhclient` on astro, rivet and volt and see who is left out (it prints `No DHCPOFFERS received`). Click ship-server, open **DHCP server**, change the range end to `192.168.1.150`, and run `dhclient` again on the console that failed.",
+        "body": "The server's pool holds only two addresses, `192.168.1.100` to `.101`, and three consoles want one. Run `ipconfig /renew` on astro, rivet and volt and see who is left out (it prints `unable to contact your DHCP server`). Click ship-server, open **DHCP server**, change the range end to `192.168.1.150`, and run `ipconfig /renew` again on the console that failed.",
         "objectives": [
           {
             "id": "m3l4-astro",
@@ -164,7 +164,7 @@
       },
       {
         "title": "Hand out the options",
-        "body": "An address alone is not enough. In the same panel set **router** to `192.168.1.1` (the way out) and **dns** to `192.168.1.2` (the name server). Clients pick options up when they lease, so run `dhclient` on astro again. Then astro should have a default route and be able to look up `codexia.lan`.",
+        "body": "An address alone is not enough. In the same panel set **router** to `192.168.1.1` (the way out) and **dns** to `192.168.1.2` (the name server). Clients pick options up when they lease, so run `ipconfig /renew` on astro again. Then astro should have a default route and be able to look up `codexia.lan`.",
         "objectives": [
           {
             "id": "m3l4-gw",

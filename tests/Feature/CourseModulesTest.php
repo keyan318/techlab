@@ -18,23 +18,25 @@ class CourseModulesTest extends TestCase
     private function setUpCrew(): array
     {
         Storage::fake('local');
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $teacher->id]);
-        $teacher->update(['crew_id' => $crew->id]);
+        $faculty = User::factory()->create(['role' => 'faculty']);
+        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $faculty->id]);
+        $faculty->update(['crew_id' => $crew->id]);
+        $crew->roster()->attach($faculty->id, ['role' => 'faculty']);
         $student = User::factory()->create(['role' => 'student', 'crew_id' => $crew->id]);
+        $crew->roster()->attach($student->id, ['role' => 'student']);
 
-        return [$teacher, $student, $crew];
+        return [$faculty, $student, $crew];
     }
 
-    public function test_teacher_creates_a_module_and_uploads_materials(): void
+    public function test_faculty_creates_a_module_and_uploads_materials(): void
     {
-        [$teacher, , $crew] = $this->setUpCrew();
+        [$faculty, , $crew] = $this->setUpCrew();
 
-        $this->actingAs($teacher)->post(route('teacher.modules.store'), ['title' => 'Intro', 'description' => 'Basics'])
+        $this->actingAs($faculty)->post(route('faculty.modules.store', $crew), ['title' => 'Intro', 'description' => 'Basics'])
             ->assertRedirect();
         $module = $crew->modules()->firstOrFail();
 
-        $this->actingAs($teacher)->post(route('teacher.materials.store', $module), [
+        $this->actingAs($faculty)->post(route('faculty.materials.store', $module), [
             'files' => [
                 UploadedFile::fake()->create('notes.pdf', 100, 'application/pdf'),
                 UploadedFile::fake()->create('lecture.pptx', 100),
@@ -50,10 +52,10 @@ class CourseModulesTest extends TestCase
 
     public function test_dangerous_file_types_are_rejected(): void
     {
-        [$teacher, , $crew] = $this->setUpCrew();
+        [$faculty, , $crew] = $this->setUpCrew();
         $module = $crew->modules()->create(['title' => 'Intro']);
 
-        $this->actingAs($teacher)->post(route('teacher.materials.store', $module), [
+        $this->actingAs($faculty)->post(route('faculty.materials.store', $module), [
             'files' => [UploadedFile::fake()->create('shell.php', 1)],
         ])->assertSessionHasErrors();
 
@@ -64,19 +66,19 @@ class CourseModulesTest extends TestCase
     {
         [, $student, $crew] = $this->setUpCrew();
 
-        $this->actingAs($student)->post(route('teacher.modules.store'), ['title' => 'X'])->assertForbidden();
+        $this->actingAs($student)->post(route('faculty.modules.store', $crew), ['title' => 'X'])->assertForbidden();
         $module = $crew->modules()->create(['title' => 'Intro']);
-        $this->actingAs($student)->delete(route('teacher.modules.destroy', $module))->assertForbidden();
+        $this->actingAs($student)->delete(route('faculty.modules.destroy', $module))->assertForbidden();
     }
 
-    public function test_another_teacher_cannot_touch_this_crews_module(): void
+    public function test_another_faculty_cannot_touch_this_crews_module(): void
     {
         [, , $crew] = $this->setUpCrew();
         $module = $crew->modules()->create(['title' => 'Intro']);
-        $other = User::factory()->create(['role' => 'teacher']);
+        $other = User::factory()->create(['role' => 'faculty']);
         Crew::create(['name' => 'Beta', 'code' => 'ZZZ999', 'teacher_id' => $other->id]);
 
-        $this->actingAs($other)->delete(route('teacher.modules.destroy', $module))->assertForbidden();
+        $this->actingAs($other)->delete(route('faculty.modules.destroy', $module))->assertForbidden();
         $this->assertNotNull(CourseModule::find($module->id));
     }
 
@@ -116,47 +118,47 @@ class CourseModulesTest extends TestCase
 
     public function test_deleting_a_module_removes_its_files(): void
     {
-        [$teacher, , $crew] = $this->setUpCrew();
+        [$faculty, , $crew] = $this->setUpCrew();
         $module = $crew->modules()->create(['title' => 'Intro']);
-        $this->actingAs($teacher)->post(route('teacher.materials.store', $module), [
+        $this->actingAs($faculty)->post(route('faculty.materials.store', $module), [
             'files' => [UploadedFile::fake()->create('a.pdf', 10)],
         ]);
         $path = $module->materials()->first()->path;
 
-        $this->actingAs($teacher)->delete(route('teacher.modules.destroy', $module))->assertRedirect();
+        $this->actingAs($faculty)->delete(route('faculty.modules.destroy', $module))->assertRedirect();
 
         Storage::disk('local')->assertMissing($path);
         $this->assertSame(0, ModuleMaterial::count());
     }
 
-    public function test_teacher_crew_page_lists_modules(): void
+    public function test_faculty_crew_page_lists_modules(): void
     {
-        [$teacher, , $crew] = $this->setUpCrew();
+        [$faculty, , $crew] = $this->setUpCrew();
         $crew->modules()->create(['title' => 'Listed Module']);
 
-        $this->actingAs($teacher)->get(route('teacher.crew'))->assertOk()->assertSee('Listed Module');
+        $this->actingAs($faculty)->get(route('faculty.course', $crew))->assertOk()->assertSee('Listed Module');
     }
 
-    public function test_teacher_sidebar_has_dashboard_chat_crew_but_no_planets(): void
+    public function test_faculty_sidebar_has_dashboard_and_chat_but_no_planets_or_crew(): void
     {
-        [$teacher] = $this->setUpCrew();
+        [$faculty] = $this->setUpCrew();
 
-        $this->actingAs($teacher)->get(route('teacher.dashboard'))
+        $this->actingAs($faculty)->get(route('faculty.dashboard'))
             ->assertOk()
             ->assertSee('aria-label="Dashboard"', false)
             ->assertSee('aria-label="Chat"', false)
-            ->assertSee('aria-label="Crew"', false)
+            ->assertDontSee('aria-label="Crew"', false)
             ->assertDontSee('aria-label="Planets"', false)
             ->assertSee('Captain');
     }
 
-    public function test_teacher_chat_is_its_own_route_without_student_features(): void
+    public function test_faculty_chat_is_its_own_route_without_student_features(): void
     {
-        [$teacher] = $this->setUpCrew();
+        [$faculty] = $this->setUpCrew();
 
-        $this->assertSame('/teacher/chat', route('teacher.chat', absolute: false));
-        $this->actingAs($teacher)->get(route('student.chat'))->assertRedirect(route('teacher.chat'));
-        $this->actingAs($teacher)->get(route('teacher.chat'))
+        $this->assertSame('/faculty/chat', route('faculty.chat', absolute: false));
+        $this->actingAs($faculty)->get(route('student.chat'))->assertRedirect(route('faculty.chat'));
+        $this->actingAs($faculty)->get(route('faculty.chat'))
             ->assertOk()
             ->assertSee('Hi Captain')
             ->assertSee('Web sources')
@@ -167,14 +169,14 @@ class CourseModulesTest extends TestCase
             ->assertDontSee('>Flashcards</span>', false)
             ->assertDontSee('>Infographic</span>', false)
             ->assertDontSee('>Reports</span>', false);
-        $this->actingAs($teacher)->get(route('student.chat'))->assertRedirect();
+        $this->actingAs($faculty)->get(route('student.chat'))->assertRedirect();
     }
 
-    public function test_students_cannot_use_the_teacher_chat(): void
+    public function test_students_cannot_use_the_faculty_chat(): void
     {
         [, $student] = $this->setUpCrew();
 
-        $this->actingAs($student)->get(route('teacher.chat'))->assertRedirect(route('student.chat'));
-        $this->actingAs($student)->postJson(route('teacher.chat.message'), ['message' => 'hi'])->assertForbidden();
+        $this->actingAs($student)->get(route('faculty.chat'))->assertRedirect(route('student.chat'));
+        $this->actingAs($student)->postJson(route('faculty.chat.message'), ['message' => 'hi'])->assertForbidden();
     }
 }

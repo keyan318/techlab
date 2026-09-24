@@ -30,7 +30,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l2.json) complete
         <li>Ask <strong>how many devices are affected</strong>. One device points at that device or its cable. Many devices point at a shared part such as a switch or an uplink.</li>
     </ul>
     <p class="body-text">
-        On Linux, <code>ip link</code> shows whether an interface is <code>UP</code> or <code>DOWN</code>, and <code>ip link set eth0 up</code> brings it up.
+        On Windows, <code>netsh interface show interface</code> shows whether each adapter is <code>Enabled</code> or <code>Disabled</code>, and <code>netsh interface set interface "Ethernet" admin=enabled</code> turns it back on.
     </p>
 
     <h2 class="section-heading">Rivet's Briefing</h2>
@@ -117,7 +117,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l2.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

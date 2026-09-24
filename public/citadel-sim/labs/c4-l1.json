@@ -1,0 +1,40 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c4-l1",
+  "title": "Lesson 4.1: Cryptography Basics",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "05:55 · INTERCEPTED TRANSMISSION · COMMS RELAY",
+    "vex": "Read it if you can, Captain. You can't. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The crew reads Vex's order plainly; Vex will never read theirs. Astro: \"A shifted letter is a puzzle. A real cipher is a wall. Let's build the wall.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nWe intercepted a Doom transmission, shifted by a simple letter-shift cipher (a Caesar cipher). Decode it, then reply to our allies in a cipher Doom can't casually read.\n\n1. type intercept.txt\n2. caesar decode 7 <the intercepted text>\n3. submit the decoded message exactly\n4. caesar encode 12 SHIELDS HOLD\n5. submit the encoded reply exactly (all caps, one space between words)\n",
+    "C:\\Citadel\\intercept.txt": "Shifted by 7. Decode with: caesar decode 7 <text>\n\nAOL JPAHKLS MHSSZ HA KHDU\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": ["THE CITADEL FALLS AT DAWN", "ETUQXPE TAXP"],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Decode the intercept",
+      "body": "Volt: \"A Caesar cipher just shifts every letter by a fixed amount.\" Read `intercept.txt`, then run `caesar decode 7 AOL JOAHKLS MHSSZ HA KHDU` and submit exactly what it decodes to.",
+      "objectives": [
+        { "id": "read", "label": "Read intercept.txt", "check": { "type": "read", "file": "C:\\Citadel\\intercept.txt" } },
+        { "id": "decoded", "label": "Submitted the decoded message", "check": { "type": "flag", "value": "THE CITADEL FALLS AT DAWN" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Reply in a cipher Doom can't casually read",
+      "body": "Rivet: \"Now write back so only our allies can read it.\" Run `caesar encode 12 SHIELDS HOLD` and submit exactly what it produces.",
+      "objectives": [
+        { "id": "encoded", "label": "Submitted the encoded reply", "check": { "type": "flag", "value": "ETUQXPE TAXP" } }
+      ]
+    }
+  ]
+}

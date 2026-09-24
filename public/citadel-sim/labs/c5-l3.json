@@ -1,0 +1,42 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c5-l3",
+  "title": "Lesson 5.3: Symmetric Key Cryptography",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "14:20 · SHARED KEY COMPROMISED · COMMS RELAY",
+    "vex": "One key, one copy, and now two owners. Guess which one isn't you. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The old key opens nothing anymore. Astro: \"One shared key is one point of failure. Rotate it before it costs us.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nThe crew radio uses one shared key for everyone, and Doom found a copy. Prove the leaked key still opens our traffic, then rotate to a new one Doom does not have.\n\n1. type intercepted-traffic.txt\n2. xor codexia7 <the intercepted hex>\n3. submit the decoded message\n4. type new-key-orders.txt\n5. xor relay-9x <the new plaintext, all caps>\n6. submit the new ciphertext (Rivet checks it against the radio log)\n",
+    "C:\\Citadel\\intercepted-traffic.txt": "Old shared key: codexia7\nIntercepted (hex): 30272d20342d3217223b44232d252d\nDecode with: xor codexia7 <hex>\n",
+    "C:\\Citadel\\new-key-orders.txt": "Rivet: rotate to the new key relay-9x. Encode this exact message with it, all capitals, one space between words: NEW KEY ACTIVE\nEncode with: xor relay-9x NEW KEY ACTIVE\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": ["SHIELDS AT FULL", "3c203b4132686058332638282f68"],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Prove the leaked key still works",
+      "body": "Volt: \"If the leaked key still opens our traffic, we have to assume Doom is reading everything.\" Read `intercepted-traffic.txt`, then run `xor codexia7 1a0a0716454d0e470b52021a06` and submit exactly what it decodes to.",
+      "objectives": [
+        { "id": "read-intercept", "label": "Read intercepted-traffic.txt", "check": { "type": "read", "file": "C:\\Citadel\\intercepted-traffic.txt" } },
+        { "id": "decoded", "label": "Submitted the decoded traffic", "check": { "type": "flag", "value": "SHIELDS AT FULL" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Rotate the key",
+      "body": "Rivet: \"New key, Cadet. Doom doesn't get a copy this time.\" Read `new-key-orders.txt`, then run `xor relay-9x NEW KEY ACTIVE` and submit the ciphertext it produces.",
+      "objectives": [
+        { "id": "read-orders", "label": "Read new-key-orders.txt", "check": { "type": "read", "file": "C:\\Citadel\\new-key-orders.txt" } },
+        { "id": "rotated", "label": "Submitted the new key's ciphertext", "check": { "type": "flag", "value": "3c203b4132686058332638282f68" } }
+      ]
+    }
+  ]
+}

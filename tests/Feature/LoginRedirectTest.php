@@ -18,12 +18,12 @@ class LoginRedirectTest extends TestCase
             ->assertRedirect(route('student.dashboard'));
     }
 
-    public function test_teacher_lands_on_teacher_dashboard_after_login(): void
+    public function test_faculty_lands_on_faculty_dashboard_after_login(): void
     {
-        $user = User::factory()->create(['role' => 'teacher', 'password' => bcrypt('secret-pass')]);
+        $user = User::factory()->create(['role' => 'faculty', 'password' => bcrypt('secret-pass')]);
 
         $this->post('/login', ['email' => $user->email, 'password' => 'secret-pass'])
-            ->assertRedirect(route('teacher.dashboard'));
+            ->assertRedirect(route('faculty.dashboard'));
     }
 
     public function test_signed_in_student_visiting_login_is_sent_to_dashboard(): void

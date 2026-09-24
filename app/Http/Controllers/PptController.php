@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Teacher Studio "PPT": builds a designed .pptx from the teacher's current Astro chat.
+ * Faculty Studio "PPT": builds a designed .pptx from the faculty member's current Astro chat.
  * The conversation is loaded server-side with ownership enforced (same model as ReportController).
  */
 class PptController extends Controller
@@ -30,8 +30,8 @@ class PptController extends Controller
         if (! Auth::check()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-        if ((Auth::user()->role ?? 'student') !== 'teacher') {
-            return response()->json(['error' => 'Teachers only.'], 403);
+        if ((Auth::user()->role ?? 'student') !== 'faculty') {
+            return response()->json(['error' => 'Faculty only.'], 403);
         }
 
         $data = $request->validate(['conversation_id' => ['required', 'integer']]);

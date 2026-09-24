@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ModuleMaterial extends Model
 {
-    /** Extensions a teacher may upload, mapped to the badge the student page colours by. */
+    /** Extensions a faculty member may upload, mapped to the badge the student page colours by. */
     public const KINDS = [
         'pdf' => 'pdf', 'ppt' => 'pptx', 'pptx' => 'pptx', 'doc' => 'docx', 'docx' => 'docx',
         'xls' => 'xlsx', 'xlsx' => 'xlsx', 'csv' => 'xlsx', 'zip' => 'zip',

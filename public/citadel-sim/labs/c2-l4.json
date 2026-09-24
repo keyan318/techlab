@@ -1,0 +1,38 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c2-l4",
+  "title": "Lesson 2.4: Global Surveillance & Privacy",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "22:40 · UNKNOWN OUTBOUND TRAFFIC · CITADEL CORE",
+    "vex": "That free star-chart app you installed? We wrote it. Enjoy the view — we already have yours. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The tracker is silenced and its exit sealed. Astro: \"Free things cost something. This time it almost cost us our position.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nSomething on this machine keeps phoning home. Check what's listening and what's running, find the tracker, and shut it down for good.\n\n1. netstat -an\n2. tasklist\n3. taskkill /im starchart-free.exe /f\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "services": [
+    { "name": "tracker-beacon", "port": 8891, "process": "starchart-free.exe" }
+  ],
+  "processes": [
+    { "name": "starchart-free.exe", "pid": 7702, "mem": "14,880 K" },
+    { "name": "shieldd.exe", "pid": 1044, "mem": "18,220 K" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Find what's phoning home",
+      "body": "Volt: \"Something is sending our position out. Find it.\" Run `netstat -an` to see what's listening, and `tasklist` to see what's running. One process doesn't belong.",
+      "objectives": [
+        { "id": "kill", "label": "starchart-free.exe was terminated", "check": { "type": "process-killed", "name": "starchart-free.exe" } },
+        { "id": "closed", "label": "Its outbound port (8891) no longer listens", "check": { "type": "port-closed", "port": 8891 } }
+      ]
+    }
+  ]
+}

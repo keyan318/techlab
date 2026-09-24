@@ -1,0 +1,41 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c3-l1",
+  "title": "Lesson 3.1: IT Risks",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "10:00 · RESOURCE REVIEW · CITADEL CORE",
+    "vex": "You can't fix everything at once. Pick wrong and I'll show you which one mattered. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED, in advance: the top risks are already treated before Vex could use them. Astro: \"Too many threats, too few hands. Now we know which ones go first.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nToo many threats, too few hands. Read risk-register.txt: five risks, each with a likelihood and impact. Decide, for each, whether the crew should treat it (fix it now), transfer it (get help/insurance), or accept it (live with it, it's minor).\n",
+    "C:\\Citadel\\risk-register.txt": "CITADEL RISK REGISTER\n----------------------\nrisk-relay-password   likelihood: high    impact: high     (factory password still in use on a public door)\nrisk-cargo-bay-lock    likelihood: low     impact: low      (an old cargo bay lock, rarely used, nothing valuable inside)\nrisk-comms-single-path likelihood: medium  impact: high     (only one comms relay; if it drops, the crew is blind)\nrisk-snack-stock       likelihood: high    impact: low      (running low on rations, annoying but not dangerous)\nrisk-backup-offsite    likelihood: low     impact: high     (no offsite backup of the starmap; best handled by an ally crew)\n\nRule of thumb: high likelihood AND high impact -> treat it yourselves, now.\nHigh impact but something an ally can help carry -> transfer it.\nLow impact, whatever the likelihood -> accept it and move on.\n"
+  },
+  "classify": {
+    "risk-relay-password": "risk-relay-password",
+    "risk-cargo-bay-lock": "risk-cargo-bay-lock",
+    "risk-comms-single-path": "risk-comms-single-path",
+    "risk-snack-stock": "risk-snack-stock",
+    "risk-backup-offsite": "risk-backup-offsite"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Rate and treat the register",
+      "body": "Astro: \"Too many threats, too few hands. Sort them.\" Read `risk-register.txt`, then classify each risk: `classify risk-relay-password treat`, `classify risk-cargo-bay-lock accept`, and so on, using treat, transfer, or accept.",
+      "objectives": [
+        { "id": "read", "label": "Read risk-register.txt", "check": { "type": "read", "file": "C:\\Citadel\\risk-register.txt" } },
+        { "id": "r1", "label": "risk-relay-password: treat (high/high)", "check": { "type": "classified", "item": "risk-relay-password", "as": "treat" } },
+        { "id": "r2", "label": "risk-cargo-bay-lock: accept (low/low)", "check": { "type": "classified", "item": "risk-cargo-bay-lock", "as": "accept" } },
+        { "id": "r3", "label": "risk-comms-single-path: treat (medium/high, core system)", "check": { "type": "classified", "item": "risk-comms-single-path", "as": "treat" } },
+        { "id": "r5", "label": "risk-backup-offsite: transfer (high impact, an ally can help)", "check": { "type": "classified", "item": "risk-backup-offsite", "as": "transfer" } }
+      ]
+    }
+  ]
+}

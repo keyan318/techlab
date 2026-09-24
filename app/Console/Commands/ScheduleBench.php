@@ -10,7 +10,7 @@ class ScheduleBench extends Command
 {
     protected $signature = 'schedule:bench {file : path to a timetable photo / PDF / CSV} {--n=5 : how many runs}';
 
-    protected $description = 'Time the teacher-schedule extraction (vision → parse → AI) and print p50/p95 per stage';
+    protected $description = 'Time the faculty-schedule extraction (vision → parse → AI) and print p50/p95 per stage';
 
     public function handle(ScheduleExtractor $extractor): int
     {

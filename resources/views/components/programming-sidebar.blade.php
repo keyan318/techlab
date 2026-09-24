@@ -118,14 +118,16 @@
 
         @endforeach
 
+    </div>{{-- /course-outline --}}
+
     </div>{{-- /outline panel --}}
 
 
     {{-- RESOURCES PANEL
-         Read-only for students and teachers. Only admins will manage these
+         Read-only for students and faculty. Only admins will manage these
          (future admin panel). Pass $resources as [['title'=>..., 'url'=>..., 'type'=>...], ...]. --}}
 
-    @php $courseResources = $resources ?? []; @endphp
+    @php $courseResources = $resources ?? config('course-structure.'.($slug ?? 'programming').'.resources', []); @endphp
 
     <div class="sidebar-panel" data-sidebar-panel="resources">
 
@@ -153,7 +155,12 @@
                             <li class="resource-item" data-title="{{ strtolower($resource['title']) }}">
                                 <a href="{{ $resource['url'] }}" target="_blank" rel="noopener">
                                     <span class="resource-type">{{ strtoupper($resource['type'] ?? 'file') }}</span>
-                                    <span>{{ $resource['title'] }}</span>
+                                    <span class="resource-text">
+                                        <span>{{ $resource['title'] }}</span>
+                                        @if (! empty($resource['source']))
+                                            <small class="resource-source">{{ $resource['source'] }}</small>
+                                        @endif
+                                    </span>
                                 </a>
                             </li>
                         @endforeach
@@ -692,6 +699,18 @@
 }
 
 .resource-item a:hover { color: #2f7de1; }
+
+.resource-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.resource-source {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #676767;
+}
 
 .resource-type {
     font-size: 12px;

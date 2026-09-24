@@ -124,7 +124,7 @@
         <div class="grid h-24 w-24 place-items-center rounded-full bg-glass p-3 ring-1 ring-[rgba(115,182,255,0.4)]">
           @include('student.chat.partials.astro-mascot')
         </div>
-        @if($isTeacherChat ?? false)
+        @if($isFacultyChat ?? false)
         <h2 class="mt-4 font-display text-[1.75rem] font-bold leading-tight tracking-[-0.02em] text-ink">Hi Captain {{ $userName ?? '' }}! I'm Astro</h2>
         <p class="mt-1.5 text-sm font-medium text-muted">Plan lessons, draft quizzes, build rubrics. 🚀</p>
 
@@ -159,7 +159,7 @@
 
       {{-- ===== Live thread ===== --}}
       <section x-show="messages.length > 0" x-cloak class="space-y-6">
-        @unless($isTeacherChat ?? false)
+        @unless($isFacultyChat ?? false)
         {{-- Dismissible feature-tip banner --}}
         <div x-show="!bannerDismissed" x-cloak class="flex items-start gap-2.5 rounded-[14px] border border-[rgba(115,182,255,0.35)] bg-[rgba(115,182,255,0.08)] px-3 py-2.5">
           <svg viewBox="0 0 24 24" fill="none" stroke="#5be1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-4 w-4 flex-none"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8 19 13M15 9h.01M17.8 6.2 19 5M3 21l9-9M12.2 6.2 11 5"/></svg>
@@ -343,7 +343,7 @@
             rows="1"
             @keydown.enter.prevent="if (!($event.shiftKey)) send()"
             @paste="pasteFiles($event)"
-            :placeholder="listening ? 'Listening…' : (attachments.length ? 'Add a message about your attachment (optional)' : '{{ ($isTeacherChat ?? false) ? "Ask Astro to help you teach" : "Ask Astro or create something" }}')"
+            :placeholder="listening ? 'Listening…' : (attachments.length ? 'Add a message about your attachment (optional)' : '{{ ($isFacultyChat ?? false) ? "Ask Astro to help you teach" : "Ask Astro or create something" }}')"
             class="max-h-32 min-w-0 flex-1 resize-none self-center bg-transparent px-1 py-2 text-[15px] text-ink placeholder:text-muted/70 focus:outline-none"
             oninput="this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,128)+'px'"
             aria-label="Message Astro"

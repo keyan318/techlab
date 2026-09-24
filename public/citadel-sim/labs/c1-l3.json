@@ -1,0 +1,50 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c1-l3",
+  "title": "Lesson 1.3: Anatomy of an Attack",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "04:12 · HIDDEN ACCOUNT FOUND · CITADEL CORE",
+    "vex": "By the time you read this, we already left something behind. Find it, if you can. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The backdoor is welded shut. Astro: \"Now we know the shape of an attack: in, hide, take, and a door left open for next time. Recognize the shape, and you catch it faster next time.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nVolt found something odd overnight. Read logs\\breach.log and trace it: how did they get in, where did they hide, and what did they take? Then close the door they left open.\n",
+    "C:\\Citadel\\logs\\breach.log": "CITADEL SECURITY LOG · overnight\n[03:40] RECON    unknown host scanned the relay port range\n[03:47] ENTRY     relay console logged in with a weak, reused password\n[03:52] HIDEOUT   a new account 'svc_update' was created, disguised as a system service\n[03:58] DATA-GRAB starmap-backup.txt was copied out through port 4477\n[04:12] Volt's sensors tripped on the outbound transfer. Connection dropped.\n\nsvc_update is not a real Citadel service. Rivet never created it.\nThe process 'svcupdate.exe' is still listening on port 4477 — that is the door they left open.\n"
+  },
+  "users": [
+    { "name": "svc_update", "fullName": "(unauthorized — planted by the intruder)", "groups": ["Users"], "passwordSet": "04/24/2026 03:52 AM", "lastLogon": "04/24/2026 03:58 AM" },
+    { "name": "astro", "fullName": "Astro (Captain)", "groups": ["Administrators"], "passwordSet": "09/01/2026", "lastLogon": "09/23/2026" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "services": [
+    { "name": "backdoor", "port": 4477, "process": "svcupdate.exe" }
+  ],
+  "processes": [
+    { "name": "svcupdate.exe", "pid": 4477, "mem": "6,204 K" },
+    { "name": "cmd.exe", "pid": 2244, "mem": "3,880 K" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Trace the break-in",
+      "body": "Volt: \"Every attack has a shape: recon, entry, a hideout, then the grab.\" Read `logs\\breach.log` end to end before touching anything. Notice the planted account and the port it's still listening on.",
+      "objectives": [
+        { "id": "read-log", "label": "Read logs\\breach.log", "check": { "type": "read", "file": "C:\\Citadel\\logs\\breach.log" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Close the door",
+      "body": "Rivet: \"A hidden account and an open port. Kill both.\" Disable the planted account with `net user svc_update /active:no`, then stop the process holding the port with `taskkill /im svcupdate.exe /f`. Confirm with `netstat -an` that port 4477 no longer lists.",
+      "objectives": [
+        { "id": "disable", "label": "svc_update is disabled", "check": { "type": "user-disabled", "user": "svc_update" } },
+        { "id": "kill", "label": "svcupdate.exe was terminated", "check": { "type": "process-killed", "name": "svcupdate.exe" } },
+        { "id": "closed", "label": "Port 4477 no longer listens", "check": { "type": "port-closed", "port": 4477 } }
+      ]
+    }
+  ]
+}

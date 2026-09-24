@@ -2,6 +2,7 @@ import type { IpDevice } from '../engine/ipdevice';
 import { ipToString, type U32 } from '../engine/ip';
 import type { Running } from './shell';
 import { resolveHost } from './resolve';
+import type { OutputStyle } from './ping';
 
 const PROBES_PER_HOP = 3;
 const PROBE_TIMEOUT_MS = 1500;
@@ -37,10 +38,22 @@ export function runTraceroute(
     return null;
   }
 
+  return traceTarget(device, target, maxHops, write, done, 'linux');
+}
+
+export function traceTarget(
+  device: IpDevice,
+  target: string,
+  maxHops: number,
+  write: (s: string) => void,
+  done: () => void,
+  style: OutputStyle,
+): Running {
+  const win = style === 'windows';
   let cancelFn: (() => void) | undefined;
   const resolver = resolveHost(device, target, (res) => {
     if ('error' in res) {
-      write(`traceroute: ${res.error}\n`);
+      write(win ? `Unable to resolve target system name ${target}.\n` : `traceroute: ${res.error}\n`);
       done();
       return;
     }
@@ -68,17 +81,30 @@ export function runTraceroute(
   let hopReached = false;
   let sendTime = 0;
 
-  write(`traceroute to ${target} (${ipToString(ip)}), ${maxHops} hops max, 60 byte packets\n`);
+  if (win) {
+    const addr = ipToString(ip);
+    const label = target === addr ? addr : `${target} [${addr}]`;
+    write(`\nTracing route to ${label}\nover a maximum of ${maxHops} hops:\n\n`);
+  } else {
+    write(`traceroute to ${target} (${ipToString(ip)}), ${maxHops} hops max, 60 byte packets\n`);
+  }
 
   const cleanup = () => {
     if (finished) return;
     finished = true;
     if (pendingTimer) sched.cancel(pendingTimer);
     device.offIcmp(id);
+    if (win) write('\nTrace complete.\n');
     done();
   };
 
   const flushHopLine = () => {
+    if (win) {
+      const cells = hopRtts.map((r) => (r === null ? '    *   ' : `${String(Math.max(1, Math.round(r))).padStart(4)} ms `)).join('');
+      const tail = hopFrom !== null ? ipToString(hopFrom) : 'Request timed out.';
+      write(`${String(ttl).padStart(3)} ${cells} ${tail}\n`);
+      return;
+    }
     const fromStr = hopFrom !== null ? ipToString(hopFrom) : '*';
     const rttStr = hopRtts.map((r) => (r === null ? '*' : `${r.toFixed(1)} ms`)).join('  ');
     write(`${String(ttl).padStart(2)}  ${fromStr}  ${rttStr}\n`);
@@ -144,7 +170,7 @@ export function runTraceroute(
     sendTime = sched.now;
     const err = device.sendEcho(ip, id, seq, ttl);
     if (err) {
-      write(`connect: ${err}\n`);
+      write(win ? 'Transmit error: code 1231. General failure.\n' : `connect: ${err}\n`);
       cleanup();
       return;
     }

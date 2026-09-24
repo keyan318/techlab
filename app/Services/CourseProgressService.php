@@ -22,6 +22,26 @@ class CourseProgressService
     public const COURSE = 'programming';
 
     /**
+     * The course-structure.php key a catalog course resolves to.
+     *
+     * Historically config/course-structure.php had one blueprint per planet, because
+     * each planet only ever offered one real course (Python, Networking 1). Those two
+     * keep resolving to their planet slug so existing progress/URLs don't move. Any
+     * other course (a planet's second+ course) resolves to its own catalog course id
+     * instead, so it never inherits another course's lessons just for sharing a planet.
+     */
+    public static function keyFor(string $slug, ?string $course): string
+    {
+        return match (true) {
+            $course === null => $slug,
+            $slug === 'programming' && $course === 'python' => 'programming',
+            $slug === 'networking' && $course === 'networking-fundamentals' => 'networking',
+            $slug === 'cybersecurity' && $course === 'information-security-1' => 'cybersecurity',
+            default => $course,
+        };
+    }
+
+    /**
      * Whether a planet slug has a lesson blueprint (and so tracked, gated lessons).
      */
     public static function exists(string $course): bool
@@ -49,7 +69,17 @@ class CourseProgressService
     }
 
     /**
-     * Flat, ordered lesson list: [['module' => 'm1', 'lesson' => 'lesson01', 'expected' => ?string, 'lab' => ?string], …]
+     * Which simulator runs a lesson's lab: "netsim" (network labs, the default) or "citadel" (security labs).
+     */
+    public static function simFor(string $module, string $lesson, string $course = self::COURSE): string
+    {
+        $index = self::indexOf($module, $lesson, $course);
+
+        return $index === null ? 'netsim' : (self::order($course)[$index]['sim'] ?? 'netsim');
+    }
+
+    /**
+     * Flat, ordered lesson list: [['module' => 'm1', 'lesson' => 'lesson01', 'expected' => ?string, 'lab' => ?string, 'sim' => ?string], …]
      */
     public static function order(string $course = self::COURSE): array
     {
@@ -60,10 +90,11 @@ class CourseProgressService
                 [$m, $l] = self::normalize($moduleKey, $lessonKey);
 
                 $order[] = [
-                    'module'   => $m,
-                    'lesson'   => $l,
+                    'module' => $m,
+                    'lesson' => $l,
                     'expected' => $lesson['expected'] ?? null,
-                    'lab'      => $lesson['lab'] ?? null,
+                    'lab' => $lesson['lab'] ?? null,
+                    'sim' => $lesson['sim'] ?? null,
                 ];
             }
         }
@@ -118,9 +149,9 @@ class CourseProgressService
 
         return LessonProgress::where([
             'user_id' => $user->id,
-            'course'  => $course,
-            'module'  => $module,
-            'lesson'  => $lesson,
+            'course' => $course,
+            'module' => $module,
+            'lesson' => $lesson,
         ])->exists();
     }
 
@@ -152,7 +183,7 @@ class CourseProgressService
      */
     public static function furthestUnlocked(User $user, string $course = self::COURSE): array
     {
-        $order     = self::order($course);
+        $order = self::order($course);
         $completed = array_flip(self::completedKeys($user, $course));
 
         foreach ($order as $item) {
@@ -167,7 +198,7 @@ class CourseProgressService
     }
 
     /**
-     * @return array{module: string, lesson: string}|null  null when it is the last lesson
+     * @return array{module: string, lesson: string}|null null when it is the last lesson
      */
     public static function nextLesson(string $module, string $lesson, string $course = self::COURSE): ?array
     {
@@ -201,6 +232,36 @@ class CourseProgressService
         $clean = fn (string $s) => trim(str_replace("\r\n", "\n", $s));
 
         return $clean($expected) === $clean($output);
+    }
+
+    /**
+     * Gems earned: one per module where every lesson is complete.
+     */
+    public static function completedModulesCount(User $user, string $course = self::COURSE): int
+    {
+        $completed = array_flip(self::completedKeys($user, $course));
+        $count = 0;
+
+        foreach (config("course-structure.{$course}.modules", []) as $moduleKey => $module) {
+            $lessonKeys = array_keys($module['lessons'] ?? []);
+
+            if ($lessonKeys === []) {
+                continue;
+            }
+
+            $allDone = true;
+            foreach ($lessonKeys as $lessonKey) {
+                [$m, $l] = self::normalize($moduleKey, $lessonKey);
+                if (! isset($completed["{$m}/{$l}"])) {
+                    $allDone = false;
+                    break;
+                }
+            }
+
+            $count += $allDone ? 1 : 0;
+        }
+
+        return $count;
     }
 
     /**

@@ -1,0 +1,49 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c3-l3",
+  "title": "Lesson 3.3: ITIL Security Management",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "07:30 · URGENT PATCH READY · SHIELD CONTROL",
+    "vex": "Rush your patch and I won't even need to attack. Your own shields will do it for me. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED, and the shields never even flickered. Astro: \"Speed without process is how a crew hurts itself. Now we have both.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRivet has an urgent shield patch, but patching the wrong system first could drop the shields mid-attack. Follow the change process: file the request, patch the TEST node first, confirm it, then patch PRODUCTION.\n\n1. type change-request.txt, then submit the ticket number\n2. copy patch\\shield-fix.cfg test-node.cfg    (test first)\n3. copy patch\\shield-fix.cfg prod-node.cfg    (only after the test)\n",
+    "C:\\Citadel\\change-request.txt": "CHANGE REQUEST — CR-2201\n-------------------------\nWhat: apply shield-fix.cfg (closes the drop-below-20% shield bug)\nWhy: Rivet found the bug during Vex's last probe\nRisk if skipped: shields could drop to 0% under a sustained attack\nApproval: Astro, granted\nProcedure: patch test-node.cfg first, verify, THEN patch prod-node.cfg\n\nsubmit the ticket number exactly as written above, e.g. submit CR-0000\n",
+    "C:\\Citadel\\patch\\shield-fix.cfg": "shield_min_floor=20\n# Rivet: never let shield power drop below 20% again.\n",
+    "C:\\Citadel\\test-node.cfg": "shield_min_floor=0\n# test node, unpatched\n",
+    "C:\\Citadel\\prod-node.cfg": "shield_min_floor=0\n# LIVE shield control, unpatched\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": ["CR-2201"],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "File the change request",
+      "body": "Astro: \"No patch touches production without a ticket.\" Read `change-request.txt` and submit its ticket number.",
+      "objectives": [
+        { "id": "read-cr", "label": "Read change-request.txt", "check": { "type": "read", "file": "C:\\Citadel\\change-request.txt" } },
+        { "id": "ticket", "label": "Submitted the change ticket number", "check": { "type": "flag", "value": "CR-2201" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Test, then production",
+      "body": "Rivet: \"Test first. Always test first.\" Copy the patch to `test-node.cfg`, confirm it, then only afterward copy it to `prod-node.cfg`. Order matters: production must never be patched before the test node.",
+      "objectives": [
+        { "id": "test-patched", "label": "test-node.cfg matches the patch", "check": { "type": "same-content", "a": "C:\\Citadel\\test-node.cfg", "b": "C:\\Citadel\\patch\\shield-fix.cfg" } },
+        { "id": "prod-patched", "label": "prod-node.cfg matches the patch", "check": { "type": "same-content", "a": "C:\\Citadel\\prod-node.cfg", "b": "C:\\Citadel\\patch\\shield-fix.cfg" } },
+        {
+          "id": "order",
+          "label": "Test was patched before production",
+          "check": { "type": "ordered", "before": "^copy\\s+patch\\\\shield-fix\\.cfg\\s+test-node\\.cfg", "after": "^copy\\s+patch\\\\shield-fix\\.cfg\\s+prod-node\\.cfg" }
+        }
+      ]
+    }
+  ]
+}

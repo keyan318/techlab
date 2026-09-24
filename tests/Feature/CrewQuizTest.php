@@ -13,12 +13,14 @@ class CrewQuizTest extends TestCase
 
     private function setUpCrew(): array
     {
-        $teacher = User::factory()->create(['role' => 'teacher']);
-        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $teacher->id]);
-        $teacher->update(['crew_id' => $crew->id]);
+        $faculty = User::factory()->create(['role' => 'faculty']);
+        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $faculty->id]);
+        $faculty->update(['crew_id' => $crew->id]);
+        $crew->roster()->attach($faculty->id, ['role' => 'faculty']);
         $student = User::factory()->create(['role' => 'student', 'crew_id' => $crew->id]);
+        $crew->roster()->attach($student->id, ['role' => 'student']);
 
-        return [$teacher, $student, $crew];
+        return [$faculty, $student, $crew];
     }
 
     private function payload(): array
@@ -29,11 +31,11 @@ class CrewQuizTest extends TestCase
         ]];
     }
 
-    public function test_teacher_creates_quiz_and_student_sees_no_answers_then_is_graded(): void
+    public function test_faculty_creates_quiz_and_student_sees_no_answers_then_is_graded(): void
     {
-        [$teacher, $student, $crew] = $this->setUpCrew();
+        [$faculty, $student, $crew] = $this->setUpCrew();
 
-        $this->actingAs($teacher)->post(route('teacher.quizzes.store'), $this->payload())->assertRedirect();
+        $this->actingAs($faculty)->post(route('faculty.quizzes.store', $crew), $this->payload())->assertRedirect();
         $quiz = $crew->quizzes()->firstOrFail();
 
         $this->actingAs($student)->get(route('student.crew'))->assertOk()->assertSee('Basics')->assertSee('No graded work yet');
@@ -54,21 +56,21 @@ class CrewQuizTest extends TestCase
 
     public function test_other_crews_students_and_students_cannot_touch_quizzes(): void
     {
-        [$teacher, $student, $crew] = $this->setUpCrew();
-        $this->actingAs($teacher)->post(route('teacher.quizzes.store'), $this->payload());
+        [$faculty, $student, $crew] = $this->setUpCrew();
+        $this->actingAs($faculty)->post(route('faculty.quizzes.store', $crew), $this->payload());
         $quiz = $crew->quizzes()->firstOrFail();
 
         $outsider = User::factory()->create(['role' => 'student', 'crew_id' => null]);
         $this->actingAs($outsider)->getJson(route('student.quiz.show', $quiz))->assertForbidden();
-        $this->actingAs($student)->post(route('teacher.quizzes.store'), $this->payload())->assertForbidden();
-        $this->actingAs($student)->delete(route('teacher.quizzes.destroy', $quiz))->assertForbidden();
+        $this->actingAs($student)->post(route('faculty.quizzes.store', $crew), $this->payload())->assertForbidden();
+        $this->actingAs($student)->delete(route('faculty.quizzes.destroy', $quiz))->assertForbidden();
     }
 
     public function test_quiz_needs_a_valid_correct_answer(): void
     {
-        [$teacher] = $this->setUpCrew();
+        [$faculty, , $crew] = $this->setUpCrew();
         $bad = $this->payload();
         $bad['questions'][0]['correct'] = 5;
-        $this->actingAs($teacher)->post(route('teacher.quizzes.store'), $bad)->assertSessionHasErrors('questions');
+        $this->actingAs($faculty)->post(route('faculty.quizzes.store', $crew), $bad)->assertSessionHasErrors('questions');
     }
 }

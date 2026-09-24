@@ -9,7 +9,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
 
     <p class="lesson-objective">
         <strong>Learning Objective:</strong>
-        By the end of this lesson, you can follow the seven-step troubleshooting method, choose a search strategy, and read a traceroute to find where a path breaks.
+        By the end of this lesson, you can follow the seven-step troubleshooting method, choose a search strategy, and read a tracert to find where a path breaks.
     </p>
 
     <h2 class="section-heading">Simple Explanation</h2>
@@ -30,10 +30,10 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
         Three ways to search: <strong>bottom-up</strong> (start at the Physical layer and climb), <strong>top-down</strong> (start at the application and go down) and <strong>divide and conquer</strong> (test the middle of the path and see which half holds the fault).
     </p>
     <p class="body-text">
-        Two rules save hours: <strong>change one thing at a time</strong>, or you will not know what fixed it, and remember that <strong>one fault can hide another</strong>, so re-test after every fix. Useful tools: <code>ping</code>, <code>traceroute</code>, <code>ip addr</code>, <code>ip route</code>, <code>ip neigh</code>, <code>dig</code> and <code>curl</code>.
+        Two rules save hours: <strong>change one thing at a time</strong>, or you will not know what fixed it, and remember that <strong>one fault can hide another</strong>, so re-test after every fix. Useful tools: <code>ping</code>, <code>tracert</code>, <code>ipconfig</code>, <code>route print</code>, <code>arp -a</code>, <code>nslookup</code> and <code>curl</code>.
     </p>
     <p class="body-text">
-        <strong>Reading traceroute.</strong> Each line is one router on the path. Where the addresses stop moving forward, or the same router answers again and the trace ends early, that router is where the packets stop. Fix there, then trace again.
+        <strong>Reading tracert.</strong> Each line is one router on the path. Where the addresses stop moving forward, or the same router answers again and the trace ends early, that router is where the packets stop. Fix there, then trace again.
     </p>
 
     <h2 class="section-heading">Crew Briefing</h2>
@@ -137,7 +137,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

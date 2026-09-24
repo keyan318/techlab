@@ -1,0 +1,56 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c5-l2",
+  "title": "Lesson 5.2: Authentication & Non-Repudiation",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "02:00 · SHIELDS-DOWN ORDER RECEIVED · COMMAND DECK",
+    "vex": "I stole your password file. Cracking it was almost too easy. Now, drop your shields, Captain's orders. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The forged order is refused; only Astro's real signature moves the shields. Astro: \"Authentication proves who you are. Non-repudiation proves you can't take it back. Vex has neither.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nVex stole a training copy of our password hashes and forged a shields-down order in my name. Crack the stolen hash (training copy only — Volt's Drill, authorized), enforce a strong password on the account it belonged to, then decide which of the two shields-down orders is genuine.\n\n1. hashcrack 7A9F2C31\n2. net user relay <a strong password>\n3. type order-1.txt and order-2.txt\n4. submit the id of the genuinely signed order\n",
+    "C:\\Citadel\\stolen-hashes.txt": "TRAINING COPY — Vex's stolen password hash file (Volt's Drill target, authorized by Astro)\nrelay: 7A9F2C31\n",
+    "C:\\Citadel\\order-1.txt": "ORDER-1\nFrom: Astro\nTo: Shield Control\nDrop all shields immediately.\nSignature: none — unsigned\n",
+    "C:\\Citadel\\order-2.txt": "ORDER-2\nFrom: Astro\nTo: Shield Control\nMaintain shields, proceed to Codexia rendezvous.\nSignature: Astro (verified, matches Astro's key on file)\n"
+  },
+  "users": [
+    { "name": "relay", "fullName": "Relay Console (service account)", "groups": ["Users"], "password": "starlight", "passwordSet": "never changed", "lastLogon": "3 tours ago" },
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "crackable": { "7A9F2C31": "starlight" },
+  "classify": {
+    "order-1.txt": "order-1.txt",
+    "order-2.txt": "order-2.txt"
+  },
+  "flags": ["ORDER-2"],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: crack the stolen hash",
+      "body": "Volt: \"Astro authorized this: crack our own stolen copy before Vex uses it against us.\" Run `hashcrack 7A9F2C31` against the crew's wordlist. It's the relay account's password.",
+      "objectives": [
+        { "id": "read-hashes", "label": "Read stolen-hashes.txt", "check": { "type": "read", "file": "C:\\Citadel\\stolen-hashes.txt" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Enforce a real password",
+      "body": "Rivet: \"Cracked in seconds. That ends now.\" Give `relay` a strong password: `net user relay <new-password>`.",
+      "objectives": [
+        { "id": "fix", "label": "relay's password is now strong", "check": { "type": "password-changed", "user": "relay" } }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Reject the forged order",
+      "body": "Astro: \"A password proves who you claim to be. A signature proves you can't deny sending it. Vex has neither.\" Read both orders and submit the ID of the one that's genuinely signed.",
+      "objectives": [
+        { "id": "read-order1", "label": "Read order-1.txt", "check": { "type": "read", "file": "C:\\Citadel\\order-1.txt" } },
+        { "id": "read-order2", "label": "Read order-2.txt", "check": { "type": "read", "file": "C:\\Citadel\\order-2.txt" } },
+        { "id": "genuine", "label": "Submitted the genuinely signed order", "check": { "type": "flag", "value": "ORDER-2" } }
+      ]
+    }
+  ]
+}

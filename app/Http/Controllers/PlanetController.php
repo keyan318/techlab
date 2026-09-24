@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Crew;
 use App\Services\CourseProgressService;
 use App\Services\LessonQuizService;
 use App\Services\StudentDashboardService;
@@ -86,27 +87,10 @@ class PlanetController extends Controller
                 'id' => 'cybersecurity',
                 'title' => 'Cybersecurity Citadel',
                 'tag' => 'Cybersecurity track',
-                'blurb' => 'A guided tour of how to defend systems — threats, defenses, and the mindset of a defender.',
+                'blurb' => 'Information Security 1: defend the Citadel against Planet Doom.',
                 'sections' => [
-                    ['title' => 'Section 1 — Introduction', 'lessons' => [
-                        ['title' => 'Welcome to Cybersecurity'],
-                        ['title' => 'Threats in the Wild'],
-                        ['title' => 'The Defender Mindset'],
-                    ]],
-                    ['title' => 'Section 2 — Fundamentals', 'lessons' => [
-                        ['title' => 'Authentication Basics'],
-                        ['title' => 'Encryption Concepts'],
-                        ['title' => 'Common Attack Surfaces'],
-                    ]],
-                    ['title' => 'Section 3 — Practice', 'lessons' => [
-                        ['title' => 'Reading Logs'],
-                        ['title' => 'Spotting Suspicious Activity'],
-                        ['title' => 'Hardening a System'],
-                    ]],
-                    ['title' => 'Section 4 — Build', 'lessons' => [
-                        ['title' => 'Designing a Defense Plan'],
-                        ['title' => 'Putting It Together'],
-                        ['title' => 'Module Checkpoint'],
+                    ['title' => 'M1 — First Contact with the Enemy', 'lessons' => [
+                        ['title' => 'Know Your Citadel'],
                     ]],
                 ],
             ],
@@ -180,12 +164,30 @@ class PlanetController extends Controller
         }
 
         $percent = StudentDashboardService::planets(Auth::user())[$slug]['percent'] ?? 0;
+        $user = Auth::user();
 
-        $courses = collect($planet['courses'])->map(fn (array $c, string $id) => $c + [
-            'id' => $id,
-            'url' => route('student.planet.play', ['slug' => $slug, 'course' => $id]),
-            'percent' => $percent,
-        ])->values()->all();
+        $courses = collect($planet['courses'])->map(function (array $c, string $id) use ($slug, $percent, $user) {
+            $soon = ! empty($c['coming_soon']);
+            $crew = $soon ? null : Crew::where('planet', $slug)->where('course_slug', $id)->with('faculty')->first();
+
+            // A course nobody has claimed yet stays open, exactly like before this feature
+            // existed — the gate only switches on once a faculty captain actually claims it
+            // (generates a code), so shipping this never locks students out of a course
+            // that was already freely accessible.
+            $locked = ! $soon && $crew && ! $user->belongsToCrew($crew->id);
+
+            return $c + [
+                'id' => $id,
+                'soon' => $soon,
+                'url' => ($soon || $locked) ? null : route('student.planet.play', ['slug' => $slug, 'course' => $id]),
+                'percent' => $soon ? null : $percent,
+                'faculty_name' => $crew?->faculty?->name,
+                'locked' => $locked,
+                // Where the student's "Ask to join" stands: null (not asked), pending, accepted, declined.
+                'join_status' => $locked ? $crew->joinRequests()->where('user_id', $user->id)->value('status') : null,
+                'join_url' => $locked ? route('student.join-request.store', $crew) : null,
+            ];
+        })->values()->all();
 
         return view('student.planets.courses', ['slug' => $slug, 'planet' => $planet, 'courses' => $courses]);
     }
@@ -203,7 +205,7 @@ class PlanetController extends Controller
             abort(404);
         }
 
-        if ($course !== null && ! config("course-catalog.{$slug}.courses.{$course}")) {
+        if ($course !== null && ! config("course-catalog.{$slug}.courses.{$course}") || config("course-catalog.{$slug}.courses.{$course}.coming_soon")) {
             abort(404);
         }
 
@@ -213,13 +215,14 @@ class PlanetController extends Controller
         // these the view falls back to a guessed name that never matches the
         // lesson-01.blade.php files on disk, so the page renders "Lesson not found".
         // The first lesson comes from the blueprint; resolveLessonView() understands both spellings.
-        if (CourseProgressService::exists($slug)) {
-            $first = CourseProgressService::order($slug)[0];
+        $courseKey = CourseProgressService::keyFor($slug, $course);
+        if (CourseProgressService::exists($courseKey)) {
+            $first = CourseProgressService::order($courseKey)[0];
             $data += [
                 'slug' => $slug,
                 'module' => $first['module'],
                 'lesson' => $first['lesson'],
-                'lessonView' => $this->resolveLessonView($slug, $first['module'], $first['lesson']),
+                'lessonView' => $this->resolveLessonView($courseKey, $first['module'], $first['lesson']),
             ];
         }
 

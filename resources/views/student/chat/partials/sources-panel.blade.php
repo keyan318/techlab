@@ -18,7 +18,7 @@
       </button>
     </div>
 
-    @unless($isTeacherChat ?? false)
+    @unless($isFacultyChat ?? false)
     {{-- Add sources (primary CTA) --}}
     <div class="px-3 pt-2">
       <button type="button" @click="$store.planetSources.open()" class="tl-cta flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-3 py-2.5 text-sm font-semibold text-[#07142e] shadow-[0_10px_40px_rgba(115,182,255,0.45)] transition hover:-translate-y-[3px] hover:shadow-[0_16px_50px_rgba(115,182,255,0.6)]">
@@ -32,7 +32,7 @@
 
     {{-- Scrollable source list --}}
     <div class="mt-3 flex-1 space-y-4 overflow-y-auto px-3 pb-4">
-      @unless($isTeacherChat ?? false)
+      @unless($isFacultyChat ?? false)
       {{-- Group: Planet lessons (Astro reads these) --}}
       <section x-data x-show="$store.planetSources.items.length" x-cloak>
         <div class="mb-2 flex items-center justify-between gap-2 px-0.5">

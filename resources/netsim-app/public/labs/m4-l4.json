@@ -118,12 +118,12 @@
   ],
   "lab": {
     "id": "m4-l4",
-    "title": "Lesson 4.4 \u2014 Wireless Issues",
+    "title": "Lesson 4.4 — Wireless Issues",
     "blurb": "The Wi-Fi says connected, but nothing works. The fault is on the wired side.",
     "steps": [
       {
         "title": "Connected, but no address",
-        "body": "The laptop shows the `codexia-crew` Wi-Fi as connected (the dashed link), yet it has no address. Run `dhclient` on laptop and see. The radio link is fine, so look at the wired path from the access point to the DHCP server. Click the **core** switch and check **Port VLANs (access)**: the port that leads to the access point (`eth1 \u2192 wifi-ap`) is not in the same VLAN as the server. Put it back in VLAN `1`, then run `dhclient` on laptop again.",
+        "body": "The laptop shows the `codexia-crew` Wi-Fi as connected (the dashed link), yet it has no address. Run `ipconfig /renew` on laptop and see. The radio link is fine, so look at the wired path from the access point to the DHCP server. Click the **core** switch and check **Port VLANs (access)**: the port that leads to the access point (`eth1 → wifi-ap`) is not in the same VLAN as the server. Put it back in VLAN `1`, then run `ipconfig /renew` on laptop again.",
         "objectives": [
           {
             "id": "m4l4-laptop",
@@ -149,7 +149,7 @@
       },
       {
         "title": "The second wireless client",
-        "body": "Now connect the tablet: run `dhclient` on tablet. It gets nothing, because the DHCP pool holds a single address. Click ship-server, open **DHCP server**, and widen the range end to `192.168.1.150`. Run `dhclient` on tablet again.",
+        "body": "Now connect the tablet: run `ipconfig /renew` on tablet. It gets nothing, because the DHCP pool holds a single address. Click ship-server, open **DHCP server**, and widen the range end to `192.168.1.150`. Run `ipconfig /renew` on tablet again.",
         "objectives": [
           {
             "id": "m4l4-tablet",

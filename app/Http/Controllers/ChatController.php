@@ -8,7 +8,6 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\AstroRouter;
 use App\Services\AttachmentService;
-use App\Services\DeckGeneratorService;
 use App\Services\LessonSourceService;
 use App\Services\NvidiaNimService;
 use App\Services\WebSearchService;
@@ -26,7 +25,6 @@ class ChatController extends Controller
 {
     public function __construct(
         protected NvidiaNimService $nimService,
-        protected DeckGeneratorService $deckService,
         protected LessonSourceService $lessonSources,
         protected AstroRouter $router
     ) {}
@@ -42,8 +40,8 @@ class ChatController extends Controller
             return redirect('/login');
         }
 
-        if ((Auth::user()->role ?? 'student') === 'teacher') {
-            return redirect(route('teacher.chat'));
+        if ((Auth::user()->role ?? 'student') === 'faculty') {
+            return redirect(route('faculty.chat'));
         }
 
         return view('student.chat', [

@@ -139,16 +139,16 @@
   ],
   "lab": {
     "id": "m2-l7",
-    "title": "Lesson 2.7 \u2014 Midterm Mission",
+    "title": "Lesson 2.7 — Midterm Mission",
     "blurb": "Build the ship network from a blank router and call Earth.",
     "steps": [
       {
         "title": "Address plan",
-        "body": "Split `192.168.20.0/24` into two `/25` subnets. **Comms deck** `192.168.20.0/25`: astro `.10`, rivet `.20`, router port eth0 `.1`. **Shield deck** `192.168.20.128/25`: volt `.140`, router port eth1 `.129`. The Earth link is `203.0.113.1/24` on router port eth2 (Earth is already set up). Use `ip addr add ... dev ...` on every device.",
+        "body": "Split `192.168.20.0/24` into two `/25` subnets. **Comms deck** `192.168.20.0/25`: astro `.10`, rivet `.20`, router adapter \"Ethernet\" `.1`. **Shield deck** `192.168.20.128/25`: volt `.140`, router adapter \"Ethernet 2\" `.129`. The Earth link is `203.0.113.1/24` on router adapter \"Ethernet 3\" (Earth is already set up). Use `netsh interface ip set address \"<adapter>\" static <ip> <mask>` on every device (a /25 mask is `255.255.255.128`).",
         "objectives": [
           {
             "id": "m2l7-gate-a",
-            "label": "gate eth0 is 192.168.20.1/25",
+            "label": "gate \"Ethernet\" is 192.168.20.1/25",
             "check": {
               "type": "iface-ip",
               "device": "gate",
@@ -158,7 +158,7 @@
           },
           {
             "id": "m2l7-gate-b",
-            "label": "gate eth1 is 192.168.20.129/25",
+            "label": "gate \"Ethernet 2\" is 192.168.20.129/25",
             "check": {
               "type": "iface-ip",
               "device": "gate",
@@ -168,7 +168,7 @@
           },
           {
             "id": "m2l7-gate-c",
-            "label": "gate eth2 is 203.0.113.1/24",
+            "label": "gate \"Ethernet 3\" is 203.0.113.1/24",
             "check": {
               "type": "iface-ip",
               "device": "gate",
@@ -210,7 +210,7 @@
       },
       {
         "title": "Gateways",
-        "body": "Point the comms deck at `192.168.20.1` and the shield deck at `192.168.20.129`: `ip route add default via ...` on astro, rivet and volt.",
+        "body": "Point the comms deck at `192.168.20.1` and the shield deck at `192.168.20.129`: `route add 0.0.0.0 mask 0.0.0.0 <gateway>` on astro, rivet and volt.",
         "objectives": [
           {
             "id": "m2l7-def-a",

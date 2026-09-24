@@ -1,0 +1,40 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c5-l1",
+  "title": "Lesson 5.1: Confidentiality & Data Integrity",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "03:03 · SILENT CHANGE DETECTED · SHIELD CONTROL",
+    "vex": "Nothing broke. Nothing alarmed. We just... adjusted things. Good luck proving it. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The hashes match again; the tamper is undone. Astro: \"A quiet change is still a change. Hashes don't lie, even when Doom hopes we won't check.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nShield settings look normal, but something feels off. Compare the live file to the backup by hash, confirm they differ, then restore the clean copy.\n\n1. certutil -hashfile shield-live.cfg SHA256\n2. certutil -hashfile backup\\shield-live.cfg.bak SHA256\n3. copy backup\\shield-live.cfg.bak shield-live.cfg\n",
+    "C:\\Citadel\\shield-live.cfg": "shield_power=100\nshield_arc=180\nshield_recharge=fast\nshield_arc=45\n",
+    "C:\\Citadel\\backup\\shield-live.cfg.bak": "shield_power=100\nshield_arc=180\nshield_recharge=fast\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Compare hashes",
+      "body": "Volt: \"Hashes don't lie. If they don't match, something changed.\" Hash both the live file and the backup, and compare them: `certutil -hashfile shield-live.cfg SHA256`, then `certutil -hashfile backup\\shield-live.cfg.bak SHA256`. Look closely at the arc setting at the end of the live file — that's the change.",
+      "objectives": [
+        { "id": "read", "label": "Read shield-live.cfg", "check": { "type": "read", "file": "C:\\Citadel\\shield-live.cfg" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Restore the clean copy",
+      "body": "Rivet: \"Found the tamper. Now undo it.\" Restore the backup over the live file: `copy backup\\shield-live.cfg.bak shield-live.cfg`.",
+      "objectives": [
+        { "id": "restored", "label": "shield-live.cfg matches the clean backup again", "check": { "type": "same-content", "a": "C:\\Citadel\\shield-live.cfg", "b": "C:\\Citadel\\backup\\shield-live.cfg.bak" } }
+      ]
+    }
+  ]
+}

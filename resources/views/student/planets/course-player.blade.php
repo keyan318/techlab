@@ -858,7 +858,8 @@
             transition: left 0.7s cubic-bezier(.22,1,.36,1);
         }
         .code-btn .python-logo,
-        .code-btn .networking-logo {
+        .code-btn .networking-logo,
+        .code-btn .cybersecurity-logo {
             flex-shrink: 0;
             width: 24px;
             height: 24px;
@@ -881,7 +882,8 @@
         .code-btn:hover::before { opacity: 1; }
         .code-btn:hover::after  { left: 130%; }
         .code-btn:hover .python-logo,
-        .code-btn:hover .networking-logo { transform: rotate(-10deg) scale(1.12); }
+        .code-btn:hover .networking-logo,
+        .code-btn:hover .cybersecurity-logo { transform: rotate(-10deg) scale(1.12); }
         .code-btn:hover .code-btn-arrow { opacity: 1; transform: translateX(0); }
         /* responds on press, not release */
         .code-btn:active {
@@ -893,8 +895,8 @@
             outline-offset: 3px;
         }
         @media (prefers-reduced-motion: reduce) {
-            .code-btn, .code-btn::after, .code-btn .python-logo, .code-btn .networking-logo, .code-btn-arrow { transition: none; }
-            .code-btn:hover, .code-btn:hover .python-logo, .code-btn:hover .networking-logo { transform: none; }
+            .code-btn, .code-btn::after, .code-btn .python-logo, .code-btn .networking-logo, .code-btn .cybersecurity-logo, .code-btn-arrow { transition: none; }
+            .code-btn:hover, .code-btn:hover .python-logo, .code-btn:hover .networking-logo, .code-btn:hover .cybersecurity-logo { transform: none; }
         }
     </style>
 </head>
@@ -1040,8 +1042,8 @@
 (function () {
 
     const slug  = @json($slug);
-    // Networking lessons show terminal commands, not Python.
-    const CODE_LANG = slug === 'networking' ? 'bash' : 'python';
+    // Networking and security lessons show console commands, not Python.
+    const CODE_LANG = slug === 'programming' ? 'python' : 'bash';
     let current = { module: @json($module), lesson: @json($lesson) };
 
     const stage    = document.getElementById('lesson-stage');
@@ -1090,6 +1092,8 @@
         const t = title.toLowerCase().trim();
         // Networking: the hands-on simulator is the last stage (like the Python coding exercise).
         if (t.indexOf('relay lab') !== -1)    return { rank: 5, kind: 'lab', icon: 'lab', tag: 'Relay Lab' };
+        // Security: "Defend it yourself" runs the Citadel Sim, also the last stage.
+        if (t.indexOf('defense lab') !== -1)  return { rank: 5, kind: 'lab', icon: 'lab', tag: 'Defense Lab' };
         // Networking: the crew speaks (Astro is the captain, Rivet the engineer, Volt the shield tech).
         if (t.indexOf('rivet') !== -1)        return { rank: 2, kind: 'astro', icon: 'astro', tag: 'Rivet Says' };
         if (t.indexOf('volt') !== -1)         return { rank: 2, kind: 'astro', icon: 'astro', tag: 'Volt Says' };
@@ -1369,7 +1373,7 @@
                 // Server says this lesson is still locked (the sidebar is display only).
                 stage.innerHTML =
                     '<div class="empty-lesson"><div><h1>Lesson locked 🔒</h1>' +
-                    '<p style="margin-top:10px;">' + (slug === 'networking' ? 'Pass the previous lesson\'s Relay Lab to unlock this one.' : 'Complete the previous lesson\'s coding challenge to unlock this one.') + '</p></div></div>';
+                    '<p style="margin-top:10px;">' + (slug === 'networking' ? 'Pass the previous lesson\'s Relay Lab to unlock this one.' : slug === 'cybersecurity' ? 'Clear the previous lesson\'s Defense Lab to unlock this one.' : 'Complete the previous lesson\'s coding challenge to unlock this one.') + '</p></div></div>';
                 return;
             }
 

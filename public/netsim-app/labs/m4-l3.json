@@ -151,12 +151,12 @@
   ],
   "lab": {
     "id": "m4-l3",
-    "title": "Lesson 4.3 \u2014 Logical Issues",
+    "title": "Lesson 4.3 — Logical Issues",
     "blurb": "Three configuration faults, one behind another. Peel them off in order.",
     "steps": [
       {
         "title": "Can astro reach the local server?",
-        "body": "Start with the nearest thing. From astro run `ip addr` and `ping 192.168.1.2`. Compare astro's address with the network the server is on. Fix the address (`ip addr del` the wrong one, `ip addr add` a correct one in the same network).",
+        "body": "Start with the nearest thing. From astro run `ipconfig` and `ping 192.168.1.2`. Compare astro's address with the network the server is on. Fix the address (`netsh interface ip set address` replaces the wrong one with a correct one in the same network).",
         "objectives": [
           {
             "id": "m4l3-local",
@@ -172,7 +172,7 @@
       },
       {
         "title": "Can astro reach past the router?",
-        "body": "Local traffic works now. Try `ping 203.0.113.10` (Earth's server). If it fails, run `ip route` and ask: how does astro know where to send traffic for other networks?",
+        "body": "Local traffic works now. Try `ping 203.0.113.10` (Earth's server). If it fails, run `route print` and ask: how does astro know where to send traffic for other networks?",
         "objectives": [
           {
             "id": "m4l3-remote",
@@ -188,7 +188,7 @@
       },
       {
         "title": "Can astro use names?",
-        "body": "Ping by number works, so try by name: `dig earth.lan`. The ship's DNS server is `192.168.1.2` and it knows `earth.lan`. Click astro and check its **DNS client** setting against that address.",
+        "body": "Ping by number works, so try by name: `nslookup earth.lan`. The ship's DNS server is `192.168.1.2` and it knows `earth.lan`. Click astro and check its **DNS client** setting against that address.",
         "objectives": [
           {
             "id": "m4l3-dns",

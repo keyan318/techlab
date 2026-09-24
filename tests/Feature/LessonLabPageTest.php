@@ -78,7 +78,31 @@ class LessonLabPageTest extends TestCase
 
         // Python lessons finish through the code editor, not a simulator lab.
         $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'programming'))->assertNotFound();
-        $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'cybersecurity'))->assertNotFound();
+        $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'deep-space'))->assertNotFound();
+    }
+
+    public function test_a_security_lesson_opens_the_citadel_sim_instead_of_netsim(): void
+    {
+        $user = User::factory()->create(['planets' => ['cybersecurity']]);
+
+        $html = $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'cybersecurity'))
+            ->assertOk()
+            ->assertSee('citadel-sim/index.html?lab=c1-l1&u='.$user->id, false)
+            ->assertSee('Citadel Defense Lab')
+            ->assertSee('Know Your Citadel')
+            ->assertDontSee('netsim-app')
+            ->getContent();
+
+        // The page only trusts messages from the simulator it opened.
+        $this->assertStringContainsString('"source":"citadel"', $html);
+    }
+
+    public function test_a_network_lab_still_listens_to_netsim(): void
+    {
+        $html = $this->actingAs(User::factory()->create())->get($this->labPage('m1', 'lesson01'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('"source":"netsim"', $html);
+        $this->assertStringContainsString('Relay Lab', $html);
     }
 
     public function test_the_lesson_page_shows_the_button_instead_of_an_embedded_simulator(): void

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Reads a teacher's uploaded timetable (PDF / Word / PowerPoint / CSV / text / photo or screenshot)
+ * Reads a faculty member's uploaded timetable (PDF / Word / PowerPoint / CSV / text / photo or screenshot)
  * and asks Astro to turn it into weekly class slots. Everything the model returns is cleaned here.
  */
 class ScheduleExtractor
@@ -22,7 +22,7 @@ class ScheduleExtractor
     ];
 
     private const PROMPT = <<<'PROMPT'
-You read a teacher's weekly timetable and list every class slot in it.
+You read a faculty member's weekly timetable and list every class slot in it.
 
 RULES:
 - Use ONLY what is in the file or image. Never invent classes, days or times.

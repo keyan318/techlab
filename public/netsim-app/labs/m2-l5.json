@@ -59,16 +59,16 @@
   ],
   "lab": {
     "id": "m2-l5",
-    "title": "Lesson 2.5 \u2014 Split the Block",
+    "title": "Lesson 2.5 — Split the Block",
     "blurb": "Cut one /24 into two /25 subnets and connect them.",
     "steps": [
       {
         "title": "Give each subnet its addresses",
-        "body": "You own 192.168.10.0/24. Split it into two `/25` subnets: `192.168.10.0/25` (hosts .1 to .126) for astro and `192.168.10.128/25` (hosts .129 to .254) for rivet. Set the router first: `ip addr add 192.168.10.1/25 dev eth0` and `ip addr add 192.168.10.129/25 dev eth1`. Then give astro `192.168.10.10/25` and rivet `192.168.10.140/25`.",
+        "body": "You own 192.168.10.0/24. Split it into two `/25` subnets: `192.168.10.0/25` (hosts .1 to .126) for astro and `192.168.10.128/25` (hosts .129 to .254) for rivet. Set the router first: `netsh interface ip set address \"Ethernet\" static 192.168.10.1 255.255.255.128` and `netsh interface ip set address \"Ethernet 2\" static 192.168.10.129 255.255.255.128`. Then give astro `192.168.10.10/25` and rivet `192.168.10.140/25`.",
         "objectives": [
           {
             "id": "m2l5-gate-a",
-            "label": "gate has 192.168.10.1/25 on eth0",
+            "label": "gate has 192.168.10.1/25 on \"Ethernet\"",
             "check": {
               "type": "iface-ip",
               "device": "gate",
@@ -78,7 +78,7 @@
           },
           {
             "id": "m2l5-gate-b",
-            "label": "gate has 192.168.10.129/25 on eth1",
+            "label": "gate has 192.168.10.129/25 on \"Ethernet 2\"",
             "check": {
               "type": "iface-ip",
               "device": "gate",
@@ -110,7 +110,7 @@
       },
       {
         "title": "Point each host at its gateway",
-        "body": "Each host needs the router on its own side as the default gateway: `ip route add default via 192.168.10.1` on astro and `ip route add default via 192.168.10.129` on rivet. Then ping across the two subnets.",
+        "body": "Each host needs the router on its own side as the default gateway: `route add 0.0.0.0 mask 0.0.0.0 192.168.10.1` on astro and `route add 0.0.0.0 mask 0.0.0.0 192.168.10.129` on rivet. Then ping across the two subnets.",
         "objectives": [
           {
             "id": "m2l5-def-a",

@@ -19,7 +19,7 @@ class PlanetSourcesTest extends TestCase
         $this->assertSame(['programming', 'networking', 'cybersecurity'], $catalog->keys()->all());
         $this->assertNotEmpty($catalog['programming']['modules']);
         $this->assertNotEmpty($catalog['networking']['modules']);
-        $this->assertSame([], $catalog['cybersecurity']['modules']);
+        $this->assertNotEmpty($catalog['cybersecurity']['modules']);
     }
 
     public function test_resolve_returns_lesson_text_and_drops_invalid_refs(): void
@@ -31,10 +31,12 @@ class PlanetSourcesTest extends TestCase
             ['planet' => 'cybersecurity', 'module' => 'M1', 'lesson' => 'lesson-01'],
         ]);
 
-        $this->assertCount(2, $sources);
+        $this->assertCount(3, $sources);
         $this->assertStringContainsString('Variables', $sources[0]['label']);
         $this->assertStringContainsString('variable', $sources[0]['text']);
         $this->assertStringContainsString('Networking', $sources[1]['label']);
+        $this->assertStringContainsString('Citadel', $sources[2]['label']);
+        $this->assertStringContainsString('asset', $sources[2]['text']);
     }
 
     public function test_connected_lessons_reach_astro_and_are_returned_as_sources(): void

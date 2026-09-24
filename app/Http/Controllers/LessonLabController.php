@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
- * The full-page simulator for a lesson's hands-on lab (the "Configure it yourself" button).
+ * The full-page simulator for a lesson's hands-on lab ("Configure it yourself" / "Defend it yourself").
  *
  * The lesson page only carries a button; the simulator itself needs the whole screen, so it lives on its own
  * page. This page listens to the simulator, reports a pass through LessonProgressController::completeLab(),
@@ -16,6 +16,24 @@ use Illuminate\Http\Response;
  */
 class LessonLabController extends Controller
 {
+    /**
+     * The simulators a lab can run in. `source` is the postMessage source the page accepts from that simulator.
+     */
+    public const SIMS = [
+        'netsim' => [
+            'path' => 'netsim-app/app.html',
+            'source' => 'netsim',
+            'name' => 'Relay Lab',
+            'hint' => 'Press <strong>Check objectives</strong> in the simulator when you are ready.',
+        ],
+        'citadel' => [
+            'path' => 'citadel-sim/index.html',
+            'source' => 'citadel',
+            'name' => 'Citadel Defense Lab',
+            'hint' => 'Clear every objective in the simulator to repel the attack.',
+        ],
+    ];
+
     /** GET /student/planet/{slug}/lab/{module}/{lesson}  (gated by the lesson.unlocked middleware) */
     public function show(Request $request, string $slug, string $module, string $lesson): Response|RedirectResponse
     {
@@ -41,13 +59,20 @@ class LessonLabController extends Controller
         $params = ['slug' => $slug, 'module' => $module, 'lesson' => $lesson];
 
         // no-store: a restored or cached copy of this page would carry an old CSRF token and could not save a pass.
+        $sim = self::SIMS[CourseProgressService::simFor($module, $lesson, $slug)] ?? self::SIMS['netsim'];
+
         return response()->view('student.planets.lab', [
             'slug' => $slug,
             'lab' => $lab,
+            'sim' => $sim,
             'number' => $this->number($module, $lesson),
             'title' => $this->title($slug, $module, $lesson),
             'lessonUrl' => route('student.planet.module.lesson', $params),
             'completeUrl' => route('student.planet.lab.complete', $params),
+            // Astro's live help chat is Citadel Sim only for now (NetSim isn't wired to it).
+            'labHelpStatusUrl' => $sim['source'] === 'citadel' ? route('student.planet.lab-help.status', $params) : null,
+            'labHelpUnlockUrl' => $sim['source'] === 'citadel' ? route('student.planet.lab-help.unlock', $params) : null,
+            'labHelpAskUrl' => $sim['source'] === 'citadel' ? route('student.planet.lab-help.ask', $params) : null,
             'nextUrl' => $next ? route('student.planet.module.lesson', ['slug' => $slug] + $next) : null,
             'alreadyDone' => CourseProgressService::isCompleted($user, $module, $lesson, $slug),
         ], 200, ['Cache-Control' => 'no-store, private']);
@@ -69,6 +94,6 @@ class LessonLabController extends Controller
             }
         }
 
-        return 'Relay Lab';
+        return 'Lab';
     }
 }

@@ -40,12 +40,12 @@
 
     {{-- Scrollable body --}}
     <div x-show="!noteOpen" class="mt-3 flex-1 overflow-y-auto px-3 pb-20">
-      @if($isTeacherChat ?? false)
+      @if($isFacultyChat ?? false)
       <p class="px-0.5 pb-2 text-xs leading-relaxed text-muted">
         Tell Astro your topic and the look you want (for example “dark and bold, for 14-year-olds”), then tap PPT.
       </p>
 
-      {{-- PPT: builds a designed .pptx from this chat (POST /teacher/chat/ppt) --}}
+      {{-- PPT: builds a designed .pptx from this chat (POST /faculty/chat/ppt) --}}
       <div x-data="{
              busy: false, msg: '', ok: false,
              async make() {
@@ -55,7 +55,7 @@
                this.busy = true; this.msg = '';
                try {
                  const csrf = document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '';
-                 const res = await fetch('{{ route('teacher.chat.ppt') }}', {
+                 const res = await fetch('{{ route('faculty.chat.ppt') }}', {
                    method: 'POST',
                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf, 'X-Requested-With': 'XMLHttpRequest' },
                    body: JSON.stringify({ conversation_id: id }),

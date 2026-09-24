@@ -28,6 +28,16 @@ class StudentDashboardService
     /** Price of Astro's hint on an exercise. Bought once per lesson; a fifth of what finishing that lesson pays. */
     public const XP_HINT_COST = 20;
 
+    /**
+     * Price of Astro's live lab-help chat (Citadel Sim). Bought once per lab attempt, then the student can ask
+     * follow-up questions for free. Deliberately steeper than the static hint (3x) — Astro can see the student's
+     * exact terminal transcript here, so it's real diagnostic help, not a canned tip, and should cost accordingly.
+     */
+    public const XP_LAB_HELP_COST = 60;
+
+    /** Earned XP per level. Level is derived, like XP itself, so nothing new is stored. */
+    public const XP_PER_LEVEL = 300;
+
     /** Planets shown on the dashboard. Only those with a config blueprint have trackable lessons. */
     private const PLANETS = [
         'programming' => ['name' => 'Programming',   'world' => 'Python Planet',      'accent' => '#73b6ff'],
@@ -83,6 +93,117 @@ class StudentDashboardService
         ];
     }
 
+    /** XP earned, ignoring what was spent on hints, so buying a hint never lowers a student's level. */
+    public static function earnedXp(User $user): int
+    {
+        return $user->lessonProgress()->count() * self::XP_PER_LESSON
+            + (int) QuizAnswer::where('user_id', $user->id)->sum('xp');
+    }
+
+    public static function levelFor(int $earnedXp): int
+    {
+        return 1 + intdiv($earnedXp, self::XP_PER_LEVEL);
+    }
+
+    /**
+     * What the landing dashboard shows: the "Jump back in" course, the profile rail stats.
+     */
+    public static function home(User $user): array
+    {
+        $progress = LessonProgress::where('user_id', $user->id)->get(['course', 'module', 'lesson', 'completed_at']);
+        $planets = self::planets($user, $progress);
+
+        $lessonsDone = array_sum(array_column($planets, 'completed'));
+        $quizXp = (int) QuizAnswer::where('user_id', $user->id)->sum('xp');
+        $spent = (int) XpSpend::where('user_id', $user->id)->sum('cost');
+
+        $board = self::leaderboard($user);
+        $me = collect($board)->firstWhere('me', true);
+
+        return [
+            'user' => $user,
+            'xp' => self::xpFor($lessonsDone, $quizXp, $spent),
+            'level' => self::levelFor($lessonsDone * self::XP_PER_LESSON + $quizXp),
+            'rank' => $me['rank'] ?? null,
+            'crewSize' => count($board),
+            'badges' => array_sum(array_column($planets, 'modulesDone')),
+            'streak' => self::streak($user, $progress),
+            'hero' => self::hero($planets, self::currentLesson($user, $progress)),
+        ];
+    }
+
+    /**
+     * The first course on a planet that is really open (not "coming soon"), with its catalog entry.
+     */
+    public static function catalogCourse(string $slug): ?array
+    {
+        foreach (config("course-catalog.{$slug}.courses", []) as $id => $course) {
+            if (empty($course['coming_soon'])) {
+                return $course + ['id' => $id];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * The card behind "Jump back in": the course the student is in the middle of, or null
+     * when there is nothing left to continue.
+     */
+    private static function hero(array $planets, ?array $current): ?array
+    {
+        $course = $current ? self::catalogCourse($current['planet']) : null;
+
+        if (! $current || ! $course) {
+            return null;
+        }
+
+        $planet = $planets[$current['planet']];
+
+        return [
+            'title' => $course['title'],
+            'blurb' => $course['blurb'] ?? '',
+            'banner' => $course['banner'] ?? '#1b1650',
+            'scene' => $course['scene'] ?? null,
+            'percent' => $planet['percent'],
+            'started' => $planet['completed'] > 0,
+            'next' => $current['title'],
+            'continueUrl' => $current['url'],
+            'overviewUrl' => route('student.course.overview', ['slug' => $current['planet'], 'course' => $course['id']]),
+        ];
+    }
+
+    /**
+     * Consecutive days of learning up to today. A day counts when the student studied
+     * (active minutes) or finished a lesson. Not having studied *yet* today doesn't break the streak.
+     */
+    public static function streak(User $user, ?Collection $progress = null): int
+    {
+        $progress ??= LessonProgress::where('user_id', $user->id)->get(['completed_at']);
+
+        $days = StudyActivity::where('user_id', $user->id)->where('minutes', '>', 0)->get(['date'])
+            ->toBase()
+            ->map(fn ($a) => $a->date->toDateString())
+            ->merge($progress->filter(fn ($r) => $r->completed_at)->toBase()->map(fn ($r) => $r->completed_at->toDateString()))
+            ->unique()
+            ->flip();
+
+        $day = now()->startOfDay();
+
+        if (! $days->has($day->toDateString())) {
+            $day->subDay();
+        }
+
+        $streak = 0;
+
+        while ($days->has($day->toDateString())) {
+            $streak++;
+            $day->subDay();
+        }
+
+        return $streak;
+    }
+
     /**
      * Per-planet progress. A planet with no blueprint in config/course-structure.php
      * has no tracked lessons yet — it is reported as untracked rather than as 0 of 0.
@@ -94,6 +215,10 @@ class StudentDashboardService
         $out = [];
 
         foreach (self::PLANETS as $slug => $meta) {
+            if (! $user->isEnrolledIn($slug)) {
+                continue;
+            }
+
             $order = config("course-structure.{$slug}.modules") ? CourseProgressService::order($slug) : [];
             $keys = $done->get($slug, collect())->map(fn ($r) => $r->module.'/'.$r->lesson)->flip();
             $modules = collect($order)->groupBy('module');
@@ -125,11 +250,17 @@ class StudentDashboardService
     {
         $progress ??= LessonProgress::where('user_id', $user->id)->get(['course', 'module', 'lesson', 'completed_at']);
 
-        $latest = $progress->sortByDesc('completed_at')->first()?->course;
-        $course = $latest && CourseProgressService::exists($latest) ? $latest : CourseProgressService::COURSE;
+        // Only planets the student enrolled in, with a lesson blueprint, can be continued.
+        $open = array_values(array_filter($user->enrolledPlanets(), fn ($p) => CourseProgressService::exists($p)));
+        if (! $open) {
+            return null;
+        }
 
-        return self::nextLessonIn($course, $progress) ?? ($course !== CourseProgressService::COURSE
-            ? self::nextLessonIn(CourseProgressService::COURSE, $progress)
+        $latest = $progress->sortByDesc('completed_at')->first()?->course;
+        $course = in_array($latest, $open, true) ? $latest : (in_array(CourseProgressService::COURSE, $open, true) ? CourseProgressService::COURSE : $open[0]);
+
+        return self::nextLessonIn($course, $progress) ?? ($course !== $open[0]
+            ? self::nextLessonIn($open[0], $progress)
             : null);
     }
 
@@ -152,6 +283,7 @@ class StudentDashboardService
             foreach ($module['lessons'] as $lKey => $lesson) {
                 if (CourseProgressService::normalize($mKey, $lKey) === [$next['module'], $next['lesson']]) {
                     return [
+                        'planet' => $course,
                         'module' => $module['title'],
                         'title' => $lesson['title'],
                         'url' => route('student.planet.module.lesson', [

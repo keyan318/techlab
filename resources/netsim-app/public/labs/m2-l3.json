@@ -71,12 +71,12 @@
   ],
   "lab": {
     "id": "m2-l3",
-    "title": "Lesson 2.3 \u2014 Private Addresses",
+    "title": "Lesson 2.3 — Private Addresses",
     "blurb": "Spot the typo that put Rivet on the wrong network.",
     "steps": [
       {
         "title": "Fix the address",
-        "body": "Both consoles use private 192.168.x.x addresses, but they cannot talk. Compare the two addresses carefully: one octet differs. Run `ip addr` on each console to read them. Rivet's third octet is wrong. Remove it with `ip addr del 192.168.1.20/24 dev eth0`, then add `ip addr add 192.168.0.20/24 dev eth0`.",
+        "body": "Both consoles use private 192.168.x.x addresses, but they cannot talk. Compare the two addresses carefully: one octet differs. Run `ipconfig` on each console to read them. Rivet's third octet is wrong. Replace it with `netsh interface ip set address \"Ethernet\" static 192.168.0.20 255.255.255.0`.",
         "objectives": [
           {
             "id": "m2l3-ip",

@@ -26,7 +26,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l7.json) complete
         <li><strong>Routes</strong>: traffic needs a route there and a route back.</li>
     </ul>
     <p class="body-text">
-        Plan first, then configure, then test. Check each device with <code>ip addr</code> and <code>ip route</code> before you ping.
+        Plan first, then configure, then test. Check each device with <code>ipconfig</code> and <code>route print</code> before you ping.
     </p>
 
     <h2 class="section-heading">Crew Briefing</h2>
@@ -116,7 +116,7 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l7.json) complete
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the simulator full screen. You use Linux commands there; the ideas are the same on Cisco gear.
+            Opens the simulator full screen. You type Windows commands there (Command Prompt), like on a school PC; the ideas are the same on Cisco gear.
             Press <strong>Check objectives</strong> after each step.
         </p>
     </div>

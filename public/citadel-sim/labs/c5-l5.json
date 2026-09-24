@@ -1,0 +1,40 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "c5-l5",
+  "title": "Lesson 5.5: Cryptanalysis & Strong Cryptography",
+  "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
+  "story": {
+    "alert": "15:15 · CODEBREAKERS AT WORK · COMMS RELAY",
+    "vex": "A shift cipher again? You're not even trying. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED. The same trick that broke Vex's cipher can't touch the crew's new one. Astro: \"A weak cipher falls to patience. A strong one needs the key, full stop.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nDoom's codebreakers are testing our old shift cipher. Break their intercepted message the same way they'd break ours, then upgrade the crew to a stronger cipher they can't shift their way through.\n\n1. type old-intercept.txt\n2. try shifts with caesar decode until it reads as English (hint: most common letter in the ciphertext is likely 'E')\n3. submit the decoded message\n4. xor citadel-shield-9 UPGRADE COMPLETE\n5. submit the ciphertext\n",
+    "C:\\Citadel\\old-intercept.txt": "A weak shift cipher — the kind Vex breaks by counting letters. Shift unknown; try a few.\n\nAJC HFSSTY GWJFP YMNX\n"
+  },
+  "users": [
+    { "name": "cadet", "fullName": "Shield Cadet (you)", "groups": ["Users"], "passwordSet": "09/23/2026", "lastLogon": "Now" }
+  ],
+  "classify": {},
+  "flags": ["VEX CANNOT BREAK THIS", "363933332521290d302724352021797c"],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Break the weak cipher",
+      "body": "Volt: \"A shift cipher falls to patience: count the letters, guess the shift, try it.\" Read `old-intercept.txt`, then try `caesar decode <shift> AJC HFSSTY GWJFP YMNX` for a few shifts until it reads as English. Submit the decoded message.",
+      "objectives": [
+        { "id": "read", "label": "Read old-intercept.txt", "check": { "type": "read", "file": "C:\\Citadel\\old-intercept.txt" } },
+        { "id": "broken", "label": "Submitted the decoded message", "check": { "type": "flag", "value": "VEX CANNOT BREAK THIS" } }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Upgrade to a real cipher",
+      "body": "Rivet: \"A shift cipher only has 25 possible keys. Ours needs a real one.\" Run `xor citadel-shield-9 UPGRADE COMPLETE` and submit the ciphertext. Without the key, counting letters gets Doom nowhere this time.",
+      "objectives": [
+        { "id": "upgraded", "label": "Submitted the strong-cipher ciphertext", "check": { "type": "flag", "value": "363933332521290d302724352021797c" } }
+      ]
+    }
+  ]
+}

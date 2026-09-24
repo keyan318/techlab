@@ -5,6 +5,8 @@ import type { Network } from '../engine/network';
 import { IpDevice } from '../engine/ipdevice';
 import { cidrToString, ipToString, networkOf, parseCidr, parseIp, type U32 } from '../engine/ip';
 import type { Check, Objective } from './types';
+import { shellOs } from '../os';
+import { adapterNameOf, prefixToMask } from '../commands/windows/util';
 
 export interface CheckResult {
   id: string;
@@ -39,18 +41,21 @@ function runOne(net: Network, check: Check, done: (pass: boolean, detail: string
       const d = findDevice(net, check.device);
       const iface = d?.getInterface(check.iface);
       if (!d || !iface) return done(false, `no device/interface ${check.device}/${check.iface}`);
-      if (!iface.ip) return done(false, `${check.iface} has no address yet`);
+      const win = shellOs() === 'windows';
+      const label = win ? `"${adapterNameOf(d, check.iface)}"` : check.iface;
+      if (!iface.ip) return done(false, `${label} has no address yet`);
       const got = cidrToString(iface.ip.addr, iface.ip.prefix);
-      if (check.cidr) return done(got === check.cidr, `${check.iface} is ${got}`);
+      const shown = win ? `${ipToString(iface.ip.addr)} mask ${prefixToMask(iface.ip.prefix)}` : got;
+      if (check.cidr) return done(got === check.cidr, `${label} is ${shown}`);
       if (check.inSubnet) {
         const net_ = parseCidr(check.inSubnet);
         if (!net_) return done(false, 'bad subnet in lab definition');
         const ok =
           networkOf(iface.ip.addr, net_.prefix) === networkOf(net_.addr, net_.prefix) &&
           iface.ip.prefix === net_.prefix;
-        return done(ok, `${check.iface} is ${got}`);
+        return done(ok, `${label} is ${shown}`);
       }
-      return done(true, `${check.iface} is ${got}`);
+      return done(true, `${label} is ${shown}`);
     }
     case 'default-route': {
       const d = findDevice(net, check.device);
@@ -69,12 +74,18 @@ function runOne(net: Network, check: Check, done: (pass: boolean, detail: string
     case 'forwarding': {
       const d = findDevice(net, check.device);
       if (!d) return done(false, `no device ${check.device}`);
-      return done(d.forwarding === check.expect, `ip_forward = ${d.forwarding ? 1 : 0}`);
+      const fwd = shellOs() === 'windows' ? `IP routing ${d.forwarding ? 'enabled' : 'disabled'}` : `ip_forward = ${d.forwarding ? 1 : 0}`;
+      return done(d.forwarding === check.expect, fwd);
     }
     case 'fw-policy': {
       const d = findDevice(net, check.device);
       if (!d) return done(false, `no device ${check.device}`);
       const chain = d.fw.filter[check.hook];
+      if (shellOs() === 'windows') {
+        const what = check.hook === 'output' ? 'outbound' : check.hook === 'forward' ? 'routed traffic' : 'inbound';
+        if (!chain.declared) return done(false, 'Windows Defender Firewall is off');
+        return done(chain.policy === check.policy, `${what} policy is ${chain.policy === 'drop' ? 'block' : 'allow'}`);
+      }
       if (!chain.declared) return done(false, `${check.hook} chain not declared`);
       return done(chain.policy === check.policy, `${check.hook} policy is ${chain.policy}`);
     }
