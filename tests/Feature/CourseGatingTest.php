@@ -10,9 +10,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * A course only locks once a faculty captain has actually generated a code for it —
- * a course nobody has claimed yet behaves exactly as it did before this feature
- * existed (see PlanetController::courses()). This suite covers the claimed case.
+ * A course only opens once a faculty captain has claimed it and generated a code —
+ * a course nobody has claimed yet is just as closed, with its own "no captain yet"
+ * messaging instead of "ask to join" (see PlanetController::courses()).
  */
 class CourseGatingTest extends TestCase
 {
@@ -38,11 +38,16 @@ class CourseGatingTest extends TestCase
         CourseJoinRequest::create(['crew_id' => $crew->id, 'user_id' => $student->id, 'status' => CourseJoinRequest::ACCEPTED]);
     }
 
-    public function test_a_course_nobody_has_claimed_stays_open(): void
+    public function test_a_course_nobody_has_claimed_stays_closed(): void
     {
-        $this->actingAs($this->student())
+        $student = $this->student();
+
+        $this->actingAs($student)->get(route('student.planet', 'networking'))
+            ->assertOk()->assertSee('No captain assigned yet')->assertDontSee('Ask to join');
+
+        $this->actingAs($student)
             ->get(route('student.planet.play', ['slug' => 'networking', 'course' => 'networking-fundamentals']))
-            ->assertOk();
+            ->assertRedirect(route('student.planet', 'networking'));
     }
 
     public function test_a_captained_course_shows_who_to_ask_and_stays_locked_until_the_code_is_redeemed(): void

@@ -34,7 +34,7 @@
 
         .bar { background: transparent; } /* no bar: logo and button sit straight on the space */
         .bar, main, footer { position: relative; z-index: 1; }
-        .bar-in { max-width: 1080px; margin: 0 auto; padding: 0 24px; height: 96px; display: flex; align-items: center; justify-content: space-between; }
+        .bar-in { max-width: 1080px; margin: 0 auto; padding: 0 24px; height: 120px; display: flex; align-items: center; justify-content: space-between; }
         .brand { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); }
         .brand img { width: 34px; height: 34px; border-radius: 8px; }
         .brand small { font-family: var(--text); font-weight: 600; font-size: 12px; color: var(--blue); background: var(--blue-tint); padding: 2px 8px; border-radius: 999px; letter-spacing: 0; }
@@ -48,8 +48,8 @@
 
         main { flex: 1; }
         .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
-        /* Same as the student page: the hero fills the first screen (viewport minus the 96px top bar), the sections start below the fold */
-        .hero { position: relative; text-align: center; padding: 48px 0 72px; min-height: calc(100vh - 96px); min-height: calc(100svh - 96px); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* Same as the student page: the hero fills the first screen (viewport minus the 120px top bar), the sections start below the fold */
+        .hero { position: relative; text-align: center; padding: 48px 0 72px; min-height: calc(100vh - 120px); min-height: calc(100svh - 120px); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         /* Everything under the hero rises into view as you scroll to it; the arrow points the way */
         .js .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
         .js .reveal.in { opacity: 1; transform: none; }
@@ -101,6 +101,7 @@
 
         @media (max-width: 640px) { .bar-in, .wrap, .foot-in { padding-left: 20px; padding-right: 20px; } .hero { padding: 48px 0 40px; } .cta-row .btn { flex: 1; } }
     </style>
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 <body>
     <x-cosmic-background />

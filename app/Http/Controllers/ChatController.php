@@ -8,6 +8,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\AstroRouter;
 use App\Services\AttachmentService;
+use App\Services\CourseMaterialSourceService;
 use App\Services\LessonSourceService;
 use App\Services\NvidiaNimService;
 use App\Services\WebSearchService;
@@ -49,9 +50,8 @@ class ChatController extends Controller
             'userInitial' => mb_strtoupper(mb_substr(Auth::user()->name ?? 'U', 0, 1)),
             'userRole' => ucfirst(Auth::user()->role ?? 'student'),
             'modelLabel' => config('nvidia_nim.model_label', 'Astro · NVIDIA NIM'),
-            'planetCatalog' => $this->lessonSources->catalog(),
-            // ?source=programming/M1/lesson-02 — "Ask Astro about this lesson" deep link.
-            'preselectSource' => $this->parseSourceParam((string) $request->query('source', '')),
+            'planetCatalog' => $this->lessonSources->catalog(Auth::user()),
+            'materialCatalog' => app(CourseMaterialSourceService::class)->catalog(Auth::user()),
             'conversations' => $this->formatConversations(
                 Auth::user()->conversations()->latest('updated_at')->get()
             ),
@@ -182,6 +182,7 @@ class ChatController extends Controller
                 'role' => $message->role,
                 'content' => $message->content,
                 'attachments' => AttachmentService::publicMeta($message->attachments),
+                'sources' => $message->sources ?? [],
                 'created_at' => $message->created_at->toISOString(),
             ];
         })->toArray();
@@ -220,6 +221,8 @@ class ChatController extends Controller
             'sources.*.planet' => 'required|string',
             'sources.*.module' => 'required|string',
             'sources.*.lesson' => 'required|string',
+            'materials' => 'nullable|array|max:'.CourseMaterialSourceService::MAX_SOURCES,
+            'materials.*' => 'integer',
         ], [
             'files.max' => 'Too many files — you can attach up to '.AttachmentService::MAX_FILES.' per message.',
             'files.*.max' => ':attribute is too large — the limit is '.AttachmentService::mb(AttachmentService::maxFileKb()).' per file.',
@@ -255,6 +258,16 @@ class ChatController extends Controller
         $sourceContext = $this->lessonSources->promptBlock($planetSources);
         $sourceLabels = array_column($planetSources, 'label');
 
+        // The faculty's own uploads only ground Astro when the student attaches one by hand
+        // (the "Add from Materials" button) — exactly like a Planet lesson. Astro used to search
+        // every upload on every message, which meant an irrelevant handout got cited just
+        // because a keyword happened to overlap.
+        $materialSources = app(CourseMaterialSourceService::class)->resolve($request->input('materials', []), Auth::user());
+        if ($materialSources) {
+            $sourceContext = trim($sourceContext."\n\n".app(CourseMaterialSourceService::class)->promptBlock($materialSources));
+        }
+        $materialMeta = array_map(fn ($m) => ['kind' => 'material', 'title' => $m['title'], 'course' => $m['course'], 'url' => $m['url']], $materialSources);
+
         // Existing conversation: prior history, in ONE query that also enforces ownership
         // (the only DB read before the first token). A NEW conversation is created after streaming.
         $conversationId = $request->input('conversation_id') ? (int) $request->input('conversation_id') : null;
@@ -279,23 +292,28 @@ class ChatController extends Controller
             ? array_merge([['type' => 'text', 'text' => $turnText]], array_map(fn ($img) => ['type' => 'image_url', 'image_url' => ['url' => $img['url']]], $attachments['images']))
             : $turnText];
 
-        // Fast vs Deep for this message (deterministic rules, no extra AI call).
-        $route = $this->router->route($userMessage, count($planetSources));
+        // Fast vs Deep for this message (deterministic rules, no extra AI call). Lessons and
+        // materials the student attached by hand both count toward "multiple sources" — Astro
+        // has to synthesise across them either way.
+        $route = $this->router->route($userMessage, count($planetSources) + count($materialSources));
 
         $wantsStream = str_contains((string) $request->header('Accept'), 'text/event-stream');
         $startedAt = microtime(true);
 
-        // Extensive research only: real web sources. Quick questions skip the web entirely.
+        // A selected lesson is the answer's source, so the web is never searched alongside it.
+        // Attached materials are checked first, but a Deep question always gets web sources too
+        // — even when a material was already attached. Below Deep, the web stays a fallback for
+        // whatever the attached materials didn't cover; greetings and one-word replies never reach it.
         $web = app(WebSearchService::class);
-        $researching = WebSearchService::enabled() && $web->needsResearch($userMessage);
+        $researching = $web->shouldSearch($userMessage, $route, (bool) $materialSources, (bool) $planetSources);
 
         if (! $wantsStream) {
             $webResults = $researching ? $web->search($userMessage) : [];
 
-            return $this->sendBuffered($userId, $conversationId, $userMessage, $history, trim($sourceContext."\n\n".$web->promptBlock($webResults)), $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $webResults);
+            return $this->sendBuffered($userId, $conversationId, $userMessage, $history, trim($sourceContext."\n\n".$web->promptBlock($webResults)), $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $webResults, $materialMeta);
         }
 
-        return response()->stream(function () use ($userId, $conversationId, $userMessage, $history, $sourceContext, $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $web, $researching) {
+        return response()->stream(function () use ($userId, $conversationId, $userMessage, $history, $sourceContext, $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $web, $researching, $materialMeta) {
             // A long NIM stream must not be killed by PHP limits or a closed tab:
             // we still want the finished answer persisted.
             set_time_limit(0);
@@ -313,10 +331,12 @@ class ChatController extends Controller
             $emit('start');
 
             $webResults = [];
+            $webMeta = [];
             if ($researching) {
                 $emit('researching');
                 $webResults = $web->search($userMessage);
-                $emit('web', ['results' => array_map(fn ($r) => array_diff_key($r, ['snippet' => 1]), $webResults)]);
+                $webMeta = array_map(fn ($r) => ['kind' => 'web'] + array_diff_key($r, ['snippet' => 1]), $webResults);
+                $emit('web', ['results' => $webMeta]);
                 $sourceContext = trim($sourceContext."\n\n".$web->promptBlock($webResults));
             }
 
@@ -343,13 +363,17 @@ class ChatController extends Controller
             if ($failed !== null) {
                 $emit('error', ['error' => $failed]);
             } else {
-                $emit('end', ['sources' => $sourceLabels]);
+                $emit('end', ['sources' => $sourceLabels, 'materials' => $materialMeta, 'web' => $webMeta]);
             }
 
-            // Persist AFTER the stream. Partial text from an interrupted stream is kept.
+            // Persist AFTER the stream. Partial text from an interrupted stream is kept. Any
+            // link the model invented mid-stream — already shown to the browser, can't be
+            // unsent — is stripped here so it never lives on in history or gets fed back to
+            // the model on the next turn.
+            $storedAnswer = WebSearchService::stripUnlistedLinks($answer, self::citableUrls($materialMeta, $webMeta));
             $ids = ['conversation_id' => null, 'message_id' => null, 'saved' => false];
             try {
-                $ids = $this->persistExchange($userId, $conversationId, $userMessage, $answer, $attachmentItems) + ['saved' => true];
+                $ids = $this->persistExchange($userId, $conversationId, $userMessage, $storedAnswer, $attachmentItems, self::sourceMeta($sourceLabels, $materialMeta, $webMeta)) + ['saved' => true];
             } catch (\Throwable $e) {
                 Log::error('Failed to persist Astro exchange: '.$e->getMessage());
             }
@@ -376,7 +400,7 @@ class ChatController extends Controller
     /**
      * Original buffered behaviour: run the whole stream, then return one JSON body.
      */
-    protected function sendBuffered(int $userId, ?int $conversationId, string $userMessage, array $history, string $sourceContext, array $sourceLabels, float $startedAt, array $route, array $attachmentItems = [], ?string $visionModel = null, array $webResults = []): JsonResponse
+    protected function sendBuffered(int $userId, ?int $conversationId, string $userMessage, array $history, string $sourceContext, array $sourceLabels, float $startedAt, array $route, array $attachmentItems = [], ?string $visionModel = null, array $webResults = [], array $materialMeta = []): JsonResponse
     {
         set_time_limit(0);
         ignore_user_abort(true);
@@ -395,7 +419,11 @@ class ChatController extends Controller
             $response = response()->json(['error' => 'An unexpected error occurred'], 500);
         }
 
-        $ids = $this->persistExchange($userId, $conversationId, $userMessage, $answer, $attachmentItems);
+        $webMeta = array_map(fn ($r) => ['kind' => 'web'] + array_diff_key($r, ['snippet' => 1]), $webResults);
+        // Buffered: nothing has reached the browser yet, so an invented link can be cleaned
+        // out of the answer itself before it's shown or stored.
+        $answer = WebSearchService::stripUnlistedLinks($answer, self::citableUrls($materialMeta, $webMeta));
+        $ids = $this->persistExchange($userId, $conversationId, $userMessage, $answer, $attachmentItems, self::sourceMeta($sourceLabels, $materialMeta, $webMeta));
 
         Log::info('Astro chat timing', [
             'first_delta_ms' => null,
@@ -415,7 +443,8 @@ class ChatController extends Controller
             'message_id' => $ids['message_id'],
             'response' => $answer,
             'sources' => $sourceLabels,
-            'web' => array_map(fn ($r) => array_diff_key($r, ['snippet' => 1]), $webResults),
+            'materials' => $materialMeta,
+            'web' => $webMeta,
         ]);
     }
 
@@ -429,7 +458,7 @@ class ChatController extends Controller
      *
      * @return array{conversation_id:int,message_id:int}
      */
-    protected function persistExchange(int $userId, ?int $conversationId, string $userMessage, string $answer, array $attachmentItems = []): array
+    protected function persistExchange(int $userId, ?int $conversationId, string $userMessage, string $answer, array $attachmentItems = [], array $sources = []): array
     {
         $now = now();
         $isNew = $conversationId === null;
@@ -441,9 +470,9 @@ class ChatController extends Controller
             ])->id;
         }
 
-        $rows = [['conversation_id' => $conversationId, 'role' => 'user', 'content' => $userMessage, 'attachments' => $attachmentItems ? json_encode($attachmentItems) : null, 'created_at' => $now, 'updated_at' => $now]];
+        $rows = [['conversation_id' => $conversationId, 'role' => 'user', 'content' => $userMessage, 'attachments' => $attachmentItems ? json_encode($attachmentItems) : null, 'sources' => null, 'created_at' => $now, 'updated_at' => $now]];
         if (trim($answer) !== '') {
-            $rows[] = ['conversation_id' => $conversationId, 'role' => 'assistant', 'content' => $answer, 'attachments' => null, 'created_at' => $now, 'updated_at' => $now];
+            $rows[] = ['conversation_id' => $conversationId, 'role' => 'assistant', 'content' => $answer, 'attachments' => null, 'sources' => $sources ? json_encode($sources) : null, 'created_at' => $now, 'updated_at' => $now];
         }
 
         // Multi-row INSERT ... RETURNING (Postgres/SQLite). Nothing here can conflict, so the
@@ -462,19 +491,27 @@ class ChatController extends Controller
     }
 
     /**
-     * Parse "planet/M1/lesson-02" into a source ref, or null if it isn't a real lesson.
+     * What Astro was grounded in, flattened for storage and for the browser.
+     * Titles and links only — never the text of a page, which is what would grow the table.
+     *
+     * @return array<int, array{kind: string, title: string, url?: string, course?: string, domain?: string}>
      */
-    protected function parseSourceParam(string $raw): ?array
+    protected static function sourceMeta(array $lessonLabels, array $materials, array $web): array
     {
-        $parts = explode('/', $raw);
-        if (count($parts) !== 3) {
-            return null;
-        }
-        [$planet, $module, $lesson] = $parts;
+        return array_merge(
+            array_map(fn ($label) => ['kind' => 'lesson', 'title' => $label], $lessonLabels),
+            $materials,
+            $web,
+        );
+    }
 
-        return $this->lessonSources->resolve([compact('planet', 'module', 'lesson')])
-            ? compact('planet', 'module', 'lesson')
-            : null;
+    /** URLs Astro was actually given this turn — the only links allowed to survive in the answer. */
+    protected static function citableUrls(array $materials, array $web): array
+    {
+        return array_values(array_filter(array_merge(
+            array_column($materials, 'url'),
+            array_column($web, 'url'),
+        )));
     }
 
     /**

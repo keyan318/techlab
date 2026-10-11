@@ -91,4 +91,26 @@ Print exactly:
         <p class="quiz-explanation"><em>Multiplication happens before addition, so it's 2 + (3 * 4) = 2 + 12 = 14.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What does <code>2 ** 3</code> evaluate to?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 5</li>
+            <li class="quiz-option">B. 6</li>
+            <li class="quiz-option quiz-correct">C. 8 ✓</li>
+            <li class="quiz-option">D. 23</li>
+        </ul>
+        <p class="quiz-explanation"><em>** is the exponent operator: 2 ** 3 means 2 to the power of 3, which is 8.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Without parentheses, <code>(18 + 22 + 20) / 3</code> would need to be written as <code>18 + 22 + 20 / 3</code>. Why would that give the wrong average?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Python would refuse to run it</li>
+            <li class="quiz-option quiz-correct">B. Division runs before addition, so only 20 would get divided by 3 before the additions happen ✓</li>
+            <li class="quiz-option">C. It would give exactly the same result either way</li>
+            <li class="quiz-option">D. Addition always runs first in Python, regardless of parentheses</li>
+        </ul>
+        <p class="quiz-explanation"><em>Without parentheses, / binds tighter than +, so only the last number gets divided — parentheses force the sum to happen first.</em></p>
+    </div>
+
 </div>

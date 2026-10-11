@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a1-l5",
+  "title": "Lesson 1.5: The Weakest Link — Strategy, Tactics & Process",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "15:20 · OPEN ITEMS REVIEW · CITADEL CORE",
+    "vex": "Call it finished. I love it when you do that. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the crew keeps working the list instead of declaring victory. Astro: \"No last piece. Just the next item.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRivet thinks the new firewall means we're finished. Read open-items.txt and sort each one: strategy (long-term plan), tactics (this week's action), or process-fix (a workflow problem, not a tool problem).\n\n1. type open-items.txt\n2. classify <item> strategy | tactics | process-fix\n",
+    "C:\\Citadel\\open-items.txt": "OPEN ITEMS\n-----------\nitem-reduce-single-relay   \"Reduce our reliance on any single relay over the next year.\"\nitem-install-backup-relay  \"Install a backup relay this week.\"\nitem-self-approval-gap     \"The same cadet can request AND approve their own supply order.\"\nitem-password-training     \"Run a crew-wide session on why reused passwords are dangerous.\"\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "item-reduce-single-relay": "item-reduce-single-relay",
+    "item-install-backup-relay": "item-install-backup-relay",
+    "item-self-approval-gap": "item-self-approval-gap",
+    "item-password-training": "item-password-training"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the open items",
+      "body": "Rivet: \"Fine — show me what's still open.\" `type open-items.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read open-items.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\open-items.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Sort strategy, tactics, and process",
+      "body": "Astro: \"Long-term plan is strategy. This week's action is tactics. A workflow gap no tool can fix is a process-fix.\" Classify all four items.",
+      "objectives": [
+        {
+          "id": "i1",
+          "label": "item-reduce-single-relay classified as strategy",
+          "check": {
+            "type": "classified",
+            "item": "item-reduce-single-relay",
+            "as": "strategy"
+          }
+        },
+        {
+          "id": "i2",
+          "label": "item-install-backup-relay classified as tactics",
+          "check": {
+            "type": "classified",
+            "item": "item-install-backup-relay",
+            "as": "tactics"
+          }
+        },
+        {
+          "id": "i3",
+          "label": "item-self-approval-gap classified as process-fix",
+          "check": {
+            "type": "classified",
+            "item": "item-self-approval-gap",
+            "as": "process-fix"
+          }
+        },
+        {
+          "id": "i4",
+          "label": "item-password-training classified as tactics",
+          "check": {
+            "type": "classified",
+            "item": "item-password-training",
+            "as": "tactics"
+          }
+        }
+      ]
+    }
+  ]
+}

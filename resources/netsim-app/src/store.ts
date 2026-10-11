@@ -13,7 +13,7 @@ import { ApDevice, SwitchDevice } from './engine/switch';
 import { disposeAllSessions, disposeSession } from './terminals';
 import { sim } from './sim';
 import type { LabDef } from './labs/types';
-import { runChecks } from './labs/checker';
+import { checkLabStep, earnedCount, labEarned, startingPasses } from './labs/grading';
 import { LABS } from './labs/library';
 import { EXAMPLES } from './labs/examples';
 import { zipSync, strToU8 } from 'fflate';
@@ -86,6 +86,8 @@ interface NetsimState {
   lab: LabDef | null;
   labStep: number;
   labResults: Record<string, { pass: boolean; detail: string }>;
+  // TechLab: objectives already true in the lab's starting network; they only count with the rest of their step.
+  labBaseline: string[];
   labChecking: boolean;
   quizAnswers: Record<string, number>;
 
@@ -175,6 +177,7 @@ export const useStore = create<NetsimState>()((set, get) => {
         step: get().labStep,
         results: get().labResults,
         quiz: get().quizAnswers,
+        baseline: get().labBaseline,
       };
     }
     return save;
@@ -222,6 +225,8 @@ export const useStore = create<NetsimState>()((set, get) => {
       lab: data.lab ?? null,
       labStep: data.labProgress?.step ?? 0,
       labResults: data.labProgress?.results ?? {},
+      // A fresh lab file is the starting network itself; a saved attempt carries the list it was started with.
+      labBaseline: data.labProgress?.baseline ?? (data.lab && !data.labProgress ? startingPasses(data) : []),
       labChecking: false,
       quizAnswers: data.labProgress?.quiz ?? {},
     });
@@ -232,9 +237,9 @@ export const useStore = create<NetsimState>()((set, get) => {
   const reportLabToHost = (lab: LabDef) => {
     const results = get().labResults;
     const objectives = lab.steps.flatMap((st) => st.objectives);
-    const passed = objectives.filter((o) => results[o.id]?.pass).length;
+    const passed = earnedCount(lab, results, get().labBaseline);
     const total = objectives.length;
-    if (total > 0 && passed === total) {
+    if (labEarned(lab, results, get().labBaseline)) {
       postToHost({ source: 'netsim', type: 'lab-passed', lab: lab.id, passed, total });
       return;
     }
@@ -260,6 +265,7 @@ export const useStore = create<NetsimState>()((set, get) => {
     lab: null,
     labStep: 0,
     labResults: {},
+    labBaseline: [],
     labChecking: false,
     quizAnswers: {},
 
@@ -621,6 +627,7 @@ export const useStore = create<NetsimState>()((set, get) => {
         lab: null,
         labStep: 0,
         labResults: {},
+        labBaseline: [],
         labChecking: false,
         quizAnswers: {},
       });
@@ -757,7 +764,20 @@ export const useStore = create<NetsimState>()((set, get) => {
       const saved = localStorage.getItem(AUTOSAVE_KEY);
       if (saved) {
         try {
-          adoptSave(JSON.parse(saved) as SaveFile);
+          const data = JSON.parse(saved) as SaveFile;
+          adoptSave(data);
+          // Autosaves from before labs/grading.ts carry no baseline: work it out from the lab's own file.
+          if (embedLab && data.lab?.id === embedLab && !data.labProgress?.baseline) {
+            fetch(`./labs/${embedLab}.json`)
+              .then((r) => (r.ok ? (r.json() as Promise<SaveFile>) : null))
+              .then((file) => {
+                if (file && get().lab?.id === embedLab) {
+                  set({ labBaseline: startingPasses(file) });
+                  saveSoon();
+                }
+              })
+              .catch(() => {});
+          }
           return;
         } catch {
           // Corrupt autosave: fall through to the demo.
@@ -815,9 +835,11 @@ export const useStore = create<NetsimState>()((set, get) => {
       const step = lab.steps[get().labStep];
       if (!step || step.objectives.length === 0) return;
       set({ labChecking: true, paused: false });
-      runChecks(
+      checkLabStep(
         sim.net,
-        step.objectives,
+        lab,
+        get().labStep,
+        () => get().labResults,
         (r) => {
           set({
             labResults: { ...get().labResults, [r.id]: { pass: r.pass, detail: r.detail } },
@@ -846,7 +868,7 @@ export const useStore = create<NetsimState>()((set, get) => {
     },
 
     closeLab() {
-      set({ lab: null, labStep: 0, labResults: {}, quizAnswers: {}, labChecking: false });
+      set({ lab: null, labStep: 0, labResults: {}, labBaseline: [], quizAnswers: {}, labChecking: false });
       saveSoon();
     },
   };

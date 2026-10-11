@@ -4,13 +4,16 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AstroController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CourseCertificateController;
+use App\Http\Controllers\CourseHubController;
 use App\Http\Controllers\CourseJoinRequestController;
 use App\Http\Controllers\CourseModuleController;
-use App\Http\Controllers\CourseOverviewController;
+use App\Http\Controllers\CrewQuizBuilderController;
 use App\Http\Controllers\CrewQuizController;
 use App\Http\Controllers\FacultyChatController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\FacultyScheduleController;
+use App\Http\Controllers\FinalExamController;
 use App\Http\Controllers\FlashcardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfographicController;
@@ -20,11 +23,13 @@ use App\Http\Controllers\LessonLabController;
 use App\Http\Controllers\LessonLabHelpController;
 use App\Http\Controllers\LessonProgressController;
 use App\Http\Controllers\LessonQuizController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PlanetController;
 use App\Http\Controllers\PptController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudioOutputController;
 use App\Http\Controllers\StudyActivityController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,17 +57,34 @@ Route::get('/admin', [AdminController::class, 'index'])->middleware('role:admin'
 Route::post('/admin/courses', [AdminController::class, 'assign'])->middleware('role:admin')->name('admin.courses.assign');
 Route::get('/admin/courses/{crew}/roster', [AdminController::class, 'crewRoster'])->middleware('role:admin')->name('admin.courses.roster');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::delete('/account', [AuthController::class, 'destroyAccount'])->name('account.destroy');
 
 // chat
 Route::get('/chat', [ChatController::class, 'index'])->name('student.chat');
 // Student dashboard (progress, XP, crew leaderboard) and the planet picker
 Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
+// Onboarding right after sign-up (Astro's hello + build your astronaut), and changing your look later.
+Route::get('/welcome', [OnboardingController::class, 'welcome'])->middleware('role:student')->name('student.welcome');
+Route::get('/avatar', [OnboardingController::class, 'edit'])->middleware('role:student')->name('student.avatar');
+Route::post('/avatar', [OnboardingController::class, 'save'])->middleware(['role:student', 'throttle:20,1'])->name('student.avatar.save');
+Route::get('/codename/check', [OnboardingController::class, 'checkCodename'])->middleware(['role:student', 'throttle:60,1'])->name('student.codename.check');
 Route::get('/progress', [StudentController::class, 'progress'])->name('student.progress');
 Route::get('/planets', [StudentController::class, 'planets'])->name('student.planets');
-Route::get('/student/course/{slug}/{course}', [CourseOverviewController::class, 'show'])->name('student.course.overview')->middleware('enrolled')->middleware('course.member');
+// The course hub: where a course card lands. Home (chapters), Materials (the faculty's
+// uploads), Quiz and Crew share one header; the lessons are one click further in.
+Route::middleware(['enrolled', 'course.member'])->group(function () {
+    Route::get('/student/course/{slug}/{course}', [CourseHubController::class, 'home'])->name('student.course.overview');
+    Route::get('/student/course/{slug}/{course}/materials', [CourseHubController::class, 'materials'])->name('student.course.materials');
+    Route::get('/student/course/{slug}/{course}/quiz', [CourseHubController::class, 'quiz'])->name('student.course.quiz');
+    Route::get('/student/course/{slug}/{course}/crew', [CourseHubController::class, 'crew'])->name('student.course.crew');
+    // The certificate of completion, once every lesson of the course is done.
+    Route::get('/student/course/{slug}/{course}/certificate', [CourseCertificateController::class, 'show'])->name('student.course.certificate');
+    // The final exam ("Final Boss"): opens once every lesson is done; passing it earns the certificate.
+    Route::get('/student/course/{slug}/{course}/final-exam', [FinalExamController::class, 'show'])->name('student.course.final-exam');
+});
 Route::post('/student/activity', [StudyActivityController::class, 'ping'])->name('student.activity');
-// Crew
-Route::get('/student/crew', [StudentController::class, 'crew'])->name('student.crew');
+// The student's own list of courses they are on the roster of (each links into its hub).
+Route::get('/student/courses', [StudentController::class, 'courses'])->name('student.courses');
 Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->name('student.crew.join');
 // Ask to join a code-gated course; the course's faculty member accepts (the code is emailed) or declines.
 Route::post('/student/courses/{crew}/join-request', [CourseJoinRequestController::class, 'store'])->middleware(['role:student', 'throttle:10,1'])->name('student.join-request.store');
@@ -85,6 +107,10 @@ Route::put('/faculty/schedule/classes/{class}', [FacultyScheduleController::clas
 Route::delete('/faculty/schedule/classes/{class}', [FacultyScheduleController::class, 'destroyClass'])->name('faculty.schedule.class.destroy');
 Route::post('/faculty/assignments/{assignment}/code', [FacultyController::class, 'generateCode'])->name('faculty.assignments.generate-code');
 Route::get('/faculty/courses/{crew}', [FacultyController::class, 'course'])->name('faculty.course');
+Route::get('/faculty/courses/{crew}/roster', [FacultyController::class, 'roster'])->name('faculty.course.roster');
+// Sidebar shortcuts: always resolve to the faculty's one active crew server-side.
+Route::get('/faculty/crew', [FacultyController::class, 'crewShortcut'])->name('faculty.crew');
+Route::get('/faculty/materials', [FacultyController::class, 'materialsShortcut'])->name('faculty.materials');
 Route::post('/faculty/join-requests/{joinRequest}/accept', [CourseJoinRequestController::class, 'accept'])->middleware('role:faculty')->name('faculty.join-requests.accept');
 Route::post('/faculty/join-requests/{joinRequest}/decline', [CourseJoinRequestController::class, 'decline'])->middleware('role:faculty')->name('faculty.join-requests.decline');
 
@@ -93,13 +119,25 @@ Route::post('/faculty/courses/{crew}/modules', [CourseModuleController::class, '
 Route::put('/faculty/modules/{module}', [CourseModuleController::class, 'update'])->name('faculty.modules.update');
 Route::delete('/faculty/modules/{module}', [CourseModuleController::class, 'destroy'])->name('faculty.modules.destroy');
 Route::post('/faculty/modules/{module}/materials', [CourseModuleController::class, 'storeMaterials'])->name('faculty.materials.store');
+Route::post('/faculty/modules/{module}/links', [CourseModuleController::class, 'storeLink'])->name('faculty.materials.link');
 Route::delete('/faculty/materials/{material}', [CourseModuleController::class, 'destroyMaterial'])->name('faculty.materials.destroy');
 // Crew quizzes: faculty authors them, students in the crew take them
 Route::post('/faculty/courses/{crew}/quizzes', [CrewQuizController::class, 'store'])->name('faculty.quizzes.store');
+Route::put('/faculty/quizzes/{quiz}', [CrewQuizController::class, 'update'])->name('faculty.quizzes.update');
+// The two-panel builder: the faculty's material on the left, the form editor on the right.
+Route::get('/faculty/courses/{crew}/quizzes/new', [CrewQuizBuilderController::class, 'create'])->name('faculty.quizzes.build');
+Route::get('/faculty/quizzes/{quiz}/edit', [CrewQuizBuilderController::class, 'edit'])->name('faculty.quizzes.edit');
+Route::post('/faculty/courses/{crew}/quizzes/draft', [CrewQuizBuilderController::class, 'draft'])->middleware('throttle:10,1')->name('faculty.quizzes.draft');
 Route::delete('/faculty/quizzes/{quiz}', [CrewQuizController::class, 'destroy'])->name('faculty.quizzes.destroy');
 Route::get('/student/quizzes/{quiz}', [CrewQuizController::class, 'show'])->name('student.quiz.show');
 Route::post('/student/quizzes/{quiz}/submit', [CrewQuizController::class, 'submit'])->name('student.quiz.submit');
+// Final exams: started, reported on and submitted from the full-screen exam page; faculty can allow a retake
+Route::post('/student/final-exams/{quiz}/start', [FinalExamController::class, 'start'])->middleware('throttle:10,1,final-exam-start')->name('student.final-exam.start');
+Route::post('/student/final-exams/{quiz}/violation', [FinalExamController::class, 'violation'])->middleware('throttle:30,1,final-exam-violation')->name('student.final-exam.violation');
+Route::post('/student/final-exams/{quiz}/submit', [FinalExamController::class, 'submit'])->middleware('throttle:10,1,final-exam-submit')->name('student.final-exam.submit');
+Route::post('/faculty/final-exams/attempts/{attempt}/retake', [FinalExamController::class, 'retake'])->name('faculty.final-exam.retake');
 Route::get('/materials/{material}', [CourseModuleController::class, 'download'])->name('materials.download');
+Route::get('/materials/{material}/preview', [CourseModuleController::class, 'preview'])->name('materials.preview');
 
 Route::post('/chat/message', [ChatController::class, 'send'])->name('chat.message');
 Route::get('/chat/conversations', [ChatController::class, 'conversations'])->name('chat.conversations');
@@ -110,6 +148,9 @@ Route::delete('/chat/conversations/{conversation}', [ChatController::class, 'des
 Route::post('/chat/analogy', [AstroController::class, 'drawAnalogy'])->name('chat.analogy');
 Route::post('/chat/infographic', [InfographicController::class, 'generate'])->name('chat.infographic');
 Route::post('/chat/quiz', [QuizController::class, 'generate'])->name('chat.quiz');
+Route::get('/chat/studio-outputs', [StudioOutputController::class, 'index'])->name('chat.studio.index');
+Route::post('/chat/studio-outputs', [StudioOutputController::class, 'store'])->name('chat.studio.store');
+Route::delete('/chat/studio-outputs/{uid}', [StudioOutputController::class, 'destroy'])->name('chat.studio.destroy');
 Route::post('/chat/flashcards', [FlashcardController::class, 'generate'])->name('chat.flashcards');
 Route::post('/chat/key-terms', [KeyTermsController::class, 'generate'])->name('chat.keyterms');
 Route::post('/chat/report', [ReportController::class, 'generate'])->name('chat.report');

@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a4-l1",
+  "title": "Lesson 4.1: Roles & Responsibilities",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "09:45 · UNASSIGNED TASKS · CITADEL CORE",
+    "vex": "Everyone assumes someone else has it covered. My favorite kind of gap. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every task now has one clear owner, written down. Astro: \"Assumed is not assigned. Now it's written down.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead unassigned-tasks.txt: four tasks nobody has formally claimed. Classify each by its correct role.\n\n1. type unassigned-tasks.txt\n2. classify <task> security-lead | data-owner | system-admin | every-crew-member\n",
+    "C:\\Citadel\\unassigned-tasks.txt": "UNASSIGNED TASKS\n------------------\ntask-approve-starmap-access   decide who gets access to the starmap files\ntask-apply-patch              install this week's security patch on the relay console\ntask-report-phishing           notice and report a suspicious message in the crew inbox\ntask-set-program-priorities    decide the security program's priorities for the coming quarter\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "task-approve-starmap-access": "task-approve-starmap-access",
+    "task-apply-patch": "task-apply-patch",
+    "task-report-phishing": "task-report-phishing",
+    "task-set-program-priorities": "task-set-program-priorities"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the unassigned tasks",
+      "body": "Astro: \"Read every task before assigning a single one.\" `type unassigned-tasks.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read unassigned-tasks.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\unassigned-tasks.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Assign each task to its role",
+      "body": "Astro: \"Four tasks, four roles. Write it down properly.\" Classify each of the four tasks.",
+      "objectives": [
+        {
+          "id": "t1",
+          "label": "task-approve-starmap-access classified as data-owner",
+          "check": {
+            "type": "classified",
+            "item": "task-approve-starmap-access",
+            "as": "data-owner"
+          }
+        },
+        {
+          "id": "t2",
+          "label": "task-apply-patch classified as system-admin",
+          "check": {
+            "type": "classified",
+            "item": "task-apply-patch",
+            "as": "system-admin"
+          }
+        },
+        {
+          "id": "t3",
+          "label": "task-report-phishing classified as every-crew-member",
+          "check": {
+            "type": "classified",
+            "item": "task-report-phishing",
+            "as": "every-crew-member"
+          }
+        },
+        {
+          "id": "t4",
+          "label": "task-set-program-priorities classified as security-lead",
+          "check": {
+            "type": "classified",
+            "item": "task-set-program-priorities",
+            "as": "security-lead"
+          }
+        }
+      ]
+    }
+  ]
+}

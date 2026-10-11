@@ -1,0 +1,88 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a1-l3",
+  "title": "Lesson 1.3: Justifying the Security Investment",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "11:15 · BUDGET REVIEW · CITADEL CORE",
+    "vex": "Spend it all on the wrong thing. I'll wait by the gap you left open. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the crew funds the one control that actually closes a gap Vex could use. Astro: \"Now our credits go where the risk is, not where the shiniest tool is.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nThree purchase proposals are on the table. Read proposals.txt, then decide each one: worth-it or skip-it, based on cost versus the loss it actually prevents.\n\n1. type proposals.txt\n2. classify <item> worth-it   OR   classify <item> skip-it\n",
+    "C:\\Citadel\\proposals.txt": "PURCHASE PROPOSALS\n-------------------\nproposal-relay-password   cost: 0 credits    prevents: a repeat of the exact breach Vex already used (high likelihood, high impact)\nproposal-shield-diagnostic cost: 8,000 credits prevents: a rare failure that would cost 2,000 credits to fix (low likelihood, low impact)\nproposal-backup-relay      cost: 400 credits   prevents: total comms blackout if the main relay fails (medium likelihood, high impact)\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "proposal-relay-password": "proposal-relay-password",
+    "proposal-shield-diagnostic": "proposal-shield-diagnostic",
+    "proposal-backup-relay": "proposal-backup-relay"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the proposals",
+      "body": "Astro: \"Know the numbers before you decide.\" `type proposals.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read proposals.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\proposals.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Fund the gap, not the gadget",
+      "body": "Rivet: \"Free and closes the exact breach Vex used? Fund it. Expensive and barely helps? Skip it.\" Classify all three: `classify proposal-relay-password worth-it`, `classify proposal-shield-diagnostic skip-it`, `classify proposal-backup-relay worth-it`.",
+      "objectives": [
+        {
+          "id": "p1",
+          "label": "proposal-relay-password: worth-it (free, closes the known gap)",
+          "check": {
+            "type": "classified",
+            "item": "proposal-relay-password",
+            "as": "worth-it"
+          }
+        },
+        {
+          "id": "p2",
+          "label": "proposal-shield-diagnostic: skip-it (expensive, rare and cheap to fix anyway)",
+          "check": {
+            "type": "classified",
+            "item": "proposal-shield-diagnostic",
+            "as": "skip-it"
+          }
+        },
+        {
+          "id": "p3",
+          "label": "proposal-backup-relay: worth-it (moderate cost, prevents a high-impact blackout)",
+          "check": {
+            "type": "classified",
+            "item": "proposal-backup-relay",
+            "as": "worth-it"
+          }
+        }
+      ]
+    }
+  ]
+}

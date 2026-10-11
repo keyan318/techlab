@@ -112,6 +112,8 @@
         }
         @media (prefers-reduced-motion: reduce) { .lab-back { transition: none; } }
     </style>
+  <script defer src="{{ asset('js/sfx.js') }}?v={{ filemtime(public_path('js/sfx.js')) }}"></script>
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 <body>
 
@@ -140,9 +142,9 @@
 <iframe
     class="lab-frame"
     id="lab-frame"
-    src="{{ asset($sim['path']) }}?lab={{ $lab }}&u={{ auth()->id() }}"
+    src="{{ asset($sim['path']) }}?lab={{ $lab }}&u={{ auth()->id() }}{!! $music ? '&music=1' : '' !!}"
     title="{{ $sim['name'] }} simulator for lesson {{ $number }}"
-    allow="clipboard-read; clipboard-write"
+    allow="clipboard-read; clipboard-write; autoplay"
 ></iframe>
 
 <script>
@@ -291,5 +293,6 @@
 })();
 </script>
 
+<x-page-loader />
 </body>
 </html>

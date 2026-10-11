@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Crew;
 use App\Services\CourseProgressService;
 use App\Services\LessonQuizService;
-use App\Services\StudentDashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +18,16 @@ class PlanetController extends Controller
      * The available mission planets (student learning tracks).
      */
     private const PLANETS = ['programming', 'networking', 'cybersecurity'];
+
+    /**
+     * Whether {slug} in a lesson/editor URL is something with real lessons behind it:
+     * a planet's own key, or a planet's second+ course, keyed by its catalog id
+     * (config/course-structure.php names its planet — see CourseProgressService::planetFor()).
+     */
+    private function isValidCourseKey(string $slug): bool
+    {
+        return in_array($slug, self::PLANETS, true) || CourseProgressService::exists($slug);
+    }
 
     /**
      * Per-planet course shells.
@@ -87,10 +96,32 @@ class PlanetController extends Controller
                 'id' => 'cybersecurity',
                 'title' => 'Cybersecurity Citadel',
                 'tag' => 'Cybersecurity track',
-                'blurb' => 'Information Security 1: defend the Citadel against Planet Doom.',
+                'blurb' => 'Information Assurance and Security 1: defend the Citadel against Planet Doom.',
                 'sections' => [
                     ['title' => 'M1 — First Contact with the Enemy', 'lessons' => [
                         ['title' => 'Know Your Citadel'],
+                    ]],
+                ],
+            ],
+            'information-assurance-security-2' => [
+                'id' => 'information-assurance-security-2',
+                'title' => 'Cybersecurity Citadel',
+                'tag' => 'Cybersecurity track',
+                'blurb' => 'Information Assurance and Security 2: rebuild the Citadel so it holds.',
+                'sections' => [
+                    ['title' => 'M1 — Rebuilding After the Siege', 'lessons' => [
+                        ['title' => 'Why Information Protection Matters'],
+                    ]],
+                ],
+            ],
+            'computer-programming-1' => [
+                'id' => 'computer-programming-1',
+                'title' => 'Computer Programming 1',
+                'tag' => 'Programming track',
+                'blurb' => 'The Dead Console: rebuild Codexia\'s systems in C.',
+                'sections' => [
+                    ['title' => 'M1 — The Dead Console', 'lessons' => [
+                        ['title' => 'Orders Astro Can Follow'],
                     ]],
                 ],
             ],
@@ -163,29 +194,33 @@ class PlanetController extends Controller
             abort(404);
         }
 
-        $percent = StudentDashboardService::planets(Auth::user())[$slug]['percent'] ?? 0;
         $user = Auth::user();
 
-        $courses = collect($planet['courses'])->map(function (array $c, string $id) use ($slug, $percent, $user) {
+        $courses = collect($planet['courses'])->reject(fn (array $c) => ! empty($c['hidden']))->map(function (array $c, string $id) use ($slug, $user) {
             $soon = ! empty($c['coming_soon']);
             $crew = $soon ? null : Crew::where('planet', $slug)->where('course_slug', $id)->with('faculty')->first();
 
-            // A course nobody has claimed yet stays open, exactly like before this feature
-            // existed — the gate only switches on once a faculty captain actually claims it
-            // (generates a code), so shipping this never locks students out of a course
-            // that was already freely accessible.
+            // A course only opens once a faculty captain has claimed it (generated a
+            // code) — no captain assigned means nobody to ask, so it's closed rather
+            // than freely walkable, not "ask to join" (there's no one to accept you).
+            $noCaptain = ! $soon && ! $crew;
             $locked = ! $soon && $crew && ! $user->belongsToCrew($crew->id);
+            $navigable = ! $soon && ! $noCaptain && ! $locked;
 
             return $c + [
                 'id' => $id,
                 'soon' => $soon,
-                'url' => ($soon || $locked) ? null : route('student.planet.play', ['slug' => $slug, 'course' => $id]),
-                'percent' => $soon ? null : $percent,
+                'url' => $navigable ? route('student.course.overview', ['slug' => $slug, 'course' => $id]) : null,
+                // This course's own progress: the planet's percent would mix in its other courses.
+                'percent' => $navigable ? CourseProgressService::percent($user, CourseProgressService::keyFor($slug, $id)) : null,
                 'faculty_name' => $crew?->faculty?->name,
                 'locked' => $locked,
+                'no_captain' => $noCaptain,
                 // Where the student's "Ask to join" stands: null (not asked), pending, accepted, declined.
                 'join_status' => $locked ? $crew->joinRequests()->where('user_id', $user->id)->value('status') : null,
                 'join_url' => $locked ? route('student.join-request.store', $crew) : null,
+                // A red count on the card, so a new quiz is visible before you open the course.
+                'quiz_badge' => $navigable && $crew ? CourseHubController::unseenQuizCount($crew, $user->id) : 0,
             ];
         })->values()->all();
 
@@ -209,24 +244,28 @@ class PlanetController extends Controller
             abort(404);
         }
 
-        $data = ['course' => $this->normalizeCourse($this->courseShell($slug))];
+        // A planet's second+ course is keyed by its own catalog id, with its own courseShell()
+        // arm, its own lesson blade tree and its own one-line view (student.planets.<courseKey>).
+        // Rendering the planet's own shell/view here would put the second course's lesson inside
+        // the FIRST course's sidebar — use the resolved key everywhere below, not the raw $slug.
+        $courseKey = CourseProgressService::keyFor($slug, $course);
+        $data = ['course' => $this->normalizeCourse($this->courseShell($courseKey))];
 
         // Planets with a lesson blueprint render a lesson inside the course shell. Without
         // these the view falls back to a guessed name that never matches the
         // lesson-01.blade.php files on disk, so the page renders "Lesson not found".
         // The first lesson comes from the blueprint; resolveLessonView() understands both spellings.
-        $courseKey = CourseProgressService::keyFor($slug, $course);
         if (CourseProgressService::exists($courseKey)) {
             $first = CourseProgressService::order($courseKey)[0];
             $data += [
-                'slug' => $slug,
+                'slug' => $courseKey,
                 'module' => $first['module'],
                 'lesson' => $first['lesson'],
                 'lessonView' => $this->resolveLessonView($courseKey, $first['module'], $first['lesson']),
             ];
         }
 
-        return view('student.planets.'.$slug, $data);
+        return view('student.planets.'.$courseKey, $data);
     }
 
     /**
@@ -379,7 +418,7 @@ class PlanetController extends Controller
             return redirect()->route('login');
         }
 
-        if (! in_array($slug, self::PLANETS, true)) {
+        if (! $this->isValidCourseKey($slug)) {
             abort(404);
         }
 
@@ -406,7 +445,7 @@ class PlanetController extends Controller
             abort(401);
         }
 
-        if (! in_array($slug, self::PLANETS, true)) {
+        if (! $this->isValidCourseKey($slug)) {
             abort(404);
         }
 
@@ -437,9 +476,20 @@ class PlanetController extends Controller
     }
 
     /**
+     * The starter language a course's editor runs. Every course except the C one
+     * uses Python (Pyodide); this is the one place that ever needs to change to
+     * add a third.
+     */
+    private function editorLang(string $slug): string
+    {
+        return $slug === 'computer-programming-1' ? 'c' : 'python';
+    }
+
+    /**
      * GET /student/planet/{slug}/editor
-     * The Pyodide-powered editor page. Reads exercise data from the session
-     * (flashed by launchEditor below). Falls back gracefully if session is empty.
+     * The in-browser code editor page (Pyodide for Python, JSCPP for C). Reads
+     * exercise data from the session (flashed by launchEditor below). Falls back
+     * gracefully if session is empty.
      */
     public function editor(string $slug, Request $request): View|RedirectResponse
     {
@@ -447,12 +497,13 @@ class PlanetController extends Controller
             return redirect()->route('login');
         }
 
-        if (! in_array($slug, self::PLANETS, true)) {
+        if (! in_array($slug, self::PLANETS, true) && ! CourseProgressService::exists($slug)) {
             abort(404);
         }
 
-        return view('student.planets.python-editor', [
+        return view('student.planets.code-editor', [
             'slug' => $slug,
+            'lang' => $this->editorLang($slug),
         ]);
     }
 
@@ -469,7 +520,7 @@ class PlanetController extends Controller
             return redirect()->route('login');
         }
 
-        if (! in_array($slug, self::PLANETS, true)) {
+        if (! in_array($slug, self::PLANETS, true) && ! CourseProgressService::exists($slug)) {
             abort(404);
         }
 
@@ -485,11 +536,15 @@ class PlanetController extends Controller
         session()->flash('editor_challenge', $request->input('challenge', ''));
         session()->flash('editor_return_to', $request->input('return_to', ''));
 
-        // Programming lessons: hand the editor a server-verified completion URL.
-        // The answer key never leaves the server — the editor only sends its
-        // output to this URL and learns pass/fail. The lesson is identified from
-        // the lesson page the student came from (return_to is a full URL).
-        if ($slug === CourseProgressService::COURSE) {
+        // A lesson with an output-checkable challenge: hand the editor a
+        // server-verified completion URL. The answer key never leaves the
+        // server — the editor only sends its output to this URL and learns
+        // pass/fail. The lesson is identified from the lesson page the student
+        // came from (return_to is a full URL). Any course with a blueprint can
+        // have challenge lessons, not just the original "programming" one —
+        // expectedFor() is called with $slug itself so a course never gets
+        // checked against another course's answer keys.
+        if (CourseProgressService::exists($slug)) {
             $parts = explode('/', trim((string) parse_url((string) $request->input('return_to', ''), PHP_URL_PATH), '/'));
 
             // Expected: student / planet / {slug} / {module} / {lesson}
@@ -500,7 +555,7 @@ class PlanetController extends Controller
                 session()->flash('editor_hint_status_url', route('student.planet.hint.status', ['slug' => $slug, 'module' => $module, 'lesson' => $lesson]));
                 session()->flash('editor_hint_buy_url', route('student.planet.hint.buy', ['slug' => $slug, 'module' => $module, 'lesson' => $lesson]));
 
-                if (CourseProgressService::expectedFor($module, $lesson) !== null) {
+                if (CourseProgressService::expectedFor($module, $lesson, $slug) !== null) {
                     session()->flash('editor_complete_url', route('student.planet.lesson.complete', [
                         'slug' => $slug,
                         'module' => $module,

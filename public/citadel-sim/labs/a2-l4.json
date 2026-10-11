@@ -1,0 +1,105 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a2-l4",
+  "title": "Lesson 2.4: Best Practices for Network Defense",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "14:50 · WEEKLY REVIEW · CITADEL CORE",
+    "vex": "A door left open by accident works just as well as one I break down. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the forgotten door is closed and the warning signs are read. Astro: \"Four habits, done every week. That's the whole job.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead review-notes.txt. Then: disable the unused diagnostic account (least privilege), close the stale test port, and read the flagged access log.\n\n1. type review-notes.txt\n2. net user diag-test /active:no\n3. taskkill /im testport.exe /f\n4. type logs\\access-flagged.log\n",
+    "C:\\Citadel\\review-notes.txt": "WEEKLY REVIEW NOTES\n---------------------\n1. Account 'diag-test' has admin rights, unused for a year. Least privilege says shrink or disable it.\n2. Port 6060 still listens from a test three months ago. Close it.\n3. logs\\access-flagged.log has unreviewed failed login attempts. Read it.\n",
+    "C:\\Citadel\\logs\\access-flagged.log": "ACCESS LOG — FLAGGED\n----------------------\n[02:00] FAILED LOGIN  user 'relay', 3 attempts, unrecognized source\n[02:03] FAILED LOGIN  user 'relay', 2 more attempts, same source\nNo one has reviewed this yet.\n"
+  },
+  "users": [
+    {
+      "name": "diag-test",
+      "fullName": "(unused diagnostic account, unused for a year)",
+      "groups": [
+        "Administrators"
+      ],
+      "passwordSet": "unknown",
+      "lastLogon": "a year ago"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "services": [
+    {
+      "name": "test-port",
+      "port": 6060,
+      "process": "testport.exe"
+    }
+  ],
+  "processes": [
+    {
+      "name": "testport.exe",
+      "pid": 6060,
+      "mem": "3,004 K"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the weekly review",
+      "body": "Astro: \"Read every note before you fix a single one.\" `type review-notes.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read review-notes.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\review-notes.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Close the three gaps",
+      "body": "Rivet: \"Least privilege, closed port, reviewed log — all three, today.\" Disable the account, kill the stale port's process, and read the flagged log.",
+      "objectives": [
+        {
+          "id": "account",
+          "label": "diag-test is disabled (least privilege)",
+          "check": {
+            "type": "user-disabled",
+            "user": "diag-test"
+          }
+        },
+        {
+          "id": "port",
+          "label": "Port 6060 no longer listens",
+          "check": {
+            "type": "port-closed",
+            "port": 6060
+          }
+        },
+        {
+          "id": "log",
+          "label": "Read the flagged access log",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\logs\\access-flagged.log"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Services\CourseProgressService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,7 +25,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_the_first_lesson_lab_opens_the_simulator_on_its_own_page(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $this->actingAs($user)->get($this->labPage('m1', 'lesson01'))
             ->assertOk()
@@ -41,7 +40,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_a_locked_lesson_lab_is_not_reachable(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         // Lesson 1.3 is locked until 1.2 is done: the student is sent back to where they are.
         $this->actingAs($user)->get($this->labPage('m1', 'lesson03'))
@@ -50,7 +49,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_it_offers_the_next_lesson_once_the_lab_is_already_done(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
         CourseProgressService::markComplete($user, 'm1', 'lesson01', 'networking');
 
         $this->actingAs($user)->get($this->labPage('m1', 'lesson01'))
@@ -61,7 +60,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_the_last_lesson_has_no_next_lesson_link(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
         foreach (CourseProgressService::order('networking') as $item) {
             CourseProgressService::markComplete($user, $item['module'], $item['lesson'], 'networking');
         }
@@ -74,7 +73,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_lessons_without_a_lab_and_unknown_planets_are_404(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         // Python lessons finish through the code editor, not a simulator lab.
         $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'programming'))->assertNotFound();
@@ -83,7 +82,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_a_security_lesson_opens_the_citadel_sim_instead_of_netsim(): void
     {
-        $user = User::factory()->create(['planets' => ['cybersecurity']]);
+        $user = $this->studentIn('cybersecurity', 'information-security-1', ['planets' => ['cybersecurity']]);
 
         $html = $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'cybersecurity'))
             ->assertOk()
@@ -97,9 +96,34 @@ class LessonLabPageTest extends TestCase
         $this->assertStringContainsString('"source":"citadel"', $html);
     }
 
+    public function test_ias1_citadel_labs_turn_on_the_background_music(): void
+    {
+        $user = $this->studentIn('cybersecurity', 'information-security-1', ['planets' => ['cybersecurity']]);
+
+        $this->actingAs($user)->get($this->labPage('m1', 'lesson01', 'cybersecurity'))
+            ->assertOk()
+            ->assertSee('citadel-sim/index.html?lab=c1-l1&u='.$user->id.'&music=1', false);
+    }
+
+    public function test_other_courses_labs_stay_silent(): void
+    {
+        $this->actingAs($this->studentIn('networking', 'networking-fundamentals'))
+            ->get($this->labPage('m1', 'lesson01'))
+            ->assertOk()
+            ->assertDontSee('music=1', false);
+
+        // IAS2 shares Citadel Sim but has not been given music yet.
+        $ias2 = $this->studentIn('cybersecurity', 'information-assurance-security-2', ['role' => 'student', 'planets' => ['cybersecurity']]);
+        $this->actingAs($ias2)
+            ->get($this->labPage('m1', 'lesson01', 'information-assurance-security-2'))
+            ->assertOk()
+            ->assertSee('citadel-sim/index.html?lab=a1-l1', false)
+            ->assertDontSee('music=1', false);
+    }
+
     public function test_a_network_lab_still_listens_to_netsim(): void
     {
-        $html = $this->actingAs(User::factory()->create())->get($this->labPage('m1', 'lesson01'))->assertOk()->getContent();
+        $html = $this->actingAs($this->studentIn('networking', 'networking-fundamentals'))->get($this->labPage('m1', 'lesson01'))->assertOk()->getContent();
 
         $this->assertStringContainsString('"source":"netsim"', $html);
         $this->assertStringContainsString('Relay Lab', $html);
@@ -107,7 +131,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_the_lesson_page_shows_the_button_instead_of_an_embedded_simulator(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $html = $this->actingAs($user)
             ->get(route('student.planet.module.lesson.fragment', ['slug' => 'networking', 'module' => 'm1', 'lesson' => 'lesson01']))
@@ -121,7 +145,7 @@ class LessonLabPageTest extends TestCase
 
     public function test_the_lab_page_is_never_cached_so_its_csrf_token_stays_fresh(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $response = $this->actingAs($user)->get($this->labPage('m1', 'lesson01'))->assertOk();
 

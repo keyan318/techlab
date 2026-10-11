@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a8-l1",
+  "title": "Lesson 8.1: Classification of Assets",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "08:30 · ASSET CLASSIFICATION REVIEW · CITADEL CORE",
+    "vex": "Guard everything equally and I'll find the one thing you forgot to actually protect. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every asset is protected to the level it actually deserves. Astro: \"Protecting everything the same way is protecting nothing well.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead asset-list.txt: four items. Classify each into its correct sensitivity tier.\n\n1. type asset-list.txt\n2. classify <item> public | internal | confidential | restricted\n",
+    "C:\\Citadel\\asset-list.txt": "ASSET LIST\n------------\nasset-recruiting-flyer   public recruiting material, meant for wide distribution\nasset-duty-roster         this week's shift schedule, meant only for the crew\nasset-crew-personal-data  personal details of every crew member\nasset-starmap             the crew's most sensitive data, the only way home\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "asset-recruiting-flyer": "asset-recruiting-flyer",
+    "asset-duty-roster": "asset-duty-roster",
+    "asset-crew-personal-data": "asset-crew-personal-data",
+    "asset-starmap": "asset-starmap"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the asset list",
+      "body": "Astro: \"Read every item before classifying any.\" `type asset-list.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read asset-list.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\asset-list.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Classify each into its tier",
+      "body": "Astro: \"Match the protection to the actual harm. Four items, four tiers.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "a1",
+          "label": "asset-recruiting-flyer classified as public",
+          "check": {
+            "type": "classified",
+            "item": "asset-recruiting-flyer",
+            "as": "public"
+          }
+        },
+        {
+          "id": "a2",
+          "label": "asset-duty-roster classified as internal",
+          "check": {
+            "type": "classified",
+            "item": "asset-duty-roster",
+            "as": "internal"
+          }
+        },
+        {
+          "id": "a3",
+          "label": "asset-crew-personal-data classified as confidential",
+          "check": {
+            "type": "classified",
+            "item": "asset-crew-personal-data",
+            "as": "confidential"
+          }
+        },
+        {
+          "id": "a4",
+          "label": "asset-starmap classified as restricted",
+          "check": {
+            "type": "classified",
+            "item": "asset-starmap",
+            "as": "restricted"
+          }
+        }
+      ]
+    }
+  ]
+}

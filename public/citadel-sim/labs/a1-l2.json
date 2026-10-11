@@ -1,0 +1,125 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a1-l2",
+  "title": "Lesson 1.2: How Security Grew Up",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "09:30 · ARCHIVE REVIEW · CITADEL CORE",
+    "vex": "History repeats. So will I. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED, in spirit: the crew now understands why every old layer still matters. Astro: \"We didn't remove a single lock. We just kept adding more.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nVolt left four archive notes, one per era of Citadel security. Read them in order, oldest first, then classify each control by its era.\n\n1. type archive\\era-1.txt, era-2.txt, era-3.txt, era-4.txt\n2. classify each control: lock-door era1, admin-password era2, firewall era3, verify-every-request era4\n",
+    "C:\\Citadel\\archive\\era-1.txt": "ERA 1 — PHYSICAL\nCodexia's founding console had one control: a locked door. No network, no password, just a guard on watch.\n",
+    "C:\\Citadel\\archive\\era-2.txt": "ERA 2 — SINGLE MACHINE\nThe first computer arrived. One shared admin password kept out anyone without it. The door still stayed locked too.\n",
+    "C:\\Citadel\\archive\\era-3.txt": "ERA 3 — NETWORKED\nTerminals were wired together. Rivet built the first firewall, because now an attack could arrive over the wire, not just through the door.\n",
+    "C:\\Citadel\\archive\\era-4.txt": "ERA 4 — ZERO TRUST (today)\nThe Citadel now talks to three allied fleets. Every request is verified, whether it claims to come from inside or outside. Nothing from Eras 1-3 was removed.\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "lock-door": "lock-door",
+    "admin-password": "admin-password",
+    "firewall": "firewall",
+    "verify-every-request": "verify-every-request"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Archive: read the four eras",
+      "body": "Volt: \"Oldest first. Notice what stays.\" Read all four era files in `archive\\`.",
+      "objectives": [
+        {
+          "id": "read1",
+          "label": "Read archive\\era-1.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\archive\\era-1.txt"
+          }
+        },
+        {
+          "id": "read2",
+          "label": "Read archive\\era-2.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\archive\\era-2.txt"
+          }
+        },
+        {
+          "id": "read3",
+          "label": "Read archive\\era-3.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\archive\\era-3.txt"
+          }
+        },
+        {
+          "id": "read4",
+          "label": "Read archive\\era-4.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\archive\\era-4.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Sort each control into its era",
+      "body": "Rivet: \"Four controls, four eras. Tag each one.\" `classify lock-door era1`, `classify admin-password era2`, `classify firewall era3`, `classify verify-every-request era4`.",
+      "objectives": [
+        {
+          "id": "c1",
+          "label": "lock-door classified as era1",
+          "check": {
+            "type": "classified",
+            "item": "lock-door",
+            "as": "era1"
+          }
+        },
+        {
+          "id": "c2",
+          "label": "admin-password classified as era2",
+          "check": {
+            "type": "classified",
+            "item": "admin-password",
+            "as": "era2"
+          }
+        },
+        {
+          "id": "c3",
+          "label": "firewall classified as era3",
+          "check": {
+            "type": "classified",
+            "item": "firewall",
+            "as": "era3"
+          }
+        },
+        {
+          "id": "c4",
+          "label": "verify-every-request classified as era4",
+          "check": {
+            "type": "classified",
+            "item": "verify-every-request",
+            "as": "era4"
+          }
+        }
+      ]
+    }
+  ]
+}

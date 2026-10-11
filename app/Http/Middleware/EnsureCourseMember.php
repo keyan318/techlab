@@ -9,10 +9,11 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Keeps a student out of a code-gated course (one whose faculty member has generated
- * a code) until they are on its roster: asked to join, got accepted, redeemed the code.
- * Covers every way in (course page, overview, lesson URLs, lesson actions), not just
- * the course card. Courses nobody has claimed yet stay open, as before.
+ * Keeps a student out of a course until they are a member of its crew: a faculty
+ * captain must have claimed it (generated a code) AND accepted this student's request.
+ * No captain assigned at all is just as closed as one whose code you haven't redeemed —
+ * there's simply nobody to have accepted you. Covers every way in (course page,
+ * overview, lesson URLs, lesson actions), not just the course card.
  * Guests, faculty and admins pass through.
  */
 class EnsureCourseMember
@@ -24,35 +25,39 @@ class EnsureCourseMember
             return $next($request);
         }
 
-        $planet = (string) $request->route('slug');
-        $course = $request->route('course') ?? self::lessonCourse($planet);
-        $crew = $course ? Crew::where('planet', $planet)->where('course_slug', $course)->first() : null;
+        // A route's {slug} may be a planet's own key, or (for a lesson URL) a
+        // planet's second+ course keyed by its catalog id. Either way, the crew
+        // lives under the planet the key belongs to.
+        $key = (string) $request->route('slug');
+        $planet = CourseProgressService::planetFor($key);
+        $course = $request->route('course') ?? CourseProgressService::catalogFor($key);
 
-        if ($crew && ! $user->belongsToCrew($crew->id)) {
+        // An unknown or "coming soon" course isn't this middleware's call — that's a 404
+        // the controller itself decides, same as before this gate existed. Only a real,
+        // live catalog course is something to actually gate.
+        $catalogCourse = $course ? config("course-catalog.{$planet}.courses.{$course}") : null;
+        if (! $catalogCourse || ! empty($catalogCourse['coming_soon'])) {
+            return $next($request);
+        }
+
+        // The crew and "is this student on its roster" in one round trip.
+        $crew = Crew::where('planet', $planet)->where('course_slug', $course)
+            ->withExists(['roster as is_member' => fn ($q) => $q->whereKey($user->id)])
+            ->first();
+
+        if (! $crew || ! $crew->is_member) {
             // The fragment route is fetched by JS, so a redirect would swap the course picker in as a "lesson".
             if ($request->routeIs('student.planet.module.lesson.fragment') || $request->expectsJson()) {
-                abort(403, 'Ask to join this course first.');
+                abort(403, $crew ? 'Ask to join this course first.' : 'No captain has claimed this course yet.');
             }
 
             return redirect()->route('student.planet', $planet)
-                ->with('status', 'Ask to join that course first.');
+                ->with('status', $crew ? 'Ask to join that course first.' : 'That course doesn\'t have a captain yet.');
         }
+
+        // Handed on so the course hub doesn't look the same crew up again.
+        $request->attributes->set('crew', $crew);
 
         return $next($request);
-    }
-
-    /**
-     * Lesson URLs only name the planet. Its lessons belong to the planet's catalog course
-     * whose blueprint key is the planet slug itself (networking → networking-fundamentals).
-     */
-    private static function lessonCourse(string $planet): ?string
-    {
-        foreach (array_keys(config("course-catalog.{$planet}.courses", [])) as $id) {
-            if (CourseProgressService::keyFor($planet, $id) === $planet) {
-                return $id;
-            }
-        }
-
-        return null;
     }
 }

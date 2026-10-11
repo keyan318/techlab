@@ -208,9 +208,14 @@ class NvidiaNimService
             'top_p' => (float) config('nvidia_nim.top_p', 0.95),
         ], $options);
 
-        if ($enableThinking) {
-            $payload = array_merge($payload, $this->reasoningFields());
-        }
+        // Always send enable_thinking explicitly (via modeFields, which — unlike
+        // reasoningFields() — takes the flag as a parameter instead of reading it
+        // from config). Omitting the field when $enableThinking is false left the
+        // model to its own default, which for a reasoning model is to think
+        // anyway; the chain-of-thought preamble then ate the whole (small)
+        // max_tokens budget for calls like title generation and got returned as
+        // the "content" with no closing </think> ever emitted.
+        $payload = array_merge($payload, $this->modeFields(['thinking' => $enableThinking]));
 
         $response = $this->sendRequest($payload, false, $timeout, $attempts, $retryTimeouts);
 
@@ -227,9 +232,13 @@ class NvidiaNimService
 
         // Defensive: strip any inline <think> block even on non-stream calls,
         // in case a caller passes enable_thinking=true for this path later.
+        // Some models never emit the opening <think> tag (the chat template
+        // adds it implicitly) but do emit the closing </think> — in that case
+        // everything up to and including the last </think> is reasoning, so
+        // take only what follows it rather than requiring a matched pair.
         $content = is_string($content) ? $content : '';
-        if ($content !== '' && str_contains($content, '<think>')) {
-            $content = preg_replace('/<think>.*?<\/think>/s', '', $content) ?? $content;
+        if ($content !== '' && str_contains($content, '</think>')) {
+            $content = substr($content, strrpos($content, '</think>') + strlen('</think>'));
             $content = trim($content);
         }
 

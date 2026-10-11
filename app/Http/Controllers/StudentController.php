@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CourseJoinRequest;
 use App\Models\Crew;
-use App\Models\CrewQuizAttempt;
+use App\Services\AvatarService;
 use App\Services\StudentDashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -28,7 +28,38 @@ class StudentController extends Controller
             return redirect(route('faculty.dashboard'));
         }
 
-        return view('student.dashboard', StudentDashboardService::home(Auth::user()));
+        $data = StudentDashboardService::home(Auth::user());
+
+        // Local preview only: with no crew yet the leaderboard would be empty, so show sample
+        // classmates to see its design. Never in production, and gone once a real crew exists.
+        if (app()->isLocal() && ! $data['leaderboard']) {
+            $data['leaderboard'] = self::sampleLeaderboard(Auth::user(), $data);
+            $data['leaderboardSample'] = true;
+        }
+
+        return view('student.dashboard', $data);
+    }
+
+    /** Made-up classmates for the local leaderboard preview, with the real student last. */
+    private static function sampleLeaderboard($user, array $data): array
+    {
+        $rows = [
+            ['CosmicPaws42', 1250, 5, 12], ['TurboWoof17', 1100, 4, 9], ['NovaChirp88', 1100, 4, 3],
+            ['LaserOink23', 870, 3, 6], ['MegaMoo61', 640, 2, 2], ['Sasa Dela Cruz', 300, 1, 1],
+        ];
+
+        $board = [];
+        foreach ($rows as $i => [$name, $xp, $gems, $streak]) {
+            mt_srand($i + 1); // the same astronauts on every reload
+            $board[] = ['id' => -1 - $i, 'name' => $name, 'avatar' => $i === 5 ? null : AvatarService::random(),
+                'xp' => $xp, 'gems' => $gems, 'streak' => $streak, 'rank' => $i + 1, 'me' => false];
+        }
+        mt_srand();
+
+        $board[] = ['id' => $user->id, 'name' => $user->display_name, 'avatar' => $user->avatar, 'xp' => $data['xp'],
+            'gems' => $data['badges'], 'streak' => $data['streak'], 'rank' => 7, 'me' => true];
+
+        return $board;
     }
 
     /**
@@ -91,86 +122,50 @@ class StudentController extends Controller
             ],
         ];
 
-        $programmingPercent = StudentDashboardService::planets(Auth::user())['programming']['percent'] ?? 0;
+        // Progress for every planet the student is enrolled in, keyed by slug (missing = not enrolled).
+        $planetProgress = StudentDashboardService::planets(Auth::user());
 
-        return view('student.studentOnboarding', compact('nodes', 'student', 'programmingPercent'));
+        return view('student.studentOnboarding', compact('nodes', 'student', 'planetProgress'));
     }
 
     /**
-     * Student crew page — join (or view) a crew.
+     * "My Courses" — every course this student is on the roster of.
      *
-     * Once a student has joined a crew (their class), this renders the course
-     * learning + performance hub: learning modules, quizzes, lab activities and
-     * grades. Until then it shows the crew-code join flow.
+     * Reads the crew_members roster rather than the legacy users.crew_id pointer, so a
+     * student enrolled in several courses sees all of them. Each one links into its hub.
      */
-    public function crew(): View|RedirectResponse
+    public function courses(): View|RedirectResponse
     {
         if (! Auth::check()) {
             return redirect(route('login'));
         }
-
-        $crew = Auth::user()->crew_id ? Crew::find(Auth::user()->crew_id) : null;
-
-        // Modules, materials and quizzes are real (faculty-authored); grades are computed from
-        // the student's own quiz attempts. There are no lab/exam models yet, so none are shown.
-        $modules = $crew
-            ? $crew->modules()->with('materials')->get()->values()->map(fn ($m, $i) => [
-                'number' => str_pad($i + 1, 2, '0', STR_PAD_LEFT),
-                'title' => $m->title,
-                'description' => $m->description,
-                'materials' => $m->materials->map(fn ($f) => [
-                    'name' => $f->name,
-                    'ext' => $f->kind,
-                    'url' => route('materials.download', $f),
-                ])->all(),
-                'material_count' => $m->materials->count(),
-            ])->all()
-            : [];
-
-        $quizzes = [];
-        $grades = ['current' => null, 'label' => 'No graded work yet', 'done' => 0, 'count' => 0];
-        if ($crew) {
-            $attempts = CrewQuizAttempt::where('user_id', Auth::id())->get()->keyBy('crew_quiz_id');
-            $quizzes = $crew->quizzes()->withCount('questions')->get()->values()->map(function ($q, $i) use ($attempts) {
-                $a = $attempts->get($q->id);
-
-                return [
-                    'id' => $q->id,
-                    'number' => str_pad($i + 1, 2, '0', STR_PAD_LEFT),
-                    'title' => $q->title,
-                    'questions' => $q->questions_count,
-                    'minutes' => $q->minutes,
-                    'status' => $a ? 'completed' : 'available',
-                    'score' => $a?->score,
-                    'total' => $a?->total ?? $q->questions_count,
-                    'percent' => $a?->percent(),
-                ];
-            })->all();
-
-            $done = collect($quizzes)->where('status', 'completed');
-            $grades['count'] = count($quizzes);
-            $grades['done'] = $done->count();
-            if ($done->isNotEmpty()) {
-                $avg = round($done->avg('percent'), 1);
-                $grades['current'] = $avg;
-                $grades['label'] = match (true) {
-                    $avg >= 90 => 'Excellent',
-                    $avg >= 80 => 'Great work',
-                    $avg >= 70 => 'Good',
-                    $avg >= 60 => 'Keep going',
-                    default => 'Needs practice',
-                };
-            }
+        if ((Auth::user()->role ?? 'student') === 'faculty') {
+            return redirect(route('faculty.dashboard'));
         }
 
-        $course = $crew ? [
-            'description' => 'Learn the fundamentals through guided lessons, quizzes, and hands-on laboratory activities.',
-            'modules' => $modules,
-            'quizzes' => $quizzes,
-            'grades' => $grades,
-        ] : null;
+        $courses = Auth::user()->crewMemberships()
+            ->with('faculty')
+            ->whereNotNull('planet')
+            ->whereNotNull('course_slug')
+            ->get()
+            ->map(function (Crew $crew) {
+                $meta = config("course-catalog.{$crew->planet}.courses.{$crew->course_slug}", []);
 
-        return view('student.studentCrew', compact('crew', 'course'));
+                return [
+                    'name' => $meta['title'] ?? $crew->name,
+                    'blurb' => $meta['blurb'] ?? ($meta['description'] ?? ''),
+                    'planet' => config("course-catalog.{$crew->planet}.title", ucfirst($crew->planet)),
+                    'banner' => $meta['banner'] ?? '#1b1650',
+                    'art' => $meta['art'] ?? null,
+                    'scene' => $meta['scene'] ?? null,
+                    'captain' => $crew->faculty?->name,
+                    'url' => route('student.course.overview', ['slug' => $crew->planet, 'course' => $crew->course_slug]),
+                ];
+            })
+            ->values()
+            ->all();
+
+        return view('student.my-courses', compact('courses'));
     }
 
     /**
@@ -212,9 +207,14 @@ class StudentController extends Controller
             $crew->roster()->attach(Auth::id(), ['role' => 'student']);
         }
 
+        // Land them straight in the course they just unlocked, not on a generic list.
+        $destination = $crew->planet && $crew->course_slug
+            ? route('student.course.overview', ['slug' => $crew->planet, 'course' => $crew->course_slug])
+            : route('student.courses');
+
         return $request->expectsJson()
-            ? response()->json(['redirect' => route('student.crew')])
-            : redirect(route('student.crew'));
+            ? response()->json(['redirect' => $destination])
+            : redirect($destination);
     }
 
     /**

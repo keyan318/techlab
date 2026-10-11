@@ -32,6 +32,21 @@
   ]);
   const PY_LANGS = new Set(['python', 'py', 'python3', 'py3', '']);
 
+  const C_KEYWORDS = new Set([
+    'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do', 'double',
+    'else', 'enum', 'extern', 'float', 'for', 'goto', 'if', 'inline', 'int', 'long',
+    'register', 'restrict', 'return', 'short', 'signed', 'sizeof', 'static', 'struct',
+    'switch', 'typedef', 'union', 'unsigned', 'void', 'volatile', 'while',
+    '_Bool', '_Complex', '_Imaginary',
+  ]);
+  const C_BUILTINS = new Set([
+    'printf', 'scanf', 'sprintf', 'sscanf', 'fprintf', 'fscanf', 'puts', 'gets', 'putchar', 'getchar',
+    'malloc', 'calloc', 'realloc', 'free', 'strlen', 'strcpy', 'strncpy', 'strcat', 'strncat',
+    'strcmp', 'strncmp', 'strchr', 'strstr', 'memcpy', 'memset', 'memmove',
+    'abs', 'pow', 'sqrt', 'floor', 'ceil', 'round', 'fabs', 'rand', 'srand', 'exit',
+  ]);
+  const C_LANGS = new Set(['c', 'clang']);
+
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const span = (cls, text) => '<span class="tok-' + cls + '">' + esc(text) + '</span>';
 
@@ -125,13 +140,79 @@
     return out;
   }
 
+  // C: # preprocessor lines, // and /* */ comments, "..." and '.' literals (with escapes),
+  // numbers (incl. hex/float/unsigned/long suffixes), identifiers, operators, punctuation.
+  const C_TOKEN = new RegExp([
+    '(#[^\\n]*)',                                                                     // 1 preprocessor directive
+    '(//[^\\n]*)',                                                                    // 2 line comment
+    '(/\\*[\\s\\S]*?\\*/)',                                                           // 3 block comment
+    '(")',                                                                            // 4 string open
+    '(\')',                                                                           // 5 char open
+    '(\\b0[xX][0-9a-fA-F]+\\b|\\b\\d+\\.\\d+(?:[eE][+-]?\\d+)?[fFlL]?\\b|\\b\\d+[uUlL]*\\b)', // 6 number
+    '([A-Za-z_][A-Za-z0-9_]*)',                                                       // 7 identifier
+    '(==|!=|<=|>=|&&|\\|\\||->|\\+\\+|--|[-+*/%=<>!&|^~]=?)',                         // 8 operator
+    '([()\\[\\]{},:;.])',                                                             // 9 punctuation
+  ].join('|'), 'g');
+
+  function highlightC(code) {
+    let out = '';
+    let last = 0;
+    C_TOKEN.lastIndex = 0;
+    let m;
+    while ((m = C_TOKEN.exec(code)) !== null) {
+      if (m.index > last) out += esc(code.slice(last, m.index));
+      last = C_TOKEN.lastIndex;
+
+      if (m[1] !== undefined) { out += span('comment', m[1]); continue; }   // #include etc. share the comment colour
+      if (m[2] !== undefined) { out += span('comment', m[2]); continue; }
+      if (m[3] !== undefined) { out += span('comment', m[3]); continue; }
+
+      const quote = m[4] || m[5];
+      if (quote) {
+        let j = C_TOKEN.lastIndex;
+        let closed = false;
+        while (j < code.length) {
+          if (code[j] === '\\') { j += 2; continue; }
+          if (code[j] === quote) { closed = true; break; }
+          if (code[j] === '\n') break;
+          j++;
+        }
+        j = Math.min(j, code.length);
+        const bodyEnd = j;
+        const end = closed ? j + 1 : j;
+        const body = code.slice(C_TOKEN.lastIndex, bodyEnd);
+        out += span('str', quote) + span('str', body) + (closed ? span('str', quote) : '');
+        last = end;
+        C_TOKEN.lastIndex = end;
+        continue;
+      }
+
+      if (m[6] !== undefined) { out += span('num', m[6]); continue; }
+      if (m[7] !== undefined) {
+        const w = m[7];
+        const after = code.slice(C_TOKEN.lastIndex).match(/^\s*\(/);
+        if (C_KEYWORDS.has(w)) out += span('kw', w);
+        else if (C_BUILTINS.has(w)) out += span('builtin', w);
+        else if (after) out += span('fn', w);
+        else out += span('var', w);
+        continue;
+      }
+      if (m[8] !== undefined) { out += span('op', m[8]); continue; }
+      if (m[9] !== undefined) { out += span('punct', m[9]); continue; }
+    }
+    if (last < code.length) out += esc(code.slice(last));
+    return out;
+  }
+
   function highlight(code, lang) {
     const l = String(lang || '').toLowerCase();
-    return PY_LANGS.has(l) ? highlightPython(code) : esc(code);   // unknown languages: safe, uncoloured
+    if (PY_LANGS.has(l)) return highlightPython(code);
+    if (C_LANGS.has(l)) return highlightC(code);
+    return esc(code);   // unknown languages: safe, uncoloured
   }
 
   const LABELS = { py: 'Python', python: 'Python', python3: 'Python', js: 'JavaScript', javascript: 'JavaScript',
-    ts: 'TypeScript', sh: 'Shell', bash: 'Bash', html: 'HTML', css: 'CSS', json: 'JSON', php: 'PHP', sql: 'SQL' };
+    ts: 'TypeScript', sh: 'Shell', bash: 'Bash', html: 'HTML', css: 'CSS', json: 'JSON', php: 'PHP', sql: 'SQL', c: 'C' };
   const label = (lang) => LABELS[String(lang || '').toLowerCase()] || (lang ? String(lang) : 'Code');
 
   const ICON_CODE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m8 8-4 4 4 4M16 8l4 4-4 4"/></svg>';

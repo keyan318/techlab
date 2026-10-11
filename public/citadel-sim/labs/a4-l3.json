@@ -1,0 +1,88 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a4-l3",
+  "title": "Lesson 4.3: Security Councils & Steering Committees",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "14:00 · COUNCIL AGENDA REVIEW · CITADEL CORE",
+    "vex": "Approve it without the department that lives with it. I'll enjoy the fallout later. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every decision waits for the right voices in the room. Astro: \"Get it right the first time, not fixed the second.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead council-agenda.txt: three upcoming decisions and who's attending. Classify each as ready or missing-a-voice.\n\n1. type council-agenda.txt\n2. classify <decision> ready | missing-a-voice\n",
+    "C:\\Citadel\\council-agenda.txt": "COUNCIL AGENDA\n----------------\ndecision-supply-bay-access   affects: Supply department.   attending: Security, Command.  (Supply not present)\ndecision-relay-upgrade       affects: Engineering.         attending: Security, Engineering, Command.\ndecision-visitor-badges      affects: all departments.     attending: Security, Command only.  (no department reps present)\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "decision-supply-bay-access": "decision-supply-bay-access",
+    "decision-relay-upgrade": "decision-relay-upgrade",
+    "decision-visitor-badges": "decision-visitor-badges"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the agenda",
+      "body": "Astro: \"Read who's affected and who's actually attending.\" `type council-agenda.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read council-agenda.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\council-agenda.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Flag the gaps",
+      "body": "Astro: \"If the affected department isn't in the room, it's not ready.\" Classify all three decisions.",
+      "objectives": [
+        {
+          "id": "d1",
+          "label": "decision-supply-bay-access classified as missing-a-voice (Supply absent)",
+          "check": {
+            "type": "classified",
+            "item": "decision-supply-bay-access",
+            "as": "missing-a-voice"
+          }
+        },
+        {
+          "id": "d2",
+          "label": "decision-relay-upgrade classified as ready (Engineering present)",
+          "check": {
+            "type": "classified",
+            "item": "decision-relay-upgrade",
+            "as": "ready"
+          }
+        },
+        {
+          "id": "d3",
+          "label": "decision-visitor-badges classified as missing-a-voice (no departments present)",
+          "check": {
+            "type": "classified",
+            "item": "decision-visitor-badges",
+            "as": "missing-a-voice"
+          }
+        }
+      ]
+    }
+  ]
+}

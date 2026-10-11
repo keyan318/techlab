@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a8-l2",
+  "title": "Lesson 8.2: Physical Vulnerability Assessment",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "10:00 · PVA FINDINGS · CITADEL CORE",
+    "vex": "Rank the wrong gap as urgent, and I'll walk right through the one you missed. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the critical gap is fixed first, exactly where Vex would have gone in. Astro: \"Honest severity ranking, not equal urgency for everything.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead pva-findings.txt: four findings from Volt's walk-through. Classify each by severity.\n\n1. type pva-findings.txt\n2. classify <finding> critical | moderate | low\n",
+    "C:\\Citadel\\pva-findings.txt": "PVA FINDINGS\n--------------\nfinding-side-door        hasn't locked properly in weeks, a direct way in\nfinding-camera-blind-spot two-meter gap near the cargo bay, but the door there is locked\nfinding-decorative-panel  loose, but leads nowhere useful\nfinding-emergency-exit    propped open with a supply crate during shift changes\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "finding-side-door": "finding-side-door",
+    "finding-camera-blind-spot": "finding-camera-blind-spot",
+    "finding-decorative-panel": "finding-decorative-panel",
+    "finding-emergency-exit": "finding-emergency-exit"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the findings",
+      "body": "Volt: \"Read every finding before ranking any of them.\" `type pva-findings.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read pva-findings.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\pva-findings.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Rank each finding honestly",
+      "body": "Volt: \"Easy way in with real damage — critical. A real gap but still contained — moderate. Leads nowhere — low.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "f1",
+          "label": "finding-side-door classified as critical",
+          "check": {
+            "type": "classified",
+            "item": "finding-side-door",
+            "as": "critical"
+          }
+        },
+        {
+          "id": "f2",
+          "label": "finding-camera-blind-spot classified as moderate",
+          "check": {
+            "type": "classified",
+            "item": "finding-camera-blind-spot",
+            "as": "moderate"
+          }
+        },
+        {
+          "id": "f3",
+          "label": "finding-decorative-panel classified as low",
+          "check": {
+            "type": "classified",
+            "item": "finding-decorative-panel",
+            "as": "low"
+          }
+        },
+        {
+          "id": "f4",
+          "label": "finding-emergency-exit classified as critical",
+          "check": {
+            "type": "classified",
+            "item": "finding-emergency-exit",
+            "as": "critical"
+          }
+        }
+      ]
+    }
+  ]
+}

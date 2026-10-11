@@ -29,20 +29,22 @@ class LearningPlanTest extends TestCase
 
     public function test_returns_ordered_placeholder_plan_for_every_planet(): void
     {
+        $courseSlug = ['programming' => 'python', 'networking' => 'networking-fundamentals', 'cybersecurity' => 'information-security-1'];
+
         foreach (['programming', 'networking', 'cybersecurity'] as $slug) {
-            $user = User::factory()->create();
+            $user = $this->studentIn($slug, $courseSlug[$slug]);
 
             $this->actingAs($user)
                 ->post(route('student.planet.plan', ['slug' => $slug]))
                 ->assertOk()
                 ->assertJsonPath('ok', true)
-                ->assertJsonPath("plan.slug", $slug);
+                ->assertJsonPath('plan.slug', $slug);
         }
     }
 
     public function test_programming_nodes_are_ordered_with_first_unlocked(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->post(route('student.planet.plan', ['slug' => 'programming']))

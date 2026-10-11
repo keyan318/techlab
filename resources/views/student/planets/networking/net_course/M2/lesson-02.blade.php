@@ -116,6 +116,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l2.json) complete
         <p class="quiz-explanation"><em>Telnet does not encrypt anything, so anyone listening can read the password. SSH is the secure replacement.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which organization publishes the RFC documents behind protocols like IP, TCP and HTTP?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. IETF ✓</li>
+            <li class="quiz-option">B. IEEE</li>
+            <li class="quiz-option">C. NASA</li>
+            <li class="quiz-option">D. Planet Doom's fleet command</li>
+        </ul>
+        <p class="quiz-explanation"><em>The IETF publishes the RFC documents that define IP, TCP, HTTP and DNS. The IEEE writes standards like 802.3 Ethernet and 802.11 Wi-Fi.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet wants a service that needs a reliable handshake and resends any data that gets lost, like a file transfer. Which transport protocol fits?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. UDP</li>
+            <li class="quiz-option">B. ICMP</li>
+            <li class="quiz-option quiz-correct">C. TCP ✓</li>
+            <li class="quiz-option">D. DNS</li>
+        </ul>
+        <p class="quiz-explanation"><em>TCP sets up a connection, numbers the data and resends anything lost, which makes it reliable for things like file transfer.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

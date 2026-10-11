@@ -135,4 +135,26 @@ print(shield_power)">
         <p class="quiz-explanation"><em>A variable is a name attached to a value. Use the name anywhere and Python looks in the box for whatever is inside.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Why use a variable like <code>oxygen_level</code> instead of just retyping the number every time it's needed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Python requires every number to be stored in a variable first</li>
+            <li class="quiz-option quiz-correct">B. You store the value once, and every part of the program that uses the name automatically gets the current value ✓</li>
+            <li class="quiz-option">C. Variables make the program run faster</li>
+            <li class="quiz-option">D. There's no real reason — it's just a style choice</li>
+        </ul>
+        <p class="quiz-explanation"><em>A variable's real value: change what's in the bin once, and every place that reads the name sees the update — no hunting down every copy of a number.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. In <code>hull_status = "stable"</code> and <code>oxygen_level = 87</code>, how does Python know one holds text and the other holds a number?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. You must declare the type before the variable name</li>
+            <li class="quiz-option">B. You can't store different kinds of values in variables in Python</li>
+            <li class="quiz-option quiz-correct">C. Python looks at the value itself and figures out the type automatically ✓</li>
+            <li class="quiz-option">D. Every variable is text unless print() says otherwise</li>
+        </ul>
+        <p class="quiz-explanation"><em>Python figures out a variable's type from the value assigned to it — quotes mean text, digits with no quotes mean a number.</em></p>
+    </div>
+
 </div>

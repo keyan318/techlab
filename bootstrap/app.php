@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Cloudflare (and cloudflared tunnels) terminate TLS and forward plain HTTP to us,
+        // so without this Laravel thinks every request is HTTP and generates http:// asset
+        // URLs, which browsers block as mixed content on an https:// tunnel page.
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => EnsureRole::class,
             'enrolled' => EnsureEnrolled::class,

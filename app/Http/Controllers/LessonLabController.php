@@ -34,6 +34,9 @@ class LessonLabController extends Controller
         ],
     ];
 
+    /** Courses whose Citadel labs play background music. IAS1 goes first; add a course slug here to roll it out. */
+    public const MUSIC_COURSES = ['cybersecurity'];
+
     /** GET /student/planet/{slug}/lab/{module}/{lesson}  (gated by the lesson.unlocked middleware) */
     public function show(Request $request, string $slug, string $module, string $lesson): Response|RedirectResponse
     {
@@ -75,6 +78,7 @@ class LessonLabController extends Controller
             'labHelpAskUrl' => $sim['source'] === 'citadel' ? route('student.planet.lab-help.ask', $params) : null,
             'nextUrl' => $next ? route('student.planet.module.lesson', ['slug' => $slug] + $next) : null,
             'alreadyDone' => CourseProgressService::isCompleted($user, $module, $lesson, $slug),
+            'music' => $sim['source'] === 'citadel' && in_array($slug, self::MUSIC_COURSES, true),
         ], 200, ['Cache-Control' => 'no-store, private']);
     }
 

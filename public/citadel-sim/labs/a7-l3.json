@@ -1,0 +1,68 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a7-l3",
+  "title": "Lesson 7.3: Backups — Strategies, Scheduling & Storage",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "20:00 · UNTESTED BACKUP FOUND · CITADEL CORE",
+    "vex": "A backup nobody's tested is a backup I've already beaten. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the restore is tested and confirmed, and the silent failure is caught before it mattered. Astro: \"Tested, not just scheduled. That's the whole difference.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nThe starmap backup has never been test-restored. Restore it now and confirm it matches the working copy.\n\n1. type backup-schedule.txt\n2. copy backup\\starmap.txt.bak starmap.txt\n",
+    "C:\\Citadel\\backup-schedule.txt": "BACKUP SCHEDULE — Starmap\n----------------------------\nRuns nightly. Last restore test: NEVER. (finding: an untested backup cannot be trusted)\n",
+    "C:\\Citadel\\starmap.txt": "###CORRUPTED### the working copy was damaged in a storage error ###CORRUPTED###\n",
+    "C:\\Citadel\\backup\\starmap.txt.bak": "STARMAP (clean backup copy)\nCodexia sector coordinates: 041.2, 118.6, 003.9\nAllied fleet rendezvous point: Sector 7\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: read the schedule",
+      "body": "Rivet: \"Read it — see the gap for yourself.\" `type backup-schedule.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read backup-schedule.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\backup-schedule.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Test the restore for real",
+      "body": "Volt: \"Actually restore it, don't just trust the schedule.\" `copy backup\\starmap.txt.bak starmap.txt`.",
+      "objectives": [
+        {
+          "id": "restore",
+          "label": "starmap.txt now matches the clean backup",
+          "check": {
+            "type": "same-content",
+            "a": "C:\\Citadel\\starmap.txt",
+            "b": "C:\\Citadel\\backup\\starmap.txt.bak"
+          }
+        }
+      ]
+    }
+  ]
+}

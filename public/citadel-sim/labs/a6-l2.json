@@ -1,0 +1,78 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a6-l2",
+  "title": "Lesson 6.2: Change Management",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "10:15 · CHANGE REQUEST PENDING · CITADEL CORE",
+    "vex": "Skip the approval. Nobody will notice until it's too late. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the change went through request, approval, and implementation, in order — no conflicts, no surprises. Astro: \"Right this time, and safe every time.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nA comms relay reconfiguration is needed. Follow the process in order: log the request, get approval, then implement.\n\n1. certutil -hashfile change-request.txt SHA256   (this stands in for logging/submitting the request)\n2. type approval.txt   (confirm it's approved before touching anything)\n3. copy relay-config-new.txt relay-config.txt   (implement, only after approval)\n",
+    "C:\\Citadel\\change-request.txt": "CHANGE REQUEST\n----------------\nProposed: reconfigure the comms relay to improve signal range.\nRequested by: Rivet\nStatus: pending approval\n",
+    "C:\\Citadel\\approval.txt": "APPROVAL RECORD\n------------------\nChange request reviewed by Volt: no conflicts with scheduled diagnostics. APPROVED.\n",
+    "C:\\Citadel\\relay-config.txt": "RELAY CONFIG (current, unchanged)\nrange: standard\n",
+    "C:\\Citadel\\relay-config-new.txt": "RELAY CONFIG (proposed)\nrange: extended\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Log the request first",
+      "body": "Rivet: \"Request before anything else.\" `certutil -hashfile change-request.txt SHA256`, before implementing.",
+      "objectives": [
+        {
+          "id": "order",
+          "label": "Request was logged before implementation",
+          "check": {
+            "type": "ordered",
+            "before": "^(certutil|hash)",
+            "after": "^copy"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Confirm approval, then implement",
+      "body": "Astro: \"Read the approval before you touch the relay.\" `type approval.txt`, then `copy relay-config-new.txt relay-config.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read approval.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\approval.txt"
+          }
+        },
+        {
+          "id": "implement",
+          "label": "relay-config.txt now matches the approved new configuration",
+          "check": {
+            "type": "same-content",
+            "a": "C:\\Citadel\\relay-config.txt",
+            "b": "C:\\Citadel\\relay-config-new.txt"
+          }
+        }
+      ]
+    }
+  ]
+}

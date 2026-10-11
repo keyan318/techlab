@@ -1,0 +1,115 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a2-l2",
+  "title": "Lesson 2.2: Defense in Depth",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "10:05 · SINGLE-LAYER AUDIT · CITADEL CORE",
+    "vex": "One wall. One trick. I only need to find it once. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED, and the next one too: three independent layers now stand where there was only one. Astro: \"Not the same wall three times. Three different walls.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nThe relay console has only its firewall — one layer. Read audit.txt, then add three more, different, layers: close the leftover diagnostic port, disable the unused legacy account, and lock the engine specs file away from ordinary crew.\n\n1. type audit.txt\n2. netstat -an   (confirm port 9091 is open)\n3. taskkill /im diag-legacy.exe /f\n4. net user legacy-diag /active:no\n5. icacls engine-specs.txt /deny cadet:F\n",
+    "C:\\Citadel\\audit.txt": "SINGLE-LAYER AUDIT\n--------------------\nOnly the perimeter firewall is active. Three more layers are missing:\n1. Host: a leftover diagnostic service (diag-legacy.exe) still listens on port 9091.\n2. Host: a legacy account 'legacy-diag' from a retired console is still enabled.\n3. Data: engine-specs.txt is CONFIDENTIAL but readable by everyone.\n",
+    "C:\\Citadel\\engine-specs.txt": "CONFIDENTIAL — Rivet's engine specifications. Should be locked to Rivet only.\n"
+  },
+  "users": [
+    {
+      "name": "legacy-diag",
+      "fullName": "(retired console account — should be disabled)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "unknown",
+      "lastLogon": "long ago"
+    },
+    {
+      "name": "rivet",
+      "fullName": "Rivet (Engineer)",
+      "groups": [
+        "Administrators"
+      ],
+      "passwordSet": "09/01/2026",
+      "lastLogon": "09/23/2026"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "services": [
+    {
+      "name": "diagnostic",
+      "port": 9091,
+      "process": "diag-legacy.exe"
+    }
+  ],
+  "processes": [
+    {
+      "name": "diag-legacy.exe",
+      "pid": 9091,
+      "mem": "5,120 K"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the single-layer audit",
+      "body": "Rivet: \"One wall isn't depth. Read what's missing.\" `type audit.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read audit.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\audit.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Add three different layers",
+      "body": "Volt: \"Three different walls, not one wall three times.\" Stop the leftover service (`taskkill /im diag-legacy.exe /f`), disable the legacy account (`net user legacy-diag /active:no`), and lock the specs file (`icacls engine-specs.txt /deny cadet:F`).",
+      "objectives": [
+        {
+          "id": "port",
+          "label": "Port 9091 no longer listens",
+          "check": {
+            "type": "port-closed",
+            "port": 9091
+          }
+        },
+        {
+          "id": "account",
+          "label": "legacy-diag is disabled",
+          "check": {
+            "type": "user-disabled",
+            "user": "legacy-diag"
+          }
+        },
+        {
+          "id": "file",
+          "label": "engine-specs.txt is locked away from the crew",
+          "check": {
+            "type": "denied",
+            "file": "C:\\Citadel\\engine-specs.txt",
+            "user": "cadet"
+          }
+        }
+      ]
+    }
+  ]
+}

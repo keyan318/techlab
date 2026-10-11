@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@yield('title', "Captain's Bridge") · TechLab</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
   <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
@@ -15,6 +16,7 @@
   <meta name="theme-color" content="#06061a">
   <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
   <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
+  <script defer src="{{ asset('js/sfx.js') }}?v={{ filemtime(public_path('js/sfx.js')) }}"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -114,6 +116,9 @@
     .member .tag { font-family: 'Space Mono', monospace; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; }
     .member .tag.faculty { color: var(--violet); background: rgba(155,107,255,.15); }
     .member .tag.student { color: var(--cyan); background: rgba(91,225,255,.13); }
+    .member .stat-chip { font-family: 'Space Mono', monospace; font-size: .68rem; letter-spacing: .08em; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--glass-border); background: var(--field); }
+    .member .stat-chip.xp { color: var(--blue); }
+    .member .stat-chip.gems { color: var(--cyan); }
 
     .btn { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.05rem; padding: 16px 34px; border-radius: 999px; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 10px; transition: transform .25s, box-shadow .25s; }
     .btn-primary { color: #07142e; background: linear-gradient(100deg, var(--cyan), var(--blue) 55%, var(--violet)); box-shadow: 0 10px 40px rgba(115,182,255,.45); }
@@ -153,8 +158,14 @@
     .qb .mrow input[type=text] { flex: 1 1 auto; }
     .qb label.ok { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--muted); white-space: nowrap; }
     .mnew { border-style: dashed; }
+    .mdrop { display: flex; align-items: center; gap: 10px; padding: 16px; border: 1.5px dashed var(--glass-border); border-radius: 14px; background: var(--field); color: var(--muted); font-size: .88rem; cursor: pointer; transition: border-color .2s, background .2s; }
+    .mdrop:hover, .mdrop.over { border-color: var(--blue); background: rgba(115,182,255,.08); }
+    .mdrop svg { flex: 0 0 auto; color: var(--blue); }
+    .mdrop span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   
   </style>
+  @stack('head')
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 <body class="bg-void font-sans text-ink antialiased" x-data="techlabShell()" x-init="init()">
 

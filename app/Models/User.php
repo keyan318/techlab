@@ -6,13 +6,14 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'crew_id', 'planets'])]
+#[Fillable(['name', 'email', 'password', 'role', 'crew_id', 'planets', 'avatar', 'codename'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -68,6 +69,14 @@ class User extends Authenticatable
         return array_values(array_intersect(self::PLANETS, $this->planets));
     }
 
+    /**
+     * What classmates see: the student's codename, or their full name until they pick one.
+     */
+    protected function displayName(): Attribute
+    {
+        return Attribute::get(fn () => $this->codename ?: $this->name);
+    }
+
     public function isEnrolledIn(string $planet): bool
     {
         return in_array($planet, $this->enrolledPlanets(), true);
@@ -101,6 +110,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'planets' => 'array',
+            'avatar' => 'array',
         ];
     }
 }

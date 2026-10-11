@@ -73,28 +73,28 @@ class LessonProgressionTest extends TestCase
 
     public function test_fresh_user_can_open_first_lesson(): void
     {
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->get($this->lessonUrl('m1', 'lesson01'))
             ->assertOk();
     }
 
     public function test_second_lesson_redirects_back_when_first_is_incomplete(): void
     {
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->get($this->lessonUrl('m1', 'lesson02'))
             ->assertRedirect($this->lessonUrl('m1', 'lesson01'));
     }
 
     public function test_deep_lesson_url_redirects_for_a_new_user(): void
     {
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->get($this->lessonUrl('m4', 'lesson03'))
             ->assertRedirect($this->lessonUrl('m1', 'lesson01'));
     }
 
     public function test_alternate_url_spellings_cannot_bypass_the_lock(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         foreach (['m1/lesson-02', 'M1/lesson02', 'M1/lesson-02'] as $path) {
             [$module, $lesson] = explode('/', $path);
@@ -111,7 +111,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_locked_fragment_is_forbidden_and_unlocked_fragment_is_served(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)->get($this->fragmentUrl('m1', 'lesson02'))->assertForbidden();
         $this->actingAs($user)->get($this->fragmentUrl('m1', 'lesson01'))->assertOk();
@@ -119,7 +119,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_lesson_outside_the_blueprint_is_404(): void
     {
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->get($this->lessonUrl('m1', 'lesson07'))
             ->assertNotFound();
     }
@@ -132,7 +132,8 @@ class LessonProgressionTest extends TestCase
 
     public function test_other_planets_are_not_gated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
+        $this->enroll($user, 'cybersecurity', 'information-security-1');
 
         // Now that cybersecurity has a real blueprint (like programming/networking), a lesson
         // outside it 404s straight from the gating middleware, same as any other course —
@@ -151,7 +152,7 @@ class LessonProgressionTest extends TestCase
         // Regression: show() passed no lessonView, so the shell guessed
         // "…python_course.M1.lesson01" while the file is lesson-01.blade.php,
         // and the page rendered the "Lesson not found" placeholder instead.
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->get(route('student.planet.play', ['slug' => 'programming', 'course' => 'python']))
             ->assertOk()
             ->assertSee('Lesson 1.1: First Signal')
@@ -160,14 +161,14 @@ class LessonProgressionTest extends TestCase
 
     public function test_planet_shows_a_course_picker_before_the_course(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->get(route('student.planet', ['slug' => 'programming']))
             ->assertOk()
             ->assertSee('Python')
             ->assertSee('0% complete')
-            ->assertSee(route('student.planet.play', ['slug' => 'programming', 'course' => 'python']), false);
+            ->assertSee(route('student.course.overview', ['slug' => 'programming', 'course' => 'python']), false);
 
         foreach (['networking', 'cybersecurity'] as $slug) {
             $this->actingAs($user)->get(route('student.planet', ['slug' => $slug]))->assertOk()->assertSee('Course');
@@ -187,7 +188,7 @@ class LessonProgressionTest extends TestCase
         // networking/cybersecurity shells died with "Undefined variable $course".
         // They still fail on a separate missing component view, so assert on the
         // variable itself rather than the status code.
-        $view = $this->actingAs(User::factory()->create())
+        $view = $this->actingAs($this->studentIn())
             ->get($this->lessonUrl('m1', 'lesson01'))
             ->assertOk()
             ->original;
@@ -200,7 +201,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_wrong_output_is_rejected_and_records_nothing(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'nope'])
@@ -213,7 +214,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_correct_output_records_completion_and_unlocks_the_next_lesson(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => "Astro to Codexia: comms online.\n"])
@@ -232,7 +233,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_cannot_post_a_completion_for_a_locked_lesson(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         // Correct answer for lesson 2 ("42"), but lesson 1 was never completed.
         $this->actingAs($user)
@@ -244,7 +245,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_lesson_without_a_challenge_rejects_submissions(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
         $this->completeThrough($user, 'm1', 'lesson06');
 
         $this->actingAs($user)
@@ -256,14 +257,14 @@ class LessonProgressionTest extends TestCase
     {
         $this->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'x'])->assertUnauthorized();
 
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->postJson($this->completeUrl('m9', 'lesson01'), ['output' => 'x'])
             ->assertNotFound();
     }
 
     public function test_completing_twice_does_not_duplicate(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         foreach (range(1, 2) as $_) {
             $this->actingAs($user)
@@ -276,7 +277,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_every_gated_lesson_accepts_its_own_key_in_order(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         foreach (['lesson01', 'lesson02', 'lesson03', 'lesson04', 'lesson05', 'lesson06'] as $lesson) {
             $this->actingAs($user)
@@ -291,7 +292,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_module_boundary_unlocks_after_last_lesson_of_previous_module(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)->get($this->lessonUrl('m2', 'lesson01'))
             ->assertRedirect($this->lessonUrl('m1', 'lesson01'));
@@ -303,7 +304,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_opening_a_challengeless_lesson_completes_it_so_the_course_does_not_dead_end(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
         $this->completeThrough($user, 'm1', 'lesson06');
 
         $this->actingAs($user)->get($this->fragmentUrl('m2', 'lesson01'))->assertOk();
@@ -317,7 +318,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_progress_follows_the_account_into_a_brand_new_session(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->postJson($this->completeUrl('m1', 'lesson01'), ['output' => 'Astro to Codexia: comms online.'])
@@ -334,8 +335,8 @@ class LessonProgressionTest extends TestCase
 
     public function test_progress_is_per_user(): void
     {
-        $alice = User::factory()->create();
-        $bob = User::factory()->create();
+        $alice = $this->studentIn();
+        $bob = $this->studentIn();
 
         CourseProgressService::markComplete($alice, 'm1', 'lesson01');
 
@@ -345,7 +346,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_sidebar_is_seeded_from_the_database(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
         CourseProgressService::markComplete($user, 'm1', 'lesson01');
 
         $this->actingAs($user)
@@ -358,7 +359,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_launching_the_editor_for_a_gated_lesson_provides_a_server_verified_endpoint_only(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->post(route('student.planet.editor.launch', ['slug' => 'programming']), [
@@ -373,7 +374,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_editor_page_offers_submit_for_a_gated_lesson_and_never_ships_the_answer_key(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->withSession([
@@ -391,7 +392,7 @@ class LessonProgressionTest extends TestCase
 
     public function test_launching_the_editor_for_an_unknown_lesson_provides_no_endpoint(): void
     {
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($this->studentIn())
             ->post(route('student.planet.editor.launch', ['slug' => 'programming']), [
                 'return_to' => $this->lessonUrl('m1', 'lesson07'),
             ])

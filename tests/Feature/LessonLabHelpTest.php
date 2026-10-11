@@ -25,7 +25,7 @@ class LessonLabHelpTest extends TestCase
 
     private function broke(): User
     {
-        return User::factory()->create(['role' => 'student', 'planets' => ['cybersecurity']]);   // 0 XP
+        return $this->studentIn('cybersecurity', 'information-security-1', ['role' => 'student', 'planets' => ['cybersecurity']]);   // 0 XP
     }
 
     /** One finished lesson = 100 XP, enough for the 60 XP chat. */
@@ -179,7 +179,7 @@ class LessonLabHelpTest extends TestCase
         $this->postJson($this->url('unlock'))->assertUnauthorized();
 
         // A Networking lab runs in NetSim, which has no Astro chat.
-        $net = User::factory()->create(['role' => 'student', 'planets' => ['networking']]);
+        $net = $this->studentIn('networking', 'networking-fundamentals', ['role' => 'student', 'planets' => ['networking']]);
         CourseProgressService::markComplete($net, 'm1', 'lesson01', 'networking');
         $this->actingAs($net)->postJson($this->url('unlock', 'networking'))->assertNotFound();
         $this->assertDatabaseCount('xp_spends', 0);
@@ -192,7 +192,7 @@ class LessonLabHelpTest extends TestCase
             ->assertOk()
             ->assertSee(json_encode($this->url('ask')), false);
 
-        $net = User::factory()->create(['role' => 'student', 'planets' => ['networking']]);
+        $net = $this->studentIn('networking', 'networking-fundamentals', ['role' => 'student', 'planets' => ['networking']]);
         $this->actingAs($net)
             ->get(route('student.planet.lab', ['slug' => 'networking', 'module' => 'm1', 'lesson' => 'lesson01']))
             ->assertOk()

@@ -11,9 +11,11 @@
   <meta name="theme-color" content="#06061a">
   <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
   <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
+  <script defer src="{{ asset('js/sfx.js') }}?v={{ filemtime(public_path('js/sfx.js')) }}"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>[x-cloak]{display:none!important}</style>
   @stack('head')
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 <body class="bg-void text-ink" x-data="techlabShell()" x-init="init()">
 
@@ -37,10 +39,10 @@
           <span x-show="!collapsed" x-cloak class="text-sm font-medium">Planets</span>
         </a>
 
-        <a href="{{ route('student.crew') }}"
-           class="flex items-center gap-3 rounded-[12px] px-3 py-2.5 transition {{ request()->routeIs('student.crew') ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-glass hover:text-ink' }}">
+        <a href="{{ route('student.courses') }}"
+           class="flex items-center gap-3 rounded-[12px] px-3 py-2.5 transition {{ request()->routeIs('student.courses') || request()->routeIs('student.course.*') ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-glass hover:text-ink' }}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5 flex-none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <span x-show="!collapsed" x-cloak class="text-sm font-medium">Crew</span>
+          <span x-show="!collapsed" x-cloak class="text-sm font-medium">My Courses</span>
         </a>
       </nav>
 

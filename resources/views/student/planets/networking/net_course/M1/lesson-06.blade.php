@@ -108,6 +108,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l6.json) complete
         <p class="quiz-explanation"><em>Both directions need a route. If the remote server has no route back, the reply is lost.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which cloud model lets you rent raw servers and storage, but you manage the operating system yourself?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. SaaS</li>
+            <li class="quiz-option">B. Hybrid cloud</li>
+            <li class="quiz-option">C. PaaS</li>
+            <li class="quiz-option quiz-correct">D. IaaS ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>IaaS (Infrastructure as a Service) rents raw servers, storage and networks, and you manage the operating system and apps yourself.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. The ship's cloud service is used only by Astro's crew and no one else outside Codexia. What kind of cloud is this?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Public cloud</li>
+            <li class="quiz-option quiz-correct">B. Private cloud ✓</li>
+            <li class="quiz-option">C. SaaS</li>
+            <li class="quiz-option">D. A WAN</li>
+        </ul>
+        <p class="quiz-explanation"><em>A private cloud belongs to one organization only. A public cloud is shared by many customers.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

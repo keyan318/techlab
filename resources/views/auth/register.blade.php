@@ -44,13 +44,15 @@
     <p class="hint">Pick one planet to start. Finish a module there to earn a gem — collect one and the next planet unlocks.</p>
     <div class="tiles">
     @foreach ([
-      'programming' => ['Programming', 'Python and more'],
-      'networking' => ['Networking', 'How machines talk'],
-      'cybersecurity' => ['Cybersecurity', 'Stay safe online'],
-    ] as $slug => [$label, $note])
-      <label>
+      'programming' => ['Programming', 'Build things with code', 'programming-logo'],
+      'networking' => ['Networking', 'How machines talk', 'networking-logo'],
+      'cybersecurity' => ['Cybersecurity', 'Stay safe online', 'cybersecurity-logo'],
+    ] as $slug => [$label, $note, $logo])
+      <label class="tile tile-{{ $slug }}" style="--i: {{ $loop->index }}">
         <input type="radio" name="planets[]" value="{{ $slug }}" @checked(in_array($slug, old('planets', []), true))>
-        <span><b>{{ $label }}</b><small>{{ $note }}</small></span>
+        <span class="orb" aria-hidden="true"><x-dynamic-component :component="$logo" /></span>
+        <i class="tick" aria-hidden="true"></i>
+        <span class="copy"><b>{{ $label }}</b><small>{{ $note }}</small></span>
       </label>
     @endforeach
     </div>

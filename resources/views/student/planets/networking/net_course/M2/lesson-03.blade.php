@@ -130,6 +130,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l3.json) complete
         <p class="quiz-explanation"><em>IPv4 only has about 4.3 billion addresses. IPv6 has vastly more.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What does the address 127.0.0.1 mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It is IPv6's shorthand notation</li>
+            <li class="quiz-option quiz-correct">B. It is the loopback address, meaning the device itself ✓</li>
+            <li class="quiz-option">C. It is a public IPv4 address</li>
+            <li class="quiz-option">D. It only works with DHCP</li>
+        </ul>
+        <p class="quiz-explanation"><em>127.0.0.1 is the loopback address. A device uses it to refer to itself.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet's console shows an address of 169.254.5.12. What does this tell him?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The device got a normal address from a DHCP server</li>
+            <li class="quiz-option">B. The device is using IPv6</li>
+            <li class="quiz-option">C. Nothing is wrong</li>
+            <li class="quiz-option quiz-correct">D. The device could not get an address automatically ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>169.254.x.x means the device tried to get an address automatically and failed, so it assigned itself one.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

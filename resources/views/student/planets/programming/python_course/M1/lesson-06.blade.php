@@ -89,4 +89,26 @@ print(int(shield_level) + 10)">
         <p class="quiz-explanation"><em>SyntaxError means Python couldn't even parse the code as valid Python — it's a structural/grammar problem, not a logic problem.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What kind of error does <code>print(fuel_level + 10)</code> raise when <code>fuel_level</code> is the string <code>"87"</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. NameError</li>
+            <li class="quiz-option">B. SyntaxError</li>
+            <li class="quiz-option quiz-correct">C. TypeError ✓</li>
+            <li class="quiz-option">D. No error — this runs fine</li>
+        </ul>
+        <p class="quiz-explanation"><em>Adding a str and an int directly raises a TypeError — Python won't silently guess which one you meant.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. What's the fastest way to find out exactly why a piece of code is failing?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Rewrite the whole program from scratch</li>
+            <li class="quiz-option">B. Guess randomly until it works</li>
+            <li class="quiz-option quiz-correct">C. Run it, then read the last line of the traceback it prints ✓</li>
+            <li class="quiz-option">D. Ask a teammate before even running it once</li>
+        </ul>
+        <p class="quiz-explanation"><em>Running the code and reading the traceback's last line points straight at the error type and what caused it — the fastest first step in debugging.</em></p>
+    </div>
+
 </div>

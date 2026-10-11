@@ -116,6 +116,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
         <p class="quiz-explanation"><em>Documentation turns a mystery into a map. During an outage it saves time and prevents mistakes such as address conflicts.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which network management tool lets a manager poll devices for their status, and which lets devices send event messages to one place?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. SNMP polls, and syslog receives events ✓</li>
+            <li class="quiz-option">B. Syslog polls, and SNMP receives events</li>
+            <li class="quiz-option">C. Both do the same thing</li>
+            <li class="quiz-option">D. Neither is used for monitoring</li>
+        </ul>
+        <p class="quiz-explanation"><em>SNMP is a manager polling devices for their status, while syslog is devices sending event messages to one place.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Before making a network change, Astro insists on planning it, getting it approved, testing it, and keeping a way to undo it. What practice is this?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Baselining</li>
+            <li class="quiz-option">B. Accounting</li>
+            <li class="quiz-option quiz-correct">C. Change control ✓</li>
+            <li class="quiz-option">D. Fault management</li>
+        </ul>
+        <p class="quiz-explanation"><em>Change control means planning a change, getting it approved, testing it, keeping a way to undo it, and recording it.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

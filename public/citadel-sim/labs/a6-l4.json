@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a6-l4",
+  "title": "Lesson 6.4: Administrative Security Controls",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "09:50 · CONTROL PROPOSAL REVIEW · CITADEL CORE",
+    "vex": "Automate the judgment calls away. Please, keep trying. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every control is placed where it actually works — automated where it can be, reviewed by people where it must be. Astro: \"Neither one covers everything alone.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead control-proposals.txt: four proposed controls. Classify each as administrative or technical.\n\n1. type control-proposals.txt\n2. classify <control> administrative | technical\n",
+    "C:\\Citadel\\control-proposals.txt": "PROPOSED CONTROLS\n-------------------\ncontrol-1   a firewall rule blocking all unused ports automatically\ncontrol-2   a quarterly review of who has access to the starmap, signed off by Astro\ncontrol-3   the system automatically rejecting any password under 12 characters\ncontrol-4   a background check required before any new crew member is hired\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "control-1": "control-1",
+    "control-2": "control-2",
+    "control-3": "control-3",
+    "control-4": "control-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the proposals",
+      "body": "Astro: \"Read all four before sorting any of them.\" `type control-proposals.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read control-proposals.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\control-proposals.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Sort administrative from technical",
+      "body": "Astro: \"Automatic and enforced by a tool is technical. Judged and signed off by a person is administrative.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "c1",
+          "label": "control-1 classified as technical",
+          "check": {
+            "type": "classified",
+            "item": "control-1",
+            "as": "technical"
+          }
+        },
+        {
+          "id": "c2",
+          "label": "control-2 classified as administrative",
+          "check": {
+            "type": "classified",
+            "item": "control-2",
+            "as": "administrative"
+          }
+        },
+        {
+          "id": "c3",
+          "label": "control-3 classified as technical",
+          "check": {
+            "type": "classified",
+            "item": "control-3",
+            "as": "technical"
+          }
+        },
+        {
+          "id": "c4",
+          "label": "control-4 classified as administrative",
+          "check": {
+            "type": "classified",
+            "item": "control-4",
+            "as": "administrative"
+          }
+        }
+      ]
+    }
+  ]
+}

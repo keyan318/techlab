@@ -65,4 +65,40 @@ test('block has Copy, carries the whole source, and has NO Run control', () => {
   assert.ok(b.includes('>Python<') || b.includes('Python</span>'));
 });
 
+const C_SAMPLE = `#include <stdio.h>
+
+// Add two crew counts
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int fuel = 76;
+    char bay = 'A';
+    printf("Fuel: %d, Bay: %c\\n", fuel, bay);
+    return 0;
+}`;
+
+const cOut = H.highlight(C_SAMPLE, 'c');
+const hasC = (cls, text) => assert.ok(cOut.includes(`<span class="tok-${cls}">${text}</span>`), `${cls}: ${text}`);
+
+test('C: keywords', () => { hasC('kw', 'int'); hasC('kw', 'return'); hasC('kw', 'char'); });
+test('C: builtins', () => { hasC('builtin', 'printf'); });
+test('C: numbers', () => { hasC('num', '76'); });
+test('C: variables', () => { hasC('var', 'fuel'); hasC('var', 'bay'); });
+test('C: functions are distinguished from variables', () => { hasC('fn', 'add'); hasC('fn', 'main'); });
+test('C: line comments', () => { hasC('comment', '// Add two crew counts'); });
+test('C: #include is treated as a comment-coloured directive', () => { hasC('comment', '#include &lt;stdio.h&gt;'); });
+test('C: double-quoted strings and char literals', () => { hasC('str', 'Fuel: %d, Bay: %c\\n'); hasC('str', 'A'); });
+test('C: text is preserved exactly', () => { assert.equal(textOf(cOut), C_SAMPLE); });
+test('C: HTML in code is escaped', () => {
+  const h = H.highlight('printf("<script>alert(1)</script>");', 'c');
+  assert.ok(!h.includes('<script>'));
+});
+test('C: block comments', () => {
+  const h = H.highlight('/* multi\nline */ int x;', 'c');
+  assert.ok(h.includes('<span class="tok-comment">/* multi\nline */</span>'));
+});
+test('C label falls back correctly', () => { assert.equal(H.label('c'), 'C'); });
+
 console.log(`\n${passed} passed`);

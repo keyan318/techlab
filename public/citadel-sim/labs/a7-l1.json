@@ -1,0 +1,97 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a7-l1",
+  "title": "Lesson 7.1: Disaster Recovery Concepts",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "06:00 · RECOVERY LOG REVIEW · CITADEL CORE",
+    "vex": "A target on paper means nothing until reality tests it. Let's test it. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every recovery event is checked honestly against the plan's own targets. Astro: \"The plan is only as good as what it actually does under pressure.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead dr-plan.txt for the targets, then recovery-log.txt for three real events. Classify each event as within-target or exceeded-target.\n\n1. type dr-plan.txt\n2. type recovery-log.txt\n3. classify <event> within-target | exceeded-target\n",
+    "C:\\Citadel\\dr-plan.txt": "DISASTER RECOVERY PLAN — Targets\n------------------------------------\nRTO (recovery time objective): 4 hours\nRPO (recovery point objective): 1 hour\n",
+    "C:\\Citadel\\recovery-log.txt": "RECOVERY LOG\n--------------\nevent-relay-drill      down 3 hours, backup was 30 minutes old at time of failure\nevent-shield-outage    down 6 hours, backup was 20 minutes old at time of failure\nevent-storage-failure  down 2 hours, backup was 90 minutes old at time of failure\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "event-relay-drill": "event-relay-drill",
+    "event-shield-outage": "event-shield-outage",
+    "event-storage-failure": "event-storage-failure"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the plan and the log",
+      "body": "Astro: \"Know the targets before you judge the events.\" `type dr-plan.txt`, then `type recovery-log.txt`.",
+      "objectives": [
+        {
+          "id": "read1",
+          "label": "Read dr-plan.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\dr-plan.txt"
+          }
+        },
+        {
+          "id": "read2",
+          "label": "Read recovery-log.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\recovery-log.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Check each event against the targets",
+      "body": "Astro: \"Downtime under 4 hours and data loss under 1 hour both meet target. Either one exceeded is a miss.\" Classify all three events.",
+      "objectives": [
+        {
+          "id": "e1",
+          "label": "event-relay-drill classified as within-target",
+          "check": {
+            "type": "classified",
+            "item": "event-relay-drill",
+            "as": "within-target"
+          }
+        },
+        {
+          "id": "e2",
+          "label": "event-shield-outage classified as exceeded-target (6h > 4h RTO)",
+          "check": {
+            "type": "classified",
+            "item": "event-shield-outage",
+            "as": "exceeded-target"
+          }
+        },
+        {
+          "id": "e3",
+          "label": "event-storage-failure classified as exceeded-target (90min > 1h RPO)",
+          "check": {
+            "type": "classified",
+            "item": "event-storage-failure",
+            "as": "exceeded-target"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a8-l3",
+  "title": "Lesson 8.3: Site Location Selection",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "12:45 · SITE SURVEY REVIEW · CITADEL CORE",
+    "vex": "Build somewhere convenient. I'll take convenient over defensible any day. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the outpost goes where it can actually hold, not just where it looks good on paper. Astro: \"One strong factor never offsets a real disqualifier.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead site-survey.txt: three candidate sites. Classify each as suitable or unsuitable.\n\n1. type site-survey.txt\n2. classify <site> suitable | unsuitable\n",
+    "C:\\Citadel\\site-survey.txt": "SITE SURVEY — Candidate Outposts\n------------------------------------\nsite-ridge       excellent sightlines, no known hazards, two independent power lines\nsite-basin       excellent sightlines, but sits in a known flood zone with only one supply line\nsite-valley      moderate sightlines, no known hazards, two independent power lines, no nearby high-value targets\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "site-ridge": "site-ridge",
+    "site-basin": "site-basin",
+    "site-valley": "site-valley"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the site survey",
+      "body": "Astro: \"Read every factor for every site.\" `type site-survey.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read site-survey.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\site-survey.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Judge each candidate",
+      "body": "Astro: \"A real disqualifier, like flood risk with a single supply line, outweighs one strong factor.\" Classify all three sites.",
+      "objectives": [
+        {
+          "id": "s1",
+          "label": "site-ridge classified as suitable",
+          "check": {
+            "type": "classified",
+            "item": "site-ridge",
+            "as": "suitable"
+          }
+        },
+        {
+          "id": "s2",
+          "label": "site-basin classified as unsuitable (flood zone, single supply line)",
+          "check": {
+            "type": "classified",
+            "item": "site-basin",
+            "as": "unsuitable"
+          }
+        },
+        {
+          "id": "s3",
+          "label": "site-valley classified as suitable",
+          "check": {
+            "type": "classified",
+            "item": "site-valley",
+            "as": "suitable"
+          }
+        }
+      ]
+    }
+  ]
+}

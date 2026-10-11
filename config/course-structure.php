@@ -458,12 +458,20 @@ return [
         ],
     ],
 
-    // Information Security 1 (ITP1232 Information Assurance and Security 1): "Siege of the Citadel".
+    // Information Assurance and Security 1 (ITP1232): "Siege of the Citadel".
     // Every lesson ends in a "Defend it yourself" lab; `sim` picks the simulator (citadel = Citadel Sim,
     // netsim = the network simulator). Citadel lab files: public/citadel-sim/labs/<lab>.json.
     'cybersecurity' => [
-        'title' => 'Information Security 1',
+        'title' => 'Information Assurance and Security 1',
         'view_base' => 'student.planets.cybersecurity.infosec_course',
+        'resources' => [
+            [
+                'title' => 'Information Assurance and Security 1 (ITP1232) OBE Course Syllabus',
+                'url' => '/resources/infosec-1-syllabus-ITP1232.pdf',
+                'type' => 'pdf',
+                'source' => 'Source: OBE Course Syllabus (ITP1232)',
+            ],
+        ],
         'modules' => [
             'M1' => [
                 'title' => 'M1 — First Contact with the Enemy',
@@ -512,6 +520,415 @@ return [
                     'lesson-04' => ['title' => 'Public Key Cryptography', 'lab' => 'c5-l4', 'sim' => 'citadel'],
                     'lesson-05' => ['title' => 'Cryptanalysis & Strong Cryptography', 'lab' => 'c5-l5', 'sim' => 'citadel'],
                     'lesson-06' => ['title' => 'Data & Network Security Services', 'lab' => 'c5-l6', 'sim' => 'citadel'],
+                ],
+            ],
+        ],
+    ],
+
+    // Information Assurance and Security 2 (ITP1333): the rebuild after the siege — governance,
+    // secure design, and standing watch. Second course on the Citadel, keyed by its own catalog
+    // id (not the planet slug) — see CourseProgressService::planetFor()/catalogFor(). Every
+    // lesson ends in a "Defend it yourself" Citadel Sim lab. Lab files: public/citadel-sim/labs/<lab>.json.
+    'information-assurance-security-2' => [
+        'title' => 'Information Assurance and Security 2',
+        'planet' => 'cybersecurity',
+        'catalog' => 'information-assurance-security-2',
+        'view_base' => 'student.planets.cybersecurity.ias2_course',
+        'resources' => [
+            [
+                'title' => 'Information Assurance and Security 2 (ITP1333) OBE Course Syllabus',
+                'url' => '/resources/ias-2-syllabus-ITP1333.pdf',
+                'type' => 'pdf',
+                'source' => 'Source: College of Information and Communications Technology, OBE Course Syllabus (AY 2026–2027)',
+            ],
+            [
+                'title' => 'Introduction to Security Defense Models',
+                'url' => 'https://www.geeksforgeeks.org/ethical-hacking/introduction-to-security-defense-models/',
+                'type' => 'web',
+                'source' => 'GeeksforGeeks (2022)',
+            ],
+            [
+                'title' => 'Four Zones of Trust in Cloud Native Enterprise Architecture',
+                'url' => 'https://louwersj.medium.com/four-zones-of-trust-in-cloud-native-enterprise-architecture-b9bca4177dc8',
+                'type' => 'web',
+                'source' => 'Louwers J. (2022), Medium',
+            ],
+            [
+                'title' => 'What Is Physical Security? How to Keep Your Facilities and Devices Safe',
+                'url' => 'https://www.csoonline.com/article/566635/what-is-physical-security-how-to-keep-your-facilities-and-devices-safe-from-on-site-attackers.html',
+                'type' => 'web',
+                'source' => 'Swinhoe D. (2022), CSO Online',
+            ],
+            [
+                'title' => 'Mastering Disaster Recovery: Ensuring Business Continuity',
+                'url' => 'https://drj.com/journal_main/mastering-disaster-recovery-for-sap-and-hana-ensuring-business-continuity-in-the-face-of-disruptions/',
+                'type' => 'web',
+                'source' => 'DRJ Editorial Team (2025), Disaster Recovery Journal',
+            ],
+            [
+                'title' => 'The NIST Cybersecurity Framework',
+                'url' => 'https://www.nist.gov/cyberframework',
+                'type' => 'web',
+                'source' => 'NIST',
+            ],
+            [
+                'title' => 'Zero Trust Architecture (SP 800-207)',
+                'url' => 'https://csrc.nist.gov/pubs/sp/800/207/final',
+                'type' => 'web',
+                'source' => 'NIST Special Publication 800-207',
+            ],
+            [
+                'title' => 'Information Security Policy Templates',
+                'url' => 'https://www.sans.org/information-security-policy/',
+                'type' => 'web',
+                'source' => 'SANS Institute',
+            ],
+            [
+                'title' => 'An Introduction to Information Security (SP 800-12)',
+                'url' => 'https://csrc.nist.gov/pubs/sp/800/12/r1/final',
+                'type' => 'web',
+                'source' => 'NIST Special Publication 800-12 Rev. 1',
+            ],
+            [
+                'title' => 'OWASP Top 10',
+                'url' => 'https://owasp.org/www-project-top-ten/',
+                'type' => 'web',
+                'source' => 'OWASP Foundation',
+            ],
+            [
+                'title' => 'Threat Modeling',
+                'url' => 'https://owasp.org/www-community/Threat_Modeling',
+                'type' => 'web',
+                'source' => 'OWASP Foundation',
+            ],
+            [
+                'title' => 'Security and Privacy Controls (SP 800-53)',
+                'url' => 'https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final',
+                'type' => 'web',
+                'source' => 'NIST Special Publication 800-53 Rev. 5',
+            ],
+            [
+                'title' => 'Contingency Planning Guide for Federal Information Systems (SP 800-34)',
+                'url' => 'https://csrc.nist.gov/pubs/sp/800/34/r1/final',
+                'type' => 'web',
+                'source' => 'NIST Special Publication 800-34 Rev. 1',
+            ],
+            [
+                'title' => 'Physical Security',
+                'url' => 'https://www.cisa.gov/topics/physical-security',
+                'type' => 'web',
+                'source' => 'CISA',
+            ],
+            [
+                'title' => 'Information Security Policies, Procedures, and Standards',
+                'type' => 'book',
+                'source' => 'Landoll D. (2020/2023), Auerbach Publications',
+            ],
+            [
+                'title' => 'Foundations of Information Security',
+                'type' => 'book',
+                'source' => 'Andress J. (2019), No Starch Press',
+            ],
+            [
+                'title' => 'Network Defense and Countermeasures',
+                'type' => 'book',
+                'source' => 'Chuck W. (2023), Pearson',
+            ],
+            [
+                'title' => 'Information Security Architecture: An Integrated Approach to Security in the Organization',
+                'type' => 'book',
+                'source' => 'Killmeyer J. (2023, 2nd Ed), Auerbach Publications',
+            ],
+            [
+                'title' => 'Designing Secure Software: A Guide for Developers',
+                'type' => 'book',
+                'source' => 'Kohnfelder L. (2022), No Starch Press',
+            ],
+            [
+                'title' => 'Security Operations Management',
+                'type' => 'book',
+                'source' => 'McCrie R. (2022, 4th Ed), Butterworth-Heinemann',
+            ],
+            [
+                'title' => 'Business Continuity & IT Disaster Recovery',
+                'type' => 'book',
+                'source' => 'The Art of Service (2021)',
+            ],
+            [
+                'title' => 'Architecting for Scale',
+                'type' => 'book',
+                'source' => 'Atchison L. (2020), O\'Reilly Media',
+            ],
+            [
+                'title' => 'Advanced Physical Security and Asset Protection Techniques',
+                'type' => 'book',
+                'source' => 'Valenzuela M. (2023)',
+            ],
+        ],
+        'modules' => [
+            'M1' => [
+                'title' => 'M1 — Rebuilding After the Siege',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Why Information Protection Matters', 'lab' => 'a1-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'How Security Grew Up', 'lab' => 'a1-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Justifying the Security Investment', 'lab' => 'a1-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Security Methodology & Building a Program', 'lab' => 'a1-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'The Weakest Link: Strategy, Tactics & Process', 'lab' => 'a1-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M2' => [
+                'title' => 'M2 — Walls Within Walls',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'The CIA Triad & Other Security Models', 'lab' => 'a2-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Defense in Depth', 'lab' => 'a2-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Zones of Trust', 'lab' => 'a2-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Best Practices for Network Defense', 'lab' => 'a2-l4', 'sim' => 'citadel'],
+                ],
+            ],
+            'M3' => [
+                'title' => 'M3 — The Citadel Charter',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Security Policies', 'lab' => 'a3-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Security Standards', 'lab' => 'a3-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Procedures', 'lab' => 'a3-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Security Guidelines', 'lab' => 'a3-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Ongoing Maintenance', 'lab' => 'a3-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M4' => [
+                'title' => 'M4 — Who Guards What',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Roles & Responsibilities', 'lab' => 'a4-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Managed Security Services', 'lab' => 'a4-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Security Councils & Steering Committees', 'lab' => 'a4-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Working With HR: Onboarding, Offboarding & Separation of Duties', 'lab' => 'a4-l4', 'sim' => 'citadel'],
+                ],
+            ],
+            'M5' => [
+                'title' => 'M5 — Safe by Design',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Secure SDLC Integration', 'lab' => 'a5-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Application Security & Threat Modeling', 'lab' => 'a5-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Web Application Security: the OWASP Top 10', 'lab' => 'a5-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Client Application Security', 'lab' => 'a5-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Remote Administration Security', 'lab' => 'a5-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M6' => [
+                'title' => 'M6 — Running the Watch',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Communications & Reporting', 'lab' => 'a6-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Change Management', 'lab' => 'a6-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Acceptable Use Enforcement', 'lab' => 'a6-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Administrative Security Controls', 'lab' => 'a6-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Management Practices', 'lab' => 'a6-l5', 'sim' => 'citadel'],
+                    'lesson-06' => ['title' => 'Operational Accountability', 'lab' => 'a6-l6', 'sim' => 'citadel'],
+                ],
+            ],
+            'M7' => [
+                'title' => 'M7 — When the Lights Go Out',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Disaster Recovery Concepts', 'lab' => 'a7-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Business Continuity Planning', 'lab' => 'a7-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Backups: Strategies, Scheduling & Storage', 'lab' => 'a7-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'High Availability Architectures', 'lab' => 'a7-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Compliance & Auditing the Recovery Plan', 'lab' => 'a7-l5', 'sim' => 'citadel'],
+                ],
+            ],
+            'M8' => [
+                'title' => 'M8 — Boots on the Ground',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Classification of Assets', 'lab' => 'a8-l1', 'sim' => 'citadel'],
+                    'lesson-02' => ['title' => 'Physical Vulnerability Assessment', 'lab' => 'a8-l2', 'sim' => 'citadel'],
+                    'lesson-03' => ['title' => 'Site Location Selection', 'lab' => 'a8-l3', 'sim' => 'citadel'],
+                    'lesson-04' => ['title' => 'Locks & Entry Controls', 'lab' => 'a8-l4', 'sim' => 'citadel'],
+                    'lesson-05' => ['title' => 'Physical Intrusion Detection', 'lab' => 'a8-l5', 'sim' => 'citadel'],
+                    'lesson-06' => ['title' => 'Regulatory Standards Compliance', 'lab' => 'a8-l6', 'sim' => 'citadel'],
+                ],
+            ],
+        ],
+    ],
+    // Computer Programming 1 (CC102): "The Dead Console" — Season 1 of the Wanderer's story.
+    // Astro's crew crash-lands on the edge of Programming City and wakes their ship's blank
+    // computer one program at a time. No villain: every problem is the crash, the weather,
+    // or a broken part. (Season 2 / Programming 2 is fixing the city itself.)
+    // A planet's second+ course is keyed by its own catalog id (not by planet slug) and names
+    // its planet with 'planet'/'catalog' — see CourseProgressService::planetFor()/catalogFor().
+    // Every lesson ends in "Code it yourself"; the answer key ('expected') is checked server-side.
+    'computer-programming-1' => [
+        'title' => 'Computer Programming 1',
+        'planet' => 'programming',
+        'catalog' => 'computer-programming-1',
+        'view_base' => 'student.planets.programming.c_course',
+        'resources' => [
+            [
+                'title' => 'CC102 — Computer Programming 1 OBE Course Syllabus',
+                'url' => '/resources/computer-programming-1-syllabus-CC102.pdf',
+                'type' => 'pdf',
+                'source' => 'Source: College of Information and Communications Technology, OBE Course Syllabus (AY 2025–2026)',
+            ],
+            [
+                'title' => 'Learn C Programming',
+                'url' => 'https://www.programiz.com/c-programming',
+                'type' => 'web',
+                'source' => 'Programiz',
+            ],
+            [
+                'title' => 'C Tutorial',
+                'url' => 'https://www.w3schools.com/c/c_intro.php',
+                'type' => 'web',
+                'source' => 'W3Schools',
+            ],
+            [
+                'title' => 'C Programming Language Tutorial',
+                'url' => 'https://www.geeksforgeeks.org/c-programming-language/',
+                'type' => 'web',
+                'source' => 'GeeksforGeeks',
+            ],
+            [
+                'title' => 'Getting Started with C Programming: A Beginner\'s Guide',
+                'url' => 'https://www.simplilearn.com/tutorials/c-tutorial/use-of-c-language',
+                'type' => 'web',
+                'source' => 'Simplilearn',
+            ],
+            [
+                'title' => 'C Programming for Beginners',
+                'url' => 'https://www.youtube.com/watch?v=KnvbUiSxvbM&list=PL98qAXLA6aftD9ZlnjpLhdQAOFI8xIB6e',
+                'type' => 'video',
+                'source' => 'Programiz, YouTube',
+            ],
+            [
+                'title' => 'Learn C — interactive exercises',
+                'url' => 'https://www.learn-c.org/',
+                'type' => 'web',
+                'source' => 'learn-c.org',
+            ],
+            [
+                'title' => 'C standard library reference',
+                'url' => 'https://en.cppreference.com/w/c',
+                'type' => 'web',
+                'source' => 'cppreference.com',
+            ],
+            [
+                'title' => "Beej's Guide to C Programming",
+                'url' => 'https://beej.us/guide/bgc/',
+                'type' => 'web',
+                'source' => 'beej.us',
+            ],
+            [
+                'title' => 'Modern C for Absolute Beginners',
+                'type' => 'book',
+                'source' => 'Slobodan Dmitrović (2024), Apress',
+            ],
+            [
+                'title' => 'Practical C',
+                'type' => 'book',
+                'source' => 'Rafal Jackiewicz (2023), Independently published',
+            ],
+        ],
+        'modules' => [
+            'M1' => [
+                'title' => 'M1 — The Dead Console',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Orders Astro Can Follow',
+                        'expected' => "Console online.\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Drawing the Plan',
+                        'expected' => "Power: online\nCoolant: stable\nSystems: ready\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Anatomy of a Console',
+                        'expected' => "Diagnostics: PASS\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Labelling the Cargo',
+                        'expected' => "Crew: 4\nFuel: 76.50\nBay: A\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Doing the Math',
+                        'expected' => "Total: 47\nEach: 9\nLeft: 2\n",
+                    ],
+                    'lesson-06' => [
+                        'title' => 'Talking to the Crew',
+                        'expected' => "Enter fuel: Left: 25\n",
+                    ],
+                ],
+            ],
+            'M2' => [
+                'title' => 'M2 — The Long Night',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Reading the Warnings',
+                        'expected' => "Hull critical: 0\nShield critical: 0\nSafe: 1\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Safe, Warning, Critical',
+                        'expected' => "Status: critical\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'The Switchboard',
+                        'expected' => "Bay unknown\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Standing Watch',
+                        'expected' => "Level: 2\nLevel: 3\nLevel: 4\nLevel: 5\nBoost complete\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Counting Down to Contact',
+                        'expected' => "T-minus 3\nT-minus 2\nT-minus 1\nContact\n",
+                    ],
+                ],
+            ],
+            'M3' => [
+                'title' => 'M3 — Divide the Crew',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Astro Splits the Work',
+                        'expected' => "Alarm: intruder detected.\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Handing Off the Work',
+                        'expected' => "Crew 3 assigned to bay B\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Reporting Back',
+                        'expected' => "Gap: 65\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'The Blueprint',
+                        'expected' => "Boosted: 30\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Many Hands',
+                        'expected' => "Shield gap: 65\n",
+                    ],
+                ],
+            ],
+            'M4' => [
+                'title' => 'M4 — The Hull Grid',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'The Emitter Line',
+                        'expected' => "Bay 0: 12\nBay 1: 45\nBay 3: 20\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Checking Each Emitter',
+                        'expected' => "Bay 0: 12\nBay 1: 45\nBay 2: 78\nBay 3: 20\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Patching the Grid',
+                        'expected' => "Repair total: 155\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'The Grid Has Rows',
+                        'expected' => "Panel[0][2]: 15\nPanel[1][0]: 20\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Scanning the Grid',
+                        'expected' => "Grid total: 60\n",
+                    ],
                 ],
             ],
         ],

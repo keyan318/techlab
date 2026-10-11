@@ -15,11 +15,12 @@ class Message extends Model
         'role',
         'content',
         'attachments',
+        'sources',
     ];
 
     protected function casts(): array
     {
-        return ['attachments' => 'array'];
+        return ['attachments' => 'array', 'sources' => 'array'];
     }
 
     /**

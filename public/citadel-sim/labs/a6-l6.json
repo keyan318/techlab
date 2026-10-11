@@ -1,0 +1,74 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a6-l6",
+  "title": "Lesson 6.6: Operational Accountability",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "12:00 · SHARED ACCOUNT FOUND · CITADEL CORE",
+    "vex": "No one to blame means no one to stop me either. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every console now has one account, one person, and a trail that actually means something. Astro: \"Fixed before it was needed, not after.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead console-audit.txt, then disable the shared shield-duty login so every action can be traced to one person.\n\n1. type console-audit.txt\n2. net user shift-shared /active:no\n",
+    "C:\\Citadel\\console-audit.txt": "CONSOLE AUDIT — Shield Duty\n------------------------------\nLogin 'shift-shared' is used by whichever cadet is on duty. Three different cadets have used it this week alone. No individual action on this console can currently be traced to a specific person.\n"
+  },
+  "users": [
+    {
+      "name": "shift-shared",
+      "fullName": "(shared shield-duty login — used by 3 different cadets)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "unknown, shared",
+      "lastLogon": "09/24/2026"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: read the audit",
+      "body": "Rivet: \"Read what the gap actually looks like.\" `type console-audit.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read console-audit.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\console-audit.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Disable the shared account",
+      "body": "Rivet: \"One account, one person, always.\" `net user shift-shared /active:no`.",
+      "objectives": [
+        {
+          "id": "disable",
+          "label": "shift-shared is disabled",
+          "check": {
+            "type": "user-disabled",
+            "user": "shift-shared"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\AttachmentException;
+use App\Exceptions\DocumentTextException;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
-use Smalot\PdfParser\Document;
-use Smalot\PdfParser\Parser as PdfParser;
 
 /**
  * Turns files attached in the chat composer into something Astro can read:
@@ -20,10 +18,7 @@ class AttachmentService
     /** The rule: 10 MB per file. The effective limit is lowered to what PHP will actually accept (see maxFileKb()). */
     public const MAX_FILE_KB = 10240;
 
-    public const TEXT_EXTENSIONS = [
-        'txt', 'md', 'markdown', 'csv', 'tsv', 'json', 'xml', 'yaml', 'yml', 'html', 'htm', 'css', 'log', 'ini', 'toml', 'sql',
-        'py', 'js', 'ts', 'jsx', 'tsx', 'php', 'java', 'c', 'h', 'cpp', 'cs', 'go', 'rs', 'rb', 'sh',
-    ];
+    public const TEXT_EXTENSIONS = DocumentTextExtractor::TEXT_EXTENSIONS;
 
     /** Documents we extract text from (everything else in TEXT_EXTENSIONS is read as plain text). */
     public const DOC_EXTENSIONS = ['pdf', 'docx', 'pptx'];
@@ -88,16 +83,14 @@ class AttachmentService
                 continue;
             }
 
-            if ($ext === 'pdf') {
-                $text = $this->pdfText($file, $name);
-            } elseif ($ext === 'docx') {
-                $text = $this->officeText($file, $name, ['word/document.xml'], 'Word document');
-            } elseif ($ext === 'pptx') {
-                $text = $this->officeText($file, $name, null, 'presentation');
-            } elseif (in_array($ext, self::TEXT_EXTENSIONS, true)) {
-                $text = $this->plainText($file, $name);
-            } else {
+            if (! in_array($ext, self::DOC_EXTENSIONS, true) && ! in_array($ext, self::TEXT_EXTENSIONS, true)) {
                 throw new AttachmentException("Astro can't read \"{$name}\" yet. Try a PDF, Word or PowerPoint file, an image, or a text/code file.");
+            }
+
+            try {
+                $text = app(DocumentTextExtractor::class)->extract($file->getRealPath(), $ext, $name);
+            } catch (DocumentTextException $e) {
+                throw new AttachmentException($e->getMessage());
             }
 
             $limit = min(self::PER_FILE_CHARS, max(0, $budget));
@@ -137,112 +130,5 @@ class AttachmentService
     public static function publicMeta(?array $items): array
     {
         return array_map(fn ($i) => ['name' => $i['name'], 'kind' => $i['kind']], $items ?? []);
-    }
-
-    private function plainText(UploadedFile $file, string $name): string
-    {
-        $raw = (string) file_get_contents($file->getRealPath());
-
-        if (str_contains(substr($raw, 0, 4096), "\0")) {
-            throw new AttachmentException("\"{$name}\" looks like a binary file, not text.");
-        }
-
-        return trim(mb_convert_encoding($raw, 'UTF-8', 'UTF-8'));
-    }
-
-    private function pdfText(UploadedFile $file, string $name): string
-    {
-        $text = '';
-        $parsed = null;
-
-        // Some PDFs (e.g. re-saved by macOS Preview/Quartz) have a page tree the parser can't
-        // walk: it warns (which Laravel raises as an exception) and reports 0 pages.
-        try {
-            $parsed = (new PdfParser)->parseFile($file->getRealPath());
-        } catch (\Throwable $e) {
-            Log::warning("PDF parse failed for {$name}: ".$e->getMessage());
-
-            throw new AttachmentException("Astro couldn't open \"{$name}\". Is it a valid PDF?");
-        }
-
-        try {
-            $text = trim($parsed->getText());
-        } catch (\Throwable $e) {
-            Log::info("PDF page-tree text failed for {$name}, reading pages directly: ".$e->getMessage());
-        }
-
-        if ($text === '') {
-            $text = $this->pdfTextFromPageObjects($parsed);
-        }
-
-        if ($text === '') {
-            throw new AttachmentException("\"{$name}\" has no selectable text (it may be a scan). Try attaching it as an image instead.");
-        }
-
-        return preg_replace('/[ \t]+/', ' ', $text) ?? $text;
-    }
-
-    /** Fallback: read every Page object in file order, skipping any page that fails. */
-    private function pdfTextFromPageObjects(Document $doc): string
-    {
-        $out = [];
-        try {
-            foreach ($doc->getObjectsByType('Page') as $page) {
-                try {
-                    $out[] = trim($page->getText());
-                } catch (\Throwable) {
-                    continue;
-                }
-            }
-        } catch (\Throwable) {
-            return '';
-        }
-
-        return trim(implode("\n\n", array_filter($out)));
-    }
-
-    /**
-     * Text from a .docx / .pptx (zipped XML). $parts null = every ppt/slides/slideN.xml in order.
-     *
-     * @param  string[]|null  $parts
-     */
-    private function officeText(UploadedFile $file, string $name, ?array $parts, string $noun): string
-    {
-        $zip = new \ZipArchive;
-
-        if ($zip->open($file->getRealPath()) !== true) {
-            throw new AttachmentException("Astro couldn't open \"{$name}\". Is it a valid {$noun}?");
-        }
-
-        if ($parts === null) {
-            $parts = [];
-            for ($i = 0; $i < $zip->numFiles; $i++) {
-                $entry = (string) $zip->getNameIndex($i);
-                if (preg_match('#^ppt/slides/slide\d+\.xml$#', $entry)) {
-                    $parts[] = $entry;
-                }
-            }
-            natsort($parts);
-        }
-
-        $out = [];
-        foreach ($parts as $entry) {
-            $xml = $zip->getFromName($entry);
-            if ($xml === false) {
-                continue;
-            }
-            // Paragraph / table-cell / tab boundaries become whitespace; every other tag is dropped.
-            $xml = preg_replace(['#</(w:p|a:p)>#', '#</w:tc>#', '#<w:tab/>#', '#<w:br/>#'], ["\n", ' | ', "\t", "\n"], $xml);
-            $out[] = trim(html_entity_decode(strip_tags($xml), ENT_QUOTES | ENT_XML1, 'UTF-8'));
-        }
-        $zip->close();
-
-        $text = trim(preg_replace("/\n{3,}/", "\n\n", implode("\n\n", $out)) ?? '');
-
-        if ($text === '') {
-            throw new AttachmentException("\"{$name}\" has no readable text.");
-        }
-
-        return $text;
     }
 }

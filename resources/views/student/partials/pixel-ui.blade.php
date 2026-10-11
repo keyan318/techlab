@@ -33,6 +33,13 @@ html[data-theme="light"] {
 }
 .px-inner { background: var(--px-inner); }
 
+/* Featured card (the dashboard's "Start here" / "Jump back in"): a plain 2px frame and a flat drop edge, no glow, so the art does the talking */
+.px-feature {
+  margin: 0; border: 2px solid #252b52; border-radius: 6px;
+  box-shadow: 0 5px 0 #1a1f40;
+}
+html[data-theme="light"] .px-feature { border-color: #c3cfe0; box-shadow: 0 5px 0 #dfe5f0; }
+
 /* Speech bubble with a tail pointing left at the mascot */
 .px-bubble::before {
   content: ""; position: absolute; left: -16px; top: 50%; margin-top: -8px;
@@ -54,6 +61,8 @@ html[data-theme="light"] {
               inset 0 -4px 0 0 rgba(0,0,0,.2), inset 0 3px 0 0 rgba(255,255,255,.22);
   transition: transform .1s ease, filter .15s ease;
 }
+.px-btn-lg { min-height: 56px; padding: 0 30px; font-size: 21px; gap: 10px; }
+@media (max-width: 640px) { .px-btn-lg { min-height: 50px; padding: 12px 20px; font-size: 18px; white-space: normal; text-align: center; line-height: 1.2; } }
 .px-btn:hover { filter: brightness(1.08); }
 .px-btn:active { transform: translateY(2px); }
 .px-btn:focus-visible { outline: 3px solid #9ad0ff; outline-offset: 5px; }
@@ -83,6 +92,23 @@ html[data-theme="light"] {
   box-shadow: 0 -3px 0 0 #3b2f8f, 0 3px 0 0 #3b2f8f, -3px 0 0 0 #3b2f8f, 3px 0 0 0 #3b2f8f, inset 0 -5px 0 rgba(0,0,0,.18);
 }
 
+/* The student's astronaut standing in the avatar tile, peeking over its top edge */
+.px-avatar-astro { width: 76px; height: 76px; place-items: end center; overflow: visible; background: linear-gradient(160deg, #2b1f7a, #150f45); transition: transform .12s ease; }
+.px-avatar-astro svg { margin-bottom: 6px; transition: transform .35s cubic-bezier(.3,1.4,.5,1); }
+.px-avatar-astro:hover svg { transform: translateY(-3px); }
+.px-avatar-astro:active { transform: scale(.96); }
+
+/* Progress page: the big astronaut tile, streak days, chart columns, gems and your leaderboard row */
+.px-avatar-xl { width: 116px; height: 116px; font-size: 40px; }
+.px-day { display: grid; place-items: center; width: 100%; max-width: 30px; aspect-ratio: 1; background: var(--px-track); }
+.px-day.is-on { background: rgba(255,140,40,.22); box-shadow: inset 0 0 0 2px #f08a24; }
+.px-day.is-today { outline: 2px solid #4fa8ff; outline-offset: 2px; }
+.px-day.is-future { opacity: .45; }
+.px-col { background: var(--px-track); }
+.px-col > i { position: absolute; inset: auto 0 0; display: block; background: linear-gradient(to top, #9b6bff, #4fa8ff); box-shadow: inset 0 3px 0 rgba(255,255,255,.3); transition: height .6s cubic-bezier(.32,.72,0,1); }
+.px-gem.is-off { opacity: .28; filter: grayscale(1); }
+.px-me { box-shadow: 0 0 0 2px #4fa8ff; background: rgba(79,168,255,.14); }
+
 /* Chapter list: a connector between chapter cards, hairlines between lessons, a green "cleared" pill */
 .px-chain::after { content: ""; position: absolute; left: 38px; top: 100%; width: 3px; height: 40px; background: var(--px-line); }
 .px-rows > li + li { border-top: 2px solid var(--px-track); }
@@ -101,7 +127,7 @@ html[data-theme="light"] {
 @keyframes ps-twinkle { 50% { opacity: .25; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .px-btn, .px-bar > i { transition: none; }
+  .px-btn, .px-bar > i, .px-col > i { transition: none; }
   .px-btn:active { transform: none; }
   .ps-star { animation: none; }
 }

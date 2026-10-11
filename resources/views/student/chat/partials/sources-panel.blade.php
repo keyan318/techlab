@@ -18,17 +18,23 @@
       </button>
     </div>
 
-    @unless($isFacultyChat ?? false)
-    {{-- Add sources (primary CTA) --}}
-    <div class="px-3 pt-2">
-      <button type="button" @click="$store.planetSources.open()" class="tl-cta flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-3 py-2.5 text-sm font-semibold text-[#07142e] shadow-[0_10px_40px_rgba(115,182,255,0.45)] transition hover:-translate-y-[3px] hover:shadow-[0_16px_50px_rgba(115,182,255,0.6)]">
+    {{-- Add sources (primary CTAs) --}}
+    <div class="space-y-2 px-3 pt-2">
+      @unless($isFacultyChat ?? false)
+      <button type="button" @click="$store.planetSources.open()" class="tl-cta flex w-full items-center justify-center gap-2 rounded-full bg-[#73b6ff] px-3 py-2.5 text-sm font-semibold text-[#07142e] transition hover:bg-[#8cc3ff]">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
           <path d="M12 5v14M5 12h14"/>
         </svg>
         Add from Planets
       </button>
+      @endunless
+      <button type="button" @click="$store.materialSources.open()" class="tl-cta flex w-full items-center justify-center gap-2 rounded-full border border-[rgba(115,182,255,0.5)] bg-transparent px-3 py-2.5 text-sm font-semibold text-[#73b6ff] transition hover:bg-[rgba(115,182,255,0.12)]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Add from Materials
+      </button>
     </div>
-    @endunless
 
     {{-- Scrollable source list --}}
     <div class="mt-3 flex-1 space-y-4 overflow-y-auto px-3 pb-4">
@@ -67,7 +73,42 @@
       </section>
       @endunless
 
-      {{-- Group: Web sources — only real results, only for extensive research --}}
+      {{-- Group: Course materials — attached by hand via "Add from Materials", like Planet
+           lessons. Astro no longer searches the captain's uploads on its own. --}}
+      <section x-data x-show="$store.materialSources.items.length" x-cloak>
+        <div class="mb-2 flex items-center justify-between gap-2 px-0.5">
+          <div class="flex items-center gap-2">
+            <span class="h-1.5 w-1.5 rounded-full bg-[rgba(139,216,58,0.5)]"></span>
+            <h3 class="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8bd83a]">Course materials · from your captain</h3>
+          </div>
+          <label class="flex cursor-pointer items-center gap-1.5 text-[11px] text-muted">
+            Select all
+            <input type="checkbox" class="accent-[#8bd83a]"
+              :checked="$store.materialSources.items.every(i => i.active)"
+              @change="$store.materialSources.items.forEach(i => i.active = $event.target.checked)">
+          </label>
+        </div>
+
+        <ul class="space-y-1.5">
+          <template x-for="(m, i) in $store.materialSources.items" :key="m.id">
+            <li class="group flex items-center gap-2.5 rounded-[12px] border border-glassBorder bg-glass px-2.5 py-2 transition hover:border-[rgba(139,216,58,0.5)]">
+              <span class="grid h-8 w-8 flex-none place-items-center rounded-[9px] bg-[rgba(139,216,58,0.12)] text-[#8bd83a]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="block truncate text-[13px] font-medium text-ink" x-text="m.name" :title="m.name"></span>
+                <span class="block truncate text-[11px] text-muted" x-text="m.course"></span>
+              </span>
+              <button type="button" @click="$store.materialSources.remove(i)" class="text-muted opacity-0 transition hover:text-ink focus:opacity-100 group-hover:opacity-100" title="Remove source" aria-label="Remove source">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-4 w-4"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+              <input type="checkbox" x-model="m.active" class="accent-[#8bd83a]" title="Use this source" aria-label="Use this source">
+            </li>
+          </template>
+        </ul>
+      </section>
+
+      {{-- Group: Web sources — only real results, and only when the materials came up short --}}
       <section x-data>
         <div class="mb-2 flex items-center gap-2 px-0.5">
           <span class="h-1.5 w-1.5 rounded-full bg-[rgba(150,170,255,0.4)]"></span>
@@ -99,7 +140,7 @@
           </svg>
           <p class="text-sm font-medium text-ink">Verified sources appear here</p>
           <p class="mx-auto mt-1 max-w-[220px] text-xs leading-relaxed text-muted">
-            Quick questions are answered directly. For in-depth research, Astro cites real web pages here.
+            Attach what you need above. When nothing covers your question, Astro cites real web pages here.
           </p>
         </div>
       </section>

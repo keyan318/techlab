@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a1-l1",
+  "title": "Lesson 1.1: Why Information Protection Matters",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "07:00 · POST-SIEGE REVIEW · CITADEL CORE",
+    "vex": "Let your guard down. I can wait. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED, in principle: the crew logs the true cost of the siege before anyone forgets it. Astro: \"Now every cadet can see it in numbers, not just in memory.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nBefore this review closes, read incident-cost.txt and sort each line into its cost category: financial, legal, trust, or operational.\n\n1. type incident-cost.txt\n2. classify <item> <category> for each of the four lines\n",
+    "C:\\Citadel\\incident-cost.txt": "AFTER-ACTION COST REPORT\n-------------------------\ncost-shield-repair    12,000 credits to repair the shield generator\ncost-breach-notice    Codexia regulators require a breach report within 10 days\ncost-ally-trust       Three allied crews now double-check every Citadel report\ncost-mission-pause    Missions paused for a week during cleanup\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "cost-shield-repair": "cost-shield-repair",
+    "cost-breach-notice": "cost-breach-notice",
+    "cost-ally-trust": "cost-ally-trust",
+    "cost-mission-pause": "cost-mission-pause"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the after-action report",
+      "body": "Astro: \"Read it before you sort it.\" `type incident-cost.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read incident-cost.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\incident-cost.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Volt's Ledger: sort the damage",
+      "body": "Volt: \"Four lines, four categories. Sort them so command can see the shape of it.\" Use `classify cost-shield-repair financial`, `classify cost-breach-notice legal`, `classify cost-ally-trust trust`, and `classify cost-mission-pause operational`.",
+      "objectives": [
+        {
+          "id": "c1",
+          "label": "cost-shield-repair classified as financial",
+          "check": {
+            "type": "classified",
+            "item": "cost-shield-repair",
+            "as": "financial"
+          }
+        },
+        {
+          "id": "c2",
+          "label": "cost-breach-notice classified as legal",
+          "check": {
+            "type": "classified",
+            "item": "cost-breach-notice",
+            "as": "legal"
+          }
+        },
+        {
+          "id": "c3",
+          "label": "cost-ally-trust classified as trust",
+          "check": {
+            "type": "classified",
+            "item": "cost-ally-trust",
+            "as": "trust"
+          }
+        },
+        {
+          "id": "c4",
+          "label": "cost-mission-pause classified as operational",
+          "check": {
+            "type": "classified",
+            "item": "cost-mission-pause",
+            "as": "operational"
+          }
+        }
+      ]
+    }
+  ]
+}

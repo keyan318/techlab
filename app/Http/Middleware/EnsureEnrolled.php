@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Services\CourseProgressService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,10 @@ class EnsureEnrolled
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        $slug = (string) $request->route('slug');
+        // A route's {slug} may be a planet's own key, or a planet's second+
+        // course (keyed by its catalog id) — either way, enrolment is checked
+        // against the planet it belongs to.
+        $slug = CourseProgressService::planetFor((string) $request->route('slug'));
 
         // Unknown slugs fall through so the controller answers 404.
         if ($user && in_array($slug, User::PLANETS, true) && ! $user->isEnrolledIn($slug)) {

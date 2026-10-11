@@ -103,6 +103,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l7.json) complete
         <p class="quiz-explanation"><em>192.168.0.0/16 is private. 172.16.0.0/12 is private, but 172.32.0.0 is outside it.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. According to the mission checklist, what must every host on the ship have, sitting on its own subnet?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A public IP address</li>
+            <li class="quiz-option">B. A dynamic DNS name</li>
+            <li class="quiz-option">C. Root access</li>
+            <li class="quiz-option quiz-correct">D. A default gateway ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Every host needs a default gateway that sits on its own subnet, so it can reach other networks.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Astro's device can reach volt but not Earth, even though the router has a route to Earth. What is a likely reason, given the checklist's reminder about routes?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Earth's router has no route back to astro's network ✓</li>
+            <li class="quiz-option">B. Astro's device uses IPv6</li>
+            <li class="quiz-option">C. The switch is unplugged</li>
+            <li class="quiz-option">D. DNS is misconfigured</li>
+        </ul>
+        <p class="quiz-explanation"><em>Traffic needs a route there and a route back. If Earth cannot route back to astro's network, replies never arrive.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

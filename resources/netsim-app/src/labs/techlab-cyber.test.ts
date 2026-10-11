@@ -1,4 +1,4 @@
-// Solvability guard for the two TechLab Information Security 1 labs that run in NetSim
+// Solvability guard for the two TechLab Information Assurance and Security 1 labs that run in NetSim
 // (c4-l2, c4-l3), authored as plain JSON in public/netsim-app/labs rather than in ./library.
 // Every objective must fail from the lab's starting state, and pass after exactly the
 // Windows commands the lesson text tells the student to type.

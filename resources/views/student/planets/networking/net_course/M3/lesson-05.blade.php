@@ -112,6 +112,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l5.json) complete
         <p class="quiz-explanation"><em>NXDOMAIN means the queried name does not exist in DNS.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which DNS record type points one name to another name as an alias?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A</li>
+            <li class="quiz-option">B. MX</li>
+            <li class="quiz-option">C. PTR</li>
+            <li class="quiz-option quiz-correct">D. CNAME ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A CNAME record is an alias that points to another name, rather than to an address.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. After astro looks up portal.codexia.lan once, a second lookup for the same name comes back almost instantly, without asking any server again. What made this possible?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The name changed to an IP address permanently</li>
+            <li class="quiz-option">B. NXDOMAIN was returned</li>
+            <li class="quiz-option quiz-correct">C. The resolver cached the answer for its TTL ✓</li>
+            <li class="quiz-option">D. The record type was changed to PTR</li>
+        </ul>
+        <p class="quiz-explanation"><em>Resolvers cache answers for a time called the TTL, so a repeat lookup within that time is instant and needs no new server round trip.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

@@ -19,10 +19,11 @@ class CourseModulesTest extends TestCase
     {
         Storage::fake('local');
         $faculty = User::factory()->create(['role' => 'faculty']);
-        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $faculty->id]);
+        // Bound to a real catalog course so the student's course hub is reachable.
+        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $faculty->id, 'planet' => 'programming', 'course_slug' => 'python']);
         $faculty->update(['crew_id' => $crew->id]);
         $crew->roster()->attach($faculty->id, ['role' => 'faculty']);
-        $student = User::factory()->create(['role' => 'student', 'crew_id' => $crew->id]);
+        $student = User::factory()->create(['role' => 'student', 'crew_id' => $crew->id, 'planets' => ['programming']]);
         $crew->roster()->attach($student->id, ['role' => 'student']);
 
         return [$faculty, $student, $crew];
@@ -48,6 +49,33 @@ class CourseModulesTest extends TestCase
         foreach ($module->materials as $m) {
             Storage::disk('local')->assertExists($m->path);
         }
+    }
+
+    public function test_faculty_creates_a_module_by_uploading_a_file_in_one_step(): void
+    {
+        [$faculty, , $crew] = $this->setUpCrew();
+
+        $this->actingAs($faculty)->post(route('faculty.modules.store', $crew), [
+            'title' => 'Intro',
+            'files' => [UploadedFile::fake()->create('notes.pdf', 100, 'application/pdf')],
+        ])->assertSessionHasNoErrors();
+
+        $module = $crew->modules()->firstOrFail();
+        $this->assertSame('Intro', $module->title);
+        $this->assertSame(1, $module->materials()->count());
+        Storage::disk('local')->assertExists($module->materials()->firstOrFail()->path);
+    }
+
+    public function test_a_bad_file_on_module_creation_rejects_without_creating_the_module(): void
+    {
+        [$faculty, , $crew] = $this->setUpCrew();
+
+        $this->actingAs($faculty)->post(route('faculty.modules.store', $crew), [
+            'title' => 'Intro',
+            'files' => [UploadedFile::fake()->create('shell.php', 1)],
+        ])->assertSessionHasErrors();
+
+        $this->assertSame(0, $crew->modules()->count());
     }
 
     public function test_dangerous_file_types_are_rejected(): void
@@ -89,7 +117,7 @@ class CourseModulesTest extends TestCase
         Storage::disk('local')->put('course-materials/x/notes.pdf', 'PDFDATA');
         $file = $module->materials()->create(['name' => 'notes.pdf', 'ext' => 'pdf', 'path' => 'course-materials/x/notes.pdf', 'size' => 7]);
 
-        $this->actingAs($student)->get(route('student.crew'))
+        $this->actingAs($student)->get(route('student.course.materials', ['slug' => 'programming', 'course' => 'python']))
             ->assertOk()
             ->assertSee('Real Module Title')
             ->assertSee('notes.pdf')
@@ -102,7 +130,7 @@ class CourseModulesTest extends TestCase
     {
         [, $student] = $this->setUpCrew();
 
-        $this->actingAs($student)->get(route('student.crew'))->assertOk()->assertSee('No modules yet');
+        $this->actingAs($student)->get(route('student.course.materials', ['slug' => 'programming', 'course' => 'python']))->assertOk()->assertSee('No extra materials yet');
     }
 
     public function test_outsiders_cannot_download_materials(): void
@@ -114,6 +142,39 @@ class CourseModulesTest extends TestCase
         $outsider = User::factory()->create(['role' => 'student']);
 
         $this->actingAs($outsider)->get(route('materials.download', $file))->assertForbidden();
+    }
+
+    public function test_student_previews_a_material_inline_instead_of_downloading(): void
+    {
+        [, $student, $crew] = $this->setUpCrew();
+        $module = $crew->modules()->create(['title' => 'Intro']);
+        Storage::disk('local')->put('course-materials/x/notes.pdf', 'PDFDATA');
+        $file = $module->materials()->create(['name' => 'notes.pdf', 'ext' => 'pdf', 'path' => 'course-materials/x/notes.pdf', 'size' => 7]);
+
+        $response = $this->actingAs($student)->get($file->previewUrl())->assertOk();
+        $this->assertStringContainsString('inline', $response->headers->get('Content-Disposition'));
+    }
+
+    public function test_outsiders_cannot_preview_materials_without_a_valid_signature(): void
+    {
+        [, , $crew] = $this->setUpCrew();
+        $module = $crew->modules()->create(['title' => 'Intro']);
+        Storage::disk('local')->put('course-materials/x/a.pdf', 'x');
+        $file = $module->materials()->create(['name' => 'a.pdf', 'ext' => 'pdf', 'path' => 'course-materials/x/a.pdf', 'size' => 1]);
+        $outsider = User::factory()->create(['role' => 'student']);
+
+        $this->actingAs($outsider)->get($file->previewUrl())->assertForbidden();
+        $this->get($file->previewUrl())->assertForbidden();
+    }
+
+    public function test_a_temporarily_signed_preview_url_works_without_any_login(): void
+    {
+        [, , $crew] = $this->setUpCrew();
+        $module = $crew->modules()->create(['title' => 'Intro']);
+        Storage::disk('local')->put('course-materials/x/notes.pdf', 'PDFDATA');
+        $file = $module->materials()->create(['name' => 'notes.pdf', 'ext' => 'pdf', 'path' => 'course-materials/x/notes.pdf', 'size' => 7]);
+
+        $this->get($file->publicPreviewUrl())->assertOk();
     }
 
     public function test_deleting_a_module_removes_its_files(): void
@@ -139,7 +200,7 @@ class CourseModulesTest extends TestCase
         $this->actingAs($faculty)->get(route('faculty.course', $crew))->assertOk()->assertSee('Listed Module');
     }
 
-    public function test_faculty_sidebar_has_dashboard_and_chat_but_no_planets_or_crew(): void
+    public function test_faculty_sidebar_has_dashboard_chat_crew_and_materials_but_no_planets(): void
     {
         [$faculty] = $this->setUpCrew();
 
@@ -147,7 +208,8 @@ class CourseModulesTest extends TestCase
             ->assertOk()
             ->assertSee('aria-label="Dashboard"', false)
             ->assertSee('aria-label="Chat"', false)
-            ->assertDontSee('aria-label="Crew"', false)
+            ->assertSee('aria-label="Crew"', false)
+            ->assertSee('aria-label="Materials"', false)
             ->assertDontSee('aria-label="Planets"', false)
             ->assertSee('Captain');
     }

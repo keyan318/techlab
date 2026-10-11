@@ -100,6 +100,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l4.json) complete
         <p class="quiz-explanation"><em>2.4 GHz passes through walls better and reaches farther, but it is slower and more crowded than 5 GHz.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which of these is a radio-side Wi-Fi problem rather than a wired-side one?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The AP's uplink cable is unplugged</li>
+            <li class="quiz-option">B. The AP's port is in the wrong VLAN</li>
+            <li class="quiz-option">C. DHCP has no addresses left</li>
+            <li class="quiz-option quiz-correct">D. The wrong Wi-Fi password is entered ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A wrong SSID, password or security mode is a radio-side problem, in the air between client and access point. The others are all behind the AP.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. A tablet cannot even join the codexia-crew Wi-Fi network at all, no matter how many times it tries. Which side should Volt check first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The wired side, starting with the AP's uplink</li>
+            <li class="quiz-option">B. The DHCP server's pool size</li>
+            <li class="quiz-option quiz-correct">C. The radio side, such as signal strength or the password ✓</li>
+            <li class="quiz-option">D. The DNS server</li>
+        </ul>
+        <p class="quiz-explanation"><em>A device that cannot even join the network points at the radio side. Wired-side faults, like DHCP, only show up after a device has already connected.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

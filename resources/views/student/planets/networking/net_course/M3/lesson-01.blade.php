@@ -96,6 +96,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l1.json) complete
         <p class="quiz-explanation"><em>169.254.x.x is a self-assigned address. A device uses it when it expected DHCP but no server answered.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What is a DHCP reservation?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. DHCP always gives the same address to one device, chosen by its MAC address ✓</li>
+            <li class="quiz-option">B. A static address typed by hand</li>
+            <li class="quiz-option">C. An address nobody can ever use</li>
+            <li class="quiz-option">D. The lease time for laptops</li>
+        </ul>
+        <p class="quiz-explanation"><em>A reservation ties one MAC address to one address in the DHCP pool, so that device always gets the same lease.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Two crew members accidentally type the same static IP address into two different consoles. What is this called, and what usually happens?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A DHCP reservation, and both work fine</li>
+            <li class="quiz-option">B. Dynamic addressing, and the router fixes it automatically</li>
+            <li class="quiz-option quiz-correct">C. An address conflict, causing problems for one or both devices ✓</li>
+            <li class="quiz-option">D. A subnet mask error</li>
+        </ul>
+        <p class="quiz-explanation"><em>A typo that duplicates an address creates an address conflict, one of the costs of typing static addresses by hand.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

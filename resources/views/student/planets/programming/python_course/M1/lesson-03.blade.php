@@ -89,4 +89,26 @@ print(int(scan_text) + 8)">
         <p class="quiz-explanation"><em>int() converts a numeric-looking string (or a float) into an integer type.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What type is the value <code>True</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. int</li>
+            <li class="quiz-option">B. str</li>
+            <li class="quiz-option">C. float</li>
+            <li class="quiz-option quiz-correct">D. bool ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>True and False are bool values — Python's way of representing a yes-or-no, on-or-off answer.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Which function converts the integer 12 into the string "12"?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. int(12)</li>
+            <li class="quiz-option">B. float(12)</li>
+            <li class="quiz-option quiz-correct">C. str(12) ✓</li>
+            <li class="quiz-option">D. bool(12)</li>
+        </ul>
+        <p class="quiz-explanation"><em>str() converts a value into its text representation — useful when you need to join a number into a sentence with +.</em></p>
+    </div>
+
 </div>

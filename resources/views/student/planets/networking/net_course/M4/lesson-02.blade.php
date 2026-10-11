@@ -104,6 +104,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l2.json) complete
         <p class="quiz-explanation"><em>Swap one part (cable, port or device) and watch whether the problem follows it. That isolates the faulty part.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Several consoles on the same switch suddenly lose their link lights at once, but one console on a different switch is fine. What does this suggest?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Each console has its own bad cable, by coincidence</li>
+            <li class="quiz-option quiz-correct">B. The fault is in the shared device, likely the switch or its power ✓</li>
+            <li class="quiz-option">C. It is a DNS problem</li>
+            <li class="quiz-option">D. It is a duplicate IP address</li>
+        </ul>
+        <p class="quiz-explanation"><em>When many devices sharing one part go dark at once, suspect that shared part, such as the switch or its power, rather than each device's own cable.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. netsh interface show interface reports astro's Ethernet adapter as Disabled. What should Rivet try next?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Replace the cable</li>
+            <li class="quiz-option">B. Buy a new NIC</li>
+            <li class="quiz-option quiz-correct">C. Enable the adapter with netsh interface set interface ✓</li>
+            <li class="quiz-option">D. Change the DNS server</li>
+        </ul>
+        <p class="quiz-explanation"><em>A disabled adapter shows no link no matter how good the cable is. netsh interface set interface "Ethernet" admin=enabled turns it back on.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

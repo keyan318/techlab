@@ -93,4 +93,26 @@ print(captain_name + &quot;'s crew needs &quot; + str(total) + &quot; ration pac
         <p class="quiz-explanation"><em>The string passed to input() is displayed to the user as a prompt, letting them know what to type.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. You have <code>total = 8</code> (an int) and want to glue it into a sentence built with +. What must you do first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Nothing — + joins numbers and text automatically</li>
+            <li class="quiz-option quiz-correct">B. Convert it to text first with str(total) ✓</li>
+            <li class="quiz-option">C. Convert the sentence into a number instead</li>
+            <li class="quiz-option">D. Use input() on the number</li>
+        </ul>
+        <p class="quiz-explanation"><em>+ between a string and a number is not allowed directly — str() turns the number into text so it can be joined into a sentence.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. What does a program do the moment it reaches an <code>input()</code> call?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It skips the line and keeps going</li>
+            <li class="quiz-option quiz-correct">B. It pauses and waits until the user types something and presses enter ✓</li>
+            <li class="quiz-option">C. It crashes immediately</li>
+            <li class="quiz-option">D. It restarts the program from the top</li>
+        </ul>
+        <p class="quiz-explanation"><em>input() stops the program right there — nothing after it runs until the user actually types a response.</em></p>
+    </div>
+
 </div>

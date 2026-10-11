@@ -1,0 +1,68 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a3-l3",
+  "title": "Lesson 3.3: Procedures",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "16:00 · TAMPERED LOG FOUND · CITADEL CORE",
+    "vex": "Restore first. Lose your evidence. It's a simple trick and it works every time. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED, evidence intact: the tampered log was fingerprinted before it was restored. Astro: \"Same two steps. Right order. That's the whole difference.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nshield-log.txt was tampered with. Follow the procedure in order: preserve evidence first, restore second.\n\n1. certutil -hashfile shield-log.txt SHA256\n2. copy backup\\shield-log.txt.bak shield-log.txt\n",
+    "C:\\Citadel\\shield-log.txt": "###TAMPERED### entries removed to hide what happened ###TAMPERED###\n",
+    "C:\\Citadel\\backup\\shield-log.txt.bak": "SHIELD LOG (clean backup, taken before tampering)\n[03:40] shield power at 100%\n[03:52] shield power at 100%\n[04:12] shield power at 100%\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: preserve evidence first",
+      "body": "Volt: \"Fingerprint it before you touch anything else.\" `certutil -hashfile shield-log.txt SHA256`, before the restore.",
+      "objectives": [
+        {
+          "id": "order",
+          "label": "Evidence was hashed before the restore",
+          "check": {
+            "type": "ordered",
+            "before": "^(certutil|hash)",
+            "after": "^copy"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Restore from backup",
+      "body": "Rivet: \"Now put it right.\" `copy backup\\shield-log.txt.bak shield-log.txt`.",
+      "objectives": [
+        {
+          "id": "restored",
+          "label": "shield-log.txt matches the clean backup",
+          "check": {
+            "type": "same-content",
+            "a": "C:\\Citadel\\shield-log.txt",
+            "b": "C:\\Citadel\\backup\\shield-log.txt.bak"
+          }
+        }
+      ]
+    }
+  ]
+}

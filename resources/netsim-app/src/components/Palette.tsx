@@ -3,6 +3,7 @@ import { useStore } from '../store';
 import type { DeviceKind } from '../engine/device';
 import { DeviceIcon } from './DeviceNode';
 import { LabPanel } from './LabPanel';
+import { earnedCount } from '../labs/grading';
 
 const ITEMS: { kind: DeviceKind; label: string; blurb: string }[] = [
   { kind: 'host', label: 'Host', blurb: 'Linux workstation' },
@@ -53,6 +54,7 @@ function DeviceList() {
 export function Palette() {
   const lab = useStore((s) => s.lab);
   const results = useStore((s) => s.labResults);
+  const baseline = useStore((s) => s.labBaseline);
   const [tab, setTab] = useState<'mission' | 'devices'>('mission');
 
   if (!lab) {
@@ -66,7 +68,7 @@ export function Palette() {
 
   // TechLab: in a lab the steps live here, in a tab beside the devices, so they never cover the map.
   const objectives = lab.steps.flatMap((s) => s.objectives);
-  const passed = objectives.filter((o) => results[o.id]?.pass).length;
+  const passed = earnedCount(lab, results, baseline);
 
   return (
     <aside className="palette with-lab">

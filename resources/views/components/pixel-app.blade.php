@@ -9,6 +9,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ $title }} · TechLab</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
   <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
 
@@ -19,6 +20,7 @@
   <meta name="theme-color" content="#06061a">
   <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
   <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
+  <script defer src="{{ asset('js/sfx.js') }}?v={{ filemtime(public_path('js/sfx.js')) }}"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -44,6 +46,7 @@
     .space { position: fixed; inset: 0; z-index: -1; background: radial-gradient(120% 90% at 50% -10%, #241456 0%, rgba(36,20,86,0) 55%), linear-gradient(160deg, #0a0826 0%, #120a33 45%, #1e1259 100%); }
   </style>
   <style>@include('student.partials.pixel-ui')</style>
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 <body class="bg-void font-sans text-ink antialiased" x-data="techlabShell()" x-init="init()">
   <div class="space" aria-hidden="true"></div>
@@ -53,6 +56,7 @@
       {{ $slot }}
     </main>
   </div>
+  @include('components.shell.file-preview')
   <script>
     function techlabShell() {
       return {

@@ -1,0 +1,107 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a7-l5",
+  "title": "Lesson 7.5: Compliance & Auditing the Recovery Plan",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "18:20 · COMPLIANCE AUDIT · CITADEL CORE",
+    "vex": "A plan nobody's tested is worth exactly nothing when I actually attack. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every non-compliant plan is caught in the audit, not discovered during a real crisis. Astro: \"Written isn't tested. The audit is how we tell the difference.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead audit-standard.txt for the requirement, then test-records.txt for four systems. Classify each as compliant or non-compliant.\n\n1. type audit-standard.txt\n2. type test-records.txt\n3. classify <system> compliant | non-compliant\n",
+    "C:\\Citadel\\audit-standard.txt": "AUDIT STANDARD\n----------------\nEvery DR plan must be tested within the last 12 months, with a written record of the test.\n",
+    "C:\\Citadel\\test-records.txt": "TEST RECORDS\n--------------\nsystem-relay              tested 4 months ago, written record on file\nsystem-shield-generator   plan written and detailed, but never actually tested\nsystem-starmap-vault      tested 15 months ago, written record on file (over 12 months old)\nsystem-comms-backup       tested 2 months ago, written record on file\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "system-relay": "system-relay",
+    "system-shield-generator": "system-shield-generator",
+    "system-starmap-vault": "system-starmap-vault",
+    "system-comms-backup": "system-comms-backup"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the standard and records",
+      "body": "Volt: \"Know the requirement, then check the evidence.\" `type audit-standard.txt`, then `type test-records.txt`.",
+      "objectives": [
+        {
+          "id": "read1",
+          "label": "Read audit-standard.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\audit-standard.txt"
+          }
+        },
+        {
+          "id": "read2",
+          "label": "Read test-records.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\test-records.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Audit each system",
+      "body": "Volt: \"Tested within 12 months, with a record — compliant. Never tested, or the record is too old — non-compliant.\" Classify all four systems.",
+      "objectives": [
+        {
+          "id": "s1",
+          "label": "system-relay classified as compliant",
+          "check": {
+            "type": "classified",
+            "item": "system-relay",
+            "as": "compliant"
+          }
+        },
+        {
+          "id": "s2",
+          "label": "system-shield-generator classified as non-compliant (never tested)",
+          "check": {
+            "type": "classified",
+            "item": "system-shield-generator",
+            "as": "non-compliant"
+          }
+        },
+        {
+          "id": "s3",
+          "label": "system-starmap-vault classified as non-compliant (record too old)",
+          "check": {
+            "type": "classified",
+            "item": "system-starmap-vault",
+            "as": "non-compliant"
+          }
+        },
+        {
+          "id": "s4",
+          "label": "system-comms-backup classified as compliant",
+          "check": {
+            "type": "classified",
+            "item": "system-comms-backup",
+            "as": "compliant"
+          }
+        }
+      ]
+    }
+  ]
+}

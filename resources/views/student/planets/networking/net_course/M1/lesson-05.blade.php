@@ -103,6 +103,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l5.json) complete
         <p class="quiz-explanation"><em>Several VMs share one physical machine, which saves hardware and power and keeps workloads separate.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which of these is NOT one of the common server roles named in the lesson?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. File server</li>
+            <li class="quiz-option">B. DHCP server</li>
+            <li class="quiz-option quiz-correct">C. Antivirus server ✓</li>
+            <li class="quiz-option">D. Mail server</li>
+        </ul>
+        <p class="quiz-explanation"><em>The lesson names web, DNS, DHCP, file and mail servers. Antivirus server is not one of the roles it lists.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet's one server runs a web VM, a DNS VM and a mail VM at the same time. What made this possible?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Each VM uses a different physical cable</li>
+            <li class="quiz-option">B. The router split the server into three</li>
+            <li class="quiz-option">C. Three different NICs were installed</li>
+            <li class="quiz-option quiz-correct">D. A hypervisor split one physical machine into separate virtual machines ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The hypervisor is the software layer that lets one physical server run several virtual machines, each with its own OS and IP address.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

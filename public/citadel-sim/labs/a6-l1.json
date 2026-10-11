@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a6-l1",
+  "title": "Lesson 6.1: Communications & Reporting",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "02:00 · OVERNIGHT EVENT QUEUE · CITADEL CORE",
+    "vex": "Bury the real alarm under ten fake ones. Works every time. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the real alarm reaches Astro immediately, and nothing else drowns it out. Astro: \"The right event, to the right person, at the right speed.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead overnight-queue.txt: four events. Classify each by how it should be routed: immediate, routine, or council.\n\n1. type overnight-queue.txt\n2. classify <event> immediate | routine | council\n",
+    "C:\\Citadel\\overnight-queue.txt": "OVERNIGHT EVENT QUEUE\n------------------------\nevent-1   active intrusion detected on the relay console, ongoing right now\nevent-2   a false alarm from last week, already confirmed harmless\nevent-3   a recurring pattern of minor policy exceptions over the last month, needs a group decision on the policy itself\nevent-4   a routine backup completed successfully, nothing unusual\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "event-1": "event-1",
+    "event-2": "event-2",
+    "event-3": "event-3",
+    "event-4": "event-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the overnight queue",
+      "body": "Astro: \"Read every event before routing any of them.\" `type overnight-queue.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read overnight-queue.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\overnight-queue.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Route each event correctly",
+      "body": "Astro: \"Active and urgent, wake me. Minor and resolved, log it. A pattern needing a group decision, that's council.\" Classify all four events.",
+      "objectives": [
+        {
+          "id": "e1",
+          "label": "event-1 classified as immediate",
+          "check": {
+            "type": "classified",
+            "item": "event-1",
+            "as": "immediate"
+          }
+        },
+        {
+          "id": "e2",
+          "label": "event-2 classified as routine",
+          "check": {
+            "type": "classified",
+            "item": "event-2",
+            "as": "routine"
+          }
+        },
+        {
+          "id": "e3",
+          "label": "event-3 classified as council",
+          "check": {
+            "type": "classified",
+            "item": "event-3",
+            "as": "council"
+          }
+        },
+        {
+          "id": "e4",
+          "label": "event-4 classified as routine",
+          "check": {
+            "type": "classified",
+            "item": "event-4",
+            "as": "routine"
+          }
+        }
+      ]
+    }
+  ]
+}

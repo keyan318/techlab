@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a7-l4",
+  "title": "Lesson 7.4: High Availability Architectures",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "11:40 · ARCHITECTURE REVIEW · CITADEL CORE",
+    "vex": "One relay, one feed, one antenna. One well-placed hit ends it all. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every single point of failure is identified before Vex could find it first. Astro: \"One failure should never mean total loss. Not anymore.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead relay-architecture.txt: four components. Classify each as single-point-of-failure or already-redundant.\n\n1. type relay-architecture.txt\n2. classify <component> single-point-of-failure | already-redundant\n",
+    "C:\\Citadel\\relay-architecture.txt": "RELAY SYSTEM ARCHITECTURE\n----------------------------\ncomponent-relay          one relay unit, no backup — if it fails, contact is lost\ncomponent-power-feed     one power source, no backup — if it cuts out, everything stops\ncomponent-antenna        one antenna, no backup — if damaged, no signal at all\ncomponent-cooling        two cooling units running together, load-balanced\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "component-relay": "component-relay",
+    "component-power-feed": "component-power-feed",
+    "component-antenna": "component-antenna",
+    "component-cooling": "component-cooling"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the architecture note",
+      "body": "Rivet: \"Read every component before flagging any.\" `type relay-architecture.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read relay-architecture.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\relay-architecture.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Find every single point of failure",
+      "body": "Rivet: \"No backup, one failure ends it — that's a single point of failure. Already load-balanced — that's redundant.\" Classify all four components.",
+      "objectives": [
+        {
+          "id": "c1",
+          "label": "component-relay classified as single-point-of-failure",
+          "check": {
+            "type": "classified",
+            "item": "component-relay",
+            "as": "single-point-of-failure"
+          }
+        },
+        {
+          "id": "c2",
+          "label": "component-power-feed classified as single-point-of-failure",
+          "check": {
+            "type": "classified",
+            "item": "component-power-feed",
+            "as": "single-point-of-failure"
+          }
+        },
+        {
+          "id": "c3",
+          "label": "component-antenna classified as single-point-of-failure",
+          "check": {
+            "type": "classified",
+            "item": "component-antenna",
+            "as": "single-point-of-failure"
+          }
+        },
+        {
+          "id": "c4",
+          "label": "component-cooling classified as already-redundant",
+          "check": {
+            "type": "classified",
+            "item": "component-cooling",
+            "as": "already-redundant"
+          }
+        }
+      ]
+    }
+  ]
+}

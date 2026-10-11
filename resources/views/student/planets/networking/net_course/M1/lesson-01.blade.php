@@ -111,6 +111,28 @@ The Relay Lab is the NetSim simulator; passing it (see public/netsim-app/labs/m1
         <p class="quiz-explanation"><em>A network needs at least two devices connected so they can share information.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What term describes any device on the network, such as astro's console or Rivet's workbench?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Host ✓</li>
+            <li class="quiz-option">B. Medium</li>
+            <li class="quiz-option">C. Message</li>
+            <li class="quiz-option">D. Protocol</li>
+        </ul>
+        <p class="quiz-explanation"><em>A host is any device connected to the network, like astro's console or Rivet's workbench.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Astro's console and Rivet's workbench are physically wired together but follow different protocols. What happens?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The medium automatically fixes the mismatch</li>
+            <li class="quiz-option">B. The message field disappears</li>
+            <li class="quiz-option">C. The two consoles merge into one host</li>
+            <li class="quiz-option quiz-correct">D. They cannot understand each other's messages ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A shared medium is not enough. Both sides must agree on the same protocol, or the message cannot be understood.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

@@ -109,6 +109,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
         <p class="quiz-explanation"><em>Finish by documenting what you found, what you did and how it turned out, so the next person can learn from it.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. In the final mission's four-step order, which comes right after Physical?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Services</li>
+            <li class="quiz-option">B. Routing</li>
+            <li class="quiz-option">C. Documentation</li>
+            <li class="quiz-option quiz-correct">D. Addressing ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The final mission works Physical, Addressing, Routing, Services in that order, so Addressing comes right after Physical.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Astro fixes the cable fault and the DHCP pool, but the crew still cannot reach Earth. What does the lesson's warning about faults suggest Astro should do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Give up, since one fix should have solved everything</li>
+            <li class="quiz-option quiz-correct">B. Keep testing and fixing the remaining layers, since one fault can hide another ✓</li>
+            <li class="quiz-option">C. Only test at the very end</li>
+            <li class="quiz-option">D. Undo both fixes immediately</li>
+        </ul>
+        <p class="quiz-explanation"><em>Several things are broken at once in this mission. Test after every fix and keep working up the layers, since one fault can hide another.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

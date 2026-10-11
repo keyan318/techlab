@@ -1,0 +1,74 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a8-l4",
+  "title": "Lesson 8.4: Locks & Entry Controls",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "19:00 · MISSING ACCESS CARD · CITADEL CORE",
+    "vex": "A missing card, unrevoked. I'll walk in wearing someone else's access. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the missing card is revoked the moment it's reported, and the vault was never just one layer deep. Astro: \"A lost credential is an emergency now, not at end of shift.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nA cadet's engineering-bay access card is missing. Revoke it immediately.\n\n1. type incident-note.txt\n2. net user badge-eng-07 /active:no\n",
+    "C:\\Citadel\\incident-note.txt": "INCIDENT NOTE\n---------------\nCadet reports their access card (badge-eng-07) missing since this morning. The card opens the engineering bay. The engineering vault beyond it requires biometric access, not just a card.\n"
+  },
+  "users": [
+    {
+      "name": "badge-eng-07",
+      "fullName": "Engineering Bay Access Card (reported missing)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "n/a — physical credential",
+      "lastLogon": "this morning"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: read the incident",
+      "body": "Rivet: \"Read it, then act — don't wait.\" `type incident-note.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read incident-note.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\incident-note.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Revoke the missing card now",
+      "body": "Rivet: \"Now, not at end of shift.\" `net user badge-eng-07 /active:no`.",
+      "objectives": [
+        {
+          "id": "revoke",
+          "label": "badge-eng-07 is disabled",
+          "check": {
+            "type": "user-disabled",
+            "user": "badge-eng-07"
+          }
+        }
+      ]
+    }
+  ]
+}

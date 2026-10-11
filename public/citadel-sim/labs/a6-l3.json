@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a6-l3",
+  "title": "Lesson 6.3: Acceptable Use Enforcement",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "14:20 · VIOLATION LOG REVIEW · CITADEL CORE",
+    "vex": "Enforce it against one, ignore it for another. That's how a rule dies quietly. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every violation gets a response that fits its pattern, applied the same way for everyone. Astro: \"Fair, and firm where it needs to be.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead violation-log.txt: four AUP violations this week. Classify each by the correct enforcement: reminder or revoke-access.\n\n1. type violation-log.txt\n2. classify <violation> reminder | revoke-access\n",
+    "C:\\Citadel\\violation-log.txt": "AUP VIOLATION LOG — this week\n---------------------------------\nviolation-1   first offense, minor, cadet removed the unauthorized program immediately when told\nviolation-2   third offense this month, after two prior warnings, same cadet\nviolation-3   first offense, accidentally left a session unlocked, corrected right away\nviolation-4   deliberately shared their login with another cadet, against explicit policy\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "violation-1": "violation-1",
+    "violation-2": "violation-2",
+    "violation-3": "violation-3",
+    "violation-4": "violation-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt: read the violation log",
+      "body": "Volt: \"Read every case — history and intent both matter.\" `type violation-log.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read violation-log.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\violation-log.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Match the response to the pattern",
+      "body": "Volt: \"First and minor, corrected fast — reminder. Repeated or deliberate — revoke access.\" Classify all four violations.",
+      "objectives": [
+        {
+          "id": "v1",
+          "label": "violation-1 classified as reminder",
+          "check": {
+            "type": "classified",
+            "item": "violation-1",
+            "as": "reminder"
+          }
+        },
+        {
+          "id": "v2",
+          "label": "violation-2 classified as revoke-access",
+          "check": {
+            "type": "classified",
+            "item": "violation-2",
+            "as": "revoke-access"
+          }
+        },
+        {
+          "id": "v3",
+          "label": "violation-3 classified as reminder",
+          "check": {
+            "type": "classified",
+            "item": "violation-3",
+            "as": "reminder"
+          }
+        },
+        {
+          "id": "v4",
+          "label": "violation-4 classified as revoke-access",
+          "check": {
+            "type": "classified",
+            "item": "violation-4",
+            "as": "revoke-access"
+          }
+        }
+      ]
+    }
+  ]
+}

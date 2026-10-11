@@ -121,39 +121,14 @@
 
       {{-- ===== Empty state (Astro-voiced) ===== --}}
       <section x-show="messages.length === 0" x-cloak class="flex flex-col items-center pt-6 text-center">
-        <div class="grid h-24 w-24 place-items-center rounded-full bg-glass p-3 ring-1 ring-[rgba(115,182,255,0.4)]">
+        <div class="grid h-[133px] w-[140px] place-items-center">
           @include('student.chat.partials.astro-mascot')
         </div>
         @if($isFacultyChat ?? false)
         <h2 class="mt-4 font-display text-[1.75rem] font-bold leading-tight tracking-[-0.02em] text-ink">Hi Captain {{ $userName ?? '' }}! I'm Astro</h2>
         <p class="mt-1.5 text-sm font-medium text-muted">Plan lessons, draft quizzes, build rubrics. 🚀</p>
-
-        <div class="mt-6 w-full max-w-md space-y-2">
-          <button type="button" @click="sendSuggestion('Plan a 45-minute lesson on Python loops')" class="flex w-full items-center gap-3 rounded-full border border-glassBorder bg-glass px-4 py-3 text-left text-sm text-ink transition hover:border-[rgba(115,182,255,0.5)] hover:bg-[rgba(115,182,255,0.08)]">
-            <span class="tl-cyan">✦</span> Plan a 45-minute lesson on Python loops
-          </button>
-          <button type="button" @click="sendSuggestion('Write 5 quiz questions on basic networking')" class="flex w-full items-center gap-3 rounded-full border border-glassBorder bg-glass px-4 py-3 text-left text-sm text-ink transition hover:border-[rgba(115,182,255,0.5)] hover:bg-[rgba(115,182,255,0.08)]">
-            <span class="tl-cyan">✦</span> Write 5 quiz questions on basic networking
-          </button>
-          <button type="button" @click="sendSuggestion('Create a grading rubric for a first Python project')" class="flex w-full items-center gap-3 rounded-full border border-glassBorder bg-glass px-4 py-3 text-left text-sm text-ink transition hover:border-[rgba(115,182,255,0.5)] hover:bg-[rgba(115,182,255,0.08)]">
-            <span class="tl-cyan">✦</span> Create a grading rubric for a first Python project
-          </button>
-        </div>
         @else
         <h2 class="mt-4 font-display text-[1.75rem] font-bold leading-tight tracking-[-0.02em] text-ink">Hi {{ $userName ?? 'Explorer' }}, I'm Astro</h2>
-
-        {{-- Suggested prompt chips — these actually send a message. --}}
-        <div class="mt-6 w-full max-w-md space-y-2">
-          <button type="button" @click="sendSuggestion('Explain HTTP like I\'m five')" class="flex w-full items-center gap-3 rounded-full border border-glassBorder bg-glass px-4 py-3 text-left text-sm text-ink transition hover:border-[rgba(115,182,255,0.5)] hover:bg-[rgba(115,182,255,0.08)]">
-            <span class="tl-cyan">✦</span> Explain HTTP like I'm five
-          </button>
-          <button type="button" @click="sendSuggestion('Quiz me on basic networking')" class="flex w-full items-center gap-3 rounded-full border border-glassBorder bg-glass px-4 py-3 text-left text-sm text-ink transition hover:border-[rgba(115,182,255,0.5)] hover:bg-[rgba(115,182,255,0.08)]">
-            <span class="tl-cyan">✦</span> Quiz me on basic networking
-          </button>
-          <button type="button" @click="sendSuggestion('Help me debug my first Laravel route')" class="flex w-full items-center gap-3 rounded-full border border-glassBorder bg-glass px-4 py-3 text-left text-sm text-ink transition hover:border-[rgba(115,182,255,0.5)] hover:bg-[rgba(115,182,255,0.08)]">
-            <span class="tl-cyan">✦</span> Help me debug my first Laravel route
-          </button>
-        </div>
         @endif
       </section>
 
@@ -196,7 +171,8 @@
 
             {{-- Astro message --}}
             <div x-show="m.role === 'assistant'" class="flex gap-3">
-              <div class="grid h-10 w-10 flex-none place-items-center rounded-full bg-glass p-1 ring-1 ring-[rgba(115,182,255,0.4)]">
+              <div class="grid h-12 w-12 flex-none place-items-center rounded-full bg-glass p-1 ring-1 ring-[rgba(115,182,255,0.4)]"
+                   :class="{ 'astro-thinking': m.pending && m.content === '', 'astro-talking': m.streaming }">
                 @include('student.chat.partials.astro-mascot')
               </div>
 
@@ -230,11 +206,23 @@
                 ></div>
                 </div>{{-- /indicator + answer box --}}
 
-                {{-- Planet lessons Astro was grounded in --}}
+                {{-- What Astro was grounded in: the captain's materials, Planet lessons, real web
+                     pages. Anything with a link is clickable, so a claim can be checked. --}}
                 <div x-show="!m.pending && !m.streaming && m.sources && m.sources.length" x-cloak class="mt-2 flex flex-wrap items-center gap-1.5">
                   <span class="font-mono text-[10px] uppercase tracking-[0.18em] tl-cyan">Sources</span>
-                  <template x-for="src in (m.sources || [])" :key="src">
-                    <span class="rounded-full border border-[rgba(115,182,255,0.35)] bg-[rgba(115,182,255,0.1)] px-2.5 py-0.5 text-[11px] text-ink" x-text="src"></span>
+                  <template x-for="(src, si) in (m.sources || [])" :key="si">
+                    <template x-if="src.url">
+                      <a :href="src.url" target="_blank" rel="noopener noreferrer"
+                         :title="src.course || src.domain || src.title"
+                         class="rounded-full border px-2.5 py-0.5 text-[11px] text-ink transition hover:underline"
+                         :class="src.kind === 'material'
+                           ? 'border-[rgba(139,216,58,0.35)] bg-[rgba(139,216,58,0.1)]'
+                           : 'border-[rgba(115,182,255,0.35)] bg-[rgba(115,182,255,0.1)]'"
+                         x-text="src.title"></a>
+                    </template>
+                    <template x-if="!src.url">
+                      <span class="rounded-full border border-[rgba(115,182,255,0.35)] bg-[rgba(115,182,255,0.1)] px-2.5 py-0.5 text-[11px] text-ink" x-text="src.title || src"></span>
+                    </template>
                   </template>
                 </div>
 

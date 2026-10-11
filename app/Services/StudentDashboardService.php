@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\XpSpend;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Everything the student dashboard shows, computed from existing data:
@@ -39,6 +40,13 @@ class StudentDashboardService
     public const XP_PER_LEVEL = 300;
 
     /** Planets shown on the dashboard. Only those with a config blueprint have trackable lessons. */
+    /** Each planet's pixel-art banner, shared with the planet picker. */
+    private const PLANET_ART = [
+        'programming' => 'images/programming-city-pixel.png',
+        'networking' => 'images/networking-nebula.png',
+        'cybersecurity' => 'images/cybersecurity-citadel.png',
+    ];
+
     private const PLANETS = [
         'programming' => ['name' => 'Programming',   'world' => 'Python Planet',      'accent' => '#73b6ff'],
         'networking' => ['name' => 'Networking',    'world' => 'Network Nebula',     'accent' => '#5be1ff'],
@@ -54,11 +62,26 @@ class StudentDashboardService
     /** What this student can spend right now. */
     public static function balance(User $user): int
     {
-        return self::xpFor(
-            $user->lessonProgress()->count(),
-            (int) QuizAnswer::where('user_id', $user->id)->sum('xp'),
-            (int) XpSpend::where('user_id', $user->id)->sum('cost'),
-        );
+        $totals = self::totals($user);
+
+        return self::xpFor($totals['lessons'], $totals['quizXp'], $totals['spent']);
+    }
+
+    /**
+     * The inputs to a student's XP — lessons done, quiz XP, XP spent — in one round trip
+     * instead of three: the database is remote, so each query costs real time.
+     *
+     * @return array{lessons: int, quizXp: int, spent: int}
+     */
+    private static function totals(User $user): array
+    {
+        $row = DB::query()
+            ->selectSub($user->lessonProgress()->selectRaw('count(*)'), 'lessons')
+            ->selectSub(QuizAnswer::where('user_id', $user->id)->selectRaw('coalesce(sum(xp), 0)'), 'quiz_xp')
+            ->selectSub(XpSpend::where('user_id', $user->id)->selectRaw('coalesce(sum(cost), 0)'), 'spent')
+            ->first();
+
+        return ['lessons' => (int) $row->lessons, 'quizXp' => (int) $row->quiz_xp, 'spent' => (int) $row->spent];
     }
 
     public static function build(User $user): array
@@ -75,10 +98,17 @@ class StudentDashboardService
         $lessonsTotal = array_sum(array_column($planets, 'total'));
         $modulesDone = array_sum(array_column($planets, 'modulesDone'));
         $modulesTotal = array_sum(array_column($planets, 'modulesTotal'));
+        ['quizXp' => $quizXp, 'spent' => $spent] = self::totals($user);
+        $earned = $lessonsDone * self::XP_PER_LESSON + $quizXp;
 
         return [
             'user' => $user,
-            'xp' => self::xpFor($lessonsDone, (int) QuizAnswer::where('user_id', $user->id)->sum('xp'), (int) XpSpend::where('user_id', $user->id)->sum('cost')),
+            'xp' => self::xpFor($lessonsDone, $quizXp, $spent),
+            'level' => self::levelFor($earned),
+            // How far into the current level, for the "to Level N" bar.
+            'levelXp' => $earned % self::XP_PER_LEVEL,
+            'xpPerLevel' => self::XP_PER_LEVEL,
+            'streak' => self::streak($user, $progress),
             'lessonsDone' => $lessonsDone,
             'lessonsTotal' => $lessonsTotal,
             'modulesDone' => $modulesDone,
@@ -96,8 +126,9 @@ class StudentDashboardService
     /** XP earned, ignoring what was spent on hints, so buying a hint never lowers a student's level. */
     public static function earnedXp(User $user): int
     {
-        return $user->lessonProgress()->count() * self::XP_PER_LESSON
-            + (int) QuizAnswer::where('user_id', $user->id)->sum('xp');
+        $totals = self::totals($user);
+
+        return $totals['lessons'] * self::XP_PER_LESSON + $totals['quizXp'];
     }
 
     public static function levelFor(int $earnedXp): int
@@ -114,8 +145,7 @@ class StudentDashboardService
         $planets = self::planets($user, $progress);
 
         $lessonsDone = array_sum(array_column($planets, 'completed'));
-        $quizXp = (int) QuizAnswer::where('user_id', $user->id)->sum('xp');
-        $spent = (int) XpSpend::where('user_id', $user->id)->sum('cost');
+        ['quizXp' => $quizXp, 'spent' => $spent] = self::totals($user);
 
         $board = self::leaderboard($user);
         $me = collect($board)->firstWhere('me', true);
@@ -125,20 +155,20 @@ class StudentDashboardService
             'xp' => self::xpFor($lessonsDone, $quizXp, $spent),
             'level' => self::levelFor($lessonsDone * self::XP_PER_LESSON + $quizXp),
             'rank' => $me['rank'] ?? null,
-            'crewSize' => count($board),
+            'leaderboard' => $board,
             'badges' => array_sum(array_column($planets, 'modulesDone')),
             'streak' => self::streak($user, $progress),
-            'hero' => self::hero($planets, self::currentLesson($user, $progress)),
+            'hero' => self::hero($user, $planets, self::currentLesson($user, $progress)),
         ];
     }
 
     /**
-     * The first course on a planet that is really open (not "coming soon"), with its catalog entry.
+     * The first course on a planet that is really open (not "coming soon" or hidden), with its catalog entry.
      */
     public static function catalogCourse(string $slug): ?array
     {
         foreach (config("course-catalog.{$slug}.courses", []) as $id => $course) {
-            if (empty($course['coming_soon'])) {
+            if (empty($course['coming_soon']) && empty($course['hidden'])) {
                 return $course + ['id' => $id];
             }
         }
@@ -149,24 +179,62 @@ class StudentDashboardService
     /**
      * The card behind "Jump back in": the course the student is in the middle of, or null
      * when there is nothing left to continue.
+     *
+     * The dashboard never presumes a specific course. Until the student has actually
+     * started one — real LessonProgress rows, which for a captained course can only
+     * exist once they've been accepted and redeemed the code — this card sends them to
+     * the planet instead, the same place the "Ask to join" flow lives
+     * (PlanetController::courses). Once they've started, it resumes exactly that
+     * course, but still re-checks crew membership: a course that was open when they
+     * started can be claimed by a captain later.
      */
-    private static function hero(array $planets, ?array $current): ?array
+    private static function hero(User $user, array $planets, ?array $current): ?array
     {
-        $course = $current ? self::catalogCourse($current['planet']) : null;
+        // The course the lesson really belongs to — a planet can hold several (and hide some).
+        $id = $current ? CourseProgressService::catalogFor($current['key']) : null;
+        $course = $id ? config("course-catalog.{$current['planet']}.courses.{$id}") + ['id' => $id] : null;
 
         if (! $current || ! $course) {
             return null;
         }
 
         $planet = $planets[$current['planet']];
+        // The crew and "is this student on its roster" in one round trip. The captain's name is
+        // only shown on the not-a-member card, so it loads (lazily) only there.
+        $crew = Crew::where('planet', $current['planet'])->where('course_slug', $course['id'])
+            ->withExists(['roster as is_member' => fn ($q) => $q->whereKey($user->id)])
+            ->first();
+        $isMember = $crew && $crew->is_member;
+
+        if (! $isMember || $planet['completed'] === 0) {
+            return [
+                'view' => 'planet',
+                'locked' => ! $isMember,
+                'noCaptain' => ! $crew,
+                'planetSlug' => $current['planet'],
+                'planetTitle' => config("course-catalog.{$current['planet']}.title", $planet['name'] ?? $current['planet']),
+                'planetBlurb' => config("course-catalog.{$current['planet']}.description", ''),
+                'banner' => $course['banner'] ?? '#1b1650',
+                'scene' => $course['scene'] ?? null,
+                // Not in a course yet, so show the planet's own pixel art (same as the planet picker).
+                'art' => self::PLANET_ART[$current['planet']] ?? null,
+                'facultyName' => $crew?->faculty?->name,
+                'courseTitle' => $course['title'],
+                'planetUrl' => route('student.planet', $current['planet']),
+            ];
+        }
 
         return [
+            'view' => 'course',
+            'locked' => false,
             'title' => $course['title'],
             'blurb' => $course['blurb'] ?? '',
             'banner' => $course['banner'] ?? '#1b1650',
             'scene' => $course['scene'] ?? null,
+            // The course being learned right now, so the card always shows its picture.
+            'art' => $course['art'] ?? null,
             'percent' => $planet['percent'],
-            'started' => $planet['completed'] > 0,
+            'started' => true,
             'next' => $current['title'],
             'continueUrl' => $current['url'],
             'overviewUrl' => route('student.course.overview', ['slug' => $current['planet'], 'course' => $course['id']]),
@@ -177,11 +245,12 @@ class StudentDashboardService
      * Consecutive days of learning up to today. A day counts when the student studied
      * (active minutes) or finished a lesson. Not having studied *yet* today doesn't break the streak.
      */
-    public static function streak(User $user, ?Collection $progress = null): int
+    public static function streak(User $user, ?Collection $progress = null, ?Collection $activity = null): int
     {
         $progress ??= LessonProgress::where('user_id', $user->id)->get(['completed_at']);
+        $activity ??= StudyActivity::where('user_id', $user->id)->where('minutes', '>', 0)->get(['date']);
 
-        $days = StudyActivity::where('user_id', $user->id)->where('minutes', '>', 0)->get(['date'])
+        $days = $activity
             ->toBase()
             ->map(fn ($a) => $a->date->toDateString())
             ->merge($progress->filter(fn ($r) => $r->completed_at)->toBase()->map(fn ($r) => $r->completed_at->toDateString()))
@@ -207,11 +276,15 @@ class StudentDashboardService
     /**
      * Per-planet progress. A planet with no blueprint in config/course-structure.php
      * has no tracked lessons yet — it is reported as untracked rather than as 0 of 0.
+     *
+     * A planet's second+ course (e.g. computer-programming-1, which shares the
+     * "programming" planet with Python) is not shown as its own card — its lessons
+     * and completions are folded into the one planet card, via
+     * CourseProgressService::keysForPlanet(), so "Programming" reflects both courses.
      */
     public static function planets(User $user, ?Collection $progress = null): array
     {
         $progress ??= LessonProgress::where('user_id', $user->id)->get(['course', 'module', 'lesson']);
-        $done = $progress->groupBy('course');
         $out = [];
 
         foreach (self::PLANETS as $slug => $meta) {
@@ -219,16 +292,24 @@ class StudentDashboardService
                 continue;
             }
 
-            $order = config("course-structure.{$slug}.modules") ? CourseProgressService::order($slug) : [];
-            $keys = $done->get($slug, collect())->map(fn ($r) => $r->module.'/'.$r->lesson)->flip();
-            $modules = collect($order)->groupBy('module');
+            // Every course on this planet shares module ids ("m1", "m2", ...), so
+            // completions and module grouping are qualified by course, not module
+            // alone — otherwise Python's M1 and the C course's M1 would collide.
+            $planetCourses = CourseProgressService::keysForPlanet($slug);
+            $order = collect($planetCourses)
+                ->flatMap(fn ($key) => collect(CourseProgressService::order($key))->map(fn ($i) => $i + ['course' => $key]))
+                ->all();
+            $keys = $progress->whereIn('course', $planetCourses)
+                ->map(fn ($r) => $r->course.'/'.$r->module.'/'.$r->lesson)->flip();
+            $modules = collect($order)->groupBy(fn ($i) => $i['course'].'/'.$i['module']);
 
-            $completed = collect($order)->filter(fn ($i) => $keys->has($i['module'].'/'.$i['lesson']))->count();
-            $modulesDone = $modules->filter(fn ($lessons) => $lessons->every(fn ($i) => $keys->has($i['module'].'/'.$i['lesson'])))->count();
+            $completed = collect($order)->filter(fn ($i) => $keys->has($i['course'].'/'.$i['module'].'/'.$i['lesson']))->count();
+            $modulesDone = $modules->filter(fn ($lessons) => $lessons->every(fn ($i) => $keys->has($i['course'].'/'.$i['module'].'/'.$i['lesson'])))->count();
             $total = count($order);
 
             $out[$slug] = $meta + [
                 'slug' => $slug,
+                'art' => self::PLANET_ART[$slug] ?? null,
                 'tracked' => $total > 0,
                 'total' => $total,
                 'completed' => $completed,
@@ -250,8 +331,12 @@ class StudentDashboardService
     {
         $progress ??= LessonProgress::where('user_id', $user->id)->get(['course', 'module', 'lesson', 'completed_at']);
 
-        // Only planets the student enrolled in, with a lesson blueprint, can be continued.
-        $open = array_values(array_filter($user->enrolledPlanets(), fn ($p) => CourseProgressService::exists($p)));
+        // Only courses on planets the student enrolled in, with a lesson blueprint, can be continued
+        // (keysForPlanet() already leaves hidden courses out).
+        $open = collect($user->enrolledPlanets())
+            ->flatMap(fn ($p) => CourseProgressService::keysForPlanet($p))
+            ->filter(fn ($key) => CourseProgressService::exists($key))
+            ->values()->all();
         if (! $open) {
             return null;
         }
@@ -283,7 +368,8 @@ class StudentDashboardService
             foreach ($module['lessons'] as $lKey => $lesson) {
                 if (CourseProgressService::normalize($mKey, $lKey) === [$next['module'], $next['lesson']]) {
                     return [
-                        'planet' => $course,
+                        'planet' => CourseProgressService::planetFor($course),
+                        'key' => $course,
                         'module' => $module['title'],
                         'title' => $lesson['title'],
                         'url' => route('student.planet.module.lesson', [
@@ -298,7 +384,8 @@ class StudentDashboardService
     }
 
     /**
-     * Classmates ranked by XP (ties share a rank, then alphabetical). Empty without a crew.
+     * Classmates ranked by XP, then gems, then day streak (a tie on all three shares a rank,
+     * then alphabetical). Empty without a crew.
      */
     public static function leaderboard(User $user): array
     {
@@ -306,23 +393,44 @@ class StudentDashboardService
             return [];
         }
 
-        $rows = User::where('crew_id', $user->crew_id)
+        $students = User::where('crew_id', $user->crew_id)
             ->where('role', 'student')
             ->withCount('lessonProgress')
             ->withSum('quizAnswers', 'xp')
             ->withSum('xpSpends', 'cost')
-            ->get()
-            ->map(fn (User $u) => ['id' => $u->id, 'name' => $u->name, 'xp' => self::xpFor($u->lesson_progress_count, (int) $u->quiz_answers_sum_xp, (int) $u->xp_spends_sum_cost)])
-            ->sortBy([['xp', 'desc'], ['name', 'asc']])
+            ->get();
+
+        // Gems and streaks come from every crewmate's lessons and study days: one query per
+        // table for the whole crew, not one per student (each query is a slow round trip).
+        $ids = $students->modelKeys();
+        $progress = LessonProgress::whereIn('user_id', $ids)->get(['user_id', 'course', 'module', 'lesson', 'completed_at'])->groupBy('user_id');
+        $activity = StudyActivity::whereIn('user_id', $ids)->where('minutes', '>', 0)->get(['user_id', 'date'])->groupBy('user_id');
+
+        $rows = $students
+            ->map(function (User $u) use ($progress, $activity) {
+                $done = $progress->get($u->id, collect());
+
+                return [
+                    'id' => $u->id,
+                    'name' => $u->display_name,
+                    'avatar' => $u->avatar,
+                    'xp' => self::xpFor($u->lesson_progress_count, (int) $u->quiz_answers_sum_xp, (int) $u->xp_spends_sum_cost),
+                    'gems' => array_sum(array_column(self::planets($u, $done), 'modulesDone')),
+                    'streak' => self::streak($u, $done, $activity->get($u->id, collect())),
+                ];
+            })
+            // XP first, then gems, then streak; only a tie on all three shares a rank.
+            ->sortBy([['xp', 'desc'], ['gems', 'desc'], ['streak', 'desc'], ['name', 'asc']])
             ->values();
 
         $rank = 0;
         $prev = null;
 
         return $rows->map(function ($row, $i) use ($user, &$rank, &$prev) {
-            if ($row['xp'] !== $prev) {
+            $score = [$row['xp'], $row['gems'], $row['streak']];
+            if ($score !== $prev) {
                 $rank = $i + 1;
-                $prev = $row['xp'];
+                $prev = $score;
             }
 
             return $row + ['rank' => $rank, 'me' => $row['id'] === $user->id];
@@ -347,11 +455,15 @@ class StudentDashboardService
         $days = [];
         for ($i = 0; $i < 7; $i++) {
             $d = $start->copy()->addDays($i);
+            $mins = (int) $minutes->get($d->toDateString(), 0);
             $days[] = [
                 'label' => $d->format('D')[0],
                 'name' => $d->format('l'),
-                'minutes' => (int) $minutes->get($d->toDateString(), 0),
+                'minutes' => $mins,
                 'today' => $d->isToday(),
+                // Counts toward the streak, the same rule as streak(): studied or finished a lesson that day.
+                'active' => $mins > 0 || $progress->contains(fn ($r) => $r->completed_at?->isSameDay($d)),
+                'future' => $d->isFuture() && ! $d->isToday(),
             ];
         }
 

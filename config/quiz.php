@@ -26,12 +26,12 @@ return [
         'base_url' => env('QUIZ_NIM_BASE_URL', env('NVIDIA_NIM_BASE_URL', 'https://integrate.api.nvidia.com/v1')),
         // Ordered failover: each job tries the first model, and a retired (410),
         // missing (404), overloaded (503), slow or malformed answer falls to the next. Verified against this key on 2026-09-19:
-        //   nvidia/nemotron-3-super-120b-a12b  10 questions in ~15s with thinking off
+        //   nvidia/nemotron-3-ultra-550b-a55b  10 questions in ~15s with thinking off
         //   openai/gpt-oss-20b                 valid JSON but often stalls 30-90s in NIM's queue
         // nvidia/nemotron-3-nano-30b-a3b, openai/gpt-oss-120b and
         // meta/llama-3.3-70b-instruct are END OF LIFE (410) — do not use.
-        'model' => explode(',', (string) env('QUIZ_NIM_MODEL', 'nvidia/nemotron-3-super-120b-a12b,openai/gpt-oss-20b'))[0],
-        'models' => array_values(array_filter(array_map('trim', explode(',', (string) env('QUIZ_NIM_MODEL', 'nvidia/nemotron-3-super-120b-a12b,openai/gpt-oss-20b'))))),
+        'model' => explode(',', (string) env('QUIZ_NIM_MODEL', 'nvidia/nemotron-3-ultra-550b-a55b,openai/gpt-oss-20b'))[0],
+        'models' => array_values(array_filter(array_map('trim', explode(',', (string) env('QUIZ_NIM_MODEL', 'nvidia/nemotron-3-ultra-550b-a55b,openai/gpt-oss-20b'))))),
         // Per-model wait (seconds) before the job falls through to the next model.
         'timeout' => (int) env('QUIZ_NIM_TIMEOUT', 30),
         'top_p' => (float) env('QUIZ_NIM_TOP_P', 0.95),

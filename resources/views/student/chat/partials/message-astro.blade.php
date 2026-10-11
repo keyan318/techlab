@@ -5,7 +5,7 @@
 
 <div x-data="{ thoughts: false }" class="flex gap-3">
   {{-- Astro mascot avatar --}}
-  <div class="grid h-10 w-10 flex-none place-items-center rounded-full bg-glass p-1 ring-1 ring-[rgba(115,182,255,0.4)]">
+  <div class="grid h-12 w-12 flex-none place-items-center rounded-full bg-glass p-1 ring-1 ring-[rgba(115,182,255,0.4)]">
     @include('student.chat.partials.astro-mascot')
   </div>
 

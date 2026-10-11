@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Citadel Sim</title>
   <link rel="stylesheet" href="citadel.css" />
+  <!-- TechLab's site-wide click sounds; js/music.js shares its on/off setting. -->
+  <script defer src="../js/sfx.js"></script>
 </head>
 <body>
   <div class="app">
@@ -51,6 +53,7 @@
       <div class="console-bar">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         <span class="console-title" id="console-title">Command Prompt</span>
+        <button type="button" class="music-toggle" id="music-toggle" hidden></button>
       </div>
       <div class="screen" id="screen" tabindex="-1" aria-live="polite"></div>
       <form class="prompt-row" id="prompt-form" autocomplete="off">

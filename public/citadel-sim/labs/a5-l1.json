@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a5-l1",
+  "title": "Lesson 5.1: Secure SDLC Integration",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "09:00 · SDLC AUDIT · CITADEL CORE",
+    "vex": "Bolt security on at the end. That's when I like my odds best. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every activity is filed at the phase where it actually belongs. Astro: \"Earlier is always cheaper. Now it's in writing.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead sdlc-activities.txt: four security activities from the supply-tracking project. Classify each by its correct SDLC phase.\n\n1. type sdlc-activities.txt\n2. classify <activity> requirements | design | build | test | maintain\n",
+    "C:\\Citadel\\sdlc-activities.txt": "SDLC ACTIVITIES\n------------------\nactivity-decide-encryption-need   deciding the tool must encrypt supply data at rest\nactivity-threat-model              modeling how an attacker could misuse the tool, before writing any code\nactivity-code-review                reviewing the finished code for known coding mistakes\nactivity-post-release-patch         fixing a flaw discovered two months after the tool shipped\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "activity-decide-encryption-need": "activity-decide-encryption-need",
+    "activity-threat-model": "activity-threat-model",
+    "activity-code-review": "activity-code-review",
+    "activity-post-release-patch": "activity-post-release-patch"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the activity list",
+      "body": "Rivet: \"Read all four before sorting any.\" `type sdlc-activities.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read sdlc-activities.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\sdlc-activities.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "File each activity by phase",
+      "body": "Volt: \"Deciding what's needed is requirements. Modeling threats is design. Reviewing code is build. Fixing it after release is maintain.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "a1",
+          "label": "activity-decide-encryption-need classified as requirements",
+          "check": {
+            "type": "classified",
+            "item": "activity-decide-encryption-need",
+            "as": "requirements"
+          }
+        },
+        {
+          "id": "a2",
+          "label": "activity-threat-model classified as design",
+          "check": {
+            "type": "classified",
+            "item": "activity-threat-model",
+            "as": "design"
+          }
+        },
+        {
+          "id": "a3",
+          "label": "activity-code-review classified as build",
+          "check": {
+            "type": "classified",
+            "item": "activity-code-review",
+            "as": "build"
+          }
+        },
+        {
+          "id": "a4",
+          "label": "activity-post-release-patch classified as maintain",
+          "check": {
+            "type": "classified",
+            "item": "activity-post-release-patch",
+            "as": "maintain"
+          }
+        }
+      ]
+    }
+  ]
+}

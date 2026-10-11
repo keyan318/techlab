@@ -194,8 +194,9 @@
         <p class="px-0.5 font-mono text-[11px] uppercase tracking-[0.16em] text-[#5be1ff]">Saved outputs</p>
         <template x-for="item in so.items" :key="item.id">
           <div class="group flex items-center gap-2 rounded-[14px] border border-glassBorder bg-glass p-2.5 transition hover:border-[rgba(115,182,255,0.5)]">
-            <button type="button" @click="item.type === 'note' ? openNote(item) : (item.type === 'flashcards' ? $store.flashcards.openSaved(item) : (item.type === 'keyterms' ? $store.keyterms.openSaved(item) : (item.type === 'infographic' ? $store.infographic.openSaved(item) : $store.reports.openSaved(item))))" class="flex min-w-0 flex-1 items-center gap-3 text-left">
+            <button type="button" @click="item.type === 'note' ? openNote(item) : (item.type === 'quiz' ? $store.quiz.openSaved(item) : (item.type === 'flashcards' ? $store.flashcards.openSaved(item) : (item.type === 'keyterms' ? $store.keyterms.openSaved(item) : (item.type === 'infographic' ? $store.infographic.openSaved(item) : $store.reports.openSaved(item)))))" class="flex min-w-0 flex-1 items-center gap-3 text-left">
               <span class="grid h-9 w-9 flex-none place-items-center rounded-[10px] bg-[linear-gradient(135deg,rgba(115,182,255,0.18),rgba(155,107,255,0.18))] text-[#73b6ff]">
+                <svg x-show="item.type === 'quiz'" x-cloak viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg>
                 <svg x-show="item.type === 'flashcards'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h8M8 14h5"/></svg>
                 <svg x-show="item.type === 'keyterms'" x-cloak viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M4 5h9a3 3 0 0 1 3 3v11H7a3 3 0 0 1-3-3z"/><path d="M9 10h4M9 14h3"/><path d="M18 8v11"/></svg>
                 <svg x-show="item.type === 'note'" x-cloak viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M4 4h16v12l-4 4H4z"/><path d="M16 20v-4h4M8 9h8M8 13h4"/></svg>
@@ -204,7 +205,7 @@
               </span>
               <span class="min-w-0">
                 <span class="block truncate text-sm font-medium text-ink" x-text="item.title"></span>
-                <span class="block truncate text-xs text-muted" x-text="(item.type === 'note' ? 'Note · ' : (item.type === 'report' ? 'Report · ' : (item.type === 'infographic' ? 'Infographic · ' : (item.type === 'keyterms' ? 'Key terms · ' : 'Flashcards · ')))) + item.subtitle"></span>
+                <span class="block truncate text-xs text-muted" x-text="(item.type === 'note' ? 'Note · ' : (item.type === 'quiz' ? 'Quiz · ' : (item.type === 'report' ? 'Report · ' : (item.type === 'infographic' ? 'Infographic · ' : (item.type === 'keyterms' ? 'Key terms · ' : 'Flashcards · ')))) ) + item.subtitle"></span>
               </span>
             </button>
             <button type="button" @click="so.remove(item.id)" class="grid h-7 w-7 flex-none place-items-center rounded-full text-muted opacity-0 transition hover:text-ink group-hover:opacity-100 focus:opacity-100" aria-label="Remove saved output" title="Remove">

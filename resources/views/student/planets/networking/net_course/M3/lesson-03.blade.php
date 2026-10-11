@@ -101,6 +101,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l3.json) complete
         <p class="quiz-explanation"><em>A central server keeps every subnet's pool, options and reservations in one place.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What does a relay agent send to the central DHCP server, instead of a broadcast?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Nothing, it blocks the request</li>
+            <li class="quiz-option quiz-correct">B. A unicast message ✓</li>
+            <li class="quiz-option">C. Another broadcast</li>
+            <li class="quiz-option">D. A ping</li>
+        </ul>
+        <p class="quiz-explanation"><em>The relay agent turns the client's local broadcast into a unicast addressed straight to the central server.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. The simulator has no relay agent available. What workaround does Rivet use to get the shield deck its own addresses?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. He gives every device a static address instead</li>
+            <li class="quiz-option">B. He waits for Earth to fix it</li>
+            <li class="quiz-option">C. He disables DHCP entirely</li>
+            <li class="quiz-option quiz-correct">D. He runs a DHCP server directly on the router serving that subnet ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>With no relay gear available, Rivet runs a DHCP server on the router itself so it can serve the far subnet directly.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

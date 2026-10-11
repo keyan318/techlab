@@ -97,11 +97,11 @@ function runOne(net: Network, check: Check, done: (pass: boolean, detail: string
       const wantSuccess = check.expect === 'success';
       const id = from.allocIcmpId();
       let finished = false;
-      const finish = (gotReply: boolean, note: string) => {
+      const finish = (gotReply: boolean, note: string, sent = true) => {
         if (finished) return;
         finished = true;
         from.offIcmp(id);
-        done(gotReply === wantSuccess, note);
+        done(sent && gotReply === wantSuccess, note);
       };
       from.onIcmp(id, (ev) => {
         if (ev.type === 'reply') finish(true, `reply from ${ipToString(ev.from)}`);
@@ -109,7 +109,9 @@ function runOne(net: Network, check: Check, done: (pass: boolean, detail: string
         else if (ev.type === 'send-error') finish(false, ev.message);
       });
       const err = from.sendEcho(target, id, 1);
-      if (err) return finish(false, err);
+      // TechLab: a ping that never left the sender (no address or route yet) proves nothing, so it cannot
+      // pass an "expect fail" objective either.
+      if (err) return finish(false, err, false);
       net.scheduler.schedule(PING_TIMEOUT_MS, () => finish(false, 'no reply (timed out)'));
       return;
     }
@@ -122,7 +124,8 @@ function runOne(net: Network, check: Check, done: (pass: boolean, detail: string
         const observed = r === 'open' ? 'open' : r === 'refused' ? 'refused' : 'filtered';
         done(observed === check.expect, `port ${check.port} is ${observed}`);
       });
-      if (err) done(check.expect === 'filtered', err);
+      // TechLab: a probe that never left the sender is not a port the defender filtered.
+      if (err) done(false, err);
       return;
     }
     case 'dns': {

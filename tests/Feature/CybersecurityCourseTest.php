@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 /**
- * Information Security 1 on the Cybersecurity Citadel: "Siege of the Citadel".
+ * Information Assurance and Security 1 on the Cybersecurity Citadel: "Siege of the Citadel".
  * Same lesson machinery as Networking 1, but labs run in the Citadel Sim ("Defend it yourself").
  */
 class CybersecurityCourseTest extends TestCase
@@ -20,7 +20,7 @@ class CybersecurityCourseTest extends TestCase
 
     private function student(): User
     {
-        return User::factory()->create(['role' => 'student', 'planets' => ['cybersecurity']]);
+        return $this->studentIn('cybersecurity', 'information-security-1', ['role' => 'student', 'planets' => ['cybersecurity']]);
     }
 
     private function labUrl(string $module, string $lesson): string
@@ -28,14 +28,23 @@ class CybersecurityCourseTest extends TestCase
         return route('student.planet.lab.complete', ['slug' => 'cybersecurity', 'module' => $module, 'lesson' => $lesson]);
     }
 
-    public function test_the_citadel_offers_only_information_security_1(): void
+    public function test_the_citadel_offers_information_security_1_and_2(): void
     {
-        $this->assertSame(['information-security-1'], array_keys(config('course-catalog.cybersecurity.courses')));
+        $this->assertSame(
+            ['information-security-1', 'information-assurance-security-2'],
+            array_keys(config('course-catalog.cybersecurity.courses'))
+        );
 
-        $this->actingAs($this->student())->get(route('student.planet', 'cybersecurity'))
+        // Both cards only link into their course once a captain has claimed each one.
+        $user = $this->student();
+        $this->enroll($user, 'cybersecurity', 'information-assurance-security-2');
+
+        $this->actingAs($user)->get(route('student.planet', 'cybersecurity'))
             ->assertOk()
-            ->assertSee('Information Security 1')
-            ->assertSee(route('student.planet.play', ['slug' => 'cybersecurity', 'course' => 'information-security-1']), false);
+            ->assertSee('Information Assurance and Security 1')
+            ->assertSee('Information Assurance and Security 2')
+            ->assertSee(route('student.course.overview', ['slug' => 'cybersecurity', 'course' => 'information-security-1']), false)
+            ->assertSee(route('student.course.overview', ['slug' => 'cybersecurity', 'course' => 'information-assurance-security-2']), false);
     }
 
     public function test_the_course_card_opens_the_shared_lesson_player_on_lesson_one(): void

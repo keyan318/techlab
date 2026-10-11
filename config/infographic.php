@@ -48,7 +48,7 @@ return [
         'base_url' => env('INFOGRAPHIC_NIM_BASE_URL', env('NVIDIA_NIM_BASE_URL', 'https://integrate.api.nvidia.com/v1')),
         // Defaults to the same verified-working chat model so the feature works
         // out of the box; override INFOGRAPHIC_NIM_MODEL to dedicate a different one.
-        'model' => env('INFOGRAPHIC_NIM_MODEL', 'nvidia/nemotron-3-super-120b-a12b'),
+        'model' => env('INFOGRAPHIC_NIM_MODEL', 'nvidia/nemotron-3-ultra-550b-a55b'),
         'top_p' => (float) env('INFOGRAPHIC_NIM_TOP_P', 0.95),
     ],
 

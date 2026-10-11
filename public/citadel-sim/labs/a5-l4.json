@@ -1,0 +1,88 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a5-l4",
+  "title": "Lesson 5.4: Client Application Security",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "15:45 · CLIENT-SIDE GAP FOUND · CITADEL CORE",
+    "vex": "Trust the client. Please, keep trusting the client. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every rule that matters is enforced again on the server. Astro: \"The client offers convenience. The server holds the line.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead design-note.txt: three proposed fixes for the supply app's client-only total check. Classify each as safe or still-risky.\n\n1. type design-note.txt\n2. classify <fix> safe | still-risky\n",
+    "C:\\Citadel\\design-note.txt": "PROPOSED FIXES\n----------------\nfix-1   add the same total check on the server, so it's verified again after the client\nfix-2   make the client-side check run twice, to be extra sure\nfix-3   store the session token in an unencrypted local file for \"faster loading\"\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "fix-1": "fix-1",
+    "fix-2": "fix-2",
+    "fix-3": "fix-3"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the proposed fixes",
+      "body": "Rivet: \"Read all three before judging any.\" `type design-note.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read design-note.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\design-note.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Only a server check actually holds",
+      "body": "Volt: \"Running the same bypassable check twice fixes nothing. A readable token is still a readable token. Only a real server-side check closes the gap.\" Classify all three.",
+      "objectives": [
+        {
+          "id": "f1",
+          "label": "fix-1 classified as safe (server enforces it too)",
+          "check": {
+            "type": "classified",
+            "item": "fix-1",
+            "as": "safe"
+          }
+        },
+        {
+          "id": "f2",
+          "label": "fix-2 classified as still-risky (still only client-side)",
+          "check": {
+            "type": "classified",
+            "item": "fix-2",
+            "as": "still-risky"
+          }
+        },
+        {
+          "id": "f3",
+          "label": "fix-3 classified as still-risky (readable token on device)",
+          "check": {
+            "type": "classified",
+            "item": "fix-3",
+            "as": "still-risky"
+          }
+        }
+      ]
+    }
+  ]
+}

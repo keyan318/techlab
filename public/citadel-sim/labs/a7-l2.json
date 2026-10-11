@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a7-l2",
+  "title": "Lesson 7.2: Business Continuity Planning",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "15:00 · HULL BREACH DRILL · CITADEL CORE",
+    "vex": "Fix your servers all you like. See if command even has a place to sit. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the crew keeps operating, systems and people both, regardless of what breaks. Astro: \"Systems back is DR. Crew still running is BCP. We need both.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead drill-activities.txt: four activities from the hull-breach drill. Classify each as dr-scope or bcp-scope.\n\n1. type drill-activities.txt\n2. classify <activity> dr-scope | bcp-scope\n",
+    "C:\\Citadel\\drill-activities.txt": "HULL BREACH DRILL — ACTIVITIES\n----------------------------------\nactivity-1   relocating command to the auxiliary hall while the main hall is repaired\nactivity-2   restoring a corrupted database backup after an unrelated storage failure\nactivity-3   assigning a backup officer to speak with allied fleets since the usual liaison is unreachable\nactivity-4   reinstalling the relay console's software after a crash\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "activity-1": "activity-1",
+    "activity-2": "activity-2",
+    "activity-3": "activity-3",
+    "activity-4": "activity-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the activities",
+      "body": "Volt: \"Read all four before sorting any.\" `type drill-activities.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read drill-activities.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\drill-activities.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Sort DR from BCP",
+      "body": "Volt: \"Restoring a system is DR. Keeping the crew and command running, regardless of systems, is BCP.\" Classify all four activities.",
+      "objectives": [
+        {
+          "id": "a1",
+          "label": "activity-1 classified as bcp-scope",
+          "check": {
+            "type": "classified",
+            "item": "activity-1",
+            "as": "bcp-scope"
+          }
+        },
+        {
+          "id": "a2",
+          "label": "activity-2 classified as dr-scope",
+          "check": {
+            "type": "classified",
+            "item": "activity-2",
+            "as": "dr-scope"
+          }
+        },
+        {
+          "id": "a3",
+          "label": "activity-3 classified as bcp-scope",
+          "check": {
+            "type": "classified",
+            "item": "activity-3",
+            "as": "bcp-scope"
+          }
+        },
+        {
+          "id": "a4",
+          "label": "activity-4 classified as dr-scope",
+          "check": {
+            "type": "classified",
+            "item": "activity-4",
+            "as": "dr-scope"
+          }
+        }
+      ]
+    }
+  ]
+}

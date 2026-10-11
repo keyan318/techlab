@@ -148,4 +148,26 @@ Make sure your text matches exactly: spelling, spaces, the colon and the period 
         <p class="quiz-explanation"><em>Python reads a program from the first line to the last, in order — just like following a checklist.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Why does <code>print(Astro is online.)</code> — without quotation marks — cause an error?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. print() cannot take more than one word</li>
+            <li class="quiz-option quiz-correct">B. Without quotes, Python tries to read the words as commands or names it doesn't recognize, not as a string ✓</li>
+            <li class="quiz-option">C. Sentences are never allowed inside print()</li>
+            <li class="quiz-option">D. It doesn't — that line works fine</li>
+        </ul>
+        <p class="quiz-explanation"><em>Quotation marks are what tell Python "this is text, not code." Without them, Python tries to treat the words as instructions it should understand.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. How many lines of output does this program produce?<br><code>print("Astro is online.")</code><br><code>print("Signal strength: nominal")</code></p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Zero</li>
+            <li class="quiz-option">B. One, with both messages joined together</li>
+            <li class="quiz-option quiz-correct">C. Two — each print() starts a new line ✓</li>
+            <li class="quiz-option">D. It depends on the computer running it</li>
+        </ul>
+        <p class="quiz-explanation"><em>Each call to print() outputs its message and then moves to a new line, so two print() calls make two lines of output.</em></p>
+    </div>
+
 </div>

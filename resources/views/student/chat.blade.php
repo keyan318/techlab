@@ -14,6 +14,7 @@
     <meta name="theme-color" content="#06061a">
   <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
   <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
+  <script defer src="{{ asset('js/sfx.js') }}?v={{ filemtime(public_path('js/sfx.js')) }}"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -204,6 +205,11 @@
 
         close() { this.isOpen = false; },
 
+        openSaved(item) {
+          this.quiz = item.quiz; this.current = 0; this.answers = {}; this.revealed = false;
+          this.error = ''; this.errorKind = ''; this.ready = false; this.state = 'answering'; this.isOpen = true;
+        },
+
         reset() {
           this.quiz = null;
           this.current = 0;
@@ -295,6 +301,12 @@
             this.current = 0;
             this.answers = {};
             this.state = 'answering';
+            Alpine.store('studioOutputs').add({
+              id: 'qz-' + Date.now().toString(36), type: 'quiz',
+              title: j.quiz.title || 'Quiz',
+              subtitle: this.total + ' questions',
+              createdAt: Date.now(), quiz: j.quiz,
+            });
             if (!this.isOpen) this.ready = true;
           } catch(e) {
             this.generating = false;
@@ -314,15 +326,44 @@
         key: 'astro.studio.outputs.v1:u{{ auth()->id() }}',
         init() {
           try { localStorage.removeItem('astro.studio.outputs.v1'); } catch (e) {}
+          // Show this browser's copy right away, then let the server (the real home) take over.
           try { this.items = JSON.parse(localStorage.getItem(this.key) || '[]') || []; } catch (e) { this.items = []; }
           if (!Array.isArray(this.items)) this.items = [];
+          this.load();
+        },
+        csrf() { const m = document.querySelector('meta[name="csrf-token"]'); return m ? m.getAttribute('content') : ''; },
+        send(method, url, body) {
+          return fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': this.csrf(), 'X-Requested-With': 'XMLHttpRequest' },
+            body: body ? JSON.stringify(body) : undefined,
+          });
+        },
+        async load() {
+          try {
+            const res = await fetch('/chat/studio-outputs', { headers: { 'Accept': 'application/json' } });
+            if (!res.ok) return;
+            const server = (await res.json()).items || [];
+            const have = new Set(server.map(i => i.id));
+            // Outputs saved only in this browser before: upload them once.
+            const local = this.items.filter(i => i && i.id && !have.has(i.id));
+            local.forEach(i => this.send('POST', '/chat/studio-outputs', { item: i }).catch(() => {}));
+            this.items = [...local, ...server].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 20);
+            this.persist();
+          } catch (e) {}
         },
         persist() { try { localStorage.setItem(this.key, JSON.stringify(this.items)); } catch (e) {} },
         add(item) {
+          item.createdAt = item.createdAt || Date.now();
           this.items = [item, ...this.items.filter(i => i.id !== item.id)].slice(0, 20);
           this.persist();
+          this.send('POST', '/chat/studio-outputs', { item }).catch(() => {});
         },
-        remove(id) { this.items = this.items.filter(i => i.id !== id); this.persist(); },
+        remove(id) {
+          this.items = this.items.filter(i => i.id !== id);
+          this.persist();
+          this.send('DELETE', '/chat/studio-outputs/' + encodeURIComponent(id)).catch(() => {});
+        },
       });
 
       Alpine.store('flashcards', {
@@ -667,6 +708,63 @@
         clear() { this.items = []; this.researching = false; },
       });
 
+      // Course materials connected to Astro as sources — the "Add from Materials" button.
+      // Picked by hand, exactly like a Planet lesson; Astro no longer searches every upload
+      // on its own. Web sources stay separate and ephemeral.
+      Alpine.store('materialSources', {
+        catalog: @json($materialCatalog ?? []),
+        items: [],          // [{id,name,course,url,active}]
+        pickerOpen: false,
+        step: 'courses',    // 'courses' | 'materials'
+        course: null,       // catalog entry being browsed
+        draft: [],          // material ids ticked in the picker
+
+        storageKey: 'techlab_material_sources:u{{ auth()->id() }}',
+
+        init() {
+          try {
+            const saved = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+            if (Array.isArray(saved)) this.items = saved.filter(i => i && i.id);
+          } catch (e) {}
+          // Materials are only added as sources when the student picks them via the
+          // Materials picker — never automatically.
+          Alpine.effect(() => {
+            try { localStorage.setItem(this.storageKey, JSON.stringify(this.items)); } catch (e) {}
+          });
+        },
+
+        has(id) { return this.items.some(i => i.id === id); },
+        // Sources actually sent with the next message.
+        get activeRefs() { return this.items.filter(i => i.active).map(i => i.id); },
+
+        findMaterial(id) {
+          for (const c of this.catalog) {
+            for (const m of c.modules) {
+              const mat = m.materials.find(x => x.id === id);
+              if (mat) return { ...mat, course: c.course };
+            }
+          }
+          return null;
+        },
+        addById(id) {
+          if (this.has(id)) return;
+          const info = this.findMaterial(id);
+          if (!info) return;
+          this.items.push({ id, name: info.name, course: info.course, url: info.url, active: true });
+        },
+        remove(i) { this.items.splice(i, 1); },
+
+        open() { this.pickerOpen = true; this.step = 'courses'; this.course = null; this.draft = []; },
+        close() { this.pickerOpen = false; },
+        choose(crewId) { this.course = this.catalog.find(c => c.crew_id === crewId); this.step = 'materials'; },
+        toggleDraft(id) { this.draft = this.draft.includes(id) ? this.draft.filter(x => x !== id) : [...this.draft, id]; },
+        inDraft(id) { return this.draft.includes(id); },
+        commit() {
+          this.draft.forEach(id => this.addById(id));
+          this.close();
+        },
+      });
+
       // Planet lessons connected to Astro as sources. Web sources stay separate.
       Alpine.store('planetSources', {
         catalog: @json($planetCatalog),
@@ -684,9 +782,7 @@
             const saved = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
             if (Array.isArray(saved)) this.items = saved.filter(i => i && i.planet && i.module && i.lesson);
           } catch (e) {}
-          @if($preselectSource)
-          this.addByRef(@json($preselectSource));
-          @endif
+          // Lessons are only added as sources when the student picks them via the Planets picker — never automatically.
           Alpine.effect(() => {
             try { localStorage.setItem(this.storageKey, JSON.stringify(this.items)); } catch (e) {}
           });
@@ -856,7 +952,7 @@
         maxTotalBytes: {{ \App\Services\AttachmentService::maxTotalBytes() }},
         maxFileLabel: @json(\App\Services\AttachmentService::mb(\App\Services\AttachmentService::maxFileKb())),
         allowedExts: @json(array_merge(\App\Services\AttachmentService::DOC_EXTENSIONS, \App\Services\AttachmentService::TEXT_EXTENSIONS)),
-        get sourceCount() { return this.$store.planetSources.activeRefs.length; },
+        get sourceCount() { return this.$store.planetSources.activeRefs.length + this.$store.materialSources.activeRefs.length; },
         conversationId: null,
         assistantMessageId: null,
         bannerDismissed: false,
@@ -1011,6 +1107,16 @@
 
         sendSuggestion(text) { this.input = text; this.send(); },
 
+        /* The `end` event's three groups become one flat, clickable list of chips. Stored
+           messages already arrive in this shape (messages.sources), so both paths agree. */
+        groupSources(d) {
+          return [
+            ...(d.sources || []).map(title => ({ kind: 'lesson', title })),
+            ...(d.materials || []),
+            ...(d.web || []),
+          ];
+        },
+
         newChat() {
           this.chatGen++;
           Alpine.store('webSources').clear();
@@ -1032,10 +1138,12 @@
           if (this.$refs.box) this.$refs.box.style.height = 'auto';
           const label = text || 'Please take a look at what I attached.';
           const refs = this.$store.planetSources.activeRefs;
+          const materialRefs = this.$store.materialSources.activeRefs;
+          const statusRefs = [...refs, ...materialRefs];
           this.messages.push({ role: 'user', content: text,
                                attachments: files.map(a => ({ name: a.name, kind: a.kind, preview: a.preview })) });
           this.messages.push({ role: 'assistant', content: '', html: '', pending: true, error: false, errorMessage: '',
-                              status: AstroStatus.first(label, refs) });
+                              status: AstroStatus.first(label, statusRefs) });
           const idx = this.messages.length - 1;
           const setAstro = (patch) => { this.messages[idx] = { ...this.messages[idx], ...patch }; };
           this.sending = true;
@@ -1043,7 +1151,7 @@
 
           // Deterministic status lines while Astro works (no AI call). Guarded so that
           // "New chat" mid-response can't resurrect this message from the timer.
-          const status = AstroStatus.track(label, refs, (s) => {
+          const status = AstroStatus.track(label, statusRefs, (s) => {
             if (this.messages[idx] && this.messages[idx].pending) setAstro({ status: s });
           });
 
@@ -1097,6 +1205,7 @@
               body.append('level', 'auto');
               body.append('context', '');
               refs.forEach((r, i) => ['planet', 'module', 'lesson'].forEach(k => body.append('sources[' + i + '][' + k + ']', r[k])));
+              materialRefs.forEach((id, i) => body.append('materials[' + i + ']', id));
               files.forEach(a => body.append('files[]', a.file, a.file.name));
             } else {
               headers['Content-Type'] = 'application/json';
@@ -1106,6 +1215,7 @@
                 level: 'auto',
                 context: '',
                 sources: refs,
+                materials: materialRefs,
               });
             }
             const res = await fetch(@json($messageUrl ?? '/chat/message'), { method: 'POST', signal: this.abortCtl.signal, headers, body });
@@ -1125,7 +1235,7 @@
                 this.afterSaved(j.conversation_id, wasNew, text || label);
                 AstroStatus.settleDom(); status.settle();
                 if (live()) Alpine.store('webSources').set(j.web);
-                patch({ content: j.response, html: this.md(j.response), pending: false, sources: j.sources || [] });
+                patch({ content: j.response, html: this.md(j.response), pending: false, sources: this.groupSources(j) });
               } else {
                 failure = (j && j.error) ? j.error
                   : (j && j.errors && Object.values(j.errors)[0]) ? Object.values(j.errors)[0][0]
@@ -1152,7 +1262,7 @@
                 if (raf) { cancelAnimationFrame(raf); raf = null; }
                 begin();
                 ended = true;
-                patch({ content: acc, html: this.md(acc), streaming: false, sources: d.sources || [] });
+                patch({ content: acc, html: this.md(acc), streaming: false, sources: this.groupSources(d) });
                 this.followStream();
               } else if (ev === 'done') {
                 if (d.conversation_id && live()) this.setConversation(d.conversation_id);
@@ -1237,8 +1347,13 @@
             const j = await res.json();
             this.newChat();
             this.messages = (j.messages || []).map(m => m.role === 'assistant'
-              ? { role: 'assistant', content: m.content, html: this.md(m.content), pending: false, streaming: false, error: false, errorMessage: '', sources: [] }
+              ? { role: 'assistant', content: m.content, html: this.md(m.content), pending: false, streaming: false, error: false, errorMessage: '', sources: m.sources || [] }
               : { role: 'user', content: m.content, attachments: m.attachments || [] });
+            // The sidebar shows what the last answer in this conversation was grounded in.
+            // Materials, like Planet lessons, stay whatever the student has connected — they
+            // are not reset by switching conversations.
+            const lastSources = [...this.messages].reverse().find(m => m.role === 'assistant' && m.sources?.length)?.sources || [];
+            Alpine.store('webSources').set(lastSources.filter(x => x.kind === 'web'));
             this.setConversation(id);
             this.mobileDrawer = null;
             this.$nextTick(() => this.scrollToBottom());
@@ -1262,7 +1377,8 @@
         md(text) {
           if (!text) return '';
           try {
-            return DOMPurify.sanitize(marked.parse(text));
+            const html = DOMPurify.sanitize(marked.parse(text));
+            return this.stripUnlistedLinks(html);
           } catch (e) {
             return text
               .replace(/&/g, '&amp;')
@@ -1270,6 +1386,26 @@
               .replace(/>/g, '&gt;')
               .replace(/\n/g, '<br>');
           }
+        },
+
+        // Belt-and-suspenders against a hallucinated link showing up mid-stream: unwrap any
+        // absolute http(s) link whose href isn't one of the sources Astro was actually handed
+        // this turn. Relative/same-origin links (lessons, materials pages inside TechLab) are
+        // always kept.
+        stripUnlistedLinks(html) {
+          const allowed = new Set([
+            ...this.$store.webSources.items.map(w => w.url),
+            ...this.$store.materialSources.items.map(m => m.url).filter(Boolean),
+          ]);
+          const wrap = document.createElement('div');
+          wrap.innerHTML = html;
+          wrap.querySelectorAll('a[href]').forEach(a => {
+            const href = a.getAttribute('href') || '';
+            if (/^https?:\/\//i.test(href) && !allowed.has(href)) {
+              a.replaceWith(document.createTextNode(a.textContent));
+            }
+          });
+          return wrap.innerHTML;
         },
 
         copy(text) {
@@ -1298,6 +1434,7 @@
       };
     }
   </script>
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 
 {{--
@@ -1308,7 +1445,7 @@
 <body
   class="bg-void font-sans text-ink antialiased"
   x-data="{ ...techlabShell(), ...chatShell() }"
-  x-init="initShell(); initChat(); $store.planetSources.init()"
+  x-init="initShell(); initChat(); $store.planetSources.init(); $store.materialSources.init()"
 >
 
   {{-- Space background --}}
@@ -1341,6 +1478,7 @@
     @unless($isFacultyChat)
     @include('student.chat.partials.planet-picker')
     @endunless
+    @include('student.chat.partials.material-picker')
     @include('student.chat.partials.infographic-viewer')
     @include('student.chat.partials.quiz-viewer')
     @include('student.chat.partials.flashcards-viewer')

@@ -50,4 +50,6 @@ export interface LabProgress {
   step: number;
   results: Record<string, { pass: boolean; detail: string }>;
   quiz: Record<string, number>;
+  // TechLab: objectives already true in the starting network (see labs/grading.ts).
+  baseline?: string[];
 }

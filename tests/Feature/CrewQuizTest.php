@@ -14,10 +14,11 @@ class CrewQuizTest extends TestCase
     private function setUpCrew(): array
     {
         $faculty = User::factory()->create(['role' => 'faculty']);
-        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $faculty->id]);
+        // Bound to a real catalog course so the student's course hub is reachable.
+        $crew = Crew::create(['name' => 'Alpha', 'code' => 'ABC123', 'teacher_id' => $faculty->id, 'planet' => 'programming', 'course_slug' => 'python']);
         $faculty->update(['crew_id' => $crew->id]);
         $crew->roster()->attach($faculty->id, ['role' => 'faculty']);
-        $student = User::factory()->create(['role' => 'student', 'crew_id' => $crew->id]);
+        $student = User::factory()->create(['role' => 'student', 'crew_id' => $crew->id, 'planets' => ['programming']]);
         $crew->roster()->attach($student->id, ['role' => 'student']);
 
         return [$faculty, $student, $crew];
@@ -38,7 +39,7 @@ class CrewQuizTest extends TestCase
         $this->actingAs($faculty)->post(route('faculty.quizzes.store', $crew), $this->payload())->assertRedirect();
         $quiz = $crew->quizzes()->firstOrFail();
 
-        $this->actingAs($student)->get(route('student.crew'))->assertOk()->assertSee('Basics')->assertSee('No graded work yet');
+        $this->actingAs($student)->get(route('student.course.quiz', ['slug' => 'programming', 'course' => 'python']))->assertOk()->assertSee('Basics')->assertSee('2 questions');
 
         $show = $this->actingAs($student)->getJson(route('student.quiz.show', $quiz))->assertOk();
         $this->assertStringNotContainsString('correct', json_encode($show->json('questions')));
@@ -51,7 +52,7 @@ class CrewQuizTest extends TestCase
         $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), ['answers' => [$ids[0] => 1, $ids[1] => 0]])
             ->assertJsonPath('result.score', 1);
 
-        $this->actingAs($student)->get(route('student.crew'))->assertSee('50%');
+        $this->actingAs($student)->get(route('student.course.quiz', ['slug' => 'programming', 'course' => 'python']))->assertSee('50%');
     }
 
     public function test_other_crews_students_and_students_cannot_touch_quizzes(): void

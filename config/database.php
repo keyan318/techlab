@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Str;
 use Pdo\Mysql;
+use Pdo\Pgsql;
 
 return [
 
@@ -101,6 +102,9 @@ return [
                 // Reuse the connection across requests. With a remote host (Supabase pooler)
                 // a fresh TLS connect costs ~1.4s on every page load otherwise.
                 PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
+                // Send each query in one round trip instead of three (prepare, execute, deallocate).
+                // Values are still sent apart from the SQL, so this stays injection-safe.
+                (class_exists(Pgsql::class) ? Pgsql::ATTR_DISABLE_PREPARES : PDO::PGSQL_ATTR_DISABLE_PREPARES) => env('DB_DISABLE_PREPARES', true),
                 ...(defined('PDO::PGSQL_ATTR_SSL_MODE') ? [PDO::PGSQL_ATTR_SSL_MODE => env('DB_SSLMODE', 'require')] : []),
                 ...(defined('PDO::PGSQL_ATTR_SSL_SNI_SERVER_NAME') ? [PDO::PGSQL_ATTR_SSL_SNI_SERVER_NAME => env('DB_SSL_SNI_SERVER_NAME')] : []),
             ]) : [],

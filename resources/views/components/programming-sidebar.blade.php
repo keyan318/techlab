@@ -152,8 +152,19 @@
                 @if (count($courseResources))
                     <ul class="resource-list" id="resourceList">
                         @foreach ($courseResources as $resource)
-                            <li class="resource-item" data-title="{{ strtolower($resource['title']) }}">
-                                <a href="{{ $resource['url'] }}" target="_blank" rel="noopener">
+                            {{-- A book has a citation but no link — render it as plain text instead of a
+                                 dead/undefined href. A PDF opens in an in-page preview overlay instead of
+                                 a new tab; anything else with a url (web/video) opens the site directly. --}}
+                            @php
+                                $isPdf = ($resource['type'] ?? null) === 'pdf' && ! empty($resource['url']);
+                                $tag = $isPdf ? 'button' : (empty($resource['url']) ? 'span' : 'a');
+                                $searchKey = strtolower($resource['title'].' '.($resource['source'] ?? ''));
+                            @endphp
+                            <li class="resource-item" data-title="{{ $searchKey }}">
+                                <{{ $tag }}
+                                    @if ($tag === 'a') href="{{ $resource['url'] }}" target="_blank" rel="noopener" @endif
+                                    @if ($tag === 'button') type="button" data-resource-preview data-url="{{ $resource['url'] }}" data-name="{{ $resource['title'] }}" @endif
+                                >
                                     <span class="resource-type">{{ strtoupper($resource['type'] ?? 'file') }}</span>
                                     <span class="resource-text">
                                         <span>{{ $resource['title'] }}</span>
@@ -161,7 +172,7 @@
                                             <small class="resource-source">{{ $resource['source'] }}</small>
                                         @endif
                                     </span>
-                                </a>
+                                </{{ $tag }}>
                             </li>
                         @endforeach
                     </ul>
@@ -188,6 +199,20 @@
 
         </div>
 
+    </div>
+
+    {{-- In-page preview for a PDF resource — an iframe overlay so a syllabus (or any other PDF)
+         can be checked without leaving the lesson. Plain vanilla JS wiring below, no Alpine:
+         this page has none of the hub's $store.filePreview machinery. --}}
+    <div class="resource-preview-overlay" id="resourcePreviewOverlay" hidden>
+        <div class="resource-preview-backdrop" data-resource-preview-close></div>
+        <div class="resource-preview-panel" role="dialog" aria-modal="true" aria-label="Resource preview">
+            <div class="resource-preview-bar">
+                <span class="resource-preview-name" id="resourcePreviewName"></span>
+                <button type="button" class="resource-preview-close" data-resource-preview-close aria-label="Close preview">✕</button>
+            </div>
+            <iframe id="resourcePreviewFrame" class="resource-preview-frame" title="Resource preview"></iframe>
+        </div>
     </div>
 
 </aside>
@@ -687,7 +712,9 @@
     background: #ffffff;
 }
 
-.resource-item a {
+.resource-item a,
+.resource-item button,
+.resource-item span {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -698,7 +725,84 @@
     border-bottom: 1px solid rgba(0,0,0,.06);
 }
 
-.resource-item a:hover { color: #2f7de1; }
+.resource-item button {
+    width: 100%;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.resource-item a:hover,
+.resource-item button:hover { color: #2f7de1; }
+
+.resource-preview-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resource-preview-overlay[hidden] { display: none; }
+
+.resource-preview-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(13,13,13,.55);
+}
+
+.resource-preview-panel {
+    position: relative;
+    width: min(880px, 92vw);
+    height: min(80vh, 900px);
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 60px rgba(0,0,0,.35);
+}
+
+.resource-preview-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.resource-preview-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resource-preview-close {
+    flex: none;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: #676767;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.resource-preview-close:hover { background: rgba(0,0,0,.06); color: #0d0d0d; }
+
+.resource-preview-frame {
+    flex: 1;
+    border: 0;
+    width: 100%;
+}
 
 .resource-text {
     display: flex;
@@ -1044,6 +1148,37 @@ document.addEventListener('click', function (e) {
             }
         });
     }
+
+    const previewOverlay = document.getElementById('resourcePreviewOverlay');
+    const previewFrame    = document.getElementById('resourcePreviewFrame');
+    const previewName     = document.getElementById('resourcePreviewName');
+
+    function openResourcePreview(url, name) {
+        if (!previewOverlay || !previewFrame) return;
+        previewFrame.src = url;
+        if (previewName) previewName.textContent = name || '';
+        previewOverlay.hidden = false;
+    }
+
+    function closeResourcePreview() {
+        if (!previewOverlay || !previewFrame) return;
+        previewOverlay.hidden = true;
+        previewFrame.src = '';
+    }
+
+    document.querySelectorAll('[data-resource-preview]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            openResourcePreview(btn.dataset.url, btn.dataset.name);
+        });
+    });
+
+    document.querySelectorAll('[data-resource-preview-close]').forEach(function (el) {
+        el.addEventListener('click', closeResourcePreview);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && previewOverlay && !previewOverlay.hidden) closeResourcePreview();
+    });
 })();
 
 </script>

@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a8-l5",
+  "title": "Lesson 8.5: Physical Intrusion Detection",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "21:15 · DETECTION COVERAGE AUDIT · CITADEL CORE",
+    "vex": "Beat the lock quietly, and nothing else even notices. My favorite kind of entry. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every entry point that could be quietly beaten now has a way to notice if it is. Astro: \"Locks buy time. Detection is what tells us the time ran out.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead coverage-audit.txt: four entry points. Classify each as covered or detection-gap.\n\n1. type coverage-audit.txt\n2. classify <entry> covered | detection-gap\n",
+    "C:\\Citadel\\coverage-audit.txt": "DETECTION COVERAGE AUDIT\n---------------------------\nentry-main-hall       solid lock, CCTV covers it, alarm wired and monitored\nentry-cargo-loading   solid lock, but no camera and no alarm on this door\nentry-side-corridor   solid lock, motion sensor active, alarm wired and monitored\nentry-maintenance-hatch  lock present, camera nearby but pointed the wrong direction, no alarm\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "entry-main-hall": "entry-main-hall",
+    "entry-cargo-loading": "entry-cargo-loading",
+    "entry-side-corridor": "entry-side-corridor",
+    "entry-maintenance-hatch": "entry-maintenance-hatch"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Read the coverage audit",
+      "body": "Volt: \"Read every entry point before judging any.\" `type coverage-audit.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read coverage-audit.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\coverage-audit.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Flag every detection gap",
+      "body": "Volt: \"A lock with nothing watching it if it fails is a gap, no matter how solid the lock is.\" Classify all four entry points.",
+      "objectives": [
+        {
+          "id": "e1",
+          "label": "entry-main-hall classified as covered",
+          "check": {
+            "type": "classified",
+            "item": "entry-main-hall",
+            "as": "covered"
+          }
+        },
+        {
+          "id": "e2",
+          "label": "entry-cargo-loading classified as detection-gap",
+          "check": {
+            "type": "classified",
+            "item": "entry-cargo-loading",
+            "as": "detection-gap"
+          }
+        },
+        {
+          "id": "e3",
+          "label": "entry-side-corridor classified as covered",
+          "check": {
+            "type": "classified",
+            "item": "entry-side-corridor",
+            "as": "covered"
+          }
+        },
+        {
+          "id": "e4",
+          "label": "entry-maintenance-hatch classified as detection-gap (camera misaimed, no alarm)",
+          "check": {
+            "type": "classified",
+            "item": "entry-maintenance-hatch",
+            "as": "detection-gap"
+          }
+        }
+      ]
+    }
+  ]
+}

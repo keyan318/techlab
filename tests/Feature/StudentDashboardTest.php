@@ -87,6 +87,30 @@ class StudentDashboardTest extends TestCase
         $this->actingAs($sasa)->get('/progress')->assertOk()->assertSee('Sasa Crew leaderboard')->assertDontSee('Outsider');
     }
 
+    public function test_leaderboard_breaks_xp_ties_by_gems_then_streak_and_shows_on_the_dashboard(): void
+    {
+        $crew = $this->crewWithFaculty();
+        $ana = User::factory()->create(['name' => 'Ana', 'crew_id' => $crew->id]);
+        $bo = User::factory()->create(['name' => 'Bo', 'crew_id' => $crew->id]);
+
+        $this->complete($ana, 1);
+        $this->complete($bo, 1);
+        // Same XP and gems, but Bo also studied yesterday: a 2-day streak beats Ana's 1.
+        StudyActivity::create(['user_id' => $bo->id, 'date' => now()->subDay()->toDateString(), 'minutes' => 10]);
+
+        $board = StudentDashboardService::leaderboard($ana);
+
+        $this->assertSame(['Bo', 'Ana'], array_column($board, 'name'));
+        $this->assertSame([1, 2], array_column($board, 'rank'));
+        $this->assertSame([2, 1], array_column($board, 'streak'));
+        $this->assertSame([0, 0], array_column($board, 'gems'));
+
+        $this->actingAs($ana)->get('/dashboard')->assertOk()
+            ->assertSee('Leaderboard')
+            ->assertSeeInOrder(['XP · Gems · Streak', 'Bo', 'Ana', '(you)'])
+            ->assertDontSee('No crew yet');
+    }
+
     public function test_no_crew_renders_a_join_prompt(): void
     {
         $this->actingAs(User::factory()->create())->get('/progress')->assertOk()->assertSee("haven't joined a crew", false);
@@ -122,12 +146,12 @@ class StudentDashboardTest extends TestCase
         $this->assertTrue($perf['hasData']);
     }
 
-    public function test_sidebar_links_dashboard_chat_and_planets_separately(): void
+    public function test_sidebar_links_home_chat_and_planets_separately(): void
     {
         $user = User::factory()->create();
 
         $this->actingAs($user)->get('/chat')->assertOk()
-            ->assertSee('aria-label="Dashboard"', false)
+            ->assertSee('aria-label="Home"', false)
             ->assertSee('href="'.route('student.dashboard').'"', false)
             ->assertSee('href="'.route('student.chat').'"', false);
         $this->get('/planets')->assertOk();

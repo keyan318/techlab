@@ -115,6 +115,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
         <p class="quiz-explanation"><em>Both devices answer for the same address, so traffic goes to the wrong one at different times.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which of these is a logical issue rather than a physical one?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. An unplugged cable</li>
+            <li class="quiz-option">B. A dead network card</li>
+            <li class="quiz-option">C. Interference from a motor</li>
+            <li class="quiz-option quiz-correct">D. A wrong default gateway setting ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A wrong gateway is a configuration problem above the cable, so it is a logical issue. The other options are all physical, Layer 1 problems.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Astro's device can reach the local server by its IP address, but typing the server's name fails. Following the test ladder, what should Rivet suspect?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The cable</li>
+            <li class="quiz-option">B. The switch</li>
+            <li class="quiz-option quiz-correct">C. DNS ✓</li>
+            <li class="quiz-option">D. The power supply</li>
+        </ul>
+        <p class="quiz-explanation"><em>Reaching a host by number but not by name is the classic sign of a DNS problem, either the client's DNS setting or the DNS server itself.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

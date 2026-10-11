@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -14,8 +15,7 @@ use Illuminate\Support\Str;
  *
  * Every planet with lessons uses the same format: Blade HTML fragments
  * (<h1 class="lesson-heading">…), in the folder named by `view_base` in
- * config/course-structure.php. Cybersecurity has no lesson files yet and
- * yields an empty module list.
+ * config/course-structure.php.
  */
 class LessonSourceService
 {
@@ -23,6 +23,8 @@ class LessonSourceService
         'programming' => 'Programming',
         'networking' => 'Networking',
         'cybersecurity' => 'Cybersecurity',
+        'information-assurance-security-2' => 'Information Assurance and Security 2',
+        'computer-programming-1' => 'Computer Programming 1',
     ];
 
     /** Max characters of a single lesson sent to the model. */
@@ -42,11 +44,24 @@ class LessonSourceService
         return is_dir($dir) ? $dir : null;
     }
 
-    /** Full catalog for the picker: [{slug,title,modules:[{key,title,lessons:[{key,title}]}]}] */
-    public function catalog(): array
+    /**
+     * Catalog for the picker: [{slug,title,modules:[{key,title,lessons:[{key,title}]}]}].
+     *
+     * Only planets the student has actually unlocked — the one they started with, plus any
+     * later added to `users.planets` by earning enough XP/gems — so "Add from Planets" never
+     * offers a world they haven't reached yet. Faculty (and any account with no `planets` set)
+     * see every planet, per `User::enrolledPlanets()`.
+     */
+    public function catalog(User $user): array
     {
         $out = [];
         foreach (self::PLANETS as $slug => $label) {
+            // A planet's second+ course (e.g. computer-programming-1) shares its
+            // planet's enrolment rather than needing its own — a student is
+            // enrolled in Programming City, not in each course inside it.
+            if (! $user->isEnrolledIn(CourseProgressService::planetFor($slug))) {
+                continue;
+            }
             $out[] = ['slug' => $slug, 'title' => $label, 'modules' => $this->modules($slug)];
         }
 

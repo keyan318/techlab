@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CourseMaterialSourceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class FacultyChatController extends ChatController
             'userRole' => 'Captain',
             'modelLabel' => config('nvidia_nim.model_label', 'Astro · NVIDIA NIM'),
             'planetCatalog' => [],
-            'preselectSource' => null,
+            'materialCatalog' => app(CourseMaterialSourceService::class)->catalog(Auth::user()),
             'conversations' => $this->formatConversations(
                 Auth::user()->conversations()->latest('updated_at')->get()
             ),

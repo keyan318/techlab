@@ -13,6 +13,10 @@ use Tests\TestCase;
 /**
  * Database work per chat message: as few round trips as possible, none of them
  * between NIM's first token and the browser, and every message stored exactly once.
+ *
+ * Course materials only cost a read when the student actually attached one by hand
+ * (CourseMaterialSourceService::resolve, scoped to the student's own crews) — a plain
+ * message with nothing attached touches the database only for conversation/message rows.
  */
 class ChatDatabaseWorkTest extends TestCase
 {
@@ -38,7 +42,7 @@ class ChatDatabaseWorkTest extends TestCase
             ->post('/chat/message', $payload)->streamedContent();
     }
 
-    public function test_new_conversation_costs_two_queries_and_none_before_the_first_chunk(): void
+    public function test_new_conversation_costs_two_queries_and_none_run_before_the_first_chunk(): void
     {
         $user = User::factory()->create();
         $atFirst = null;
@@ -48,7 +52,7 @@ class ChatDatabaseWorkTest extends TestCase
         DB::flushQueryLog();
         $this->send($user, ['message' => 'hello']);
 
-        $this->assertSame(0, $atFirst, 'no query may run before the first chunk of a new chat');
+        $this->assertSame(0, $atFirst, 'nothing was attached, so no lookup may run before the first chunk of a new chat');
         $this->assertCount(2, DB::getQueryLog(), 'conversation insert + one multi-row message insert');
     }
 
@@ -65,7 +69,7 @@ class ChatDatabaseWorkTest extends TestCase
         DB::flushQueryLog();
         $this->send($user, ['message' => 'follow up', 'conversation_id' => $conversation->id]);
 
-        $this->assertSame(1, $atFirst, 'ownership + history must be a single read');
+        $this->assertSame(1, $atFirst, 'a single ownership-and-history read');
         $this->assertCount(3, DB::getQueryLog(), 'history read + one message insert + one timestamp update');
     }
 

@@ -1,0 +1,107 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a8-l6",
+  "title": "Lesson 8.6: Regulatory Standards Compliance",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "07:00 · INSPECTION PREP · CITADEL CORE",
+    "vex": "\"Basically covered\" won't hold up. Let's see what actually does. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every requirement is checked against real evidence before Codexia's inspector ever asks. Astro: \"Only what's actually documented counts.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead compliance-checklist.txt for the requirements, then evidence-file.txt for what's actually documented. Classify each requirement as compliant or non-compliant.\n\n1. type compliance-checklist.txt\n2. type evidence-file.txt\n3. classify <requirement> compliant | non-compliant\n",
+    "C:\\Citadel\\compliance-checklist.txt": "PHYSICAL SECURITY COMPLIANCE CHECKLIST\n------------------------------------------\nrequirement-vault-log         all vault entries must be logged with identity and timestamp\nrequirement-footage-retention  camera footage must be retained for at least 90 days\nrequirement-restricted-mfa     restricted areas require two independent forms of physical access\nrequirement-visitor-badges     all visitors must wear a visible, dated badge\n",
+    "C:\\Citadel\\evidence-file.txt": "EVIDENCE ON FILE\n------------------\nrequirement-vault-log: full entry log exists, identity and timestamp recorded for every entry.\nrequirement-footage-retention: system currently retains only 30 days of footage.\nrequirement-restricted-mfa: restricted areas require both a smart card and a biometric scan.\nrequirement-visitor-badges: badges are issued but do not show a date.\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "requirement-vault-log": "requirement-vault-log",
+    "requirement-footage-retention": "requirement-footage-retention",
+    "requirement-restricted-mfa": "requirement-restricted-mfa",
+    "requirement-visitor-badges": "requirement-visitor-badges"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the checklist and the evidence",
+      "body": "Astro: \"Know the requirement, then check what's actually documented.\" `type compliance-checklist.txt`, then `type evidence-file.txt`.",
+      "objectives": [
+        {
+          "id": "read1",
+          "label": "Read compliance-checklist.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\compliance-checklist.txt"
+          }
+        },
+        {
+          "id": "read2",
+          "label": "Read evidence-file.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\evidence-file.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Audit each requirement against the evidence",
+      "body": "Astro: \"Only what actually matches the requirement counts as compliant.\" Classify all four requirements.",
+      "objectives": [
+        {
+          "id": "r1",
+          "label": "requirement-vault-log classified as compliant",
+          "check": {
+            "type": "classified",
+            "item": "requirement-vault-log",
+            "as": "compliant"
+          }
+        },
+        {
+          "id": "r2",
+          "label": "requirement-footage-retention classified as non-compliant (30 days, not 90)",
+          "check": {
+            "type": "classified",
+            "item": "requirement-footage-retention",
+            "as": "non-compliant"
+          }
+        },
+        {
+          "id": "r3",
+          "label": "requirement-restricted-mfa classified as compliant",
+          "check": {
+            "type": "classified",
+            "item": "requirement-restricted-mfa",
+            "as": "compliant"
+          }
+        },
+        {
+          "id": "r4",
+          "label": "requirement-visitor-badges classified as non-compliant (no date shown)",
+          "check": {
+            "type": "classified",
+            "item": "requirement-visitor-badges",
+            "as": "non-compliant"
+          }
+        }
+      ]
+    }
+  ]
+}

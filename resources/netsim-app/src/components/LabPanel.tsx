@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { useStore } from '../store';
+import { earnedCount, isEarned } from '../labs/grading';
 
 // Renders `backtick` spans as inline code and **double-star** spans as bold.
 function Rich({ text }: { text: string }) {
@@ -26,6 +27,7 @@ export function LabPanel() {
   const lab = useStore((s) => s.lab);
   const stepIdx = useStore((s) => s.labStep);
   const results = useStore((s) => s.labResults);
+  const baseline = useStore((s) => s.labBaseline);
   const checking = useStore((s) => s.labChecking);
   const quizAnswers = useStore((s) => s.quizAnswers);
   const setLabStep = useStore((s) => s.setLabStep);
@@ -37,7 +39,7 @@ export function LabPanel() {
   if (!lab) return null;
   const step = lab.steps[stepIdx];
   const allObjectives = lab.steps.flatMap((s) => s.objectives);
-  const passed = allObjectives.filter((o) => results[o.id]?.pass).length;
+  const passed = earnedCount(lab, results, baseline);
 
   return (
     <div className="lab-panel">
@@ -116,13 +118,17 @@ export function LabPanel() {
         <div className="lab-objectives">
           {step.objectives.map((o) => {
             const r = results[o.id];
-            const state = r === undefined ? 'todo' : r.pass ? 'pass' : 'fail';
+            // Passing but true from the start: no ✓ until the student's own work in this step passes too.
+            const state = r === undefined ? 'todo' : !r.pass ? 'fail' : isEarned(lab, results, baseline, o.id) ? 'pass' : 'held';
             return (
-              <div key={o.id} className={`lab-objective ${state}`}>
+              <div key={o.id} className={`lab-objective ${state === 'held' ? 'todo' : state}`}>
                 <span className="lab-obj-mark">{state === 'pass' ? '✓' : state === 'fail' ? '✗' : '○'}</span>
                 <span>
                   {o.label}
                   {r && !r.pass && <span className="lab-obj-detail"> — {r.detail}</span>}
+                  {state === 'held' && (
+                    <span className="lab-obj-detail"> — already true at the start, counts once the rest of this step is done</span>
+                  )}
                 </span>
               </div>
             );

@@ -1,0 +1,88 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a4-l2",
+  "title": "Lesson 4.2: Managed Security Services",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "13:10 · MSSP CONTRACT REVIEW · CITADEL CORE",
+    "vex": "Outsource your judgment along with your workload. That's how I get in. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the contract keeps judgment calls in-house and monitoring outsourced, exactly where each belongs. Astro: \"Work, yes. Judgment, ours.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead mssp-proposal.txt: three functions proposed for the new contract. Classify each as outsource-ok or keep-in-house.\n\n1. type mssp-proposal.txt\n2. classify <function> outsource-ok | keep-in-house\n",
+    "C:\\Citadel\\mssp-proposal.txt": "MSSP CONTRACT PROPOSAL\n-------------------------\nfunction-247-monitoring     round-the-clock watching of security alerts\nfunction-access-decisions   deciding who gets access to the starmap and other sensitive files\nfunction-patch-installs     installing routine, vendor-released security patches on standard systems\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "function-247-monitoring": "function-247-monitoring",
+    "function-access-decisions": "function-access-decisions",
+    "function-patch-installs": "function-patch-installs"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the proposal",
+      "body": "Rivet: \"Read all three before deciding any of them.\" `type mssp-proposal.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read mssp-proposal.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\mssp-proposal.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Decide what stays and what goes",
+      "body": "Astro: \"Constant coverage, routine work — safe to outsource. A judgment call about our own priorities — stays with us.\" Classify all three functions.",
+      "objectives": [
+        {
+          "id": "f1",
+          "label": "function-247-monitoring classified as outsource-ok",
+          "check": {
+            "type": "classified",
+            "item": "function-247-monitoring",
+            "as": "outsource-ok"
+          }
+        },
+        {
+          "id": "f2",
+          "label": "function-access-decisions classified as keep-in-house",
+          "check": {
+            "type": "classified",
+            "item": "function-access-decisions",
+            "as": "keep-in-house"
+          }
+        },
+        {
+          "id": "f3",
+          "label": "function-patch-installs classified as outsource-ok",
+          "check": {
+            "type": "classified",
+            "item": "function-patch-installs",
+            "as": "outsource-ok"
+          }
+        }
+      ]
+    }
+  ]
+}

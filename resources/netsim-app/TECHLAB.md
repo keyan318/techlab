@@ -12,6 +12,11 @@ TechLab changes (small, keep the diff minimal when re-syncing upstream):
   New-NetNat...) instead of the Linux shell. Both dialects drive the same engine, so lab checks are unchanged.
   Adapters show as "Ethernet", "Ethernet 2" (engine names stay eth0, eth1). Firewall rules carry an optional
   `comment` (the Windows rule name). `techlab.windows.test.ts` solves every lab with Windows commands only.
+- `src/labs/grading.ts` (new): a ✓ only counts for work the student did. An objective already true in the lab's
+  starting network ("astro can still ping rivet") stays ○ until the rest of its step passes, and once the
+  checked step passes every other step is checked again live, so the lab pass (and TechLab's XP) never comes
+  from stale ✓ marks. `checker.ts`: a probe that never left the sender cannot pass an "expect fail/filtered"
+  objective. `grading.test.ts` asserts no lab earns anything before the student acts.
 - `src/components/Palette.tsx` / `src/components/LabPanel.tsx`: when a lab is loaded, the left column
   becomes a "Mission" / "Devices" tab pair instead of floating the lab steps over the canvas — the
   device map stays fully visible instead of being covered by a large instructions box.

@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a1-l4",
+  "title": "Lesson 1.4: Security Methodology & Building a Program",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "13:40 · PROGRAM AUDIT · CITADEL CORE",
+    "vex": "Rules with no order are just suggestions. Suggestions don't stop me. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it began: every rule now has its place, and the program actually holds together. Astro: \"Policy down to standards, standards down to procedures. Nothing improvised.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead mixed-rules.txt: four rules, written with no order. Sort each into its correct level: policy, standard, or procedure.\n\n1. type mixed-rules.txt\n2. classify <item> policy | standard | procedure\n",
+    "C:\\Citadel\\mixed-rules.txt": "MIXED RULES (unsorted)\n------------------------\nrule-protect-crew-data     \"Protect crew data.\" (high-level, rarely changes)\nrule-password-length       \"Passwords must be 12+ characters.\" (a specific, checkable rule)\nrule-onboarding-steps      \"On a cadet's first watch: assign account, set password, review AUP, log completion.\" (exact steps)\nrule-close-unused-ports    \"All unused network ports must stay closed.\" (a specific, checkable rule)\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "rule-protect-crew-data": "rule-protect-crew-data",
+    "rule-password-length": "rule-password-length",
+    "rule-onboarding-steps": "rule-onboarding-steps",
+    "rule-close-unused-ports": "rule-close-unused-ports"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the unsorted rules",
+      "body": "Astro: \"See the mess. Then fix it.\" `type mixed-rules.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read mixed-rules.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\mixed-rules.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Sort each rule to its level",
+      "body": "Rivet: \"High-level and rare? Policy. Specific and checkable? Standard. Exact steps? Procedure.\" Classify all four rules.",
+      "objectives": [
+        {
+          "id": "r1",
+          "label": "rule-protect-crew-data classified as policy",
+          "check": {
+            "type": "classified",
+            "item": "rule-protect-crew-data",
+            "as": "policy"
+          }
+        },
+        {
+          "id": "r2",
+          "label": "rule-password-length classified as standard",
+          "check": {
+            "type": "classified",
+            "item": "rule-password-length",
+            "as": "standard"
+          }
+        },
+        {
+          "id": "r3",
+          "label": "rule-onboarding-steps classified as procedure",
+          "check": {
+            "type": "classified",
+            "item": "rule-onboarding-steps",
+            "as": "procedure"
+          }
+        },
+        {
+          "id": "r4",
+          "label": "rule-close-unused-ports classified as standard",
+          "check": {
+            "type": "classified",
+            "item": "rule-close-unused-ports",
+            "as": "standard"
+          }
+        }
+      ]
+    }
+  ]
+}

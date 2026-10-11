@@ -599,8 +599,8 @@ function RobotPrototype({
       ref={bodyRef}
       position={[0, -0.3, 0]}
       onPointerDown={handlePointerDown}
-      onPointerOver={() => (document.body.style.cursor = "pointer")}
-      onPointerOut={() => (document.body.style.cursor = "auto")}
+      onPointerOver={() => document.body.classList.add("cursor-pointer")}
+      onPointerOut={() => document.body.classList.remove("cursor-pointer")}
     >
       <mesh castShadow receiveShadow>
         <sphereGeometry

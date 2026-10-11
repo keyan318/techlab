@@ -95,32 +95,38 @@
             min-width: 0;
         }
 
-        .back-icon {
-            width: 34px;
-            height: 34px;
+        .home-btn {
+            height: 36px;
+            flex: none;
 
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 7px;
 
             margin-right: 14px;
+            padding: 0 12px 0 10px;
 
             color: var(--green);
+            background-color: var(--light-green);
 
-            font-size: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
 
-            cursor: pointer;
-
-            border-radius: 6px;
+            border-radius: 10px;
 
             transition:
                 background-color 0.2s ease,
                 transform 0.2s ease;
         }
 
-        .back-icon:hover {
-            background-color: var(--light-green);
-            transform: translateX(-2px);
+        .home-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .home-btn:active {
+            transform: scale(0.97);
+            transition-duration: 0.1s;
         }
 
         .lesson-title {
@@ -396,6 +402,16 @@
 
             .lesson-title {
                 font-size: 17px;
+            }
+
+            .home-btn {
+                width: 36px;
+                padding: 0;
+                justify-content: center;
+            }
+
+            .home-btn span {
+                display: none;
             }
 
             .header-right {
@@ -899,6 +915,8 @@
             .code-btn:hover, .code-btn:hover .python-logo, .code-btn:hover .networking-logo, .code-btn:hover .cybersecurity-logo { transform: none; }
         }
     </style>
+  <script defer src="{{ asset('js/sfx.js') }}?v={{ filemtime(public_path('js/sfx.js')) }}"></script>
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 
 <body>
@@ -955,13 +973,14 @@
 
             <div class="header-left">
 
-                <div
-                    class="back-icon"
-                    onclick="window.history.back()"
-                    title="Go back"
+                <a
+                    class="home-btn"
+                    href="{{ auth()->user()?->role === 'faculty' ? route('faculty.dashboard') : route('student.dashboard') }}"
+                    title="Back to the homepage"
                 >
-                    &#9664;
-                </div>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg>
+                    <span>Home</span>
+                </a>
 
                 <div class="lesson-title" id="lesson-title-text">
                     Loading…
@@ -971,11 +990,6 @@
 
 
             <div class="header-right">
-
-                <a id="ask-astro-link" href="/chat" class="icon" title="Ask Astro about this lesson"
-                   style="text-decoration:none;width:auto;padding:0 12px;font-size:13px;font-weight:600;white-space:nowrap;">
-                    🤖 Ask Astro
-                </a>
 
                 <button type="button" class="icon fs-btn" title="Full screen" aria-label="Full screen" onclick="toggleFullscreen()">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
@@ -1042,8 +1056,8 @@
 (function () {
 
     const slug  = @json($slug);
-    // Networking and security lessons show console commands, not Python.
-    const CODE_LANG = slug === 'programming' ? 'python' : 'bash';
+    // Networking and security lessons show console commands, not Python/C.
+    const CODE_LANG = slug === 'programming' ? 'python' : (slug === 'computer-programming-1' ? 'c' : 'bash');
     let current = { module: @json($module), lesson: @json($lesson) };
 
     const stage    = document.getElementById('lesson-stage');
@@ -1336,13 +1350,6 @@
         const heading = stage.querySelector('h1, .lesson-heading');
         if (titleEl) titleEl.textContent = heading ? heading.textContent.trim() : 'Untitled lesson';
 
-        // "Ask Astro about this lesson" -> chat with this lesson pre-connected as a source.
-        const askLink = document.getElementById('ask-astro-link');
-        const num = String(lessonId).match(/(\d+)$/);
-        if (askLink && num) {
-            askLink.href = '/chat?source=' + encodeURIComponent(slug + '/' + String(moduleId).toUpperCase() + '/lesson-' + num[1]);
-        }
-
         document.querySelectorAll('.lesson-item').forEach(function (a) {
             a.classList.toggle(
                 'active',
@@ -1373,7 +1380,7 @@
                 // Server says this lesson is still locked (the sidebar is display only).
                 stage.innerHTML =
                     '<div class="empty-lesson"><div><h1>Lesson locked 🔒</h1>' +
-                    '<p style="margin-top:10px;">' + (slug === 'networking' ? 'Pass the previous lesson\'s Relay Lab to unlock this one.' : slug === 'cybersecurity' ? 'Clear the previous lesson\'s Defense Lab to unlock this one.' : 'Complete the previous lesson\'s coding challenge to unlock this one.') + '</p></div></div>';
+                    '<p style="margin-top:10px;">' + (slug === 'networking' ? 'Pass the previous lesson\'s Relay Lab to unlock this one.' : (slug === 'cybersecurity' || slug === 'information-assurance-security-2') ? 'Clear the previous lesson\'s Defense Lab to unlock this one.' : 'Complete the previous lesson\'s coding challenge to unlock this one.') + '</p></div></div>';
                 return;
             }
 
@@ -1509,5 +1516,6 @@
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
 </button>
 
+<x-page-loader />
 </body>
 </html>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Crew extends Model
 {
@@ -23,6 +24,12 @@ class Crew extends Model
     public function quizzes(): HasMany
     {
         return $this->hasMany(CrewQuiz::class)->orderBy('id');
+    }
+
+    // The course's final exam, draft or published: the one quiz that unlocks the certificate.
+    public function finalExam(): HasOne
+    {
+        return $this->hasOne(CrewQuiz::class)->where('is_final', true);
     }
 
     public function members(): HasMany

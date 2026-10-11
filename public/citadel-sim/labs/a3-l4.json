@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a3-l4",
+  "title": "Lesson 3.4: Security Guidelines",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "10:40 · DISCRETION REVIEW · CITADEL CORE",
+    "vex": "Call it judgment. Call it whatever helps you skip the rule. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it began: real judgment is told apart from corner-cutting. Astro: \"A reason you can explain later is judgment. A shortcut you can't is just a shortcut.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead decisions-log.txt: four choices made against the \"prefer encrypted channels\" guideline. Classify each as good-judgment or skipped-guideline.\n\n1. type decisions-log.txt\n2. classify <decision> good-judgment | skipped-guideline\n",
+    "C:\\Citadel\\decisions-log.txt": "DECISIONS LOG\n---------------\ndecision-1   urgent shield-failure alert sent unencrypted because every second counted\ndecision-2   routine supply report sent unencrypted, cadet said it was \"faster\"\ndecision-3   ally rendezvous coordinates sent unencrypted; cadet later explained the encrypted channel was down and delay meant missing the rendezvous window entirely\ndecision-4   weekly rations count sent unencrypted with no reason given when asked\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "decision-1": "decision-1",
+    "decision-2": "decision-2",
+    "decision-3": "decision-3",
+    "decision-4": "decision-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the decisions log",
+      "body": "Astro: \"Read every decision before judging any of them.\" `type decisions-log.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read decisions-log.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\decisions-log.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Judgment or just a shortcut?",
+      "body": "Astro: \"Could they explain it clearly, with a real reason? That's judgment. No reason at all? That's a skipped guideline.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "d1",
+          "label": "decision-1 classified as good-judgment (urgency, explainable)",
+          "check": {
+            "type": "classified",
+            "item": "decision-1",
+            "as": "good-judgment"
+          }
+        },
+        {
+          "id": "d2",
+          "label": "decision-2 classified as skipped-guideline (just faster, no real reason)",
+          "check": {
+            "type": "classified",
+            "item": "decision-2",
+            "as": "skipped-guideline"
+          }
+        },
+        {
+          "id": "d3",
+          "label": "decision-3 classified as good-judgment (channel down, explainable)",
+          "check": {
+            "type": "classified",
+            "item": "decision-3",
+            "as": "good-judgment"
+          }
+        },
+        {
+          "id": "d4",
+          "label": "decision-4 classified as skipped-guideline (no reason given)",
+          "check": {
+            "type": "classified",
+            "item": "decision-4",
+            "as": "skipped-guideline"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a4-l4",
+  "title": "Lesson 4.4: Working With HR",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "17:30 · OFFBOARDING GAP FOUND · CITADEL CORE",
+    "vex": "A door nobody remembered to close. Those are my favorite kind. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the departed cadet's account is closed, and the self-approval gap is locked. Astro: \"Every role change gets a re-check. No exceptions.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nA cadet transferred out three days ago but their account is still active. Disable it. Then lock the supply-requisitions file so the supply cadet can no longer approve their own requests.\n\n1. net user transferred-cadet /active:no\n2. icacls requisitions.txt /deny supply-cadet:F\n",
+    "C:\\Citadel\\requisitions.txt": "SUPPLY REQUISITIONS — self-approval gap: supply-cadet can currently both request and approve here.\n"
+  },
+  "users": [
+    {
+      "name": "transferred-cadet",
+      "fullName": "(transferred to an allied fleet 3 days ago — account still active)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "unknown",
+      "lastLogon": "4 days ago"
+    },
+    {
+      "name": "supply-cadet",
+      "fullName": "Supply Cadet (requests AND currently approves)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/10/2026",
+      "lastLogon": "09/23/2026"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: close the leftover account",
+      "body": "Rivet: \"They left three days ago. The account should have closed with them.\" `net user transferred-cadet /active:no`.",
+      "objectives": [
+        {
+          "id": "offboard",
+          "label": "transferred-cadet is disabled",
+          "check": {
+            "type": "user-disabled",
+            "user": "transferred-cadet"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Split request from approval",
+      "body": "Astro: \"One person, both roles — that's the gap. Lock it.\" `icacls requisitions.txt /deny supply-cadet:F`.",
+      "objectives": [
+        {
+          "id": "sod",
+          "label": "supply-cadet can no longer self-approve requisitions.txt",
+          "check": {
+            "type": "denied",
+            "file": "C:\\Citadel\\requisitions.txt",
+            "user": "supply-cadet"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -95,6 +95,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l4.json) complete
         <p class="quiz-explanation"><em>Static addresses inside the pool could be leased to someone else, causing an address conflict.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which DHCP scope setting controls how long a client can use an address before it must renew it?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Address pool</li>
+            <li class="quiz-option">B. Exclusions</li>
+            <li class="quiz-option">C. Default gateway</li>
+            <li class="quiz-option quiz-correct">D. Lease time ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The lease time sets how long an address is lent before the client must renew it.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet accidentally includes the file server's static address inside the DHCP pool. What could go wrong?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Nothing, DHCP always skips static addresses automatically</li>
+            <li class="quiz-option quiz-correct">B. DHCP could lease that same address to another device, causing a conflict ✓</li>
+            <li class="quiz-option">C. The pool would shrink to zero</li>
+            <li class="quiz-option">D. The lease time would double</li>
+        </ul>
+        <p class="quiz-explanation"><em>Static addresses left inside the pool can be handed out to another client, creating an address conflict with the server.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

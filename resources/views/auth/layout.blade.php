@@ -47,9 +47,7 @@
     .mascot { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateY(14px) scale(.7); transition: opacity .3s ease, transform .55s cubic-bezier(.3,1.35,.5,1); pointer-events: none; }
     .mascot.on { opacity: 1; transform: none; }
     .mascot svg { width: 88px; height: auto; animation: bob 3.6s ease-in-out infinite; filter: drop-shadow(0 8px 6px rgba(13,13,13,.14)); }
-    .mascot.on svg.astro { animation: bob 3.6s ease-in-out infinite, tilt 5s ease-in-out infinite; }
     @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
-    @keyframes tilt { 0%, 100% { rotate: -3deg; } 50% { rotate: 3deg; } }
     .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.2s infinite; }
     @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
     .twinkle { position: absolute; width: 8px; height: 8px; background: #f5c04a; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: twinkle 3s ease-in-out infinite; opacity: 0; }
@@ -74,12 +72,38 @@
     .planet-pick legend { padding: 0; margin-bottom: 4px; font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--ink); }
     .planet-pick .hint { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
     .planet-pick .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-    .planet-pick label { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; margin: 0; min-width: 0; border: 2px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--surface); transition: border-color .2s ease, background .2s ease; }
-    .planet-pick label:has(input:checked) { border-color: var(--blue); background: var(--blue-tint); }
-    .planet-pick label:has(input:focus-visible) { box-shadow: 0 0 0 4px var(--blue-tint); }
-    .planet-pick input { accent-color: var(--blue); width: 18px; height: 18px; flex: none; }
-    .planet-pick b { display: block; font-size: 14px; overflow-wrap: anywhere; line-height: 1.25; }
-    .planet-pick small { display: block; font-size: 12px; line-height: 1.3; margin-top: 2px; color: var(--muted); }
+    /* Planet tiles: each one rises in after the card lands, presses down on touch, and its planet pops + gets an orbit when picked.
+       State changes are transitions (not keyframes) so a quick change of mind reverses smoothly from wherever it is. */
+    .planet-pick .tile { --tone: 91,225,255; position: relative; container-type: inline-size; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px 10px 12px 12px; margin: 0; min-width: 0; border: 2px solid var(--line); border-radius: 14px; cursor: pointer; background: var(--surface); -webkit-tap-highlight-color: transparent;
+      transition: border-color .25s ease, background-color .25s ease, box-shadow .35s ease, transform .45s cubic-bezier(.3,1.3,.5,1);
+      animation: tile-in .6s var(--ease) calc(480ms + var(--i, 0) * 80ms) both; }
+    .planet-pick .tile-programming { --tone: 123,240,106; }
+    .planet-pick .tile-cybersecurity { --tone: 201,182,255; }
+    @keyframes tile-in { from { opacity: 0; transform: translateY(12px) scale(.96); filter: blur(4px); } }
+    .planet-pick .tile:hover { border-color: rgba(150,170,255,.42); transform: translateY(-2px); }
+    .planet-pick .tile:active { transform: scale(.97); transition-duration: .25s, .25s, .35s, .1s; } /* instant press feedback */
+    .planet-pick .tile:has(input:checked) { border-color: var(--blue); background: var(--blue-tint); box-shadow: 0 10px 24px -14px rgba(47,125,225,.9), inset 0 1px 0 rgba(255,255,255,.08); transform: translateY(-2px); }
+    .planet-pick .tile:has(input:focus-visible) { outline: 3px solid var(--blue); outline-offset: 2px; }
+    .planet-pick input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; } /* real radio stays for the form + keyboard */
+
+    .planet-pick .orb { position: relative; display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(var(--tone),.28), rgba(var(--tone),.06) 70%); box-shadow: inset 0 0 0 1px rgba(var(--tone),.3); transition: transform .5s cubic-bezier(.3,1.5,.5,1), box-shadow .3s ease; }
+    .planet-pick .orb svg { width: 20px; height: 20px; }
+    .planet-pick .orb::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px dashed rgba(var(--tone),.75); opacity: 0; transform: scale(.7); transition: opacity .3s ease, transform .5s cubic-bezier(.3,1.4,.5,1); animation: orbit 9s linear infinite; }
+    @keyframes orbit { to { rotate: 1turn; } }
+    .planet-pick .tile:hover .orb { transform: translateY(-1px) rotate(-6deg); }
+    .planet-pick .tile:has(input:checked) .orb { transform: scale(1.1); box-shadow: inset 0 0 0 1px rgba(var(--tone),.6), 0 0 18px rgba(var(--tone),.45); }
+    .planet-pick .tile:has(input:checked) .orb::after { opacity: 1; transform: none; }
+
+    /* The tick: an empty ring that fills blue and draws a check when picked */
+    .planet-pick .tick { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--line); background: transparent; transition: background-color .2s ease, border-color .2s ease, transform .45s cubic-bezier(.3,1.6,.5,1); }
+    .planet-pick .tick::after { content: ''; position: absolute; left: 5px; top: 2px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; rotate: 45deg; transform: scale(0); transition: transform .3s cubic-bezier(.3,1.6,.5,1) .05s; }
+    .planet-pick .tile:has(input:checked) .tick { background: var(--blue); border-color: var(--blue); transform: scale(1.12); }
+    .planet-pick .tile:has(input:checked) .tick::after { transform: scale(1); }
+
+    .planet-pick .copy { min-width: 0; width: 100%; }
+    /* Never break a word mid-way ("Cybersecurit/y"): the title shrinks a little to fit its tile instead */
+    .planet-pick b { display: block; font-family: var(--display); font-weight: 600; color: var(--ink); font-size: clamp(12px, 14cqi, 15px); letter-spacing: -0.01em; line-height: 1.2; white-space: nowrap; }
+    .planet-pick small { display: block; font-size: 12px; line-height: 1.35; margin-top: 3px; color: var(--muted); }
     .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 4px 0 20px; font-size: 14px; }
     .row label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
     .row input { accent-color: var(--blue); width: 16px; height: 16px; }
@@ -100,13 +124,15 @@
       .stage { width: 84px; height: 80px; } .mascot svg { width: 76px; }
       .panel { padding: 24px 20px 22px; }
     }
-    @media (max-width: 480px) { form > .half { grid-column: 1 / -1; } .planet-pick .tiles { grid-template-columns: 1fr; } .planet-pick label { flex-direction: row; align-items: center; } }
+    @media (max-width: 480px) { form > .half { grid-column: 1 / -1; } .planet-pick .tiles { grid-template-columns: 1fr; } .planet-pick .tile { flex-direction: row; align-items: center; gap: 12px; padding-right: 40px; } .planet-pick .tick { top: 50%; margin-top: -9px; right: 14px; } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .card { opacity: 1; transform: none; filter: none; }
       .twinkle { display: none; }
+      .planet-pick .tile, .planet-pick .orb { transform: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
 </head>
 <body>
   <x-cosmic-background :planet="false" />
@@ -161,5 +187,6 @@
       if (word) { var first = word.textContent; word.textContent = ''; setTimeout(function () { decode(first); }, 350); }
     })();
   </script>
+<x-page-loader />
 </body>
 </html>

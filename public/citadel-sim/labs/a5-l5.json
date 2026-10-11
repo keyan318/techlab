@@ -1,0 +1,97 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a5-l5",
+  "title": "Lesson 5.5: Remote Administration Security",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "16:30 · LEGACY ADMIN PORT FOUND · CITADEL CORE",
+    "vex": "An old door, unencrypted and unwatched. Exactly my style. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the legacy channel is closed and the admin account is hardened. Astro: \"Encrypted, or not at all. Strong, or not admin.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead admin-audit.txt. Close the legacy unencrypted admin port, then set a strong password on the remaining admin account.\n\n1. type admin-audit.txt\n2. taskkill /im legacyadmin.exe /f\n3. net user shield-admin <a strong new password>\n",
+    "C:\\Citadel\\admin-audit.txt": "REMOTE ADMIN AUDIT — Shield Generator\n----------------------------------------\n1. Legacy unencrypted admin port still open (process legacyadmin.exe, port 2323), unused for 2 years.\n2. Current admin account 'shield-admin' still uses its installer default password.\n"
+  },
+  "users": [
+    {
+      "name": "shield-admin",
+      "fullName": "Shield Generator Admin",
+      "groups": [
+        "Administrators"
+      ],
+      "password": "admin",
+      "passwordSet": "installer default, never changed",
+      "lastLogon": "09/20/2026"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "services": [
+    {
+      "name": "legacy-admin",
+      "port": 2323,
+      "process": "legacyadmin.exe"
+    }
+  ],
+  "processes": [
+    {
+      "name": "legacyadmin.exe",
+      "pid": 2323,
+      "mem": "4,410 K"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: read the audit",
+      "body": "Rivet: \"Two problems, read both before fixing either.\" `type admin-audit.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read admin-audit.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\admin-audit.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Close the legacy channel and harden the account",
+      "body": "Rivet: \"Encrypted or nothing, strong or not admin.\" `taskkill /im legacyadmin.exe /f`, then `net user shield-admin <new strong password>`.",
+      "objectives": [
+        {
+          "id": "port",
+          "label": "Legacy admin port 2323 no longer listens",
+          "check": {
+            "type": "port-closed",
+            "port": 2323
+          }
+        },
+        {
+          "id": "pass",
+          "label": "shield-admin's password is now strong",
+          "check": {
+            "type": "password-changed",
+            "user": "shield-admin"
+          }
+        }
+      ]
+    }
+  ]
+}

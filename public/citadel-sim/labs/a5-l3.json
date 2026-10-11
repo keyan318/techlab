@@ -1,0 +1,75 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a5-l3",
+  "title": "Lesson 5.3: Web Application Security — OWASP Top 10",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "13:20 · HARDCODED CREDENTIAL FOUND · CITADEL CORE",
+    "vex": "Right there in the config file. You made this one too easy. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the exposed credential is rotated before anyone else finds it. Astro: \"Assume it was already seen. Rotate it anyway.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead app-config.txt — a hardcoded password is sitting in plain text. Rotate the account's password to something strong.\n\n1. type app-config.txt\n2. net user supply-db <a strong new password>\n",
+    "C:\\Citadel\\app-config.txt": "SUPPLY TOOL CONFIGURATION\n---------------------------\ndb_host = citadel-core\ndb_user = supply-db\ndb_password = supplies123\n\n(FINDING: password hardcoded in plain text — anyone who reads this file has it)\n"
+  },
+  "users": [
+    {
+      "name": "supply-db",
+      "fullName": "Supply Tool Database Account",
+      "groups": [
+        "Users"
+      ],
+      "password": "supplies123",
+      "passwordSet": "hardcoded in config, never rotated",
+      "lastLogon": "continuous (service account)"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the exposed config",
+      "body": "Volt: \"See it plainly before you fix it.\" `type app-config.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read app-config.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\app-config.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Rotate the exposed credential",
+      "body": "Volt: \"Assume it's already seen. Change it.\" `net user supply-db <new strong password>`.",
+      "objectives": [
+        {
+          "id": "rotate",
+          "label": "supply-db's password is rotated to a strong one",
+          "check": {
+            "type": "password-changed",
+            "user": "supply-db"
+          }
+        }
+      ]
+    }
+  ]
+}

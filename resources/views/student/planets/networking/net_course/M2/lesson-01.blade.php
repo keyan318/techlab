@@ -111,6 +111,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l1.json) complete
         <p class="quiz-explanation"><em>TCP and UDP are Transport protocols. They provide ports and, for TCP, reliable delivery.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which OSI layer is responsible for physical signals, such as electrical pulses or light?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Layer 7, Application</li>
+            <li class="quiz-option">B. Layer 4, Transport</li>
+            <li class="quiz-option">C. Layer 2, Data Link</li>
+            <li class="quiz-option quiz-correct">D. Layer 1, Physical ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Layer 1, Physical, is the layer of raw signals on the medium: bits carried as electricity, light or radio waves.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Volt notices a fault happens only when addresses are involved, not cables or ports. Which layer should he suspect?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Layer 1, Physical</li>
+            <li class="quiz-option quiz-correct">B. Layer 3, Network ✓</li>
+            <li class="quiz-option">C. Layer 7, Application</li>
+            <li class="quiz-option">D. Layer 2, Data Link</li>
+        </ul>
+        <p class="quiz-explanation"><em>IP addressing lives at Layer 3, the Network layer. Since cables and ports (lower layers) are fine, the fault points to addressing.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

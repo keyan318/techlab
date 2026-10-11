@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a2-l1",
+  "title": "Lesson 2.1: The CIA Triad & Other Security Models",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "03:00 · ACCESS LOG REVIEW · CITADEL CORE",
+    "vex": "Slip through a gap in any of your three A's. There's always one open. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every log gap is named and closed. Astro: \"Authentication, authorization, accounting — miss one, and CIA pays for it later.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead access-log.txt: four flagged entries. Classify each by which AAA step is missing: authentication, authorization, or accounting.\n\n1. type access-log.txt\n2. classify <entry> authentication | authorization | accounting\n",
+    "C:\\Citadel\\access-log.txt": "FLAGGED ACCESS LOG ENTRIES\n----------------------------\nentry-1   03:00 relay console accessed with NO password check at all\nentry-2   03:05 cadet 'orin' (Users group) opened the Captain's private log (no permission check ran)\nentry-3   03:10 an admin action ran on the shield generator but nothing was written to any log\nentry-4   03:15 a login attempt was correctly verified, and the session was correctly scoped, but no record of it exists anywhere\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "entry-1": "entry-1",
+    "entry-2": "entry-2",
+    "entry-3": "entry-3",
+    "entry-4": "entry-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the flagged log",
+      "body": "Rivet: \"Four entries, four gaps. Read them first.\" `type access-log.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read access-log.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\access-log.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Name the missing A",
+      "body": "Astro: \"No password check is a missing authentication. No permission check is a missing authorization. Nothing written to the log is a missing accounting.\" Classify all four entries.",
+      "objectives": [
+        {
+          "id": "e1",
+          "label": "entry-1 classified as authentication (no password check)",
+          "check": {
+            "type": "classified",
+            "item": "entry-1",
+            "as": "authentication"
+          }
+        },
+        {
+          "id": "e2",
+          "label": "entry-2 classified as authorization (no permission check)",
+          "check": {
+            "type": "classified",
+            "item": "entry-2",
+            "as": "authorization"
+          }
+        },
+        {
+          "id": "e3",
+          "label": "entry-3 classified as accounting (no log written)",
+          "check": {
+            "type": "classified",
+            "item": "entry-3",
+            "as": "accounting"
+          }
+        },
+        {
+          "id": "e4",
+          "label": "entry-4 classified as accounting (verified and scoped, but never recorded)",
+          "check": {
+            "type": "classified",
+            "item": "entry-4",
+            "as": "accounting"
+          }
+        }
+      ]
+    }
+  ]
+}

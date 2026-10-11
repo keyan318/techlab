@@ -124,6 +124,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
         <p class="quiz-explanation"><em>Bottom-up begins with cables and links (Layer 1) and climbs the layers.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which troubleshooting strategy tests the middle of a path first to see which half holds the fault?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Top-down</li>
+            <li class="quiz-option">B. Bottom-up</li>
+            <li class="quiz-option quiz-correct">C. Divide and conquer ✓</li>
+            <li class="quiz-option">D. Guess and check</li>
+        </ul>
+        <p class="quiz-explanation"><em>Divide and conquer tests somewhere in the middle of the path first, then narrows down to whichever half still has the fault.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet's tracert reaches the first relay tower, then the second, and then the same router answers again while the trace goes no further. What does this tell him?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The path is working perfectly</li>
+            <li class="quiz-option quiz-correct">B. That router is where the packets stop ✓</li>
+            <li class="quiz-option">C. The destination is unreachable by design</li>
+            <li class="quiz-option">D. DNS has failed</li>
+        </ul>
+        <p class="quiz-explanation"><em>When the same router keeps answering and the trace stops advancing, that router is where the path breaks. Fix there and trace again.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

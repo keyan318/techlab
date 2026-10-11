@@ -1,0 +1,75 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a3-l2",
+  "title": "Lesson 3.2: Security Standards",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "11:20 · COMPLIANCE CHECK · CITADEL CORE",
+    "vex": "A weak password is a standard nobody enforced. I like those best. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: the relay account now meets the password standard. Astro: \"A standard is only real once every account actually meets it.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead password-standard.txt, then bring the relay account into compliance: `net user relay <new password>` that actually meets every requirement.\n",
+    "C:\\Citadel\\password-standard.txt": "CITADEL PASSWORD STANDARD\n----------------------------\nEvery account password must:\n1. Be at least 12 characters\n2. Mix upper case, lower case, a number, and a symbol\n3. Never contain the account name\n4. Avoid common words attackers guess first (password, admin, 12345, qwerty, citadel)\n\nThe relay account currently fails this standard: password is \"starlight\" (8 characters, no number, no symbol).\n"
+  },
+  "users": [
+    {
+      "name": "relay",
+      "fullName": "Relay Console (service account)",
+      "groups": [
+        "Users"
+      ],
+      "password": "starlight",
+      "passwordSet": "never changed",
+      "lastLogon": "3 tours ago"
+    },
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {},
+  "flags": [],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Rivet's Workbench: read the standard",
+      "body": "Rivet: \"Read every requirement before you set anything.\" `type password-standard.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read password-standard.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\password-standard.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Bring the account into compliance",
+      "body": "Rivet: \"Twelve-plus characters, mixed case, a number, a symbol, no account name, no common word.\" `net user relay <new password>`.",
+      "objectives": [
+        {
+          "id": "fixed",
+          "label": "relay's password now meets the standard",
+          "check": {
+            "type": "password-changed",
+            "user": "relay"
+          }
+        }
+      ]
+    }
+  ]
+}

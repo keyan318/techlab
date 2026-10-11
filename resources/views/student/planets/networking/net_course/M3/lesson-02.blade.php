@@ -105,6 +105,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l2.json) complete
         <p class="quiz-explanation"><em>DHCP servers listen on UDP 67 and clients use UDP 68.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Why is the Request step also sent as a broadcast, even though the client already knows which server it wants?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It is a mistake in the protocol</li>
+            <li class="quiz-option quiz-correct">B. So any other server that made an offer knows it was not chosen ✓</li>
+            <li class="quiz-option">C. Because UDP cannot send to one address</li>
+            <li class="quiz-option">D. To save the client battery</li>
+        </ul>
+        <p class="quiz-explanation"><em>Broadcasting the Request lets every server that offered an address see the choice, so the ones not picked know to free their offer.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Halfway through its lease, astro's console quietly contacts the DHCP server again without a full DORA exchange. What is it doing?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Starting the Discover step over</li>
+            <li class="quiz-option">B. Releasing its address</li>
+            <li class="quiz-option quiz-correct">C. Renewing its lease ✓</li>
+            <li class="quiz-option">D. Getting a brand new random address</li>
+        </ul>
+        <p class="quiz-explanation"><em>Halfway through the lease, a client quietly asks the same server to renew it, keeping the same address without repeating all four DORA steps.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

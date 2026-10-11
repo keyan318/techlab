@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a5-l2",
+  "title": "Lesson 5.2: Application Security & Threat Modeling",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "11:00 · THREAT MODEL SESSION · CITADEL CORE",
+    "vex": "A vague 'seems secure' is all the gap I ever need. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every misuse has a specific answer, before a line of code exists. Astro: \"Six sharp questions beat one vague feeling, every time.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead threat-list.txt: four possible misuses of the new supply tool. Classify each by its STRIDE category.\n\n1. type threat-list.txt\n2. classify <threat> spoofing | tampering | repudiation | info-disclosure | denial-of-service | elevation-of-privilege\n",
+    "C:\\Citadel\\threat-list.txt": "POSSIBLE MISUSES — supply tool\n---------------------------------\nthreat-1   a requisition could be submitted claiming to be from Command when it isn't\nthreat-2   a cadet could later deny submitting a request, with no log to prove otherwise\nthreat-3   the full inventory count could leak to a rival crew watching the network\nthreat-4   a regular cadet could find a way to gain approver-level access\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "threat-1": "threat-1",
+    "threat-2": "threat-2",
+    "threat-3": "threat-3",
+    "threat-4": "threat-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the threat list",
+      "body": "Volt: \"Read every possible misuse before you tag a single one.\" `type threat-list.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read threat-list.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\threat-list.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Sort into STRIDE",
+      "body": "Volt: \"Pretending to be someone else is spoofing. Denying with no proof is repudiation. Leaking data is info-disclosure. Gaining access you shouldn't have is elevation-of-privilege.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "t1",
+          "label": "threat-1 classified as spoofing",
+          "check": {
+            "type": "classified",
+            "item": "threat-1",
+            "as": "spoofing"
+          }
+        },
+        {
+          "id": "t2",
+          "label": "threat-2 classified as repudiation",
+          "check": {
+            "type": "classified",
+            "item": "threat-2",
+            "as": "repudiation"
+          }
+        },
+        {
+          "id": "t3",
+          "label": "threat-3 classified as info-disclosure",
+          "check": {
+            "type": "classified",
+            "item": "threat-3",
+            "as": "info-disclosure"
+          }
+        },
+        {
+          "id": "t4",
+          "label": "threat-4 classified as elevation-of-privilege",
+          "check": {
+            "type": "classified",
+            "item": "threat-4",
+            "as": "elevation-of-privilege"
+          }
+        }
+      ]
+    }
+  ]
+}

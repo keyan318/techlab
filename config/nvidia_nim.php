@@ -35,7 +35,7 @@ return [
     | later without touching the service or controllers.
     |
     | IMPORTANT: there is NO hardcoded default. NVIDIA_NIM_MODEL MUST be set in
-    | your .env (e.g. nvidia/nemotron-3-super-120b-a12b). If it is missing,
+    | your .env (e.g. nvidia/nemotron-3-ultra-550b-a55b). If it is missing,
     | Astro refuses to start a request with a clear CONFIGURATION_ERROR.
     |
     | NOTE: not every model slug listed by NVIDIA actually serves chat on the

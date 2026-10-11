@@ -106,6 +106,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l6.json) complete
         <p class="quiz-explanation"><em>An administrator enters static routes by hand and they never change on their own. Dynamic routing protocols such as RIP and OSPF learn routes and adapt when links fail.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which routing protocol builds a full map of the network and is called a link-state protocol?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. RIP</li>
+            <li class="quiz-option">B. BGP</li>
+            <li class="quiz-option quiz-correct">C. OSPF ✓</li>
+            <li class="quiz-option">D. Static routing</li>
+        </ul>
+        <p class="quiz-explanation"><em>OSPF is a link-state protocol: routers build a map of the whole network rather than just counting hops.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet configures a static route on r1 pointing to Earth's network, but forgets to add a route back on r2. What happens when astro pings Earth?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The ping succeeds both ways</li>
+            <li class="quiz-option quiz-correct">B. The ping's request arrives but the reply never returns ✓</li>
+            <li class="quiz-option">C. r1 refuses to forward the packet</li>
+            <li class="quiz-option">D. Earth automatically creates the missing route</li>
+        </ul>
+        <p class="quiz-explanation"><em>Traffic needs a route there and a route back. Without the return route, Earth's reply has nowhere to go.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

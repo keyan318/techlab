@@ -38,7 +38,7 @@ class PlanetEnrollmentTest extends TestCase
 
     public function test_student_only_gets_the_planets_they_picked(): void
     {
-        $this->signUp(['planets' => ['programming']])->assertRedirect(route('student.dashboard'));
+        $this->signUp(['planets' => ['programming']])->assertRedirect(route('student.welcome'));
 
         $user = User::firstWhere('email', 'sam@example.com');
         $this->assertSame(['programming'], $user->planets);
@@ -46,7 +46,12 @@ class PlanetEnrollmentTest extends TestCase
         $this->get(route('student.planet', 'programming'))->assertOk();
         $this->get(route('student.planet', 'networking'))->assertRedirect(route('student.planets'));
         $this->get('/student/planet/cybersecurity/M1/01')->assertRedirect(route('student.planets'));
-        $this->get(route('student.planets'))->assertOk()->assertDontSee('Networking Nebula');
+        // The planet picker now shows every planet, but one the student hasn't unlocked
+        // yet renders as a locked card (no link into it) rather than being hidden outright.
+        $this->get(route('student.planets'))->assertOk()
+            ->assertSee('Networking Nebula')
+            ->assertSee('Locked')
+            ->assertDontSee(route('student.planet', 'networking'), false);
     }
 
     public function test_sign_up_only_accepts_a_single_starting_planet(): void
@@ -57,8 +62,9 @@ class PlanetEnrollmentTest extends TestCase
 
     public function test_earning_a_gem_unlocks_the_next_planet_in_order(): void
     {
-        $this->signUp(['planets' => ['programming']])->assertRedirect(route('student.dashboard'));
+        $this->signUp(['planets' => ['programming']])->assertRedirect(route('student.welcome'));
         $user = User::firstWhere('email', 'sam@example.com');
+        $this->enroll($user, 'programming', 'python');
 
         $this->get(route('student.planet', 'networking'))->assertRedirect(route('student.planets'));
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\LessonProgress;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 /**
  * Server-side lesson progression for every planet that has a blueprint in
@@ -39,6 +40,66 @@ class CourseProgressService
             $slug === 'cybersecurity' && $course === 'information-security-1' => 'cybersecurity',
             default => $course,
         };
+    }
+
+    /**
+     * The planet a lesson-URL key belongs to.
+     *
+     * Lesson URLs carry one key ("/student/planet/{key}/{module}/{lesson}"). For the three
+     * original courses that key is the planet slug itself, so it maps to itself. A planet's
+     * second+ course is keyed by its catalog id instead and names its planet in the blueprint,
+     * which is how two courses can share a planet without sharing lessons or progress.
+     */
+    public static function planetFor(string $key): string
+    {
+        return (string) config("course-structure.{$key}.planet", $key);
+    }
+
+    /**
+     * The catalog course id a lesson-URL key belongs to, or null when the planet has none.
+     */
+    public static function catalogFor(string $key): ?string
+    {
+        if ($id = config("course-structure.{$key}.catalog")) {
+            return (string) $id;
+        }
+
+        foreach (array_keys(config('course-catalog.'.self::planetFor($key).'.courses', [])) as $id) {
+            if (self::keyFor($key, (string) $id) === $key) {
+                return (string) $id;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Whether a lesson-URL key's catalog course is switched off ('hidden' in config/course-catalog.php).
+     */
+    public static function isHidden(string $key): bool
+    {
+        $id = self::catalogFor($key);
+
+        return $id !== null && ! empty(config('course-catalog.'.self::planetFor($key).".courses.{$id}.hidden"));
+    }
+
+    /**
+     * Every blueprint key that belongs to a planet (hidden courses left out), the planet's own key first.
+     * A planet's percentage is the sum of all of them, not just the one named after it.
+     *
+     * @return string[]
+     */
+    public static function keysForPlanet(string $planet): array
+    {
+        $keys = [];
+
+        foreach (array_keys(config('course-structure', [])) as $key) {
+            if (self::planetFor((string) $key) === $planet && ! self::isHidden((string) $key)) {
+                $keys[] = (string) $key;
+            }
+        }
+
+        return $keys;
     }
 
     /**
@@ -141,6 +202,24 @@ class CourseProgressService
             ->get(['module', 'lesson'])
             ->map(fn ($row) => $row->module.'/'.$row->lesson)
             ->all();
+    }
+
+    /**
+     * How much of one course a user has finished, 0–100. Only this course's own lessons count,
+     * so a planet's other course never moves it (that's what a planet's percent is for).
+     */
+    public static function percent(User $user, string $course): int
+    {
+        $order = self::order($course);
+
+        if (! $order) {
+            return 0;
+        }
+
+        $done = array_flip(self::completedKeys($user, $course));
+        $completed = count(array_filter($order, fn ($i) => isset($done[$i['module'].'/'.$i['lesson']])));
+
+        return (int) round($completed / count($order) * 100);
     }
 
     public static function isCompleted(User $user, string $module, string $lesson, string $course = self::COURSE): bool
@@ -262,6 +341,40 @@ class CourseProgressService
         }
 
         return $count;
+    }
+
+    /**
+     * When the user finished the whole course — the moment their last lesson was completed —
+     * or null while any lesson is still left. This is the completion certificate's issue date,
+     * so it never moves once earned.
+     */
+    public static function finishedAt(User $user, string $course = self::COURSE): ?Carbon
+    {
+        $order = self::order($course);
+
+        if ($order === []) {
+            return null;
+        }
+
+        $done = LessonProgress::where('user_id', $user->id)
+            ->where('course', $course)
+            ->get(['module', 'lesson', 'completed_at', 'created_at'])
+            ->keyBy(fn ($row) => $row->module.'/'.$row->lesson);
+
+        $finishedAt = null;
+
+        foreach ($order as $item) {
+            $row = $done->get($item['module'].'/'.$item['lesson']);
+
+            if ($row === null) {
+                return null;
+            }
+
+            $at = $row->completed_at ?? $row->created_at;
+            $finishedAt = $finishedAt === null || $at > $finishedAt ? $at : $finishedAt;
+        }
+
+        return $finishedAt;
     }
 
     /**

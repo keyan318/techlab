@@ -106,6 +106,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l3.json) complete
         <p class="quiz-explanation"><em>Start at the bottom: cable and link. A device with an address but a dead link cannot send or receive anything.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What is the key difference between a hub and a switch?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A hub is faster than a switch</li>
+            <li class="quiz-option">B. A switch only works with fiber</li>
+            <li class="quiz-option">C. A hub learns MAC addresses the way a switch does</li>
+            <li class="quiz-option quiz-correct">D. A switch sends traffic only to the port that needs it, while a hub repeats to every port ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A switch learns which device sits on which port and sends data only there. A hub simply repeats every signal out every port.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet's link light comes on, but pings between astro and rivet take much longer than normal. Which measurement is this describing?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Bandwidth</li>
+            <li class="quiz-option">B. Protocol</li>
+            <li class="quiz-option quiz-correct">C. Latency ✓</li>
+            <li class="quiz-option">D. NIC</li>
+        </ul>
+        <p class="quiz-explanation"><em>Latency is the delay for one trip, and it is exactly what ping measures. Bandwidth measures how much data a link can carry per second, not delay.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

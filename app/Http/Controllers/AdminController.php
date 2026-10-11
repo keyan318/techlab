@@ -23,7 +23,7 @@ class AdminController extends Controller
     public function dashboard(): View
     {
         $totalCourses = collect(config('course-catalog'))
-            ->sum(fn (array $planet) => collect($planet['courses'])->reject(fn (array $c) => ! empty($c['coming_soon']))->count());
+            ->sum(fn (array $planet) => collect($planet['courses'])->reject(fn (array $c) => ! empty($c['coming_soon']) || ! empty($c['hidden']))->count());
         $assigned = CourseAssignment::count();
         $facultyCount = User::where('role', 'faculty')->count();
 
@@ -54,7 +54,7 @@ class AdminController extends Controller
 
         $planets = collect(config('course-catalog'))->map(function (array $planet, string $planetSlug) use ($assignments) {
             $planet['courses'] = collect($planet['courses'])
-                ->reject(fn (array $c) => ! empty($c['coming_soon']))
+                ->reject(fn (array $c) => ! empty($c['coming_soon']) || ! empty($c['hidden']))
                 ->map(function (array $c, string $courseSlug) use ($planetSlug, $assignments) {
                     $c['slug'] = $courseSlug;
                     $c['assignment'] = $assignments->get($planetSlug.'.'.$courseSlug);

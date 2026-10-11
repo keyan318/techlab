@@ -114,7 +114,7 @@ class FacultyRoutesTest extends TestCase
 
         $this->assertSame(2, Crew::where('teacher_id', $faculty->id)->count());
         $this->actingAs($faculty)->get(route('faculty.dashboard'))->assertOk()
-            ->assertSee('Networking 1')->assertSee('Information Security 1');
+            ->assertSee('Networking 1')->assertSee('Information Assurance and Security 1');
     }
 
     public function test_every_named_route_used_by_the_code_actually_exists(): void

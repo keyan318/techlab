@@ -12,10 +12,10 @@ class LessonQuizTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** A student who has cleared M1 lessons 1 and 2, so lesson 3 (which has a 3-question quiz, answers C/C/C) is open. */
+    /** A student who has cleared M1 lessons 1 and 2, so lesson 3 (which has a 5-question quiz, Q1-3 answers C/C/C) is open. */
     private function student(): User
     {
-        $u = User::factory()->create(['role' => 'student']);
+        $u = $this->studentIn();
         CourseProgressService::markComplete($u, 'm1', 'lesson01', 'programming');
         CourseProgressService::markComplete($u, 'm1', 'lesson02', 'programming');
 
@@ -74,14 +74,14 @@ class LessonQuizTest extends TestCase
         $this->actingAs($u)->postJson($this->url(), ['q' => 1, 'choice' => 'C']);
 
         $this->actingAs($u)->getJson($this->url())->assertOk()
-            ->assertJsonPath('total', 3)->assertJsonPath('perQuestion', 10)
+            ->assertJsonPath('total', 5)->assertJsonPath('perQuestion', 10)
             ->assertJsonPath('answered.1.correct', true)->assertJsonPath('answered.1.correctChoice', 'C')
             ->assertJsonMissingPath('answered.2');
     }
 
     public function test_locked_lessons_and_bad_input_are_refused(): void
     {
-        $fresh = User::factory()->create(['role' => 'student']);
+        $fresh = $this->studentIn();
         $this->actingAs($fresh)->postJson($this->url(), ['q' => 1, 'choice' => 'C'])->assertForbidden();
 
         $u = $this->student();

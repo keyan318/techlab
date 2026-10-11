@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a3-l5",
+  "title": "Lesson 3.5: Ongoing Maintenance",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "08:15 · DOCUMENT AUDIT · CITADEL CORE",
+    "vex": "Old rules, forgotten and stale. I love finding the ones nobody checks anymore. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every stale document is flagged for review, before it could mislead anyone. Astro: \"An owner, and a date. That's all it takes to keep a document alive.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead document-register.txt: four documents, their last review date and owner status. Classify each as current or overdue.\n\n1. type document-register.txt\n2. classify <doc> current | overdue\n",
+    "C:\\Citadel\\document-register.txt": "DOCUMENT REGISTER\n--------------------\ndoc-shield-duty       last reviewed: 3 years ago, no owner assigned, references a retired role\ndoc-password-standard last reviewed: 2 months ago, owner: Rivet\ndoc-visitor-policy    last reviewed: 4 years ago, no owner assigned, references decommissioned equipment\ndoc-incident-response last reviewed: 1 month ago, owner: Volt\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "doc-shield-duty": "doc-shield-duty",
+    "doc-password-standard": "doc-password-standard",
+    "doc-visitor-policy": "doc-visitor-policy",
+    "doc-incident-response": "doc-incident-response"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the register",
+      "body": "Volt: \"Read every entry — the review date and the owner both matter.\" `type document-register.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read document-register.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\document-register.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Flag what's overdue",
+      "body": "Volt: \"No owner and years unreviewed — overdue. Recent and owned — current.\" Classify all four documents.",
+      "objectives": [
+        {
+          "id": "d1",
+          "label": "doc-shield-duty classified as overdue",
+          "check": {
+            "type": "classified",
+            "item": "doc-shield-duty",
+            "as": "overdue"
+          }
+        },
+        {
+          "id": "d2",
+          "label": "doc-password-standard classified as current",
+          "check": {
+            "type": "classified",
+            "item": "doc-password-standard",
+            "as": "current"
+          }
+        },
+        {
+          "id": "d3",
+          "label": "doc-visitor-policy classified as overdue",
+          "check": {
+            "type": "classified",
+            "item": "doc-visitor-policy",
+            "as": "overdue"
+          }
+        },
+        {
+          "id": "d4",
+          "label": "doc-incident-response classified as current",
+          "check": {
+            "type": "classified",
+            "item": "doc-incident-response",
+            "as": "current"
+          }
+        }
+      ]
+    }
+  ]
+}

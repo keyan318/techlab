@@ -20,7 +20,7 @@ class LessonHintTest extends TestCase
     /** Lessons 1 and 2 done (200 XP), so lesson 3 is open. */
     private function student(): User
     {
-        $u = User::factory()->create(['role' => 'student']);
+        $u = $this->studentIn();
         CourseProgressService::markComplete($u, 'm1', 'lesson01', 'programming');
         CourseProgressService::markComplete($u, 'm1', 'lesson02', 'programming');
 
@@ -60,7 +60,7 @@ class LessonHintTest extends TestCase
 
     public function test_a_student_without_enough_xp_cannot_buy_it(): void
     {
-        $u = User::factory()->create(['role' => 'student']);   // 0 XP, on lesson 1
+        $u = $this->studentIn(attrs: ['role' => 'student']);   // 0 XP, on lesson 1
 
         $this->actingAs($u)->getJson($this->route('student.planet.hint.status', 'lesson01'))->assertOk()->assertJson(['canAfford' => false, 'balance' => 0]);
         $this->actingAs($u)->postJson($this->route('student.planet.hint.buy', 'lesson01'))->assertStatus(402)
@@ -72,7 +72,7 @@ class LessonHintTest extends TestCase
     public function test_locked_lessons_and_guests_are_refused(): void
     {
         $this->postJson($this->route('student.planet.hint.buy'))->assertUnauthorized();
-        $this->actingAs(User::factory()->create(['role' => 'student']))->postJson($this->route('student.planet.hint.buy'))->assertForbidden();
+        $this->actingAs($this->studentIn(attrs: ['role' => 'student']))->postJson($this->route('student.planet.hint.buy'))->assertForbidden();
     }
 
     public function test_spent_xp_never_makes_the_total_negative_and_counts_on_the_leaderboard(): void

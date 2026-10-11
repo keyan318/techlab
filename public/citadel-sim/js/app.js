@@ -1,6 +1,7 @@
 // Citadel Sim page: renders the mission and the Command Prompt, saves per student,
 // and tells the TechLab lab page (same origin, parent frame) how the student is doing.
 import { createState, currentStep, evaluate, missionText, progress, restore, runCommand, snapshot } from './engine.js';
+import { createMusic } from './music.js';
 
 const params = new URLSearchParams(location.search);
 const rawLab = params.get('lab');
@@ -14,6 +15,8 @@ const $ = (id) => document.getElementById(id);
 const screen = $('screen');
 const input = $('cmd');
 const promptEl = $('prompt');
+// Background music is switched on per course by the TechLab lab page (?music=1).
+const music = createMusic({ enabled: labId !== null && params.get('music') === '1', button: $('music-toggle') });
 
 let lab = null;
 let state = null;
@@ -121,6 +124,7 @@ function renderMission() {
   });
   const { passed, total } = progress(lab, state);
   $('progress').textContent = `Objectives: ${passed} / ${total}`;
+  music.update(passed, total);
   const alert = $('alert');
   if (passed === total) {
     alert.textContent = 'ALL CLEAR · Attack repelled';
@@ -401,6 +405,8 @@ $('reset').addEventListener('click', () => {
   renderMission();
   input.focus();
 });
+
+$('music-toggle').addEventListener('click', () => input.focus());
 
 $('victory-close').addEventListener('click', () => {
   $('victory').hidden = true;

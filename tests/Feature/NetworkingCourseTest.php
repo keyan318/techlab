@@ -52,14 +52,14 @@ class NetworkingCourseTest extends TestCase
 
     public function test_a_locked_networking_lesson_is_refused(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $this->actingAs($user)->get($this->fragmentUrl('m1', 'lesson02'))->assertForbidden();
     }
 
     public function test_opening_a_lab_lesson_does_not_complete_it(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         // Lesson 1 is unlocked; opening it must not count as done (unlike a Python lesson with no challenge).
         $this->actingAs($user)->get($this->fragmentUrl('m1', 'lesson01'));
@@ -69,7 +69,7 @@ class NetworkingCourseTest extends TestCase
 
     public function test_passing_the_lab_completes_the_lesson_and_unlocks_the_next(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $this->actingAs($user)->postJson($this->labUrl('m1', 'lesson01'), ['lab' => 'm1-l1'])
             ->assertOk()
@@ -82,7 +82,7 @@ class NetworkingCourseTest extends TestCase
 
     public function test_a_lab_pass_for_the_wrong_lab_is_rejected(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $this->actingAs($user)->postJson($this->labUrl('m1', 'lesson01'), ['lab' => 'm4-l6'])->assertStatus(422);
 
@@ -91,7 +91,7 @@ class NetworkingCourseTest extends TestCase
 
     public function test_a_lab_pass_cannot_skip_ahead(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
 
         $this->actingAs($user)->postJson($this->labUrl('m1', 'lesson03'), ['lab' => 'm1-l3'])->assertForbidden();
 
@@ -109,7 +109,7 @@ class NetworkingCourseTest extends TestCase
 
     public function test_a_python_lesson_without_a_lab_rejects_the_lab_endpoint(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn();
 
         $this->actingAs($user)
             ->postJson(route('student.planet.lab.complete', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson01']), ['lab' => 'm1-l1'])
@@ -118,7 +118,7 @@ class NetworkingCourseTest extends TestCase
 
     public function test_dashboard_continues_in_the_planet_the_student_last_touched(): void
     {
-        $user = User::factory()->create();
+        $user = $this->studentIn('networking', 'networking-fundamentals');
         CourseProgressService::markComplete($user, 'm1', 'lesson01', 'networking');
 
         $current = StudentDashboardService::currentLesson($user);
@@ -203,9 +203,9 @@ class NetworkingCourseTest extends TestCase
         $html = LessonQuizService::source($module, $lesson, 'networking');
         $this->assertNotNull($html);
 
-        // Answer key: three questions, each with a correct letter and an explanation.
+        // Answer key: five questions, each with a correct letter and an explanation.
         $key = LessonQuizService::key($html);
-        $this->assertCount(3, $key, 'expected 3 quiz questions');
+        $this->assertCount(5, $key, 'expected 5 quiz questions');
         foreach ($key as $q => $row) {
             $this->assertMatchesRegularExpression('/^[A-D]$/', $row['correct']);
             $this->assertNotSame('', $row['explanation'], "Q{$q} needs an explanation");

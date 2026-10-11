@@ -130,6 +130,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l2.json) complete
         <p class="quiz-explanation"><em>A WAN (wide area network) covers a large area, and the Internet is the biggest one. A LAN covers one place.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. Which topology connects each device to two neighbors, forming a loop that data travels around?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Star</li>
+            <li class="quiz-option">B. Bus</li>
+            <li class="quiz-option quiz-correct">C. Ring ✓</li>
+            <li class="quiz-option">D. Mesh</li>
+        </ul>
+        <p class="quiz-explanation"><em>In a ring, each device connects to two neighbors and data travels around the loop.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. If the crew had wired the ship as a bus instead of a star, what would happen when Planet Doom's scout cut one length of the backbone cable?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The whole network could split into two disconnected pieces ✓</li>
+            <li class="quiz-option">B. Only that one console would lose its connection</li>
+            <li class="quiz-option">C. The switch would automatically reroute around it</li>
+            <li class="quiz-option">D. Nothing, since bus topologies use no cables</li>
+        </ul>
+        <p class="quiz-explanation"><em>On a bus, every device shares one backbone cable, so a single break can silence everyone past the cut, unlike a star where only one cable serves each device.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

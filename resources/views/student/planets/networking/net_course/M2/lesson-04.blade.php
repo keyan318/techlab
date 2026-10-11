@@ -107,6 +107,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l4.json) complete
         <p class="quiz-explanation"><em>With /25 Volt's network is 192.168.1.128 to 192.168.1.255. Astro's address falls outside it, so Volt looks for a gateway instead of sending directly.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What is the broadcast address of 192.168.1.10/24?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 192.168.1.0</li>
+            <li class="quiz-option">B. 192.168.1.1</li>
+            <li class="quiz-option">C. 192.168.1.10</li>
+            <li class="quiz-option quiz-correct">D. 192.168.1.255 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The broadcast address has all host bits set to 1. With /24 that is the last octet, so it is 192.168.1.255.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Astro (192.168.1.10/24) wants to send data to 192.168.1.50, which is on the same network. What does Astro's device do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Send the data directly to 192.168.1.50 ✓</li>
+            <li class="quiz-option">B. Send it to the default gateway first</li>
+            <li class="quiz-option">C. Refuse to send it</li>
+            <li class="quiz-option">D. Broadcast it to every device on the network</li>
+        </ul>
+        <p class="quiz-explanation"><em>When the destination is on the same network, a device sends directly. The gateway is only needed for a different network.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

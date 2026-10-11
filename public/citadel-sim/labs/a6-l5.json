@@ -1,0 +1,98 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a6-l5",
+  "title": "Lesson 6.5: Management Practices",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "07:30 · LEADERSHIP REVIEW · CITADEL CORE",
+    "vex": "One quiet exception from the top, and the whole program crumbles from there. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: leadership's own actions reinforce the program instead of quietly undermining it. Astro: \"What I do matters more than what I sign.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead leadership-actions.txt: four actions from this month. Classify each as supports-program or undermines-program.\n\n1. type leadership-actions.txt\n2. classify <action> supports-program | undermines-program\n",
+    "C:\\Citadel\\leadership-actions.txt": "LEADERSHIP ACTIONS — this month\n-----------------------------------\naction-1   Astro signed in at the console like every other cadet, even when running late\naction-2   Command approved the security budget request in full, on schedule\naction-3   A department head skipped the access review \"just this once,\" no consequence noted\naction-4   Astro publicly thanked a cadet for reporting a phishing email, in front of the crew\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "action-1": "action-1",
+    "action-2": "action-2",
+    "action-3": "action-3",
+    "action-4": "action-4"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the leadership actions",
+      "body": "Astro: \"Read every action before judging any of them.\" `type leadership-actions.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read leadership-actions.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\leadership-actions.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Judge each action",
+      "body": "Astro: \"Following the same rule, funding it properly, praising good behavior — all support it. A quiet exception undermines it.\" Classify all four.",
+      "objectives": [
+        {
+          "id": "a1",
+          "label": "action-1 classified as supports-program",
+          "check": {
+            "type": "classified",
+            "item": "action-1",
+            "as": "supports-program"
+          }
+        },
+        {
+          "id": "a2",
+          "label": "action-2 classified as supports-program",
+          "check": {
+            "type": "classified",
+            "item": "action-2",
+            "as": "supports-program"
+          }
+        },
+        {
+          "id": "a3",
+          "label": "action-3 classified as undermines-program",
+          "check": {
+            "type": "classified",
+            "item": "action-3",
+            "as": "undermines-program"
+          }
+        },
+        {
+          "id": "a4",
+          "label": "action-4 classified as supports-program",
+          "check": {
+            "type": "classified",
+            "item": "action-4",
+            "as": "supports-program"
+          }
+        }
+      ]
+    }
+  ]
+}

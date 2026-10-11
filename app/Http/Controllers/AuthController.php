@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CourseAssignment;
+use App\Models\Crew;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -106,7 +108,8 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $request->session()->put('role', $user->role);
 
-        return redirect(self::homeFor($user));
+        // A brand-new student meets Astro and builds their astronaut before the dashboard.
+        return redirect()->route('student.welcome');
     }
 
     /**
@@ -116,6 +119,41 @@ class AuthController extends Controller
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect(route('home'));
+    }
+
+    /**
+     * Permanently delete the signed-in account. Faculty who still captain a crew or
+     * course are blocked first — deleting them out from under enrolled students would
+     * orphan the crew's roster and content instead of cleanly handing it off.
+     */
+    public function destroyAccount(Request $request): RedirectResponse
+    {
+        if (! Auth::check()) {
+            return redirect(route('login'));
+        }
+
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return back()->with('accountDeleteError', "Admin accounts can't be deleted here — ask another admin.");
+        }
+
+        if ($user->role === 'faculty' && (
+            Crew::where('teacher_id', $user->id)->exists()
+            || CourseAssignment::where('faculty_id', $user->id)->exists()
+        )) {
+            return back()->with('accountDeleteError', 'You still captain a crew or course — reassign it before deleting your account.');
+        }
+
+        // Log out first: Auth::logout() re-saves the user's remember token, which would
+        // otherwise reinsert the row if it ran after delete() (Eloquent's delete() flips
+        // `exists` to false, so a save() afterwards performs an insert, not an update).
+        Auth::logout();
+        $user->delete();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

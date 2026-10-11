@@ -105,6 +105,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l4.json) complete
         <p class="quiz-explanation"><em>A router reads IP addresses to choose the path. A switch works with MAC addresses.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What is a device's default gateway?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Its own MAC address</li>
+            <li class="quiz-option">B. The switch nearest to it</li>
+            <li class="quiz-option">C. Any device on the same VLAN</li>
+            <li class="quiz-option quiz-correct">D. The router it uses to reach other networks ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The default gateway is the address a host uses to leave its own network, and it is the router.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Volt's console (VLAN 20) tries to ping astro's console (VLAN 1) directly, without going through the router gate. What happens?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It succeeds instantly, since VLANs are just labels</li>
+            <li class="quiz-option quiz-correct">B. It fails, because the switch keeps different VLANs isolated from each other ✓</li>
+            <li class="quiz-option">C. It succeeds, but only over Wi-Fi</li>
+            <li class="quiz-option">D. It fails because the cable is unplugged</li>
+        </ul>
+        <p class="quiz-explanation"><em>Devices in different VLANs cannot reach each other directly, even on the same switch. They need a router to cross between VLANs.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">

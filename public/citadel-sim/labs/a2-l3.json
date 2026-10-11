@@ -1,0 +1,108 @@
+{
+  "app": "citadel",
+  "version": 1,
+  "id": "a2-l3",
+  "title": "Lesson 2.3: Zones of Trust",
+  "host": {
+    "name": "CITADEL-CORE",
+    "user": "cadet",
+    "cwd": "C:\\Citadel"
+  },
+  "story": {
+    "alert": "12:30 · ZONE DRILL · CITADEL CORE",
+    "vex": "Blur your zones together and I'll walk straight through. (Commander Vex, Planet Doom)",
+    "victory": "DOOM ATTACK REPELLED before it started: every system now sits in its correct zone, and nothing crosses straight from public to restricted. Astro: \"One boundary at a time. No shortcuts.\""
+  },
+  "files": {
+    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead zone-drill.txt: five Citadel systems with no zone assigned. Classify each as public, dmz, or restricted.\n\n1. type zone-drill.txt\n2. classify <system> public | dmz | restricted\n",
+    "C:\\Citadel\\zone-drill.txt": "ZONE DRILL\n-----------\nsystem-public-beacon    broadcasts the Citadel's callsign to any passing ship — open to everyone\nsystem-comms-relay      talks to allied fleets outward, and passes verified requests inward\nsystem-starmap-vault    the crew's most sensitive data, never talks to the outside directly\nsystem-guest-terminal   a kiosk visiting allies use, filtered on both sides\nsystem-command-core     Astro's private command systems, reached only through the relay\n"
+  },
+  "users": [
+    {
+      "name": "cadet",
+      "fullName": "Shield Cadet (you)",
+      "groups": [
+        "Users"
+      ],
+      "passwordSet": "09/23/2026",
+      "lastLogon": "Now"
+    }
+  ],
+  "classify": {
+    "system-public-beacon": "system-public-beacon",
+    "system-comms-relay": "system-comms-relay",
+    "system-starmap-vault": "system-starmap-vault",
+    "system-guest-terminal": "system-guest-terminal",
+    "system-command-core": "system-command-core"
+  },
+  "flags": [],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Volt's Drill: read the system list",
+      "body": "Volt: \"Read every system before you place a single one.\" `type zone-drill.txt`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read zone-drill.txt",
+          "check": {
+            "type": "read",
+            "file": "C:\\Citadel\\zone-drill.txt"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Place each system in its zone",
+      "body": "Volt: \"Open to everyone is public. Filtered both ways is dmz. Sensitive and reached only through the dmz is restricted.\" Classify all five systems.",
+      "objectives": [
+        {
+          "id": "s1",
+          "label": "system-public-beacon classified as public",
+          "check": {
+            "type": "classified",
+            "item": "system-public-beacon",
+            "as": "public"
+          }
+        },
+        {
+          "id": "s2",
+          "label": "system-comms-relay classified as dmz",
+          "check": {
+            "type": "classified",
+            "item": "system-comms-relay",
+            "as": "dmz"
+          }
+        },
+        {
+          "id": "s3",
+          "label": "system-starmap-vault classified as restricted",
+          "check": {
+            "type": "classified",
+            "item": "system-starmap-vault",
+            "as": "restricted"
+          }
+        },
+        {
+          "id": "s4",
+          "label": "system-guest-terminal classified as dmz",
+          "check": {
+            "type": "classified",
+            "item": "system-guest-terminal",
+            "as": "dmz"
+          }
+        },
+        {
+          "id": "s5",
+          "label": "system-command-core classified as restricted",
+          "check": {
+            "type": "classified",
+            "item": "system-command-core",
+            "as": "restricted"
+          }
+        }
+      ]
+    }
+  ]
+}

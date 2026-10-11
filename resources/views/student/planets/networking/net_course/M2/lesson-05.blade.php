@@ -96,6 +96,28 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l5.json) complete
         <p class="quiz-explanation"><em>/25 subnets start at .0 and .128. 140 is between 128 and 255, so it belongs to 192.168.10.128/25.</em></p>
     </div>
 
+    <div class="quiz-block" data-q="4">
+        <p class="quiz-prompt">Q4. What is the block size for a /26 subnet mask (255.255.255.192)?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. 64 ✓</li>
+            <li class="quiz-option">B. 32</li>
+            <li class="quiz-option">C. 128</li>
+            <li class="quiz-option">D. 4</li>
+        </ul>
+        <p class="quiz-explanation"><em>The block size is 256 minus the last mask octet. 256 minus 192 is 64, so /26 subnets start every 64 addresses.</em></p>
+    </div>
+
+    <div class="quiz-block" data-q="5">
+        <p class="quiz-prompt">Q5. Rivet has one /24 block and needs 8 separate subnets for 8 decks of the ship. How many bits must he borrow from the host part?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 2</li>
+            <li class="quiz-option">B. 4</li>
+            <li class="quiz-option">C. 1</li>
+            <li class="quiz-option quiz-correct">D. 3 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Borrowing n bits gives 2 to the power of n subnets. 2 to the power of 3 is 8, so borrowing 3 bits gives 8 subnets.</em></p>
+    </div>
+
     <h2 class="section-heading">Relay Lab</h2>
 
     <p class="body-text">
