@@ -38,12 +38,12 @@ class CourseGatingTest extends TestCase
         CourseJoinRequest::create(['crew_id' => $crew->id, 'user_id' => $student->id, 'status' => CourseJoinRequest::ACCEPTED]);
     }
 
-    public function test_a_course_nobody_has_claimed_stays_closed(): void
+    public function test_a_course_with_no_faculty_can_still_be_taken_self_paced(): void
     {
         $student = $this->student();
 
         $this->actingAs($student)->get(route('student.planet', 'networking'))
-            ->assertOk()->assertSee('No captain assigned yet')->assertDontSee('Ask to join');
+            ->assertOk()->assertSee('Self-paced')->assertSee('No class is open yet');
 
         $this->actingAs($student)
             ->get(route('student.planet.play', ['slug' => 'networking', 'course' => 'networking-fundamentals']))
@@ -56,7 +56,7 @@ class CourseGatingTest extends TestCase
         $student = $this->student();
 
         $this->actingAs($student)->get(route('student.planet', 'networking'))
-            ->assertOk()->assertSee('Joy Santos decides who joins')->assertSee('Ask to join');
+            ->assertOk()->assertSee('Join Class')->assertSee('Who is your instructor?')->assertSee('Joy Santos');
 
         $this->actingAs($student)
             ->get(route('student.planet.play', ['slug' => 'networking', 'course' => 'networking-fundamentals']))

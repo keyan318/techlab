@@ -1,0 +1,325 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g5-l3",
+  "title": "Lesson 5.3: MPLS & Traffic Engineering",
+  "host": {
+    "name": "EARTH-PE1",
+    "platform": "ASR1001",
+    "banner": "Cisco IOS XE Software, ASR1001 (Relay Console for TechLab)\nEarth Relay provider edge PE1. Customers: Moonbase (Gi0/4), the Grid (Gi0/3)"
+  },
+  "story": {
+    "alert": "EARTH RELAY · NEW VPN CUSTOMER: THE GRID (AS 65010)",
+    "victory": "The Grid has its own lane on Earth's backbone, next to Moonbase and never mixed up with it. Rivet: \"Same addresses, separate tables. Labels are underrated.\""
+  },
+  "modes": {
+    "vrf": {
+      "prompt": "config-vrf"
+    },
+    "vrf-other": {
+      "prompt": "config-vrf"
+    },
+    "if-g03": {
+      "prompt": "config-if"
+    },
+    "if-other": {
+      "prompt": "config-if"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1690 bytes\n!\nhostname EARTH-PE1\n!\nip vrf MOONBASE\n rd 64500:64600\n route-target both 64500:64600\n!\nmpls label protocol ldp\n!\ninterface GigabitEthernet0/3\n description Customer: the Grid (AS 65010)\n ip address 172.20.0.1 255.255.255.252\n!\ninterface GigabitEthernet0/4\n description Customer: Moonbase (AS 64600)\n ip vrf forwarding MOONBASE\n ip address 172.21.0.1 255.255.255.252\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show mpls forwarding-table",
+      "text": "Local      Outgoing   Prefix           Bytes Label   Outgoing   Next Hop\nLabel      Label      or Tunnel Id     Switched      interface\n16         Pop Label  10.255.0.2/32    0             Gi0/1      10.64.12.2\n17         22         10.255.0.4/32    183420        Gi0/2      10.64.13.3\n18         19         10.255.0.5/32    99210         Gi0/2      10.64.13.3\n24         Pop Label  10.64.24.0/30    0             Gi0/1      10.64.12.2"
+    },
+    {
+      "cmd": "show mpls ldp neighbor",
+      "text": "    Peer LDP Ident: 10.255.0.2:0; Local LDP Ident 10.255.0.1:0\n        State: Oper; Msgs sent/rcvd: 811/806; Downstream\n    Peer LDP Ident: 10.255.0.3:0; Local LDP Ident 10.255.0.1:0\n        State: Oper; Msgs sent/rcvd: 799/802; Downstream"
+    },
+    {
+      "cmd": "show ip vrf",
+      "when": [
+        "rd",
+        "bound"
+      ],
+      "text": "  Name                             Default RD            Protocols   Interfaces\n  MOONBASE                         64500:64600           ipv4        Gi0/4\n  GRID                             64500:65010           ipv4        Gi0/3"
+    },
+    {
+      "cmd": "show ip vrf",
+      "text": "  Name                             Default RD            Protocols   Interfaces\n  MOONBASE                         64500:64600           ipv4        Gi0/4"
+    },
+    {
+      "cmd": "show ip route vrf <word>",
+      "args": [
+        "GRID"
+      ],
+      "when": [
+        "rd",
+        "rt",
+        "bound",
+        "ip-back"
+      ],
+      "sets": [
+        "seen-vrf"
+      ],
+      "text": "Routing Table: GRID\nCodes: C - connected, L - local, B - BGP\n\nC        172.20.0.0/30 is directly connected, GigabitEthernet0/3\nL        172.20.0.1/32 is directly connected, GigabitEthernet0/3\nB        10.0.0.0/8 [20/0] via 172.20.0.2, 00:00:41\nB        192.168.0.0/16 [20/0] via 172.20.0.2, 00:00:41"
+    },
+    {
+      "cmd": "show ip route vrf <word>",
+      "args": [
+        "GRID"
+      ],
+      "text": "% Routing table GRID is empty or the VRF is not finished yet (RD, route-target, interface and its address)."
+    },
+    {
+      "cmd": "show ip route vrf <word>",
+      "args": [
+        "MOONBASE"
+      ],
+      "text": "Routing Table: MOONBASE\n\nC        172.21.0.0/30 is directly connected, GigabitEthernet0/4\nB        10.0.0.0/8 [20/0] via 172.21.0.2, 3d02h\n! Same 10.0.0.0/8 as the Grid. Separate table, so no conflict."
+    },
+    {
+      "cmd": "show mpls traffic-eng tunnels brief",
+      "text": "P2P TUNNELS/LSPs:\nTUNNEL NAME                      DESTINATION      UP IF      DOWN IF    STATE/PROT\nGRID-PRIORITY  (Tunnel1)         10.255.0.4       -          Gi0/3      up/up\n\nExplicit path AVOID-STORM:  P1 -> P3 -> P4 -> PE2\n  (the shortest path P1 -> P2 -> PE2 crosses the storm-damaged P2 link at 98% load)\n\nAstro: which router does the tunnel steer around?  submit AVOID=<router>"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "ip vrf <word>",
+      "args": [
+        "GRID"
+      ],
+      "enters": "vrf"
+    },
+    {
+      "cmd": "ip vrf <word>",
+      "enters": "vrf-other",
+      "reply": "% Saved. Earth's order names the Grid's VRF GRID."
+    },
+    {
+      "mode": "vrf",
+      "cmd": "rd <word>",
+      "args": [
+        "64500:65010"
+      ],
+      "sets": [
+        "rd"
+      ]
+    },
+    {
+      "mode": "vrf",
+      "cmd": "rd <word>",
+      "reply": "% Saved, but Earth assigned RD 64500:65010."
+    },
+    {
+      "mode": "vrf",
+      "cmd": "route-target both <word>",
+      "args": [
+        "64500:65010"
+      ],
+      "sets": [
+        "rt"
+      ]
+    },
+    {
+      "mode": "vrf",
+      "cmd": "route-target export <word>",
+      "args": [
+        "64500:65010"
+      ],
+      "when": [
+        "rt-im"
+      ],
+      "sets": [
+        "rt"
+      ]
+    },
+    {
+      "mode": "vrf",
+      "cmd": "route-target export <word>",
+      "args": [
+        "64500:65010"
+      ],
+      "sets": [
+        "rt-ex"
+      ]
+    },
+    {
+      "mode": "vrf",
+      "cmd": "route-target import <word>",
+      "args": [
+        "64500:65010"
+      ],
+      "when": [
+        "rt-ex"
+      ],
+      "sets": [
+        "rt"
+      ]
+    },
+    {
+      "mode": "vrf",
+      "cmd": "route-target import <word>",
+      "args": [
+        "64500:65010"
+      ],
+      "sets": [
+        "rt-im"
+      ]
+    },
+    {
+      "mode": "vrf",
+      "cmd": "route-target <rest>",
+      "reply": "% Saved, but the Grid's route target is 64500:65010 (both directions)."
+    },
+    {
+      "mode": "vrf-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/3"
+      ],
+      "enters": "if-g03"
+    },
+    {
+      "cmd": "interface <if>",
+      "enters": "if-other"
+    },
+    {
+      "mode": "if-g03",
+      "cmd": "ip vrf forwarding <word>",
+      "args": [
+        "GRID"
+      ],
+      "sets": [
+        "bound"
+      ],
+      "clears": [
+        "ip-back"
+      ],
+      "reply": "% Interface GigabitEthernet0/3 IPv4 disabled and address(es) removed due to enabling VRF GRID"
+    },
+    {
+      "mode": "if-g03",
+      "cmd": "ip vrf forwarding <word>",
+      "reply": "% That VRF is not the Grid's."
+    },
+    {
+      "mode": "if-g03",
+      "cmd": "ip address <ip> <ip>",
+      "args": [
+        "172.20.0.1",
+        "255.255.255.252"
+      ],
+      "when": [
+        "bound"
+      ],
+      "sets": [
+        "ip-back"
+      ]
+    },
+    {
+      "mode": "if-g03",
+      "cmd": "ip address <ip> <ip>",
+      "reply": ""
+    },
+    {
+      "mode": "if-other",
+      "cmd": "<rest>",
+      "hidden": true
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the labels",
+      "body": "Type `enable`, then `show mpls forwarding-table`. A packet arrives with label 17: which label does it leave with? `submit OUT17=<label>`. And with label 16: `submit ACTION16=swap`, `pop` or `drop`?",
+      "objectives": [
+        {
+          "id": "a-17",
+          "label": "Outgoing label for 17 named",
+          "check": {
+            "type": "answer",
+            "value": "OUT17=22"
+          }
+        },
+        {
+          "id": "a-16",
+          "label": "Action for 16 named",
+          "check": {
+            "type": "answer",
+            "value": "ACTION16=pop",
+            "alt": [
+              "ACTION16=pop label"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Give the Grid its own VRF",
+      "body": "Run `show ip vrf`: only Moonbase. In `conf t`: `ip vrf GRID`, `rd 64500:65010`, `route-target both 64500:65010`, `exit`. Then `interface g0/3`, `ip vrf forwarding GRID`. Read the warning: the address is gone. Put it back: `ip address 172.20.0.1 255.255.255.252`. `end`, then `show ip vrf` and `show ip route vrf GRID`.",
+      "objectives": [
+        {
+          "id": "rd",
+          "label": "VRF GRID has RD 64500:65010",
+          "check": {
+            "type": "fact",
+            "fact": "rd"
+          }
+        },
+        {
+          "id": "rt",
+          "label": "VRF GRID imports and exports 64500:65010",
+          "check": {
+            "type": "fact",
+            "fact": "rt"
+          }
+        },
+        {
+          "id": "bound",
+          "label": "Gi0/3 is in VRF GRID",
+          "check": {
+            "type": "fact",
+            "fact": "bound"
+          }
+        },
+        {
+          "id": "ip",
+          "label": "Gi0/3 has its address back",
+          "check": {
+            "type": "fact",
+            "fact": "ip-back"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Saw the Grid's routes in its own table",
+          "check": {
+            "type": "fact",
+            "fact": "seen-vrf"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Follow the TE tunnel",
+      "body": "Run `show mpls traffic-eng tunnels brief`. The Grid's priority tunnel does not take the shortest path. `submit AVOID=<router>` with the router it steers around.",
+      "objectives": [
+        {
+          "id": "a-avoid",
+          "label": "Avoided router named",
+          "check": {
+            "type": "answer",
+            "value": "AVOID=P2"
+          }
+        }
+      ]
+    }
+  ]
+}

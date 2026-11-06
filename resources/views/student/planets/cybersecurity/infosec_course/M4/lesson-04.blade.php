@@ -29,6 +29,17 @@ Syllabus: ITP1232 Unit D.4 Digital Rights Management. --}}
         no matter how many times it's been passed around.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does a watermark do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Stops the file from being copied</li>
+            <li class="quiz-option quiz-correct">B. Proves where a file came from ✓</li>
+            <li class="quiz-option">C. Changes how the file works inside</li>
+            <li class="quiz-option">D. Encrypts the file with a long key</li>
+        </ul>
+        <p class="quiz-explanation"><em>A watermark doesn't change how the file works. It proves where it came from.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -42,6 +53,17 @@ Syllabus: ITP1232 Unit D.4 Digital Rights Management. --}}
         in the leaked copy too — Doom copied the mark along with everything else, because they didn't know it
         was there."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">How can Rivet prove the leaked spec is his?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Doom signed the leaked file</li>
+            <li class="quiz-option">B. The copy has a new password</li>
+            <li class="quiz-option quiz-correct">C. His watermark is in the copy ✓</li>
+            <li class="quiz-option">D. He remembers drawing it once</li>
+        </ul>
+        <p class="quiz-explanation"><em>Doom copied the hidden mark along with everything else, because they didn't know it was there.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -63,6 +85,17 @@ Syllabus: ITP1232 Unit D.4 Digital Rights Management. --}}
             <text x="320" y="150" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Same hidden mark in both = the leaked copy is proven to be Rivet's</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what links the two files?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The same file name</li>
+            <li class="quiz-option">B. The same file size</li>
+            <li class="quiz-option">C. The same Doom relay server</li>
+            <li class="quiz-option quiz-correct">D. The same hidden mark ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>WMK-RIVET-7734 is in both the original and the leaked copy, so the copy is proven to be Rivet's.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

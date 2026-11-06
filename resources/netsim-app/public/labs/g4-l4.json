@@ -1,0 +1,513 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "core-sw",
+      "kind": "switch",
+      "name": "core-sw",
+      "x": 300,
+      "y": 30,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CORE-SW",
+      "stp": {
+        "priority": {
+          "1": 24576
+        }
+      }
+    },
+    {
+      "id": "citadel-srv",
+      "kind": "server",
+      "name": "citadel-srv",
+      "x": 560,
+      "y": 30,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "acc1",
+      "kind": "switch",
+      "name": "acc1",
+      "x": 100,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "ACC1"
+    },
+    {
+      "id": "acc2",
+      "kind": "switch",
+      "name": "acc2",
+      "x": 500,
+      "y": 200,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "ACC2",
+      "stp": {
+        "priority": {
+          "1": 4096
+        }
+      }
+    },
+    {
+      "id": "doom-sw",
+      "kind": "switch",
+      "name": "doom-sw",
+      "x": 100,
+      "y": 380,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DOOM-SW",
+      "stp": {
+        "priority": {
+          "1": 0
+        }
+      }
+    },
+    {
+      "id": "pc1",
+      "kind": "host",
+      "name": "pc1",
+      "x": 0,
+      "y": 320,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.21/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "pc2",
+      "kind": "host",
+      "name": "pc2",
+      "x": 40,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.22/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "pc3",
+      "kind": "host",
+      "name": "pc3",
+      "x": 560,
+      "y": 380,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.23/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "core-sw.eth0-acc1.eth7",
+      "a": [
+        "core-sw",
+        "eth0"
+      ],
+      "b": [
+        "acc1",
+        "eth7"
+      ]
+    },
+    {
+      "id": "core-sw.eth1-acc2.eth7",
+      "a": [
+        "core-sw",
+        "eth1"
+      ],
+      "b": [
+        "acc2",
+        "eth7"
+      ]
+    },
+    {
+      "id": "acc1.eth6-acc2.eth6",
+      "a": [
+        "acc1",
+        "eth6"
+      ],
+      "b": [
+        "acc2",
+        "eth6"
+      ]
+    },
+    {
+      "id": "core-sw.eth7-citadel-srv.eth0",
+      "a": [
+        "core-sw",
+        "eth7"
+      ],
+      "b": [
+        "citadel-srv",
+        "eth0"
+      ]
+    },
+    {
+      "id": "pc1.eth0-acc1.eth0",
+      "a": [
+        "pc1",
+        "eth0"
+      ],
+      "b": [
+        "acc1",
+        "eth0"
+      ]
+    },
+    {
+      "id": "pc2.eth0-acc1.eth1",
+      "a": [
+        "pc2",
+        "eth0"
+      ],
+      "b": [
+        "acc1",
+        "eth1"
+      ]
+    },
+    {
+      "id": "doom-sw.eth0-acc1.eth3",
+      "a": [
+        "doom-sw",
+        "eth0"
+      ],
+      "b": [
+        "acc1",
+        "eth3"
+      ]
+    },
+    {
+      "id": "pc3.eth0-acc2.eth0",
+      "a": [
+        "pc3",
+        "eth0"
+      ],
+      "b": [
+        "acc2",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g4-l4",
+    "title": "Lesson 4.4 — PortFast, BPDU Guard & Root Guard",
+    "blurb": "A rogue switch, a misconfigured one, and a spanning tree to defend.",
+    "steps": [
+      {
+        "title": "Guard the access ports",
+        "body": "On `acc1`, `show spanning-tree`: the root is a switch nobody recognises, on Gi0/4. Protect every user port: `interface range g0/1 - 4`, `spanning-tree portfast`, `spanning-tree bpduguard enable`. Doom's switch keeps sending BPDUs, so Gi0/4 goes err-disabled at once (`show interfaces status`).",
+        "objectives": [
+          {
+            "id": "g4l4-pf1",
+            "label": "acc1 Gi0/1 has PortFast and BPDU Guard",
+            "check": {
+              "type": "iface-config",
+              "device": "acc1",
+              "iface": "eth0",
+              "is": {
+                "portfast": true,
+                "bpduguard": true
+              }
+            }
+          },
+          {
+            "id": "g4l4-pf2",
+            "label": "acc1 Gi0/2 has PortFast and BPDU Guard",
+            "check": {
+              "type": "iface-config",
+              "device": "acc1",
+              "iface": "eth1",
+              "is": {
+                "portfast": true,
+                "bpduguard": true
+              }
+            }
+          },
+          {
+            "id": "g4l4-err",
+            "label": "Doom's switch port (acc1 Gi0/4) is err-disabled",
+            "check": {
+              "type": "stp-port",
+              "device": "acc1",
+              "iface": "eth3",
+              "vlan": 1,
+              "state": "err-disabled"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Guard the root",
+        "body": "Now acc2 is root, with its priority of 4096. On `core-sw`, protect both downlinks: `interface range g0/1 - 2`, `spanning-tree guard root`. core-sw is root again, and the port toward acc2's better BPDUs shows ROOT_Inc in `show spanning-tree`.",
+        "objectives": [
+          {
+            "id": "g4l4-rg1",
+            "label": "core-sw Gi0/1 has Root Guard",
+            "check": {
+              "type": "iface-config",
+              "device": "core-sw",
+              "iface": "eth0",
+              "is": {
+                "rootguard": true
+              }
+            }
+          },
+          {
+            "id": "g4l4-rg2",
+            "label": "core-sw Gi0/2 has Root Guard",
+            "check": {
+              "type": "iface-config",
+              "device": "core-sw",
+              "iface": "eth1",
+              "is": {
+                "rootguard": true
+              }
+            }
+          },
+          {
+            "id": "g4l4-root",
+            "label": "core-sw is the root bridge",
+            "check": {
+              "type": "stp-root",
+              "vlan": 1,
+              "device": "core-sw"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Fix the switch that wanted to be root",
+        "body": "Root Guard is blocking acc2, so pc3 is cut off. Remove the cause: on `acc2`, `no spanning-tree vlan 1 priority`. The superior BPDUs stop, and core-sw's blocked port recovers by itself.",
+        "objectives": [
+          {
+            "id": "g4l4-fwd",
+            "label": "core-sw's port to acc2 (Gi0/2) is forwarding again",
+            "check": {
+              "type": "stp-port",
+              "device": "core-sw",
+              "iface": "eth1",
+              "vlan": 1,
+              "state": "forwarding"
+            }
+          },
+          {
+            "id": "g4l4-p3",
+            "label": "pc3 reaches the Citadel server",
+            "check": {
+              "type": "ping",
+              "from": "pc3",
+              "expect": "success",
+              "toDevice": "citadel-srv"
+            }
+          },
+          {
+            "id": "g4l4-p1",
+            "label": "pc1 reaches the Citadel server",
+            "check": {
+              "type": "ping",
+              "from": "pc1",
+              "expect": "success",
+              "toDevice": "citadel-srv"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

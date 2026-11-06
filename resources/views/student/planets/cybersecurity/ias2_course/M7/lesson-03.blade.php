@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit G.3 Backups (Strategies, Scheduling, Testing, and Storage
         work.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does the 1 in the 3-2-1 rule mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. One copy kept offsite ✓</li>
+            <li class="quiz-option">B. One backup made per year</li>
+            <li class="quiz-option">C. One type of storage media</li>
+            <li class="quiz-option">D. One person who has the key</li>
+        </ul>
+        <p class="quiz-explanation"><em>3 copies, 2 media types, 1 offsite, so a single disaster can't destroy every copy.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit G.3 Backups (Strategies, Scheduling, Testing, and Storage
         and find the backup job has been silently failing for two weeks. "An untested backup," Volt says, "is a
         guess wearing a backup's uniform."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What did Rivet and Volt find when they restored the backup?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The backup matched the original exactly</li>
+            <li class="quiz-option">B. The restore deleted the original starmap</li>
+            <li class="quiz-option quiz-correct">C. The job had been failing for two weeks ✓</li>
+            <li class="quiz-option">D. The backup ran three times every night</li>
+        </ul>
+        <p class="quiz-explanation"><em>An untested backup is a guess. The job had been silently failing for two weeks.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -57,6 +79,17 @@ Syllabus: ITP1333 Unit G.3 Backups (Strategies, Scheduling, Testing, and Storage
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">3-2-1 — and none of it counts until the restore has actually been tested</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, why keep two media types?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. They make every backup go faster</li>
+            <li class="quiz-option">B. One is for the starmap only</li>
+            <li class="quiz-option">C. It halves the storage cost</li>
+            <li class="quiz-option quiz-correct">D. They don't fail the same way ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Different media don't all fail the same way, so one fault can't wipe every copy.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

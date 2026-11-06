@@ -2,8 +2,15 @@ import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { Shell, type Running } from './commands/shell';
 import { WinShell } from './commands/windows/cmd';
+import { IosShell } from './commands/ios/ios';
 import { shellOs } from './os';
-import type { IpDevice } from './engine/ipdevice';
+import { IpDevice } from './engine/ipdevice';
+import type { Device } from './engine/device';
+
+// TechLab: hosts get a Windows (or Linux) console; routers and switches marked `cli: 'ios'` get Cisco IOS.
+export function hasConsole(device: Device | undefined): boolean {
+  return !!device && (device instanceof IpDevice || device.cli === 'ios');
+}
 
 export interface SessionOpts {
   onAfterCommand?: () => void;
@@ -17,7 +24,7 @@ export interface Session {
 
 const sessions = new Map<string, Session>();
 
-export function getSession(device: IpDevice, opts: SessionOpts = {}): Session {
+export function getSession(device: Device, opts: SessionOpts = {}): Session {
   const existing = sessions.get(device.id);
   if (existing) return existing;
 
@@ -36,10 +43,15 @@ export function getSession(device: IpDevice, opts: SessionOpts = {}): Session {
   const fit = new FitAddon();
   term.loadAddon(fit);
 
-  const windows = shellOs() === 'windows';
-  const shell = windows ? new WinShell(device) : new Shell(device);
+  const ios = device.cli === 'ios' ? new IosShell(device) : null;
+  const windows = !ios && shellOs() === 'windows';
+  const shell = ios ?? (windows ? new WinShell(device as IpDevice) : new Shell(device as IpDevice));
   const promptStr = () =>
-    windows ? `C:\\Users\\${device.name}>` : `\x1b[1;32m${device.name}\x1b[0m:\x1b[1;34m~\x1b[0m$ `;
+    ios
+      ? ios.prompt()
+      : windows
+        ? `C:\\Users\\${device.name}>`
+        : `\x1b[1;32m${device.name}\x1b[0m:\x1b[1;34m~\x1b[0m$ `;
   const writeOut = (s: string) => term.write(s.replace(/\n/g, '\r\n'));
 
   let buf = '';
@@ -63,7 +75,7 @@ export function getSession(device: IpDevice, opts: SessionOpts = {}): Session {
     }
     history.push(line);
     hIdx = history.length;
-    if (windows ? trimmed.toLowerCase() === 'cls' : trimmed === 'clear') {
+    if (!ios && (windows ? trimmed.toLowerCase() === 'cls' : trimmed === 'clear')) {
       term.write('\x1b[2J\x1b[H');
       term.write(promptStr());
       return;
@@ -115,7 +127,9 @@ export function getSession(device: IpDevice, opts: SessionOpts = {}): Session {
   });
 
   term.writeln(
-    windows
+    ios
+      ? ios.banner().replace(/\n/g, '\r\n')
+      : windows
       ? `Microsoft Windows [Version 10.0.22631] — NetSim console on ${device.name} (${device.kind})\r\n\x1b[90mType 'help' for the commands you can use.\x1b[0m\r\n`
       : `\x1b[90mNetSim — ${device.name} (${device.kind}). Type 'help' for commands.\x1b[0m`,
   );

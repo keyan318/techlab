@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "At which layer does a switch work?",
+      "options": [
+        "Layer 7 only",
+        "Layer 3",
+        "Layer 4",
+        "Layer 2"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does a router read to pick a path?",
+      "options": [
+        "The port number",
+        "The MAC address",
+        "The cable colour",
+        "The IP address"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Ports in VLAN 10 and VLAN 20 on the same switch. Can they hear each other?",
+      "options": [
+        "Only for broadcast messages",
+        "No, not without a router",
+        "Yes, they share the switch",
+        "Only if they use the same cable"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In Cisco IOS, which command takes you from Router> to Router#?",
+      "options": [
+        "no shutdown",
+        "enable",
+        "conf t",
+        "interface g0/0 now"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which prompt shows you are in global configuration mode?",
+      "options": [
+        "Router#",
+        "Router(config-if)#",
+        "Router(config)#",
+        "Router>"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "You set an IP address on a router port, but it stays down. What did you forget?",
+      "options": [
+        "no shutdown",
+        "show vlan brief",
+        "conf t",
+        "enable secret"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "show ip interface brief says \"administratively down\". What does that mean?",
+      "options": [
+        "The cable is unplugged at the other end of the link",
+        "The port has the wrong subnet mask on it",
+        "The router has run out of memory for the port",
+        "The port was never turned on with no shutdown"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which command puts a switch port in VLAN 10?",
+      "options": [
+        "ip address vlan 10",
+        "switchport access vlan 10",
+        "vlan access switchport 10",
+        "interface vlan 10 access on"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which command lists which switch port is in which VLAN?",
+      "options": [
+        "show interface vlan all",
+        "show running vlan",
+        "show ip route",
+        "show vlan brief"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which command sets ports g0/1 and g0/2 at the same time?",
+      "options": [
+        "interface g0/1 and g0/2",
+        "range interface g0/1 to 2",
+        "interface range g0/1 - 2",
+        "interface g0/1, g0/2 all"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is cloud computing?",
+      "options": [
+        "Building your own data centre by hand",
+        "Renting computing power over a link",
+        "Running all programs on one laptop",
+        "Storing every file on a USB drive"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which cloud trait means it can grow and shrink fast?",
+      "options": [
+        "On-demand self-service",
+        "Rapid elasticity",
+        "Broad network access",
+        "Measured service"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In IaaS, who patches the operating system?",
+      "options": [
+        "The provider",
+        "The app's users",
+        "You do",
+        "Nobody at all"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In PaaS, what do you bring?",
+      "options": [
+        "The operating system",
+        "Your own servers",
+        "The physical network",
+        "Your code and data"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Web mail you just sign in to is which service model?",
+      "options": [
+        "SaaS",
+        "IaaS",
+        "VPC",
+        "PaaS"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does the shared responsibility model describe?",
+      "options": [
+        "Who looks after what: you or the provider",
+        "How many customers share one physical server",
+        "How the bill is split between departments",
+        "Which routers share the routes to the cloud"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which deployment model links your private systems to a public cloud?",
+      "options": [
+        "Hybrid",
+        "Public",
+        "Isolated",
+        "Community"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What runs many virtual machines on one physical server?",
+      "options": [
+        "A hypervisor",
+        "A load balancer",
+        "A VLAN",
+        "A router"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How many bits are in an IPv6 address?",
+      "options": [
+        "256",
+        "128",
+        "32",
+        "64"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why can :: appear only once in an IPv6 address?",
+      "options": [
+        "Because :: is also used to mean the loopback address",
+        "Because routers stop reading at the second ::",
+        "Or nobody could tell how many zeros each hides",
+        "Because IPv6 addresses can only have one zero group"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is 2001:0db8:0000:0000:0000:0000:0000:0001 in short form?",
+      "options": [
+        "2001::db8::1",
+        "21:db8::1",
+        "2001:db8::1",
+        "2001:db8:0:1"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What prefix length does a LAN almost always get in IPv6?",
+      "options": [
+        "/48",
+        "/64",
+        "/24",
+        "/128"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which IPv6 addresses start with fe80?",
+      "options": [
+        "Link-local",
+        "Loopback",
+        "Global unicast",
+        "Multicast"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which IPv6 type is like 192.168.x.x in IPv4?",
+      "options": [
+        "Unique local (fd..)",
+        "Multicast (ff..)",
+        "Global unicast (2..)",
+        "Link-local (fe80..)"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the IPv6 loopback address?",
+      "options": [
+        "fe80::1",
+        "::1",
+        "127::1",
+        "ff02::1"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which kind of address does IPv6 not have at all?",
+      "options": [
+        "Loopback",
+        "Unicast",
+        "Multicast",
+        "Broadcast"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is SLAAC?",
+      "options": [
+        "A protocol that turns IPv6 names into addresses",
+        "A way to turn an IPv6 address back into IPv4",
+        "A device making its own address from a prefix",
+        "A server handing out every IPv6 address from a pool"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does IPv6 use instead of ARP?",
+      "options": [
+        "Router Discovery",
+        "Address Broadcasting",
+        "Neighbor Discovery",
+        "DHCP for IPv4"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is dual stack?",
+      "options": [
+        "Two routers stacked on one link",
+        "Two VLANs sharing one subnet",
+        "IPv6 inside an IPv4 tunnel only",
+        "IPv4 and IPv6 side by side"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which command lets a Cisco router route IPv6?",
+      "options": [
+        "ipv6 unicast-routing",
+        "router ipv6 start-all",
+        "ipv6 enable routing",
+        "ip routing ipv6 on"
+      ],
+      "correct": "A"
+    }
+  ]
+}

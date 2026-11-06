@@ -26,6 +26,17 @@ Syllabus: ITP1333 Unit C.3 Procedures. --}}
         point — restore first, and the evidence you needed is already overwritten.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What makes a good procedure?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Two people doing it act the same way ✓</li>
+            <li class="quiz-option">B. It leaves every step up to judgment</li>
+            <li class="quiz-option">C. It says only why the work matters</li>
+            <li class="quiz-option">D. It can be done in any order you like</li>
+        </ul>
+        <p class="quiz-explanation"><em>A procedure is specific enough that two people following it do the same thing in the same order.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -34,6 +45,17 @@ Syllabus: ITP1333 Unit C.3 Procedures. --}}
         Restore it after, not before. Same two steps, but do them backwards and we lose the one thing that proves
         what Vex's crew actually did."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt stop the cadet from restoring the log first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The backup is always broken</li>
+            <li class="quiz-option">B. Restoring takes too long</li>
+            <li class="quiz-option">C. The cadet has no access</li>
+            <li class="quiz-option quiz-correct">D. The evidence would be lost ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Fingerprint the tampered file first. Restore first, and the proof of what Vex did is overwritten.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -50,6 +72,17 @@ Syllabus: ITP1333 Unit C.3 Procedures. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Same two steps, wrong order — and the evidence is gone before it's captured</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is step 1?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Restore backup</li>
+            <li class="quiz-option">B. Report to Astro now</li>
+            <li class="quiz-option quiz-correct">C. Preserve evidence ✓</li>
+            <li class="quiz-option">D. Delete the file</li>
+        </ul>
+        <p class="quiz-explanation"><em>Step 1 is preserve the evidence (hash). Step 2 is restore from backup.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

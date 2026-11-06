@@ -39,6 +39,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l3.js
         guessing, but by checking against a rulebook that's already been through the wringer elsewhere.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which NIST CSF function means noticing an attack as it happens?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Detect ✓</li>
+            <li class="quiz-option">B. Identify</li>
+            <li class="quiz-option">C. Protect</li>
+            <li class="quiz-option">D. Recover</li>
+        </ul>
+        <p class="quiz-explanation"><em>Detect is about sensors, logs and monitoring. Identify is knowing assets, Protect is locking down, Recover is getting back to normal.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -55,6 +66,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l3.js
         up empty: nothing the crew has built actually <em>detects</em> a tampered backup before it's restored.
         Astro: "Found our gap. Guesses don't scale. A framework does."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What gap did the crew find?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Nothing protects the relay console</li>
+            <li class="quiz-option quiz-correct">B. Nothing detects a tampered backup ✓</li>
+            <li class="quiz-option">C. There is no inventory of the assets</li>
+            <li class="quiz-option">D. Nobody disabled the svc_update account</li>
+        </ul>
+        <p class="quiz-explanation"><em>Recover had no Detect step: nothing checked a backup was clean before it was restored.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -89,6 +111,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l3.js
             <text x="320" y="145" text-anchor="middle" font-size="13" fill="#333">Five functions, five real defenses — one gap found by checking the framework, not luck.</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which function is disabling svc_update?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Detect</li>
+            <li class="quiz-option">B. Identify</li>
+            <li class="quiz-option quiz-correct">C. Respond ✓</li>
+            <li class="quiz-option">D. Recover</li>
+        </ul>
+        <p class="quiz-explanation"><em>Disabling svc_update and closing its port is acting on a detected attack: Respond.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

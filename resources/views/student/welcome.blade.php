@@ -3,24 +3,32 @@
   picks a codename, then "welcome to the crew" saves both. With $intro = false it is just the builder with
   the codename under it (change your look or codename).
   The astronaut is drawn here in the browser from the same layers AvatarService draws on the server.
+  $captain = true is the faculty version (OnboardingController::captainWelcome/captainEdit): Astro welcomes
+  a new Captain, only the captain-only animals and suits are offered, and there is no codename step.
 --}}
 @php
-  $first = explode(' ', trim($user->name))[0] ?: 'Cadet';
-  $lines = [
+  $first = explode(' ', trim($user->name))[0] ?: ($captain ? 'Captain' : 'Astronaut');
+  $lines = $captain ? [
+    "Welcome aboard, Captain {$first}! I'm Astro, the AI tutor who flies with your astronauts.",
+    'Our home planet, Codexia, is under threat from the aliens of Planet Doom, and our astronauts need someone to lead them.',
+    "From the bridge you'll run your crews, build quizzes, share materials and see how every astronaut is doing. I'll help them learn along the way.",
+    "But a captain needs a uniform that says who's in charge. Pick your animal and let's suit you up!",
+  ] : [
     "Hey there, {$first}! I'm Astro, Captain of the TechLab crew.",
-    'Our home planet, Codexia, is under threat from the aliens of Planet Doom. We need new cadets, fast!',
+    'Our home planet, Codexia, is under threat from the aliens of Planet Doom. We need new astronauts, fast!',
     "You'll learn to code, build networks and defend systems, one mission at a time, earning XP and gems along the way.",
-    "But every cadet needs a spacesuit first. Pick your animal and let's suit you up!",
+    "But every astronaut needs a spacesuit first. Pick your animal and let's suit you up!",
   ];
   // Back from a failed save: open on the step that needs fixing.
-  $startStep = $errors->any() ? ($intro && $errors->has('codename') ? 'name' : 'build') : null;
+  $startStep = $errors->any() ? ($intro && ! $captain && $errors->has('codename') ? 'name' : 'build') : null;
+  $who = $captain ? 'captain' : 'astronaut';
 @endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ $intro ? 'Welcome aboard' : 'Your astronaut' }} · TechLab</title>
+  <title>{{ $intro ? 'Welcome aboard' : 'Your '.$who }} · TechLab</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
   <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
@@ -92,6 +100,9 @@
     .cn-input:focus { box-shadow: 0 -3px 0 0 #14a0ff, 0 3px 0 0 #14a0ff, -3px 0 0 0 #14a0ff, 3px 0 0 0 #14a0ff, 0 0 0 6px rgba(20,160,255,.18); }
     .cn-input[aria-invalid="true"] { box-shadow: 0 -3px 0 0 #ff6b81, 0 3px 0 0 #ff6b81, -3px 0 0 0 #ff6b81, 3px 0 0 0 #ff6b81; }
     .px-btn:disabled { opacity: .5; cursor: not-allowed; filter: none; transform: none; }
+    /* XP price tag on an animal or suit the student hasn't bought yet */
+    .price { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; background: #d6f3ff; color: #0b4f7a; font-family: 'Pixelify Sans', sans-serif; font-size: 12px; line-height: 1.2; box-shadow: inset 0 -2px 0 rgba(0,0,0,.18); }
+    .opt[data-locked="true"] svg { opacity: .55; }
     .sect { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: rgb(var(--c-muted)); }
 
     /* "Welcome to the crew": stars burst out once around the finished astronaut */
@@ -109,7 +120,7 @@
   <div class="space" aria-hidden="true"></div>
 
   <main class="mx-auto flex min-h-screen max-w-[1100px] flex-col px-4 pb-12 pt-8 sm:px-8"
-        x-data="welcome(@js($avatarConfig), @js($look), @js($lines), @js($intro), @js($codename), @js(route('student.codename.check')), @js($startStep), @js($errors->first('codename') ?: null), @js($user->codename !== null || old('codename') !== null))" x-cloak>
+        x-data="welcome(@js($avatarConfig), @js($look), @js($lines), @js($intro), @js($codename), @js($captain ? null : route('student.codename.check')), @js($startStep), @js($errors->first('codename') ?: null), @js($user->codename !== null || old('codename') !== null), @js($captain), @js($shop))" x-cloak>
 
     {{-- Progress + Skip (onboarding) / Back (changing your look later) --}}
     <div class="flex items-center gap-6">
@@ -117,7 +128,7 @@
         <div class="ob-bar flex-1" role="progressbar" aria-label="Onboarding progress" :aria-valuenow="Math.round(progress)" aria-valuemin="0" aria-valuemax="100"><i :style="`width:${progress}%`"></i></div>
         <button type="button" class="font-display text-[17px] font-medium text-muted transition-colors hover:text-ink" x-show="step === 'talk'" @click="toBuilder()">Skip</button>
       @else
-        <a href="{{ route('student.dashboard') }}" class="font-display text-[17px] font-medium text-muted transition-colors hover:text-ink">← Back</a>
+        <a href="{{ $homeUrl }}" class="font-display text-[17px] font-medium text-muted transition-colors hover:text-ink">← Back</a>
       @endif
     </div>
 
@@ -130,7 +141,7 @@
       <div class="px-card bubble-up mt-10 w-full max-w-[860px] px-7 py-6" aria-live="polite">
         <p class="px-font min-h-[3.2em] text-[clamp(1.05rem,2.2vw,1.45rem)] leading-snug"><span x-text="typed"></span><span class="caret" x-show="typing" aria-hidden="true"></span></p>
       </div>
-      <button type="button" class="px-btn px-btn-blue mt-10 w-[min(320px,80vw)]" @click="next()" x-text="typing ? 'Continue' : (line === lines.length - 1 ? 'Make my astronaut' : 'Continue')"></button>
+      <button type="button" class="px-btn px-btn-blue mt-10 w-[min(320px,80vw)]" @click="next()" x-text="typing ? 'Continue' : (line === lines.length - 1 ? (captain ? 'Suit me up' : 'Make my astronaut') : 'Continue')"></button>
     </section>
     @endif
 
@@ -140,7 +151,11 @@
       <header class="flex items-center gap-5">
         <x-astro-mascot class="bob pix h-auto w-16 flex-none sm:w-20" />
         <p class="px-card px-bubble px-font min-w-0 flex-1 px-5 py-4 text-[clamp(1rem,2vw,1.3rem)]">
-          {{ $intro ? "First, let's choose your look. You can switch this up later, too." : 'Looking sharp, Cadet. Change anything you like.' }}
+          @if ($captain)
+            {{ $intro ? 'Choose your look, Captain. Your astronauts will see it on their Crew page, and you can change it any time.' : 'Looking sharp, Captain. Change anything you like.' }}
+          @else
+            {{ $intro ? "First, let's choose your look. You can switch this up later, too." : 'Looking sharp, Astronaut. Change anything you like.' }}
+          @endif
         </p>
       </header>
 
@@ -173,14 +188,33 @@
           </div>
 
           <div class="flex-1 overflow-y-auto p-6" style="max-height: 470px">
+            {{-- Trying on an animal or suit they haven't bought: what it costs, a button to buy it, and the Shop --}}
+            <template x-if="shop">
+              <div class="px-card mb-6 flex flex-wrap items-center gap-3 p-4" x-show="lockedItem" aria-live="polite">
+                <div class="min-w-0 flex-1">
+                  <p class="px-font text-[16px]" x-text="lockedItem ? `${lockedItem.label} ${lockedItem.kind} · ${lockedItem.xp} XP` : ''"></p>
+                  <p class="text-[13px] text-muted">
+                    <span x-text="buyError || (lockedItem && shop.xp >= lockedItem.xp ? `You have ${shop.xp} XP.` : `You have ${shop.xp} XP. Finish lessons to earn ${lockedItem ? lockedItem.xp - shop.xp : 0} more!`)"></span>
+                    <a :href="shop.shopUrl" class="text-[#4fa8ff] underline-offset-4 hover:underline">Visit the Shop</a>
+                  </p>
+                </div>
+                <button type="button" class="px-btn px-btn-blue" data-sfx="off" @click="buyItem()" :disabled="buying || !lockedItem || shop.xp < lockedItem.xp"
+                        x-text="buying ? 'Buying…' : `Buy for ${lockedItem ? lockedItem.xp : 0} XP`"></button>
+              </div>
+            </template>
             {{-- Animal --}}
             <div x-show="tab === 'animal'" id="panel-animal" role="tabpanel" aria-labelledby="tab-animal">
               <p class="sect">Animal</p>
-              <div class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5" role="radiogroup" aria-label="Animal">
+              <div class="mt-3 grid grid-cols-3 gap-2 {{ $captain ? '' : 'sm:grid-cols-5' }}" role="radiogroup" aria-label="Animal">
                 <template x-for="(a, key) in cfg.animals" :key="key">
-                  <button type="button" class="opt gap-1 px-1 pb-2 pt-3" role="radio" :aria-checked="(look.animal === key).toString()" @click="setAnimal(key)">
+                  <button type="button" class="opt gap-1 px-1 pb-2 pt-3" role="radio" :aria-checked="(look.animal === key).toString()" :data-locked="locked('animal', key).toString()"
+                          :aria-label="locked('animal', key) ? `${a.label}, costs ${a.xp} XP` : a.label" @click="setAnimal(key)">
                     <svg class="pix h-16 w-auto" viewBox="3 0 18 18" aria-hidden="true" x-html="svg({ ...withAnimal(key), helmet: false })"></svg>
                     <span class="opt-label" x-text="a.label"></span>
+                    <span class="price" x-show="locked('animal', key)" aria-hidden="true">
+                      <x-px-icon name="star" :size="12" />
+                      <span x-text="`${a.xp} XP`"></span>
+                    </span>
                   </button>
                 </template>
               </div>
@@ -200,9 +234,14 @@
               <p class="sect">Design</p>
               <div class="mt-3 grid grid-cols-3 gap-2" role="radiogroup" aria-label="Suit design">
                 <template x-for="(s, key) in cfg.suits" :key="key">
-                  <button type="button" class="opt gap-1 px-1 pb-2 pt-3" role="radio" :aria-checked="(look.suit === key).toString()" @click="set('suit', key)">
+                  <button type="button" class="opt gap-1 px-1 pb-2 pt-3" role="radio" :aria-checked="(look.suit === key).toString()" :data-locked="locked('suit', key).toString()"
+                          :aria-label="locked('suit', key) ? `${s.label}, costs ${s.xp} XP` : s.label" @click="set('suit', key)">
                     <svg class="pix h-24 w-auto" viewBox="0 0 24 30" aria-hidden="true" x-html="svg({ ...look, suit: key, helmet: false })"></svg>
                     <span class="opt-label" x-text="s.label"></span>
+                    <span class="price" x-show="locked('suit', key)" aria-hidden="true">
+                      <x-px-icon name="star" :size="12" />
+                      <span x-text="`${s.xp} XP`"></span>
+                    </span>
                   </button>
                 </template>
               </div>
@@ -245,7 +284,7 @@
         </div>
       </div>
 
-      @unless ($intro)
+      @unless ($intro || $captain)
         <div class="px-card mt-6 p-6">
           @include('student.partials.codename-field', ['id' => 'edit'])
           <p class="text-[14px] text-muted">Your crew sees this on the leaderboard instead of your full name.</p>
@@ -253,17 +292,20 @@
       @endunless
 
       <div class="mt-8 flex flex-col items-center gap-4">
+        <p class="text-[14px] text-[#ff6b81]" x-show="suitLocked" x-text="lockedItem ? `Get the ${lockedItem.label} ${lockedItem.kind} in the Shop, or pick one you own, to save your look.` : ''"></p>
+        @error('suit')<p class="text-[14px] text-[#ff6b81]" x-show="!suitLocked">{{ $message }}</p>@enderror
+        @error('animal')<p class="text-[14px] text-[#ff6b81]" x-show="!suitLocked">{{ $message }}</p>@enderror
         @if ($intro)
-          <button type="button" class="px-btn px-btn-blue w-[min(320px,80vw)]" @click="toName()">Looks good!</button>
-          <a href="{{ route('student.dashboard') }}" class="text-[14px] text-muted underline-offset-4 hover:text-ink hover:underline">I'll do this later</a>
+          <button type="button" class="px-btn px-btn-blue w-[min(320px,80vw)]" @click="{{ $captain ? 'finish()' : 'toName()' }}" :disabled="suitLocked">Looks good!</button>
+          <a href="{{ $homeUrl }}" class="text-[14px] text-muted underline-offset-4 hover:text-ink hover:underline">I'll do this later</a>
         @else
-          <button type="submit" form="avatar-form" class="px-btn px-btn-blue w-[min(320px,80vw)]" :disabled="codenameState === 'bad'">Save changes</button>
+          <button type="submit" form="avatar-form" class="px-btn px-btn-blue w-[min(320px,80vw)]" :disabled="codenameState === 'bad' || suitLocked">Save changes</button>
         @endif
       </div>
     </section>
 
-    {{-- ─── 3. Pick a codename ─── --}}
-    @if ($intro)
+    {{-- ─── 3. Pick a codename (astronauts only) ─── --}}
+    @if ($intro && ! $captain)
       <section x-show="step === 'name'" class="flex flex-1 flex-col items-center justify-center py-8"
                x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="opacity-0 translate-y-3">
         <header class="flex w-full max-w-[860px] items-center gap-5">
@@ -299,33 +341,39 @@
         </div>
         <div class="mt-8 flex w-full max-w-[860px] items-center gap-5">
           <x-astro-mascot class="bob pix h-auto w-16 flex-none" />
-          <p class="px-card px-bubble px-font min-w-0 flex-1 px-5 py-4 text-[clamp(1.05rem,2.2vw,1.4rem)]">Welcome to the crew, <span x-text="codename"></span>! Your first mission is waiting.</p>
+          @if ($captain)
+            <p class="px-card px-bubble px-font min-w-0 flex-1 px-5 py-4 text-[clamp(1.05rem,2.2vw,1.4rem)]">Welcome to the bridge, Captain {{ $first }}! Your crew is waiting for orders.</p>
+          @else
+            <p class="px-card px-bubble px-font min-w-0 flex-1 px-5 py-4 text-[clamp(1.05rem,2.2vw,1.4rem)]">Welcome to the crew, <span x-text="codename"></span>! Your first mission is waiting.</p>
+          @endif
         </div>
         <div class="mt-10 flex flex-col items-center gap-4">
-          <button type="submit" form="avatar-form" class="px-btn px-btn-yellow w-[min(320px,80vw)]">Start my mission</button>
+          <button type="submit" form="avatar-form" class="px-btn px-btn-blue w-[min(320px,80vw)]">{{ $captain ? 'Take command' : 'Start my mission' }}</button>
           <button type="button" class="text-[14px] text-muted underline-offset-4 hover:text-ink hover:underline" @click="step = 'build'">Change something</button>
         </div>
       </section>
     @endif
 
-    <form id="avatar-form" method="POST" action="{{ route('student.avatar.save') }}" class="hidden">
+    <form id="avatar-form" method="POST" action="{{ $saveUrl }}" class="hidden">
       @csrf
       @if ($intro)<input type="hidden" name="onboarding" value="1">@endif
       <template x-for="key in ['animal', 'coat', 'suit', 'suit_color', 'patch', 'visor']" :key="key">
         <input type="hidden" :name="key" :value="look[key]">
       </template>
       <input type="hidden" name="helmet" :value="look.helmet ? 1 : 0">
-      <input type="hidden" name="codename" :value="codename">
+      @unless ($captain)<input type="hidden" name="codename" :value="codename">@endunless
     </form>
   </main>
 
   <script>
-    function welcome(cfg, look, lines, intro, codename, checkUrl, startStep, codenameError, codenameTouched) {
+    function welcome(cfg, look, lines, intro, codename, checkUrl, startStep, codenameError, codenameTouched, captain, shop) {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const icon = (d) => `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 
       return {
-        cfg, look, lines, intro, codename, codenameTouched,
+        cfg, look, lines, intro, codename, codenameTouched, captain,
+        // Animals and suits bought with XP: { xp, owned: { animal, suit }, buyUrl, shopUrl } for students, null for captains.
+        shop, buying: false, buyError: '',
         step: startStep || (intro ? 'talk' : 'build'),
         line: 0, typed: '', typing: false, timer: null,
         // Codename check: 'idle' (not checked yet), 'checking', 'ok' (free) or 'bad' (with the reason in codenameNote).
@@ -340,11 +388,12 @@
 
         init() {
           if (this.step === 'talk') this.say(0);
-          if (!codenameError) this.checkCodename(true);
+          if (!captain && !codenameError) this.checkCodename(true);
         },
 
         get progress() {
-          const total = this.lines.length + 3;
+          // Captains skip the codename step.
+          const total = this.lines.length + (this.captain ? 2 : 3);
           const at = this.step === 'talk' ? this.line + 1 : this.step === 'build' ? this.lines.length + 1 : this.step === 'name' ? this.lines.length + 2 : total;
           return (at / total) * 100;
         },
@@ -368,8 +417,8 @@
         },
         toBuilder() { clearInterval(this.timer); this.typing = false; this.step = 'build'; window.scrollTo({ top: 0 }); },
         // The first idea was rolled before they picked an animal: roll one for their animal instead.
-        toName() { if (!this.codenameTouched) this.rollCodename(); this.step = 'name'; window.scrollTo({ top: 0 }); this.$nextTick(() => document.getElementById('codename-intro')?.focus()); },
-        finish() { if (this.codenameState !== 'ok') return; this.step = 'done'; window.scrollTo({ top: 0 }); },
+        toName() { if (this.suitLocked) return; if (!this.codenameTouched) this.rollCodename(); this.step = 'name'; window.scrollTo({ top: 0 }); this.$nextTick(() => document.getElementById('codename-intro')?.focus()); },
+        finish() { if (!this.captain && this.codenameState !== 'ok') return; this.step = 'done'; window.scrollTo({ top: 0 }); },
         moveTab(d) {
           const i = (this.tabs.findIndex(t => t.id === this.tab) + d + this.tabs.length) % this.tabs.length;
           this.tab = this.tabs[i].id;
@@ -386,10 +435,45 @@
         setAnimal(animal) { if (this.look.animal === animal) return; this.look = this.withAnimal(animal); this.pop(); },
         shuffle() {
           const any = (o) => { const k = Object.keys(o); return k[Math.floor(Math.random() * k.length)]; };
-          const animal = any(this.cfg.animals);
-          this.look = { animal, coat: any(this.cfg.animals[animal].coats), suit: any(this.cfg.suits), suit_color: any(this.cfg.suitColors),
+          const mine = (kind, all) => this.shop ? Object.fromEntries(this.shop.owned[kind].map(k => [k, 1])) : all;
+          const animal = any(mine('animal', this.cfg.animals));
+          const suits = mine('suit', this.cfg.suits);
+          this.look = { animal, coat: any(this.cfg.animals[animal].coats), suit: any(suits), suit_color: any(this.cfg.suitColors),
             patch: any(this.cfg.patches), helmet: Math.random() < .5, visor: any(this.cfg.visors) };
           this.pop(true);
+        },
+
+        // ─── animals and suits bought with XP through the Shop (the server checks the price and the XP again) ───
+        locked(kind, key) { return !!this.shop && !this.shop.owned[kind].includes(key); },
+        get lockedItem() {
+          const kind = this.locked('animal', this.look.animal) ? 'animal' : (this.locked('suit', this.look.suit) ? 'suit' : null);
+          if (!kind) return null;
+          const key = this.look[kind], item = (kind === 'animal' ? this.cfg.animals : this.cfg.suits)[key];
+          return { kind, key, label: item.label, xp: item.xp || 0 };
+        },
+        get suitLocked() { return this.lockedItem !== null; },
+        async buyItem() {
+          const item = this.lockedItem;
+          if (!item || this.buying) return;
+          this.buying = true; this.buyError = '';
+          try {
+            const res = await fetch(this.shop.buyUrl.replace('__kind__', item.kind).replace('__key__', encodeURIComponent(item.key)), { method: 'POST',
+              headers: { Accept: 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content } });
+            const data = await res.json().catch(() => ({}));
+            if (typeof data.xp === 'number') this.shop.xp = data.xp;
+            if (res.ok && data.ok) {
+              this.shop.owned = { animal: data.owned.animal, suit: data.owned.suit };
+              window.techlabSfx?.play('win');
+              this.pop(true);
+            } else {
+              this.buyError = data.error || "Couldn't buy it. Try again!";
+              window.techlabSfx?.play('lose');
+            }
+          } catch (e) {
+            this.buyError = "Couldn't reach the Shop. Check your connection and try again.";
+          } finally {
+            this.buying = false;
+          }
         },
 
         // ─── codename (same rules as App\Services\AvatarService::codenameProblem; the server has the last word) ───
@@ -436,7 +520,7 @@
         describe() {
           const l = this.look;
           const a = this.cfg.animals[l.animal];
-          return `Your astronaut: a ${a.coats[l.coat].label.toLowerCase()} ${a.label.toLowerCase()} in a ${l.suit_color} ${this.cfg.suits[l.suit].label.toLowerCase()} suit, ${l.helmet ? 'helmet on' : 'helmet off'}`;
+          return `Your ${this.captain ? 'captain' : 'astronaut'}: a ${a.coats[l.coat].label.toLowerCase()} ${a.label.toLowerCase()} in a ${l.suit_color} ${this.cfg.suits[l.suit].label.toLowerCase()} suit, ${l.helmet ? 'helmet on' : 'helmet off'}`;
         },
 
         // ─── drawing (same rules as App\Services\AvatarService::pixels) ───

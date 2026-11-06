@@ -1,0 +1,514 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "core",
+      "kind": "router",
+      "name": "core",
+      "x": 300,
+      "y": 20,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.1.0.1/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.1.0.5/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.100.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CORE",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.1.0.0",
+            "wildcard": "0.0.0.7",
+            "area": 0
+          },
+          {
+            "addr": "192.168.100.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth2"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "grid-srv",
+      "kind": "server",
+      "name": "grid-srv",
+      "x": 560,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Grid server: reached through the virtual gateway."
+      }
+    },
+    {
+      "id": "dist-a",
+      "kind": "router",
+      "name": "dist-a",
+      "x": 120,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.1.0.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.60.2/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DIST-A",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.1.0.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.60.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth1"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "dist-b",
+      "kind": "router",
+      "name": "dist-b",
+      "x": 480,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.1.0.6/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.60.3/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DIST-B",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.1.0.4",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.60.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth1"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "acc",
+      "kind": "switch",
+      "name": "acc",
+      "x": 300,
+      "y": 290,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "ACC",
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "access",
+          "portfast": true
+        },
+        "eth1": {
+          "mode": "access",
+          "portfast": true
+        }
+      }
+    },
+    {
+      "id": "pc1",
+      "kind": "host",
+      "name": "pc1",
+      "x": 160,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.60.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "pc2",
+      "kind": "host",
+      "name": "pc2",
+      "x": 440,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.22/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.60.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "core.eth0-dist-a.eth0",
+      "a": [
+        "core",
+        "eth0"
+      ],
+      "b": [
+        "dist-a",
+        "eth0"
+      ]
+    },
+    {
+      "id": "core.eth1-dist-b.eth0",
+      "a": [
+        "core",
+        "eth1"
+      ],
+      "b": [
+        "dist-b",
+        "eth0"
+      ]
+    },
+    {
+      "id": "core.eth2-grid-srv.eth0",
+      "a": [
+        "core",
+        "eth2"
+      ],
+      "b": [
+        "grid-srv",
+        "eth0"
+      ]
+    },
+    {
+      "id": "dist-a.eth1-acc.eth6",
+      "a": [
+        "dist-a",
+        "eth1"
+      ],
+      "b": [
+        "acc",
+        "eth6"
+      ]
+    },
+    {
+      "id": "dist-b.eth1-acc.eth7",
+      "a": [
+        "dist-b",
+        "eth1"
+      ],
+      "b": [
+        "acc",
+        "eth7"
+      ]
+    },
+    {
+      "id": "pc1.eth0-acc.eth0",
+      "a": [
+        "pc1",
+        "eth0"
+      ],
+      "b": [
+        "acc",
+        "eth0"
+      ]
+    },
+    {
+      "id": "pc2.eth0-acc.eth1",
+      "a": [
+        "pc2",
+        "eth0"
+      ],
+      "b": [
+        "acc",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g3-l4",
+    "title": "Lesson 3.4 — First Hop Redundancy",
+    "blurb": "Two gateway routers, one virtual address, zero dark hangars.",
+    "steps": [
+      {
+        "title": "Create the virtual gateway",
+        "body": "The PCs' gateway 192.168.60.1 belongs to nobody yet: `ping 192.168.60.1` from pc1 fails. On both `dist-a` and `dist-b`: `interface g0/1`, then `standby 10 ip 192.168.60.1`. `show standby brief` shows one Active and one Standby.",
+        "objectives": [
+          {
+            "id": "g3l4-gw",
+            "label": "pc1 reaches its gateway 192.168.60.1",
+            "check": {
+              "type": "ping",
+              "from": "pc1",
+              "expect": "success",
+              "toAddr": "192.168.60.1"
+            }
+          },
+          {
+            "id": "g3l4-srv",
+            "label": "pc1 reaches the Grid server",
+            "check": {
+              "type": "ping",
+              "from": "pc1",
+              "expect": "success",
+              "toDevice": "grid-srv"
+            }
+          },
+          {
+            "id": "g3l4-srv2",
+            "label": "pc2 reaches the Grid server",
+            "check": {
+              "type": "ping",
+              "from": "pc2",
+              "expect": "success",
+              "toDevice": "grid-srv"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Make dist-a the boss",
+        "body": "dist-a has the faster uplink, so it should be active whenever it is up. On `dist-a`, `interface g0/1`: `standby 10 priority 110` and `standby 10 preempt`. Preempt is what lets it take the role back after a reboot.",
+        "objectives": [
+          {
+            "id": "g3l4-act",
+            "label": "dist-a is the active router for group 10",
+            "check": {
+              "type": "fhrp-active",
+              "device": "dist-a",
+              "group": 10,
+              "proto": "hsrp"
+            }
+          },
+          {
+            "id": "g3l4-pre",
+            "label": "dist-a has preempt",
+            "check": {
+              "type": "iface-config",
+              "device": "dist-a",
+              "iface": "eth1",
+              "is": {
+                "fhrpPreempt": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Survive a lost uplink",
+        "body": "Volt: \"Pull the plug, on paper.\" If dist-a's hangar port dies, dist-b takes over by itself. But if dist-a loses its uplink to the core, dist-a is still Active, with nowhere to send traffic. On `dist-a` g0/1: `standby 10 track g0/0 20` (110 minus 20 is 90, below dist-b's 100). On `dist-b` g0/1: `standby 10 preempt`, so it takes over when dist-a drops below it. The grader cuts each link for a moment and follows the traffic.",
+        "objectives": [
+          {
+            "id": "g3l4-trk",
+            "label": "dist-a tracks its uplink Gi0/0",
+            "check": {
+              "type": "iface-config",
+              "device": "dist-a",
+              "iface": "eth1",
+              "is": {
+                "fhrpTrack": "eth0"
+              }
+            }
+          },
+          {
+            "id": "g3l4-preb",
+            "label": "dist-b has preempt",
+            "check": {
+              "type": "iface-config",
+              "device": "dist-b",
+              "iface": "eth1",
+              "is": {
+                "fhrpPreempt": true
+              }
+            }
+          },
+          {
+            "id": "g3l4-s1",
+            "label": "pc1 still reaches the Grid server if dist-a's hangar port fails",
+            "check": {
+              "type": "survives",
+              "from": "pc1",
+              "toDevice": "grid-srv",
+              "cut": {
+                "device": "dist-a",
+                "iface": "eth1"
+              }
+            }
+          },
+          {
+            "id": "g3l4-s2",
+            "label": "pc2 still reaches the Grid server if dist-a loses its core link",
+            "check": {
+              "type": "survives",
+              "from": "pc2",
+              "toDevice": "grid-srv",
+              "cut": {
+                "device": "dist-a",
+                "iface": "eth0"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

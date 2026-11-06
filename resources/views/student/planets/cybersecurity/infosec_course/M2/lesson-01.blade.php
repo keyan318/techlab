@@ -33,6 +33,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l1.js
         should. A file that protects itself survives a mistake at the door.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does data-centric security protect?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Only the front door</li>
+            <li class="quiz-option">B. Only the network cable</li>
+            <li class="quiz-option">C. Only the login screen</li>
+            <li class="quiz-option quiz-correct">D. The data itself ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Instead of only guarding the door, it locks the file itself, so even someone who gets in can't read it.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -53,6 +64,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l1.js
         they get everything. The crew roster is public — names only, nothing to protect. Classify both, then lock
         the secret one down so `doom_intern` is denied, even while logged in."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why was the captured doom_intern account a problem?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It had changed all the passwords</li>
+            <li class="quiz-option">B. It was locked out of the console for good now</li>
+            <li class="quiz-option quiz-correct">C. It could still read the starmap copy ✓</li>
+            <li class="quiz-option">D. It had deleted the crew roster</li>
+        </ul>
+        <p class="quiz-explanation"><em>Anyone logged in at all could read the file. The door was never the only way in.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -81,6 +103,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l1.js
             <text x="520" y="133" text-anchor="middle" font-size="12" fill="#4a35b8">classified public — no lock needed</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, why does crew-roster.txt need no lock?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. It is classified public ✓</li>
+            <li class="quiz-option">B. It is already deleted</li>
+            <li class="quiz-option">C. It is the secret starmap copy</li>
+            <li class="quiz-option">D. It belongs to Doom now</li>
+        </ul>
+        <p class="quiz-explanation"><em>The roster is names only, so it is public. The starmap copy is secret, so it gets the lock.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

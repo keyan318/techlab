@@ -6,6 +6,7 @@ use App\Exceptions\AttachmentException;
 use App\Exceptions\NvidiaNimException;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Services\AiXpService;
 use App\Services\AstroRouter;
 use App\Services\AttachmentService;
 use App\Services\CourseMaterialSourceService;
@@ -30,6 +31,16 @@ class ChatController extends Controller
         protected AstroRouter $router
     ) {}
 
+    /** GET /chat/xp: the student's XP, today's free Astro uses left, and the prices. */
+    public function xp(): JsonResponse
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        return response()->json(app(AiXpService::class)->status(Auth::user()));
+    }
+
     /**
      * Show the chat interface.
      */
@@ -42,7 +53,7 @@ class ChatController extends Controller
         }
 
         if ((Auth::user()->role ?? 'student') === 'faculty') {
-            return redirect(route('faculty.chat'));
+            return redirect(route('faculty.dashboard'));
         }
 
         return view('student.chat', [
@@ -251,6 +262,16 @@ class ChatController extends Controller
             }
         }
         $attachmentItems = $attachments['items'];
+
+        // Astro costs XP once today's free messages are gone (a message with a file costs more).
+        // Checked now (one read), paid only after Astro has answered — a failed answer is free.
+        $xpFeature = $attachmentItems ? 'chat_file' : 'chat';
+        $charge = app(AiXpService::class)->quote(Auth::user(), $xpFeature);
+        if (! $charge['ok']) {
+            return response()->json(['error' => $charge['error'], 'kind' => 'xp', 'cost' => $charge['cost'], 'balance' => $charge['balance']], 402);
+        }
+        $charge['feature'] = $xpFeature;
+
         $visionModel = $attachments['images'] ? (string) config('nvidia_nim.vision_model') : null;
 
         // Connected Planet lessons -> grounding context for Astro (empty when none).
@@ -310,10 +331,10 @@ class ChatController extends Controller
         if (! $wantsStream) {
             $webResults = $researching ? $web->search($userMessage) : [];
 
-            return $this->sendBuffered($userId, $conversationId, $userMessage, $history, trim($sourceContext."\n\n".$web->promptBlock($webResults)), $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $webResults, $materialMeta);
+            return $this->sendBuffered($userId, $conversationId, $userMessage, $history, trim($sourceContext."\n\n".$web->promptBlock($webResults)), $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $webResults, $materialMeta, $charge);
         }
 
-        return response()->stream(function () use ($userId, $conversationId, $userMessage, $history, $sourceContext, $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $web, $researching, $materialMeta) {
+        return response()->stream(function () use ($userId, $conversationId, $userMessage, $history, $sourceContext, $sourceLabels, $startedAt, $route, $attachmentItems, $visionModel, $web, $researching, $materialMeta, $charge) {
             // A long NIM stream must not be killed by PHP limits or a closed tab:
             // we still want the finished answer persisted.
             set_time_limit(0);
@@ -377,7 +398,7 @@ class ChatController extends Controller
             } catch (\Throwable $e) {
                 Log::error('Failed to persist Astro exchange: '.$e->getMessage());
             }
-            $emit('done', $ids);
+            $emit('done', $ids + ['xp' => $this->payForAnswer($userId, $charge, $failed === null)]);
 
             Log::info('Astro chat timing', [
                 'first_delta_ms' => $firstDeltaMs,
@@ -400,7 +421,7 @@ class ChatController extends Controller
     /**
      * Original buffered behaviour: run the whole stream, then return one JSON body.
      */
-    protected function sendBuffered(int $userId, ?int $conversationId, string $userMessage, array $history, string $sourceContext, array $sourceLabels, float $startedAt, array $route, array $attachmentItems = [], ?string $visionModel = null, array $webResults = [], array $materialMeta = []): JsonResponse
+    protected function sendBuffered(int $userId, ?int $conversationId, string $userMessage, array $history, string $sourceContext, array $sourceLabels, float $startedAt, array $route, array $attachmentItems = [], ?string $visionModel = null, array $webResults = [], array $materialMeta = [], ?array $charge = null): JsonResponse
     {
         set_time_limit(0);
         ignore_user_abort(true);
@@ -418,6 +439,7 @@ class ChatController extends Controller
             Log::error('Unexpected exception in ChatController::send: '.$e->getMessage());
             $response = response()->json(['error' => 'An unexpected error occurred'], 500);
         }
+        $xp = $charge ? $this->payForAnswer($userId, $charge, $response === null) : null;
 
         $webMeta = array_map(fn ($r) => ['kind' => 'web'] + array_diff_key($r, ['snippet' => 1]), $webResults);
         // Buffered: nothing has reached the browser yet, so an invented link can be cleaned
@@ -445,7 +467,34 @@ class ChatController extends Controller
             'sources' => $sourceLabels,
             'materials' => $materialMeta,
             'web' => $webMeta,
+            'xp' => $xp,
         ]);
+    }
+
+    /**
+     * Astro answered: pay what quote() said (a failed answer costs nothing). Returns what the
+     * browser shows next to the send box, or null for faculty (not charged).
+     *
+     * @param  array{cost: int, balance: int, freeLeft: int, feature: string}  $charge
+     * @return array{balance: int, freeLeft: int, cost: int}|null
+     */
+    private function payForAnswer(int $userId, array $charge, bool $answered): ?array
+    {
+        $user = Auth::user();
+        if (! AiXpService::charges($user)) {
+            return null;
+        }
+        if (! $answered) {
+            return ['balance' => $charge['balance'] + $charge['cost'], 'freeLeft' => $charge['freeLeft'] + ($charge['cost'] === 0 ? 1 : 0), 'cost' => 0];
+        }
+
+        try {
+            app(AiXpService::class)->record($user, $charge['feature'], $charge['cost']);
+        } catch (\Throwable $e) {
+            Log::error('Failed to record Astro XP use for user '.$userId.': '.$e->getMessage());
+        }
+
+        return ['balance' => $charge['balance'], 'freeLeft' => $charge['freeLeft'], 'cost' => $charge['cost']];
     }
 
     /**

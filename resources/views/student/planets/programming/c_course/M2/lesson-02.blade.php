@@ -31,28 +31,43 @@ Syllabus: CC102 Unit 2 — Decision Making Statements (if, else, else-if). --}}
     // neither A nor B was true
 }</code></pre>
 
-    <h2 class="section-heading">Rivet Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In an <code>if</code> / <code>else if</code> / <code>else</code> chain where two conditions are both true, which branch runs?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Both of the matching ones</li>
+            <li class="quiz-option">B. Only the last one that matches</li>
+            <li class="quiz-option">C. None, because it is an error</li>
+            <li class="quiz-option quiz-correct">D. Only the first one that matches ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>C checks top to bottom and runs the first branch that matches, then skips the rest.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        The storm is on them now. The shell reading drops, climbs, drops again — and a plain yes-or-no isn't
-        enough any more.
+        At a water park, an attendant checks your height against a list, <strong>top to bottom</strong>. Taller than 140 cm? Big slide. If not, taller than 120 cm? Medium slide. If not that either: kiddie pool.
     </p>
 
     <p class="body-text">
-        <strong>Volt</strong>: "'Bad' isn't one thing. There's fine, there's keep-an-eye-on-it, and there's
-        wake-everybody-up. I need to know which."
+        The moment one answer is yes, you go to that slide and the attendant stops checking. That is an <code>if</code> / <code>else if</code> / <code>else</code> chain: C runs the <strong>first</strong> branch that matches and skips the rest. The <code>else</code> at the bottom catches everyone else, so nobody is left standing at the top.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Three answers from one number. Easy. Over seventy, we're safe. Thirty to
-        seventy, warning. Under thirty —" he stops. "Under thirty you're waking everybody up."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 350" role="img" aria-label="A water-slide height check for someone 130 cm tall. If taller than 140: big slide. No. Else if taller than 120: yes, medium slide, and checking stops. Else: kiddie pool. The first yes wins and nothing below it is checked.">
+            <rect x="60" y="20" width="140" height="32" rx="16.0" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="1.8"/><text x="130.0" y="40.68" font-size="13" fill="#14306b" text-anchor="middle"><tspan font-weight="800">You</tspan> · 130 cm</text><line x1="130" y1="52" x2="130.0" y2="60.0" stroke="#e8457c" stroke-width="3"/><polygon points="130,71 136.0,60.0 124.0,60.0" fill="#e8457c"/><text x="22" y="116" font-size="15" fill="#9c1f4c" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">if</text><polygon points="45,110 130,72 215,110 130,148" fill="#eef1f5" stroke="#9aa5b8" stroke-width="2"/><text x="130" y="115" font-size="13" fill="#5b6b86" font-weight="700" text-anchor="middle">taller than 140?</text><line x1="215" y1="110" x2="287.0" y2="110.0" stroke="#c3cad6" stroke-width="3"/><polygon points="298,110 287.0,104.0 287.0,116.0" fill="#c3cad6"/><text x="256" y="101" font-size="12" fill="#9aa5b8" font-weight="700" text-anchor="middle">yes</text><rect x="300" y="90" width="160" height="40" rx="10" fill="#f7f8fa" stroke="#c3cad6" stroke-width="2"/><text x="380" y="115" font-size="14" fill="#9aa5b8" font-weight="700" text-anchor="middle">Big slide</text><line x1="130" y1="148" x2="130.0" y2="175.0" stroke="#e8457c" stroke-width="3"/><polygon points="130,186 136.0,175.0 124.0,175.0" fill="#e8457c"/><text x="146" y="172" font-size="12" fill="#e8457c" font-weight="700">no</text><text x="22" y="231" font-size="13" fill="#9c1f4c" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">else</text><text x="22" y="246" font-size="13" fill="#9c1f4c" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">if</text><polygon points="45,225 130,187 215,225 130,263" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><text x="130" y="230" font-size="13" fill="#9c1f4c" font-weight="700" text-anchor="middle">taller than 120?</text><line x1="215" y1="225" x2="287.0" y2="225.0" stroke="#e8457c" stroke-width="3"/><polygon points="298,225 287.0,219.0 287.0,231.0" fill="#e8457c"/><text x="256" y="216" font-size="12" fill="#e8457c" font-weight="700" text-anchor="middle">yes</text><rect x="300" y="205" width="160" height="40" rx="10" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><text x="380" y="230" font-size="14" fill="#9c1f4c" font-weight="800" text-anchor="middle">Medium slide</text><text x="472" y="222" font-size="12" fill="#9c1f4c" font-weight="700">you go here,</text><text x="472" y="238" font-size="12" fill="#9c1f4c" font-weight="700">checking stops</text><line x1="130" y1="263" x2="130.0" y2="287.0" stroke="#c3cad6" stroke-width="3"/><polygon points="130,298 136.0,287.0 124.0,287.0" fill="#c3cad6"/><text x="146" y="287" font-size="12" fill="#9aa5b8" font-weight="700">no</text><text x="22" y="325" font-size="15" fill="#9c1f4c" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">else</text><rect x="60" y="300" width="140" height="40" rx="10" fill="#f7f8fa" stroke="#c3cad6" stroke-width="2"/><text x="130" y="325" font-size="14" fill="#9aa5b8" font-weight="700" text-anchor="middle">Kiddie pool</text><rect x="300" y="300" width="320" height="40" rx="20.0" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><text x="460.0" y="324.68" font-size="13" fill="#1d6b43" text-anchor="middle"><tspan font-weight="800">First yes wins.</tspan> Nothing below it is checked.</text>
+        </svg>
+    </figure>
 
-    <p class="body-text">
-        <strong>Astro</strong>: "Then check the top one first. Always the top one first. Ask 'under thirty?'
-        before you ask 'over seventy?' and a reading of ninety comes back as a warning — and we sleep through
-        the one night we shouldn't."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">You are 150 cm, so both “taller than 140” and “taller than 120” are true. Which slide do you get?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Medium, because it's the last match</li>
+            <li class="quiz-option">B. Both slides, one after the other</li>
+            <li class="quiz-option quiz-correct">C. Big, the first rule that says yes ✓</li>
+            <li class="quiz-option">D. Kiddie pool, the else catches you</li>
+        </ul>
+        <p class="quiz-explanation"><em>C checks the chain from the top and runs only the first branch that matches. 140 comes first, so it's the big slide, and the rest is skipped.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -97,6 +112,17 @@ int main() {
     }
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt"><code>shield</code> is 40 in the code example. What prints?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Status: safe</li>
+            <li class="quiz-option">B. Status: critical</li>
+            <li class="quiz-option quiz-correct">C. Status: warning ✓</li>
+            <li class="quiz-option">D. Nothing</li>
+        </ul>
+        <p class="quiz-explanation"><em>40 is not <code>&gt;= 70</code>, but it is <code>&gt;= 30</code>, so the <code>else if</code> branch runs.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -176,10 +202,10 @@ int main() {
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. In an if/else if/else chain, in what order does C check the conditions?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Bottom to top</li>
-            <li class="quiz-option">B. All at once, in parallel</li>
+            <li class="quiz-option">A. Bottom to top, stopping at the first true one</li>
+            <li class="quiz-option">B. All at once, then the last true one runs</li>
             <li class="quiz-option quiz-correct">C. Top to bottom, stopping at the first true one ✓</li>
-            <li class="quiz-option">D. In a random order</li>
+            <li class="quiz-option">D. Top to bottom, running every true one</li>
         </ul>
         <p class="quiz-explanation"><em>C checks each condition in the order it's written and runs only the first branch whose condition is true — the rest are skipped.</em></p>
     </div>
@@ -187,10 +213,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. In the three-branch status check, what does the final <code>else</code> (with no condition) mean?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. It only runs if shield is exactly 0</li>
-            <li class="quiz-option quiz-correct">B. It runs whenever none of the earlier conditions were true ✓</li>
-            <li class="quiz-option">C. It always runs, no matter what</li>
-            <li class="quiz-option">D. It causes a compiler error without a condition</li>
+            <li class="quiz-option">A. It runs only if shield is exactly 0</li>
+            <li class="quiz-option">B. It always runs, whatever came before</li>
+            <li class="quiz-option">C. It is an error without a condition</li>
+            <li class="quiz-option quiz-correct">D. It runs when no earlier one was true ✓</li>
         </ul>
         <p class="quiz-explanation"><em>A plain else with no condition is the catch-all — it runs when every earlier if/else if in the chain was false.</em></p>
     </div>
@@ -198,10 +224,10 @@ int main() {
     <div class="quiz-block" data-q="4">
         <p class="quiz-prompt">Q4. Why must the &gt;= 70 check come before the &gt;= 30 check in this lesson's code?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. It doesn't matter — C always checks the smallest number first</li>
-            <li class="quiz-option quiz-correct">B. Because shield = 80 would also satisfy &gt;= 30, so the higher threshold must be checked first to catch it correctly ✓</li>
-            <li class="quiz-option">C. C requires conditions to be written from smallest to largest</li>
-            <li class="quiz-option">D. Reversing the order would cause a syntax error</li>
+            <li class="quiz-option quiz-correct">A. A high reading like 80 also passes &gt;= 30 ✓</li>
+            <li class="quiz-option">B. C always checks the smallest number first</li>
+            <li class="quiz-option">C. C needs conditions from smallest to largest</li>
+            <li class="quiz-option">D. The other order would be a syntax error</li>
         </ul>
         <p class="quiz-explanation"><em>Since C stops at the first true branch, a high shield value must hit the &gt;= 70 check before it ever reaches &gt;= 30, or it would be reported as only a "warning".</em></p>
     </div>

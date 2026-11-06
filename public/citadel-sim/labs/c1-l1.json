@@ -6,7 +6,7 @@
   "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
   "story": {
     "alert": "02:47 · INTRUSION ALARM · CITADEL CORE",
-    "vex": "Captain. Your walls are paper. Tonight we only looked. Tomorrow we take. (Commander Vex, Planet Doom)",
+    "vex": "Astronaut. Your walls are paper. Tonight we only looked. Tomorrow we take. (Commander Vex, Planet Doom)",
     "victory": "DOOM ATTACK REPELLED. Vex's scouts pull back: they know the Citadel is watching. Astro: \"Now we know what we protect and how they hit us. Next, we shut the door they used.\""
   },
   "files": {

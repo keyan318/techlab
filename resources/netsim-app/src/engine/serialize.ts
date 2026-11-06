@@ -2,7 +2,9 @@ import { Network } from './network';
 import { createDevice } from './factory';
 import { IpDevice } from './ipdevice';
 import { ApDevice, SwitchDevice } from './switch';
-import type { DeviceKind } from './device';
+import { SubInterface, type DeviceKind, type IfaceCfg } from './device';
+import type { OspfConfig } from './ospf';
+import { aclFromJSON, aclToJSON, type Acl } from './acl';
 import { cidrToString, ipToString, networkOf, parseCidr, parseIp } from './ip';
 import { firewallFromJSON, firewallToJSON, type FirewallJSON } from './firewall';
 import type { LabDef, LabProgress } from '../labs/types';
@@ -43,6 +45,77 @@ export interface SavedDevice {
   ripEnabled?: boolean;
   vlans?: Record<string, number>;
   ssid?: string;
+  // TechLab (Networking 2)
+  cli?: 'ios';
+  hostname?: string;
+  ifaceCfg?: Record<string, IfaceCfg>;
+  subifs?: SavedSubif[];
+  ospf?: SavedOspf;
+  vlanDb?: [number, string][];
+  stp?: SavedStp;
+  acls?: Record<string, { kind: Acl['kind']; entries: { seq: number; text: string }[] }>;
+}
+
+export interface SavedSubif {
+  name: string; // eth0.10
+  parent: string; // eth0
+  vlan: number | null;
+  native?: boolean;
+  ip: string | null;
+  up: boolean;
+}
+
+export interface SavedOspf {
+  pid: number;
+  routerId?: string | null;
+  networks: { addr: string; wildcard: string; area: number }[];
+  passive?: string[];
+  passiveDefault?: boolean;
+  nonPassive?: string[];
+  refBw?: number;
+  defaultOriginate?: boolean;
+}
+
+export interface SavedStp {
+  mode?: 'pvst' | 'rapid-pvst' | 'mst';
+  priority?: Record<string, number>;
+  disabled?: number[];
+  mstInstances?: Record<string, number[]>;
+  mstPriority?: Record<string, number>;
+  portfastDefault?: boolean;
+  bpduguardDefault?: boolean;
+}
+
+export function ospfToJSON(o: OspfConfig): SavedOspf {
+  return {
+    pid: o.pid,
+    routerId: o.routerId !== null ? ipToString(o.routerId) : null,
+    networks: o.networks.map((n) => ({ addr: ipToString(n.addr), wildcard: ipToString(n.wildcard), area: n.area })),
+    passive: [...o.passive],
+    passiveDefault: o.passiveDefault,
+    nonPassive: [...o.nonPassive],
+    refBw: o.refBw,
+    defaultOriginate: o.defaultOriginate,
+  };
+}
+
+export function ospfFromJSON(j: SavedOspf): OspfConfig {
+  return {
+    pid: j.pid,
+    routerId: j.routerId ? parseIp(j.routerId) : null,
+    networks: j.networks
+      .map((n) => ({ addr: parseIp(n.addr), wildcard: parseIp(n.wildcard), area: n.area }))
+      .filter((n): n is { addr: number; wildcard: number; area: number } => n.addr !== null && n.wildcard !== null),
+    passive: [...(j.passive ?? [])],
+    passiveDefault: j.passiveDefault ?? false,
+    nonPassive: [...(j.nonPassive ?? [])],
+    refBw: j.refBw ?? 100,
+    defaultOriginate: j.defaultOriginate ?? false,
+  };
+}
+
+function cfgIsEmpty(c: IfaceCfg): boolean {
+  return Object.values(c).every((v) => v === undefined || v === null || (Array.isArray(v) && v.length === 0));
 }
 
 export interface SavedLink {
@@ -75,7 +148,7 @@ export function serializeNetwork(
       x: pos.x,
       y: pos.y,
       forwarding: ipd?.forwarding ?? false,
-      ifaces: d.interfaces.map((i) => ({
+      ifaces: d.ports().map((i) => ({
         name: i.name,
         ip: i.ip ? cidrToString(i.ip.addr, i.ip.prefix) : null,
         up: i.up,
@@ -116,12 +189,41 @@ export function serializeNetwork(
         };
       }
       if (ipd.ripEnabled) saved.ripEnabled = true;
+      if (ipd.ospf) saved.ospf = ospfToJSON(ipd.ospf);
+      if (ipd.acls.size) saved.acls = Object.fromEntries([...ipd.acls].map(([n, a]) => [n, aclToJSON(a)]));
+      const subs = ipd.interfaces.filter((i): i is SubInterface => i instanceof SubInterface);
+      if (subs.length) {
+        saved.subifs = subs.map((i) => ({
+          name: i.name,
+          parent: i.parent.name,
+          vlan: i.vlan,
+          ...(i.nativeVlan ? { native: true } : {}),
+          ip: i.ip ? cidrToString(i.ip.addr, i.ip.prefix) : null,
+          up: i.ownUp,
+        }));
+      }
     }
+    if (d.cli) saved.cli = d.cli;
+    if (d.hostname) saved.hostname = d.hostname;
+    const cfg: Record<string, IfaceCfg> = {};
+    for (const i of d.interfaces) if (!cfgIsEmpty(i.cfg)) cfg[i.name] = JSON.parse(JSON.stringify(i.cfg));
+    if (Object.keys(cfg).length) saved.ifaceCfg = cfg;
     if (d instanceof SwitchDevice) {
       const vlans: Record<string, number> = {};
       for (const [port, vlan] of d.vlans) if (vlan !== 1) vlans[port] = vlan;
       if (Object.keys(vlans).length) saved.vlans = vlans;
       if (d instanceof ApDevice) saved.ssid = d.ssid;
+      const db = [...d.vlanDb.entries()].filter(([v, n]) => !(v === 1 && n === 'default'));
+      if (db.length) saved.vlanDb = db;
+      const stp: SavedStp = {};
+      if (d.stpMode !== 'rapid-pvst') stp.mode = d.stpMode;
+      if (d.stpPriority.size) stp.priority = Object.fromEntries(d.stpPriority);
+      if (d.stpDisabled.size) stp.disabled = [...d.stpDisabled];
+      if (d.mstInstances.size) stp.mstInstances = Object.fromEntries(d.mstInstances);
+      if (d.mstPriority.size) stp.mstPriority = Object.fromEntries(d.mstPriority);
+      if (d.portfastDefault) stp.portfastDefault = true;
+      if (d.bpduguardDefault) stp.bpduguardDefault = true;
+      if (Object.keys(stp).length) saved.stp = stp;
     }
     return saved;
   });
@@ -178,6 +280,18 @@ export function restoreNetwork(data: SaveFile): Network {
         d.dnsServer = { enabled: sd.dnsServer.enabled, records };
       }
       if (sd.httpServer) d.httpServer = { ...sd.httpServer };
+      if (sd.ospf) d.ospf = ospfFromJSON(sd.ospf);
+      for (const [n, a] of Object.entries(sd.acls ?? {})) d.acls.set(n, aclFromJSON(a));
+      for (const ss of sd.subifs ?? []) {
+        const parent = d.getInterface(ss.parent);
+        if (!parent || d.getInterface(ss.name)) continue;
+        const sub = new SubInterface(d, ss.name, parent);
+        sub.vlan = ss.vlan;
+        sub.nativeVlan = ss.native === true;
+        sub.up = ss.up;
+        if (ss.ip) sub.ip = parseCidr(ss.ip);
+        d.interfaces.push(sub);
+      }
       for (const sr of sd.routes) {
         const dest = parseCidr(sr.dest);
         const via = sr.via !== null ? parseIp(sr.via) : null;
@@ -194,6 +308,23 @@ export function restoreNetwork(data: SaveFile): Network {
     if (d instanceof SwitchDevice) {
       if (sd.vlans) for (const [port, vlan] of Object.entries(sd.vlans)) d.vlans.set(port, vlan);
       if (d instanceof ApDevice && sd.ssid) d.ssid = sd.ssid;
+      for (const [v, n] of sd.vlanDb ?? []) d.vlanDb.set(v, n);
+      // Older files have no VLAN database: every access VLAN in use exists.
+      for (const v of d.vlans.values()) if (!d.vlanDb.has(v)) d.vlanDb.set(v, `VLAN${String(v).padStart(4, '0')}`);
+      const stp = sd.stp ?? {};
+      if (stp.mode) d.stpMode = stp.mode;
+      for (const [v, p] of Object.entries(stp.priority ?? {})) d.stpPriority.set(Number(v), p);
+      for (const v of stp.disabled ?? []) d.stpDisabled.add(v);
+      for (const [i, vs] of Object.entries(stp.mstInstances ?? {})) d.mstInstances.set(Number(i), vs);
+      for (const [i, p] of Object.entries(stp.mstPriority ?? {})) d.mstPriority.set(Number(i), p);
+      d.portfastDefault = stp.portfastDefault === true;
+      d.bpduguardDefault = stp.bpduguardDefault === true;
+    }
+    if (sd.cli) d.cli = sd.cli;
+    if (sd.hostname) d.hostname = sd.hostname;
+    for (const [name, c] of Object.entries(sd.ifaceCfg ?? {})) {
+      const iface = d.getInterface(name);
+      if (iface) iface.cfg = JSON.parse(JSON.stringify(c));
     }
   }
   for (const sl of data.links) {

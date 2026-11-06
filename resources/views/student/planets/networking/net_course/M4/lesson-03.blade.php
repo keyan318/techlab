@@ -30,6 +30,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
         The trick is to test in a <strong>ladder</strong>, from near to far. Each rung tells you where to look: you can reach the gateway but not a remote address, so suspect routing; you can reach a remote address by number but not by name, so suspect DNS; you can reach the host but not the service, so suspect the service or a firewall.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">You can reach a remote address by number but not by name. What do you suspect?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The cable</li>
+            <li class="quiz-option">B. Routing</li>
+            <li class="quiz-option">C. The NIC</li>
+            <li class="quiz-option quiz-correct">D. DNS ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Numbers work but names fail, so the problem is turning names into addresses: DNS.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Warning</h2>
 
     <p class="body-text">
@@ -38,6 +49,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
     <p class="body-text">
         <strong>Astro</strong> stays calm. "Then we peel them off one at a time, nearest first. Fix, test, move on."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">How does Astro say to undo Doom's three edits?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. All at once, then test once</li>
+            <li class="quiz-option">B. Farthest first, then nearest</li>
+            <li class="quiz-option">C. Reset every device at once</li>
+            <li class="quiz-option quiz-correct">D. One at a time, nearest first ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Fix one, test, move on. Working nearest first shows exactly which change fixed what.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -78,6 +100,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l3.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">On the ladder, if pinging the gateway fails, what do you suspect?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The address, mask or VLAN ✓</li>
+            <li class="quiz-option">B. The DNS setting or server</li>
+            <li class="quiz-option">C. The service or a firewall</li>
+            <li class="quiz-option">D. The routes to the far end</li>
+        </ul>
+        <p class="quiz-explanation"><em>Rung 2: a failed gateway ping points at a wrong address or mask, the VLAN, or the cable.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

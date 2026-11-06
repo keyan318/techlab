@@ -26,6 +26,17 @@ Syllabus: ITP1333 Unit H.4 Locks and Entry Controls (Biometrics, Smart Cards). -
         treated as compromised until the credential is revoked and, if it's a shared secret like a code, changed.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why use biometrics for the most sensitive spaces?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. They are the cheapest lock</li>
+            <li class="quiz-option quiz-correct">B. They can't be lost or lent ✓</li>
+            <li class="quiz-option">C. They never log any entries</li>
+            <li class="quiz-option">D. They work without power</li>
+        </ul>
+        <p class="quiz-explanation"><em>Unlike a card, a fingerprint or retina can't be lost, lent or stolen.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -34,6 +45,17 @@ Syllabus: ITP1333 Unit H.4 Locks and Entry Controls (Biometrics, Smart Cards). -
         checks whether the vault behind it — biometric-only — was ever reachable with just a card in the first
         place. It wasn't. "Good. The most sensitive door was never just one layer deep."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Rivet revoke the card right away?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The card was due to expire that day</li>
+            <li class="quiz-option">B. The cadet had asked for a brand new card</li>
+            <li class="quiz-option">C. The vault behind it took cards only</li>
+            <li class="quiz-option quiz-correct">D. Anyone holding it walks in as the cadet ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A lost card is an emergency the moment it's reported, not at the end of the shift.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -48,6 +70,17 @@ Syllabus: ITP1333 Unit H.4 Locks and Entry Controls (Biometrics, Smart Cards). -
             <text x="320" y="182" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">A lost card is an emergency the moment it's reported, not at end of shift</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what protects the staff-only zone?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A basic lock</li>
+            <li class="quiz-option quiz-correct">B. A smart card ✓</li>
+            <li class="quiz-option">C. A biometric</li>
+            <li class="quiz-option">D. No lock at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>General area: basic lock. Staff-only: a logged smart card. Most sensitive: biometric.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

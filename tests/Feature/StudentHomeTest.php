@@ -24,12 +24,9 @@ class StudentHomeTest extends TestCase
     }
 
     /**
-     * A brand new student has nothing to resume, so "Start here" points at the planet,
-     * not straight into a specific course — true whether or not the course has a
-     * captain, because the dashboard never decides "is this student in this course";
-     * the planet's course picker does (PlanetController::courses). No captain assigned
-     * at all is just as closed as one nobody's accepted you into yet — see
-     * EnsureCourseMember — so this doubles as the "no captain" case.
+     * A brand new student has nothing to resume and isn't on a course yet, so the hero asks how
+     * they want to learn it (Self-paced or Join Class) and links to the planet's other courses,
+     * never straight into lesson content. With no faculty member there's still Self-paced.
      */
     public function test_new_student_is_sent_to_their_planet_not_straight_into_a_course(): void
     {
@@ -44,14 +41,16 @@ class StudentHomeTest extends TestCase
         $this->assertSame(0, $home['streak']);
         $this->assertSame('planet', $hero['view']);
         $this->assertTrue($hero['locked']);
-        $this->assertTrue($hero['noCaptain']);
+        // Not on the course yet: the hero offers Self-paced, and no class is open to join.
+        $this->assertNotNull($hero['enroll']['self_paced_url']);
+        $this->assertSame([], $hero['enroll']['classes']);
         $this->assertSame('Programming City', $hero['planetTitle']);
         $this->assertSame(route('student.planet', 'programming'), $hero['planetUrl']);
         $this->assertArrayNotHasKey('continueUrl', $hero);
 
         $this->actingAs($user)->get('/dashboard')->assertOk()
             ->assertSee('Welcome aboard, Keyan')
-            ->assertSee('Enter Programming')
+            ->assertSee('how do you want to learn?')->assertSee('Self-paced')->assertSee('See every course in Programming City')
             ->assertSee('Build with code — logic, apps, and the foundations of software.')
             ->assertDontSee('Start Learning')
             ->assertSee($hero['planetUrl'], false)
@@ -97,13 +96,14 @@ class StudentHomeTest extends TestCase
         $hero = StudentDashboardService::home($user)['hero'];
 
         $this->assertTrue($hero['locked']);
-        $this->assertSame('Abegail', $hero['facultyName']);
+        $this->assertSame('Abegail', $hero['enroll']['classes'][0]['teacher']);
         $this->assertArrayNotHasKey('continueUrl', $hero);
 
         $response = $this->actingAs($user)->get('/dashboard')->assertOk()
             ->assertSee('Defend systems — threats, encryption, and secure design.')
             ->assertDontSee('needs to accept you')
-            ->assertDontSee('Start Learning');
+            ->assertDontSee('Start Learning')
+            ->assertSee('Self-paced')->assertSee('Join Class');
 
         // The only link out of the locked card goes to the planet, never straight to a lesson.
         $response->assertSee(route('student.planet', 'cybersecurity'), false);
@@ -111,6 +111,20 @@ class StudentHomeTest extends TestCase
         // Confirms the lock actually holds server-side too, not just that the card hides the link.
         $lessonUrl = route('student.planet.module.lesson', ['slug' => 'cybersecurity', 'module' => 'm1', 'lesson' => 'lesson01']);
         $this->actingAs($user)->get($lessonUrl)->assertRedirect(route('student.planet', 'cybersecurity'));
+    }
+
+    public function test_accepted_into_class_badge_shows_only_on_the_first_visit(): void
+    {
+        $faculty = User::factory()->create(['role' => 'faculty', 'name' => 'Rendon']);
+        $crew = Crew::create([
+            'name' => 'Information Assurance and Security 1', 'code' => 'ABC123', 'teacher_id' => $faculty->id,
+            'planet' => 'cybersecurity', 'course_slug' => 'information-security-1',
+        ]);
+        $user = User::factory()->create(['planets' => ['cybersecurity']]);
+        $crew->admit($user);
+
+        $this->actingAs($user)->get('/dashboard')->assertOk()->assertSee('Accepted into Rendon', false);
+        $this->actingAs($user)->get('/dashboard')->assertOk()->assertDontSee('Accepted into Rendon', false);
     }
 
     public function test_hero_is_gone_when_every_tracked_lesson_is_done(): void
@@ -129,9 +143,9 @@ class StudentHomeTest extends TestCase
     public function test_level_rises_with_earned_xp_and_streak_counts_consecutive_days(): void
     {
         $user = User::factory()->create();
-        $this->complete($user, 3);   // 300 XP -> level 2
+        $this->complete($user, 3);   // 300 XP -> level 6 (50, 55, 60, 65, 70 XP a level)
 
-        $this->assertSame(2, StudentDashboardService::home($user)['level']);
+        $this->assertSame(6, StudentDashboardService::home($user)['level']);
 
         // Today has a completion; add the two days before it.
         StudyActivity::create(['user_id' => $user->id, 'date' => now()->subDay()->toDateString(), 'minutes' => 5]);
@@ -154,7 +168,7 @@ class StudentHomeTest extends TestCase
         $this->assertSame(['done', 'done', 'current'], $states->take(3)->all());
         $this->assertSame(1, $states->filter(fn ($s) => $s === 'current')->count());
         $this->assertSame(2, $data['lessonsDone']);
-        $this->assertSame($data['lessonsTotal'] * 100, $data['xpTotal']);
+        $this->assertSame($data['lessonsTotal'] * 150, $data['xpTotal']);
         $this->assertSame(200, $data['xpEarned']);
         $this->assertSame('Resume Learning', $data['resume']['label']);
         $this->assertSame(0, $data['badgesEarned']);
@@ -162,9 +176,9 @@ class StudentHomeTest extends TestCase
         $this->actingAs($user)->get(route('student.course.overview', ['slug' => 'programming', 'course' => 'python']))
             ->assertOk()
             ->assertSee('Course Progress')
-            ->assertSee('Course Badges')
+            ->assertSee('Course Gems')
             ->assertSee('Done!')
-            ->assertSee('+100 XP')
+            ->assertSee('+150 XP')
             ->assertSee('Locked');
     }
 

@@ -29,6 +29,17 @@ Syllabus: ITP1333 Unit E.5 Remote Administration Security. --}}
         listening on the way.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How should remote administration always be done?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Over an old plain-text port</li>
+            <li class="quiz-option quiz-correct">B. Over an encrypted channel ✓</li>
+            <li class="quiz-option">C. Over any port that is open</li>
+            <li class="quiz-option">D. Only with a default password</li>
+        </ul>
+        <p class="quiz-explanation"><em>Never use an unencrypted protocol, where commands and passwords travel in the clear.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit E.5 Remote Administration Security. --}}
         anything sent over it — including an admin password — travels in the clear. And the encrypted admin
         account still using its installer's default password doesn't help either." Both close today.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What two problems did Rivet find on the shield generator?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A missing firewall and an expired software license</li>
+            <li class="quiz-option">B. A broken camera and a loose wall panel</li>
+            <li class="quiz-option quiz-correct">C. An old plain-text port and a default password ✓</li>
+            <li class="quiz-option">D. A full disk and a slow network card</li>
+        </ul>
+        <p class="quiz-explanation"><em>A legacy unencrypted admin port was still open, and the encrypted admin account used its default password.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -53,6 +75,17 @@ Syllabus: ITP1333 Unit E.5 Remote Administration Security. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">An open legacy admin channel plus a weak password undoes every other control</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what travels in the clear on a legacy port?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Nothing</li>
+            <li class="quiz-option">B. Only noise</li>
+            <li class="quiz-option quiz-correct">C. Commands ✓</li>
+            <li class="quiz-option">D. Encrypted data</li>
+        </ul>
+        <p class="quiz-explanation"><em>On an unencrypted port, commands (and passwords) travel in the clear for anyone listening.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

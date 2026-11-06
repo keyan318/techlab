@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Services\CourseProgressService;
 use App\Services\PlanetUnlockService;
+use App\Services\QuizGateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class LessonProgressController extends Controller
 {
+    /** Longest program kept as a lesson's saved code. */
+    private const MAX_CODE_LENGTH = 20000;
+
     /**
      * POST /student/planet/{slug}/lesson/{module}/{lesson}/complete
      *
@@ -49,13 +53,22 @@ class LessonProgressController extends Controller
             return response()->json(['ok' => false, 'error' => 'Output does not match.'], 422);
         }
 
-        CourseProgressService::markComplete($user, $module, $lesson, $slug);
+        // Checked last, so a wrong answer or the wrong lab still gets its own error.
+        if (! app(QuizGateService::class)->allows($user, $slug, $module, $lesson)) {
+            return response()->json(['error' => 'Pass the Knowledge Check first (at most '.QuizGateService::MAX_MISTAKES.' mistakes).'], 403);
+        }
+
+        // The passing code is saved so the editor can show it again when the student comes back.
+        $code = mb_substr((string) $request->input('code', ''), 0, self::MAX_CODE_LENGTH);
+        $first = CourseProgressService::markComplete($user, $module, $lesson, $slug, $code !== '' ? $code : null);
         PlanetUnlockService::checkAndUnlock($user, $slug);
 
         $next = CourseProgressService::nextLesson($module, $lesson, $slug);
 
         return response()->json([
             'ok' => true,
+            // False when the lesson was already finished: solving it again earns no more XP.
+            'first' => $first,
             'next' => $next ? route('student.planet.module.lesson', [
                 'slug' => $slug,
                 'module' => $next['module'],
@@ -105,13 +118,20 @@ class LessonProgressController extends Controller
             return response()->json(['ok' => false, 'error' => 'Wrong lab for this lesson.'], 422);
         }
 
-        CourseProgressService::markComplete($user, $module, $lesson, $slug);
+        // Checked last, so a wrong answer or the wrong lab still gets its own error.
+        if (! app(QuizGateService::class)->allows($user, $slug, $module, $lesson)) {
+            return response()->json(['error' => 'Pass the Knowledge Check first (at most '.QuizGateService::MAX_MISTAKES.' mistakes).'], 403);
+        }
+
+        $first = CourseProgressService::markComplete($user, $module, $lesson, $slug);
         PlanetUnlockService::checkAndUnlock($user, $slug);
 
         $next = CourseProgressService::nextLesson($module, $lesson, $slug);
 
         return response()->json([
             'ok' => true,
+            // False when the lab was already finished: passing it again earns no more XP.
+            'first' => $first,
             'next' => $next ? route('student.planet.module.lesson', [
                 'slug' => $slug,
                 'module' => $next['module'],

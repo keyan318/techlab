@@ -29,6 +29,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l4.json) complete
         A device compares a destination with its own network. <strong>Same network</strong>: send directly. <strong>Different network</strong>: send to the <strong>default gateway</strong>, which is the router. If the mask is wrong, the device draws the network boundary in the wrong place.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">For 192.168.1.10/24, what is the broadcast address?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. 192.168.1.255 ✓</li>
+            <li class="quiz-option">B. 192.168.1.0</li>
+            <li class="quiz-option">C. 192.168.1.1</li>
+            <li class="quiz-option">D. 192.168.1.254</li>
+        </ul>
+        <p class="quiz-explanation"><em>The broadcast has all host bits set to 1, so 192.168.1.255. A message to it reaches everyone on the network.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Warning</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l4.json) complete
     <p class="body-text">
         <strong>Rivet</strong> checks the numbers. "With /25 your network is 192.168.1.128 up to .255, so you believe Astro's 192.168.1.10 lives somewhere else and you send the reply to a gateway that does not exist. The address is fine. The mask is wrong."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What is really wrong with Volt's console?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Its address is on a public range</li>
+            <li class="quiz-option">B. Its cable is unplugged at the switch</li>
+            <li class="quiz-option">C. Its gateway is set to astro's address</li>
+            <li class="quiz-option quiz-correct">D. Its mask is /25 instead of /24 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The address is fine. The /25 mask draws the network boundary in the wrong place, so Volt sends replies to a missing gateway.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -70,6 +92,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l4.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how many usable hosts does the /24 have?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 255</li>
+            <li class="quiz-option quiz-correct">B. 254 ✓</li>
+            <li class="quiz-option">C. 256</li>
+            <li class="quiz-option">D. 253</li>
+        </ul>
+        <p class="quiz-explanation"><em>With 8 host bits: 2⁸ − 2 = 254. The network and broadcast addresses are not usable for hosts.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -26,6 +26,17 @@ Syllabus: ITP1333 Unit C.2 Security Standards. --}}
         a standard either holds or it doesn't, account by account, system by system.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why do auditors check standards, not policies?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A policy is always far too specific</li>
+            <li class="quiz-option">B. Standards are written by the auditors</li>
+            <li class="quiz-option quiz-correct">C. A standard either holds or it doesn't ✓</li>
+            <li class="quiz-option">D. Policies are never written down at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>A policy is abstract. A standard is precise and checkable, account by account.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -33,6 +44,17 @@ Syllabus: ITP1333 Unit C.2 Security Standards. --}}
         standard on three counts. The policy says protect crew data; the standard says exactly what that means for
         a password. Let's bring this account into compliance right now, not just note it for later."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">How many counts does “starlight” fail the standard on?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. One</li>
+            <li class="quiz-option">B. Two</li>
+            <li class="quiz-option quiz-correct">C. Three ✓</li>
+            <li class="quiz-option">D. None at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>Eight letters (too short), no number, no symbol: three counts.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -54,6 +76,17 @@ Syllabus: ITP1333 Unit C.2 Security Standards. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">A standard turns a policy into something you can actually check</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does the standard require?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 8 chars, all lower case, no symbols at all</li>
+            <li class="quiz-option">B. The account name inside the password</li>
+            <li class="quiz-option">C. Any password the crew member likes best</li>
+            <li class="quiz-option quiz-correct">D. 12+ chars, mixed case, number, symbol ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The standard turns “protect crew data” into something checkable: 12+ characters, mixed case, a number and a symbol.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

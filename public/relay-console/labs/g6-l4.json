@@ -1,0 +1,455 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g6-l4",
+  "title": "Lesson 6.4: Site-to-Site VPN — IPsec & GRE",
+  "host": {
+    "name": "NW-EDGE",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nNorthwatch edge: Gi0/1 crew LAN 192.168.30.0/24, Gi0/2 outside 203.0.113.30 (radio)\nVPN peer: SKYPORT 203.0.113.50, LAN 192.168.50.0/24, pre-shared key in flash:vpn-plan.txt"
+  },
+  "story": {
+    "alert": "NORTHWATCH · RADIO TRAFFIC INTERCEPTED BY DOOM",
+    "victory": "Doom's listening post records nothing but random bytes. Volt: \"Phase one, phase two, and a key nobody ever sent over the air. Read that, Vex.\""
+  },
+  "modes": {
+    "isakmp": {
+      "prompt": "config-isakmp"
+    },
+    "tset": {
+      "prompt": "cfg-crypto-trans"
+    },
+    "cmap": {
+      "prompt": "config-crypto-map"
+    },
+    "cmap-other": {
+      "prompt": "config-crypto-map"
+    },
+    "if-g02": {
+      "prompt": "config-if"
+    },
+    "if-other": {
+      "prompt": "config-if"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1120 bytes\n!\nhostname NW-EDGE\n!\ninterface GigabitEthernet0/1\n description Northwatch crew LAN\n ip address 192.168.30.1 255.255.255.0\n!\ninterface GigabitEthernet0/2\n description outside (radio)\n ip address 203.0.113.30 255.255.255.0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.1\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      480   vpn-plan.txt\n    2  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:vpn-plan.txt",
+      "text": "NORTHWATCH-SKYPORT VPN PLAN\n===========================\nPeer:            SKYPORT, outside address 203.0.113.50\nPhase 1:         AES-256, SHA-256, pre-shared key, DH group 14\nPre-shared key:  Gr1d-H0lds-2026\nPhase 2:         transform set GRID-TS = esp-aes 256 esp-sha256-hmac\nEncrypt:         192.168.30.0/24 (Northwatch) <-> 192.168.50.0/24 (Skyport)\n"
+    },
+    {
+      "cmd": "ping <ip> source <if>",
+      "args": [
+        "192.168.50.10",
+        "GigabitEthernet0/1"
+      ],
+      "when": [
+        "p1-enc",
+        "p1-hash",
+        "p1-auth",
+        "p1-group",
+        "key",
+        "ts",
+        "acl",
+        "peer",
+        "cm-ts",
+        "cm-acl",
+        "applied"
+      ],
+      "sets": [
+        "triggered"
+      ],
+      "text": "Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to 192.168.50.10, timeout is 2 seconds:\nPacket sent with a source address of 192.168.30.1\n.!!!!\nSuccess rate is 80 percent (4/5), round-trip min/avg/max = 38/41/47 ms\n! The first ping is lost while the tunnel is built. That is normal."
+    },
+    {
+      "cmd": "ping <ip> source <if>",
+      "args": [
+        "192.168.50.10",
+        "GigabitEthernet0/1"
+      ],
+      "text": "Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to 192.168.50.10, timeout is 2 seconds:\nPacket sent with a source address of 192.168.30.1\n.....\nSuccess rate is 0 percent (0/5)\n! Rivet: Skyport only accepts this traffic through the tunnel. Is every piece of the VPN in place?"
+    },
+    {
+      "cmd": "ping <ip>",
+      "text": "Type escape sequence to abort.\n!!!!!\nSuccess rate is 100 percent (5/5)\n! Sourced from the outside interface, this ping is not \"interesting\" (not in ACL 120), so it went unencrypted."
+    },
+    {
+      "cmd": "show crypto isakmp sa",
+      "when": [
+        "triggered"
+      ],
+      "sets": [
+        "seen-isakmp"
+      ],
+      "text": "IPv4 Crypto ISAKMP SA\ndst             src             state          conn-id status\n203.0.113.50    203.0.113.30    QM_IDLE           1001 ACTIVE"
+    },
+    {
+      "cmd": "show crypto isakmp sa",
+      "text": "IPv4 Crypto ISAKMP SA\ndst             src             state          conn-id status\n\n(no security associations yet: the tunnel comes up when interesting traffic flows)"
+    },
+    {
+      "cmd": "show crypto ipsec sa",
+      "when": [
+        "triggered"
+      ],
+      "sets": [
+        "seen-ipsec"
+      ],
+      "text": "interface: GigabitEthernet0/2\n    Crypto map tag: GRID-MAP, local addr 203.0.113.30\n\n   local  ident (addr/mask/prot/port): (192.168.30.0/255.255.255.0/0/0)\n   remote ident (addr/mask/prot/port): (192.168.50.0/255.255.255.0/0/0)\n   current_peer 203.0.113.50 port 500\n    #pkts encaps: 4, #pkts encrypt: 4, #pkts digest: 4\n    #pkts decaps: 4, #pkts decrypt: 4, #pkts verify: 4\n     inbound esp sas:  spi: 0x8A3F21C4  transform: esp-256-aes esp-sha256-hmac\n     outbound esp sas: spi: 0x1C77B9E0  transform: esp-256-aes esp-sha256-hmac"
+    },
+    {
+      "cmd": "show crypto ipsec sa",
+      "text": "No SAs found. (No interesting traffic has crossed the crypto map yet.)"
+    },
+    {
+      "cmd": "show crypto map",
+      "when": [
+        "applied"
+      ],
+      "text": "Crypto Map \"GRID-MAP\" 10 ipsec-isakmp\n        Peer = 203.0.113.50\n        Extended IP access list 120\n        Transform sets={ GRID-TS }\n        Interfaces using crypto map GRID-MAP: GigabitEthernet0/2"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "crypto isakmp policy <n>",
+      "enters": "isakmp"
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "encryption aes <n>",
+      "args": [
+        "256"
+      ],
+      "sets": [
+        "p1-enc"
+      ]
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "encryption <rest>",
+      "reply": "% Saved, but the plan says AES-256: encryption aes 256"
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "hash <word>",
+      "args": [
+        "sha256"
+      ],
+      "sets": [
+        "p1-hash"
+      ]
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "hash <word>",
+      "reply": "% Saved, but the plan says SHA-256 (MD5 and SHA-1 are too weak today)."
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "authentication pre-share",
+      "sets": [
+        "p1-auth"
+      ]
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "group <n>",
+      "args": [
+        "14"
+      ],
+      "sets": [
+        "p1-group"
+      ]
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "group <n>",
+      "reply": "% Saved, but the plan says Diffie-Hellman group 14 (groups 1, 2 and 5 are too weak today)."
+    },
+    {
+      "mode": "isakmp",
+      "cmd": "lifetime <n>"
+    },
+    {
+      "cmd": "crypto isakmp key <word> address <ip>",
+      "args": [
+        "Gr1d-H0lds-2026",
+        "203.0.113.50"
+      ],
+      "sets": [
+        "key"
+      ]
+    },
+    {
+      "cmd": "crypto isakmp key <word> address <ip>",
+      "reply": "% Saved, but it does not match the plan (key and peer address). Phase 1 will fail."
+    },
+    {
+      "cmd": "crypto ipsec transform-set <word> esp-aes <n> esp-sha256-hmac",
+      "args": [
+        "GRID-TS",
+        "256"
+      ],
+      "sets": [
+        "ts"
+      ],
+      "enters": "tset"
+    },
+    {
+      "cmd": "crypto ipsec transform-set <rest>",
+      "reply": "% Saved, but the plan says: crypto ipsec transform-set GRID-TS esp-aes 256 esp-sha256-hmac"
+    },
+    {
+      "mode": "tset",
+      "cmd": "mode tunnel"
+    },
+    {
+      "cmd": "access-list <n> permit ip <ip> <ip> <ip> <ip>",
+      "args": [
+        "120",
+        "192.168.30.0",
+        "0.0.0.255",
+        "192.168.50.0",
+        "0.0.0.255"
+      ],
+      "sets": [
+        "acl"
+      ]
+    },
+    {
+      "cmd": "access-list <n> permit ip <rest>",
+      "reply": "% Saved, but ACL 120 should match 192.168.30.0 0.0.0.255 to 192.168.50.0 0.0.0.255."
+    },
+    {
+      "cmd": "crypto map <word> <n> ipsec-isakmp",
+      "args": [
+        "GRID-MAP",
+        "10"
+      ],
+      "enters": "cmap",
+      "reply": "% NOTE: This new crypto map will remain disabled until a peer\n        and a valid access list have been configured."
+    },
+    {
+      "cmd": "crypto map <word> <n> ipsec-isakmp",
+      "enters": "cmap-other",
+      "reply": "% Saved. The plan calls it GRID-MAP, sequence 10."
+    },
+    {
+      "mode": "cmap",
+      "cmd": "set peer <ip>",
+      "args": [
+        "203.0.113.50"
+      ],
+      "sets": [
+        "peer"
+      ]
+    },
+    {
+      "mode": "cmap",
+      "cmd": "set peer <ip>",
+      "reply": "% Saved, but Skyport's outside address is 203.0.113.50."
+    },
+    {
+      "mode": "cmap",
+      "cmd": "set transform-set <word>",
+      "args": [
+        "GRID-TS"
+      ],
+      "sets": [
+        "cm-ts"
+      ]
+    },
+    {
+      "mode": "cmap",
+      "cmd": "match address <n>",
+      "args": [
+        "120"
+      ],
+      "sets": [
+        "cm-acl"
+      ]
+    },
+    {
+      "mode": "cmap-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/2"
+      ],
+      "enters": "if-g02"
+    },
+    {
+      "cmd": "interface <if>",
+      "enters": "if-other"
+    },
+    {
+      "mode": "if-g02",
+      "cmd": "crypto map <word>",
+      "args": [
+        "GRID-MAP"
+      ],
+      "sets": [
+        "applied"
+      ]
+    },
+    {
+      "mode": "if-other",
+      "cmd": "crypto map <word>",
+      "reply": "% Saved, but the crypto map belongs on the outside interface toward the peer: Gi0/2."
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Phase 1: the secure channel",
+      "body": "Type `enable`, then `more flash:vpn-plan.txt`. In `conf t`: `crypto isakmp policy 10`, then `encryption aes 256`, `hash sha256`, `authentication pre-share`, `group 14`, `exit`. Then the key from the plan: `crypto isakmp key <key> address 203.0.113.50`.",
+      "objectives": [
+        {
+          "id": "p1-enc",
+          "label": "Phase 1 encryption: AES-256",
+          "check": {
+            "type": "fact",
+            "fact": "p1-enc"
+          }
+        },
+        {
+          "id": "p1-hash",
+          "label": "Phase 1 hash: SHA-256",
+          "check": {
+            "type": "fact",
+            "fact": "p1-hash"
+          }
+        },
+        {
+          "id": "p1-auth",
+          "label": "Phase 1 authentication: pre-shared key",
+          "check": {
+            "type": "fact",
+            "fact": "p1-auth"
+          }
+        },
+        {
+          "id": "p1-group",
+          "label": "Diffie-Hellman group 14",
+          "check": {
+            "type": "fact",
+            "fact": "p1-group"
+          }
+        },
+        {
+          "id": "key",
+          "label": "Pre-shared key set for Skyport",
+          "check": {
+            "type": "fact",
+            "fact": "key"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Phase 2: protect the data",
+      "body": "`crypto ipsec transform-set GRID-TS esp-aes 256 esp-sha256-hmac`, `exit`. Interesting traffic: `access-list 120 permit ip 192.168.30.0 0.0.0.255 192.168.50.0 0.0.0.255`. Then `crypto map GRID-MAP 10 ipsec-isakmp` with `set peer 203.0.113.50`, `set transform-set GRID-TS`, `match address 120`, `exit`. Apply it to the outside: `interface g0/2`, `crypto map GRID-MAP`.",
+      "objectives": [
+        {
+          "id": "ts",
+          "label": "Transform set GRID-TS (ESP AES-256, SHA-256)",
+          "check": {
+            "type": "fact",
+            "fact": "ts"
+          }
+        },
+        {
+          "id": "acl",
+          "label": "ACL 120 picks Northwatch-to-Skyport traffic",
+          "check": {
+            "type": "fact",
+            "fact": "acl"
+          }
+        },
+        {
+          "id": "peer",
+          "label": "Crypto map peer is Skyport",
+          "check": {
+            "type": "fact",
+            "fact": "peer"
+          }
+        },
+        {
+          "id": "cm-ts",
+          "label": "Crypto map uses GRID-TS",
+          "check": {
+            "type": "fact",
+            "fact": "cm-ts"
+          }
+        },
+        {
+          "id": "cm-acl",
+          "label": "Crypto map matches ACL 120",
+          "check": {
+            "type": "fact",
+            "fact": "cm-acl"
+          }
+        },
+        {
+          "id": "applied",
+          "label": "Crypto map applied on Gi0/2",
+          "check": {
+            "type": "fact",
+            "fact": "applied"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Bring it up and prove it",
+      "body": "The tunnel waits for interesting traffic. `end`, then `ping 192.168.50.10 source g0/1` (from the Northwatch LAN side). Check `show crypto isakmp sa` and `show crypto ipsec sa`. Last question: OSPF can't run through plain IPsec. What do you wrap it in? `submit WRAP=...`",
+      "objectives": [
+        {
+          "id": "up",
+          "label": "Interesting traffic brought the tunnel up",
+          "check": {
+            "type": "fact",
+            "fact": "triggered"
+          }
+        },
+        {
+          "id": "seen-p1",
+          "label": "Phase 1 is QM_IDLE",
+          "check": {
+            "type": "fact",
+            "fact": "seen-isakmp"
+          }
+        },
+        {
+          "id": "seen-p2",
+          "label": "Phase 2 is encrypting packets",
+          "check": {
+            "type": "fact",
+            "fact": "seen-ipsec"
+          }
+        },
+        {
+          "id": "a-wrap",
+          "label": "Tunnel for routing protocols named",
+          "check": {
+            "type": "answer",
+            "value": "WRAP=GRE",
+            "alt": [
+              "WRAP=GRE over IPsec"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

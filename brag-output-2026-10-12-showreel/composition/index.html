@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Space Grotesk"; src: url(assets/fonts/space-grotesk-500.woff2) format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Space Grotesk"; src: url(assets/fonts/space-grotesk-700.woff2) format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Inter"; src: url(assets/fonts/inter-500.woff2) format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Inter"; src: url(assets/fonts/inter-600.woff2) format("woff2"); font-weight: 600; }
+      @font-face { font-family: "Inter"; src: url(assets/fonts/inter-700.woff2) format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Pixelify Sans"; src: url(assets/fonts/pixelify-600.woff2) format("woff2"); font-weight: 600; }
+      @font-face { font-family: "Pixelify Sans"; src: url(assets/fonts/pixelify-700.woff2) format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Space Mono"; src: url(assets/fonts/space-mono-400.woff2) format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Space Mono"; src: url(assets/fonts/space-mono-700.woff2) format("woff2"); font-weight: 700; }
+
+      /* Tokens lifted from the TechLab landing page + app shell */
+      :root {
+        --space: #06061a;
+        --blue: #2f7de1;
+        --blue-d: #1f5fb8;
+        --logo: #73b6ff;
+        --cyan: #5be1ff;
+        --violet: #9b6bff;
+        --gold: #ffcf3f;
+        --green: #22c55e;
+        --red: #ff4d6d;
+        --ink: #eaeeff;
+        --body: #b6bfe8;
+        --navy: #1b1750;
+        --card: #0f0d33;
+        --display: "Space Grotesk", system-ui, sans-serif;
+        --text: "Inter", system-ui, sans-serif;
+        --mono: "Space Mono", ui-monospace, monospace;
+        --pixel: "Pixelify Sans", "Space Grotesk", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--space); }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: var(--text); color: var(--ink); background: var(--space); }
+
+      .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      .abs { position: absolute; }
+      .center { position: absolute; left: 0; width: 1920px; display: flex; justify-content: center; align-items: center; }
+      .pop { opacity: 0; }
+      .mask { overflow: hidden; display: inline-block; vertical-align: top; padding: 0 0.04em 0.12em; }
+      .mask > span { display: inline-block; }
+      .kin { font-family: var(--display); font-weight: 700; letter-spacing: -0.035em; line-height: 1; color: #fff; }
+      .label { font-family: var(--mono); font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; }
+
+      /* ---------- background: space, stars, nebula ---------- */
+      #bg { z-index: 0; }
+      .nebula { position: absolute; border-radius: 50%; filter: blur(30px); }
+      #neb-a { width: 1300px; height: 1000px; left: -300px; top: -260px; background: radial-gradient(circle, rgba(98, 62, 210, 0.42) 0%, rgba(98, 62, 210, 0) 65%); }
+      #neb-b { width: 1200px; height: 1000px; left: 1000px; top: 300px; background: radial-gradient(circle, rgba(47, 125, 225, 0.32) 0%, rgba(47, 125, 225, 0) 65%); }
+      #stars, #stars2 { position: absolute; left: -100px; top: -100px; width: 2120px; height: 1280px; }
+      .star { position: absolute; border-radius: 50%; background: #fff; }
+      #grid {
+        position: absolute; left: -480px; top: 560px; width: 2880px; height: 900px; opacity: 0;
+        background-image: linear-gradient(rgba(115, 182, 255, 0.22) 2px, transparent 2px), linear-gradient(90deg, rgba(115, 182, 255, 0.22) 2px, transparent 2px);
+        background-size: 120px 120px; transform: perspective(700px) rotateX(62deg); transform-origin: 50% 0;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%);
+      }
+
+      /* ---------- pinwheel logo ---------- */
+      .pinwheel { display: block; overflow: visible; }
+      .pinwheel rect { fill: var(--logo); }
+      #s1-logo-wrap { position: absolute; left: 810px; top: 240px; width: 300px; height: 300px; }
+      #s1-halo { position: absolute; left: 560px; top: -10px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(115, 182, 255, 0.45) 0%, rgba(115, 182, 255, 0) 60%); opacity: 0; }
+      #s1-flash { position: absolute; left: 660px; top: 90px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, rgba(255, 255, 255, 0) 65%); opacity: 0; }
+      .ring { position: absolute; border-radius: 50%; border: 6px solid var(--logo); opacity: 0; }
+      #s1-word { top: 600px; }
+      #s1-word .kin { font-size: 168px; }
+      #s1-sub { top: 810px; }
+      #s1-sub .label { font-size: 26px; color: var(--logo); }
+
+      /* ---------- planets ---------- */
+      #s2-head { top: 120px; flex-direction: column; }
+      #s2-l1 { font-size: 150px; }
+      #s2-l2 { font-family: var(--display); font-weight: 500; font-size: 64px; color: var(--logo); margin-top: 14px; letter-spacing: -0.02em; }
+      #s2-cards { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; perspective: 1800px; }
+      .pcard {
+        position: absolute; top: 370px; width: 520px; height: 470px; border-radius: 18px; overflow: hidden;
+        background: var(--card); border: 3px solid #2a2766; box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55); opacity: 0; transform-style: preserve-3d;
+      }
+      .pcard img { display: block; width: 100%; height: 290px; object-fit: cover; image-rendering: pixelated; }
+      .pcard .pbody { padding: 22px 26px; }
+      .pcard .ptag { font-family: var(--mono); font-size: 15px; letter-spacing: 0.3em; color: #8b93c9; }
+      .pcard .pname { font-family: var(--display); font-weight: 700; font-size: 38px; color: #fff; margin-top: 6px; letter-spacing: -0.02em; }
+      .pcard .pdesc { font-size: 19px; color: var(--body); margin-top: 6px; line-height: 1.35; }
+      .pglow { position: absolute; top: 760px; width: 560px; height: 160px; border-radius: 50%; filter: blur(40px); opacity: 0; }
+
+      /* ---------- wipes / fx ---------- */
+      #fx { z-index: 50; pointer-events: none; }
+      .slash { position: absolute; top: -200px; width: 900px; height: 1480px; transform: skewX(-18deg); }
+      #flash-white { position: absolute; inset: 0; background: #fff; opacity: 0; }
+      #flash-blue { position: absolute; inset: 0; background: var(--blue); opacity: 0; }
+      .stripe { position: absolute; left: -2400px; width: 2400px; height: 360px; }
+
+      /* ---------- browser window ---------- */
+      .win { position: absolute; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 50px 120px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(150, 170, 255, 0.25); }
+      .win .bar { height: 44px; background: #eef1fb; display: flex; align-items: center; padding: 0 18px; gap: 9px; border-bottom: 1px solid #dde2f3; }
+      .win .dot { width: 13px; height: 13px; border-radius: 50%; }
+      .win .ttl { margin-left: 18px; font-family: var(--text); font-weight: 600; font-size: 15px; color: #5b6390; display: flex; align-items: center; gap: 8px; }
+      .win .ttl img { width: 18px; height: 18px; }
+      .win .view { position: relative; overflow: hidden; }
+      .cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+      .cam > img.shot { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }
+      .hl { position: absolute; border-radius: 14px; border: 5px solid var(--gold); box-shadow: 0 0 0 6px rgba(255, 207, 63, 0.25), 0 0 40px rgba(255, 207, 63, 0.6); opacity: 0; }
+
+      /* ---------- rewards ---------- */
+      #s3-win { left: 700px; top: 150px; width: 1140px; height: 685px; }
+      #s3-stage { position: absolute; inset: 0; perspective: 2000px; }
+      #s3-head { left: 110px; top: 210px; }
+      #s3-head .kin { font-size: 96px; display: block; }
+      #s3-head .mask { display: block; }
+      #s3-count { left: 114px; top: 470px; font-family: var(--pixel); font-weight: 700; font-size: 64px; color: var(--gold); opacity: 0; }
+      .token { position: absolute; top: 600px; width: 170px; text-align: center; opacity: 0; }
+      .token .coin { width: 150px; height: 150px; margin: 0 auto; border-radius: 28px; background: #121040; border: 3px solid #2a2766; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 0 #0a0826; }
+      .token .coin img { width: 104px; height: 104px; image-rendering: pixelated; }
+      .token .cap { font-family: var(--display); font-weight: 700; font-size: 30px; color: #fff; margin-top: 22px; }
+      .token .cap small { display: block; font-family: var(--text); font-weight: 500; font-size: 17px; color: var(--body); margin-top: 4px; }
+
+      /* ---------- astro ---------- */
+      #s4 { background: radial-gradient(circle at 30% 45%, #3f95f0 0%, #2f7de1 45%, #1b4fa8 100%); }
+      #s4-stuck { top: 330px; }
+      #s4-stuck .kin { font-size: 300px; text-shadow: 0 16px 0 rgba(27, 23, 80, 0.35); }
+      #s4-astro { left: 110px; top: 300px; width: 400px; height: 380px; opacity: 0; transform-origin: 50% 100%; }
+      #s4-astro svg { width: 400px; height: 380px; display: block; }
+      #s4-win { left: 600px; top: 120px; width: 1240px; height: 744px; }
+      #s4-cap { left: 600px; top: 900px; width: 1240px; text-align: center; font-family: var(--display); font-weight: 700; font-size: 52px; color: #fff; text-shadow: 0 6px 0 rgba(27, 23, 80, 0.3); }
+      #s4-name { left: 150px; top: 720px; width: 320px; text-align: center; font-family: var(--pixel); font-weight: 700; font-size: 58px; color: #fff; text-shadow: 0 6px 0 rgba(27, 23, 80, 0.35); }
+      #s4-role { left: 150px; top: 796px; width: 320px; text-align: center; font-family: var(--mono); font-weight: 700; font-size: 20px; letter-spacing: 0.2em; color: #d8ecff; }
+      .mask-wipe { position: absolute; background: #fff; transform-origin: 50% 100%; }
+
+      /* ---------- labs ---------- */
+      #s5-then { top: 330px; }
+      #s5-then .kin { font-size: 150px; }
+      #s5-real { top: 520px; }
+      #s5-real .kin { font-size: 250px; color: var(--gold); text-shadow: 0 14px 0 #b9700a; }
+      .labshot { position: absolute; inset: 0; overflow: hidden; opacity: 0; background: #0b0a24; }
+      .tag {
+        position: absolute; left: 70px; bottom: 70px; padding: 26px 36px 28px 40px; border-radius: 20px; background: rgba(12, 10, 42, 0.92);
+        border: 2px solid rgba(150, 170, 255, 0.25); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45); opacity: 0; overflow: hidden;
+      }
+      .tag::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: var(--acc); }
+      .tag .label { font-size: 17px; color: var(--acc); }
+      .tag .big { font-family: var(--display); font-weight: 700; font-size: 74px; letter-spacing: -0.03em; color: #fff; margin-top: 8px; line-height: 1; }
+      .vo-line { position: absolute; right: 80px; bottom: 70px; font-family: var(--display); font-weight: 700; font-size: 60px; color: #fff; padding: 14px 30px 18px; border-radius: 16px; background: rgba(12, 10, 42, 0.88); opacity: 0; }
+      .toast { position: absolute; display: flex; align-items: center; gap: 14px; padding: 16px 28px; border-radius: 16px; background: #15803d; color: #fff; font-family: var(--display); font-weight: 700; font-size: 34px; box-shadow: 0 8px 0 #0d5c2b, 0 24px 50px rgba(0, 0, 0, 0.35); opacity: 0; }
+      .xpchip { position: absolute; padding: 10px 22px 12px; border-radius: 40px; background: var(--gold); color: var(--navy); font-family: var(--pixel); font-weight: 700; font-size: 40px; box-shadow: 0 7px 0 #b9700a; opacity: 0; display: flex; align-items: center; gap: 10px; }
+      .xpchip img { width: 40px; height: 40px; image-rendering: pixelated; }
+      .packet { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 16px 6px rgba(91, 225, 255, 0.8); opacity: 0; }
+      #redvig { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(255, 30, 70, 0) 45%, rgba(255, 30, 70, 0.55) 100%); opacity: 0; }
+      #allclear {
+        position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: flex; align-items: center; justify-content: center; opacity: 0;
+      }
+      #allclear .badge { display: flex; align-items: center; gap: 30px; padding: 34px 60px 38px; border-radius: 28px; background: #0d3b22; border: 4px solid var(--green); box-shadow: 0 0 80px rgba(34, 197, 94, 0.55), 0 40px 80px rgba(0, 0, 0, 0.5); }
+      #allclear .badge span { font-family: var(--mono); font-weight: 700; font-size: 56px; color: #b8f5cf; letter-spacing: 0.04em; }
+      .cf { position: absolute; width: 18px; height: 26px; left: 950px; top: 530px; opacity: 0; }
+
+      /* ---------- outro ---------- */
+      #s6-l1 { top: 250px; }
+      #s6-l1 .kin { font-size: 156px; }
+      #s6-pill { position: absolute; left: 530px; top: 430px; width: 860px; height: 200px; border-radius: 30px; background: var(--blue); box-shadow: 0 14px 0 var(--blue-d); overflow: hidden; opacity: 0; }
+      .pword { position: absolute; left: 0; top: 0; width: 860px; height: 200px; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 140px; letter-spacing: -0.035em; color: #fff; padding-bottom: 14px; }
+      #s6-btn { position: absolute; left: 680px; top: 720px; width: 560px; height: 130px; border-radius: 24px; background: var(--blue); box-shadow: 0 10px 0 var(--blue-d); display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 54px; color: #fff; opacity: 0; }
+      #s6-cursor { position: absolute; left: 0; top: 0; width: 96px; height: 96px; opacity: 0; image-rendering: pixelated; }
+      #end { position: absolute; inset: 0; opacity: 0; }
+      #end-logo { position: absolute; left: 868px; top: 250px; width: 184px; height: 184px; }
+      #end-word { top: 470px; }
+      #end-word .kin { font-size: 150px; }
+      #end-sub { top: 650px; }
+      #end-sub .label { font-size: 26px; color: var(--logo); }
+      #end-astro { position: absolute; left: 300px; top: 330px; width: 300px; height: 285px; opacity: 0; transform-origin: 50% 100%; }
+      #end-astro svg { width: 300px; height: 285px; display: block; }
+      #end-cta { top: 760px; }
+      #end-cta .b { padding: 22px 46px 26px; border-radius: 18px; background: var(--blue); box-shadow: 0 9px 0 var(--blue-d); font-family: var(--display); font-weight: 700; font-size: 38px; color: #fff; }
+      .endplanet { position: absolute; width: 170px; height: 170px; border-radius: 50%; overflow: hidden; border: 4px solid rgba(150, 170, 255, 0.35); opacity: 0; box-shadow: 0 0 60px var(--acc); }
+      .endplanet img { width: 425px; height: 170px; margin-left: -128px; image-rendering: pixelated; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-start="0" data-duration="25" data-width="1920" data-height="1080">
+
+      <!-- ============ Background: deep space shared by every dark scene ============ -->
+      <section id="bg" class="scene clip" data-start="0" data-duration="25" data-track-index="0">
+        <div id="neb-a" class="nebula" data-layout-allow-overflow></div>
+        <div id="neb-b" class="nebula" data-layout-allow-overflow></div>
+        <div id="stars" data-layout-allow-overflow></div>
+        <div id="stars2" data-layout-allow-overflow></div>
+        <div id="grid" data-layout-allow-overflow></div>
+      </section>
+
+      <!-- ============ Scene 1: logo hook ============ -->
+      <section id="s1" class="scene clip" data-start="0" data-duration="2.3" data-track-index="1" style="z-index: 2">
+        <div id="s1-all" class="abs" style="inset: 0; transform-origin: 960px 390px">
+          <div id="s1-halo" data-layout-allow-overflow></div>
+          <div id="s1-flash" data-layout-allow-overflow></div>
+          <div class="ring" id="s1-ring1" data-layout-allow-overflow style="left: 810px; top: 240px; width: 300px; height: 300px"></div>
+          <div class="ring" id="s1-ring2" data-layout-allow-overflow style="left: 810px; top: 240px; width: 300px; height: 300px; border-color: #fff"></div>
+          <div id="s1-logo-wrap">
+            <svg class="pinwheel" id="s1-logo" viewBox="0 0 180 180" width="300" height="300">
+              <g id="arm-a"><rect x="93" y="0" width="25" height="87"/><rect x="31" y="31" width="62" height="25"/></g>
+              <g id="arm-b"><rect x="124" y="31" width="25" height="87"/><rect x="93" y="93" width="31" height="25"/><rect x="149" y="93" width="31" height="25"/></g>
+              <g id="arm-c"><rect x="0" y="62" width="87" height="25"/><rect x="31" y="87" width="25" height="62"/></g>
+              <g id="arm-d"><rect x="62" y="93" width="25" height="87"/><rect x="87" y="124" width="62" height="25"/></g>
+            </svg>
+          </div>
+          <div id="s1-word" class="center"><span class="mask"><span id="s1-word-in" class="kin">TechLab</span></span></div>
+          <div id="s1-sub" class="center"><span id="s1-sub-in" class="label pop">Coding · Networking · Cybersecurity</span></div>
+        </div>
+      </section>
+
+      <!-- ============ Scene 2: three planets ============ -->
+      <section id="s2" class="scene clip" data-start="2.0" data-duration="5.0" data-track-index="2" style="z-index: 3">
+        <div id="s2-all" class="abs" style="inset: 0; transform-origin: 960px 540px">
+          <div id="s2-head" class="center">
+            <div><span class="mask"><span id="s2-w1" class="kin" style="font-size: 150px; white-space: pre">Three planets</span></span></div>
+            <div><span class="mask"><span id="s2-l2">to explore</span></span></div>
+          </div>
+          <div class="pglow" id="pg1" data-layout-allow-overflow style="left: 140px; background: #73b6ff"></div>
+          <div class="pglow" id="pg2" data-layout-allow-overflow style="left: 680px; background: #5be1ff"></div>
+          <div class="pglow" id="pg3" data-layout-allow-overflow style="left: 1220px; background: #9b6bff"></div>
+          <div id="s2-cards">
+            <div class="pcard" id="pc1" style="left: 160px; border-color: #3d5bb8">
+              <img src="assets/img/programming-city-pixel.png" alt="" />
+              <div class="pbody"><div class="ptag">PLANET</div><div class="pname">Programming City</div><div class="pdesc">Build with code — logic, apps, and the foundations of software.</div></div>
+            </div>
+            <div class="pcard" id="pc2" style="left: 700px; border-color: #2b7f99">
+              <img src="assets/img/networking-nebula.png" alt="" />
+              <div class="pbody"><div class="ptag">PLANET</div><div class="pname">Networking Nebula</div><div class="pdesc">How the internet works — routing, protocols, and connections.</div></div>
+            </div>
+            <div class="pcard" id="pc3" style="left: 1240px; border-color: #6644b8">
+              <img src="assets/img/cybersecurity-citadel.png" alt="" />
+              <div class="pbody"><div class="ptag">PLANET</div><div class="pname">Cybersecurity Citadel</div><div class="pdesc">Defend systems — threats, encryption, and secure design.</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Scene 3: rewards ============ -->
+      <section id="s3" class="scene clip" data-start="6.6" data-duration="4.2" data-track-index="1" style="z-index: 4">
+        <div id="s3-all" class="abs" style="inset: 0">
+          <div id="s3-stage">
+            <div class="win" id="s3-win">
+              <div class="bar"><span class="dot" style="background: #ff6b6b"></span><span class="dot" style="background: #ffc94a"></span><span class="dot" style="background: #3ddc84"></span><span class="ttl"><img src="assets/img/logo.svg" alt="" />TechLab · Progress</span></div>
+              <div class="view" style="width: 1140px; height: 641px">
+                <div class="cam" id="s3-cam">
+                  <img class="shot" src="assets/shots/progress.png" alt="" />
+                  <div class="hl" id="hl-xp" style="left: 320px; top: 368px; width: 234px; height: 212px"></div>
+                  <div class="hl" id="hl-streak" style="left: 563px; top: 368px; width: 236px; height: 212px"></div>
+                  <div class="hl" id="hl-gem" style="left: 807px; top: 368px; width: 236px; height: 212px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="s3-head" class="abs">
+            <span class="mask"><span id="s3-h1" class="kin">Every lesson</span></span>
+            <span class="mask"><span id="s3-h2" class="kin" style="color: var(--logo)">earns you</span></span>
+          </div>
+          <div id="s3-count" class="abs"><span id="s3-num">0</span> XP</div>
+          <div class="token" id="tk1" style="left: 100px"><div class="coin"><img src="assets/img/xp.svg" alt="" /></div><div class="cap">XP<small>Earn per lesson</small></div></div>
+          <div class="token" id="tk2" style="left: 300px"><div class="coin"><img src="assets/img/streak.svg" alt="" /></div><div class="cap">Streak<small>Come back daily</small></div></div>
+          <div class="token" id="tk3" style="left: 500px"><div class="coin"><img src="assets/img/gem.svg" alt="" /></div><div class="cap">Gems<small>Unlock rewards</small></div></div>
+        </div>
+      </section>
+
+      <!-- ============ Scene 4: ask Astro ============ -->
+      <section id="s4" class="scene clip" data-start="10.45" data-duration="3.6" data-track-index="2" style="z-index: 5">
+        <div id="s4-all" class="abs" style="inset: 0">
+          <div id="s4-stuck" class="center"><span id="s4-stuck-in" class="kin pop">Stuck?</span></div>
+          <div class="win" id="s4-win" style="opacity: 0">
+            <div class="bar"><span class="dot" style="background: #ff6b6b"></span><span class="dot" style="background: #ffc94a"></span><span class="dot" style="background: #3ddc84"></span><span class="ttl"><img src="assets/img/logo.svg" alt="" />TechLab · Chat with Astro</span></div>
+            <div class="view" style="width: 1240px; height: 700px">
+              <div class="cam" id="s4-cam">
+                <img class="shot" src="assets/shots/chat-convo.png" alt="" />
+                <div class="mask-wipe" id="s4-wipe" style="left: 686px; top: 214px; width: 670px; height: 270px"></div>
+                <div class="hl" id="hl-q" style="left: 1050px; top: 140px; width: 314px; height: 50px; border-radius: 26px; border-color: var(--logo); box-shadow: 0 0 0 6px rgba(115, 182, 255, 0.25), 0 0 40px rgba(115, 182, 255, 0.6)"></div>
+              </div>
+            </div>
+          </div>
+          <div id="s4-cap" class="abs pop">Ask a question mid-lesson.</div>
+          <div id="s4-astro" class="abs"><svg class="astro-svg" viewBox="0 0 20 19" shape-rendering="crispEdges"></svg></div>
+          <div id="s4-name" class="abs pop">Astro</div>
+          <div id="s4-role" class="abs pop">YOUR AI TUTOR</div>
+        </div>
+      </section>
+
+      <!-- ============ Scene 5: do it for real, three labs ============ -->
+      <section id="s5" class="scene clip" data-start="13.8" data-duration="6.05" data-track-index="1" style="z-index: 6">
+        <div id="s5-type" class="abs" style="inset: 0; transform-origin: 960px 540px">
+          <div id="s5-then" class="center"><span class="mask"><span id="s5-then-in" class="kin">Then do it</span></span></div>
+          <div id="s5-real" class="center"><span id="s5-real-in" class="kin pop">FOR REAL.</span></div>
+        </div>
+
+        <!-- Lab 1: Programming City, C editor -->
+        <div class="labshot" id="lab1">
+          <div class="cam" id="lab1-cam">
+            <img class="shot" src="assets/shots/c-editor-run.png" alt="" />
+            <div class="hl" id="hl-pass" style="left: 364px; top: 986px; width: 176px; height: 58px; border-color: var(--green); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.25), 0 0 40px rgba(34, 197, 94, 0.6)"></div>
+          </div>
+          <div class="toast" id="toast" style="left: 820px; top: 930px"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#fff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#15803d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>You got it!</div>
+          <div class="tag" id="tag1" style="--acc: #73b6ff; top: 70px; bottom: auto"><div class="label">Programming City</div><div class="big">Code it yourself</div></div>
+          <div class="vo-line" id="vo1">Write the code.</div>
+        </div>
+
+        <!-- Lab 2: Networking Nebula, NetSim -->
+        <div class="labshot" id="lab2">
+          <div class="cam" id="lab2-cam">
+            <img class="shot" src="assets/shots/net-lab.png" alt="" />
+            <div class="packet" id="pk1"></div>
+            <div class="packet" id="pk2"></div>
+            <div class="packet" id="pk3" style="background: #ffcf3f; box-shadow: 0 0 16px 6px rgba(255, 207, 63, 0.8)"></div>
+            <div class="hl" id="hl-done" style="left: 1430px; top: 8px; width: 338px; height: 54px; border-radius: 10px; border-color: var(--green); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.25), 0 0 40px rgba(34, 197, 94, 0.6)"></div>
+          </div>
+          <div class="xpchip" id="xp2" style="left: 1530px; top: 84px"><img src="assets/img/xp.svg" alt="" />+100 XP</div>
+          <div class="tag" id="tag2" style="--acc: #5be1ff"><div class="label">Networking Nebula</div><div class="big">Configure it yourself</div></div>
+          <div class="vo-line" id="vo2">Wire the network.</div>
+        </div>
+
+        <!-- Lab 3: Cybersecurity Citadel, Citadel Sim -->
+        <div class="labshot" id="lab3">
+          <div class="cam" id="lab3-cam">
+            <img class="shot" src="assets/shots/citadel-typed.png" alt="" />
+            <div class="hl" id="hl-alert" style="left: 12px; top: 14px; width: 356px; height: 64px; border-radius: 12px; border-color: var(--red); box-shadow: 0 0 0 6px rgba(255, 77, 109, 0.25), 0 0 40px rgba(255, 77, 109, 0.7)"></div>
+            <div class="hl" id="hl-log" style="left: 386px; top: 226px; width: 1000px; height: 112px; border-radius: 10px; border-color: var(--red); box-shadow: 0 0 0 6px rgba(255, 77, 109, 0.2), 0 0 40px rgba(255, 77, 109, 0.5)"></div>
+            <div id="alert-ok" class="abs" style="left: 18px; top: 18px; width: 342px; height: 52px; border-radius: 10px; background: #0d3b22; border: 2px solid #22c55e; opacity: 0; display: flex; align-items: center; padding-left: 14px; font-family: var(--mono); font-weight: 700; font-size: 14px; letter-spacing: 0.06em; color: #b8f5cf">ALL CLEAR · Attack repelled</div>
+          </div>
+          <div id="redvig"></div>
+          <div id="allclear"><div class="badge">
+            <svg width="92" height="104" viewBox="0 0 24 27"><path d="M12 1 2 5v7c0 6.5 4.3 11.8 10 14 5.7-2.2 10-7.5 10-14V5Z" fill="#22c55e"/><path d="M7 13.5l3.4 3.4L17.5 9.8" stroke="#0d3b22" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>ALL CLEAR · Attack repelled</span>
+          </div></div>
+          <div id="confetti"></div>
+          <div class="tag" id="tag3" style="--acc: #9b6bff"><div class="label">Cybersecurity Citadel</div><div class="big">Defend it yourself</div></div>
+          <div class="vo-line" id="vo3">Stop the attack.</div>
+        </div>
+      </section>
+
+      <!-- ============ Scene 6: level up, CTA, end card ============ -->
+      <section id="s6" class="scene clip" data-start="19.5" data-duration="5.5" data-track-index="2" style="z-index: 7">
+        <div id="s6-hero" class="abs" style="inset: 0; transform-origin: 960px 600px">
+          <div id="s6-l1" class="center"><span class="mask"><span id="s6-l1-in" class="kin">Level up your</span></span></div>
+          <div id="s6-pill">
+            <div class="pword" id="pw1">Coding</div>
+            <div class="pword" id="pw2">Networking</div>
+            <div class="pword" id="pw3">Cybersecurity</div>
+          </div>
+          <div id="s6-btn">Start your mission</div>
+          <div class="ring" id="s6-ring" data-layout-allow-overflow style="left: 860px; top: 685px; width: 200px; height: 200px; border-color: #fff"></div>
+          <img id="s6-cursor" src="assets/img/astro-glove.svg" alt="" />
+        </div>
+        <div id="end">
+          <div class="endplanet" id="ep1" style="left: 1400px; top: 330px; --acc: rgba(115, 182, 255, 0.55)"><img src="assets/img/programming-city-pixel.png" alt="" /></div>
+          <div class="endplanet" id="ep2" style="left: 1590px; top: 470px; --acc: rgba(91, 225, 255, 0.55)"><img src="assets/img/networking-nebula.png" alt="" /></div>
+          <div class="endplanet" id="ep3" style="left: 1410px; top: 610px; --acc: rgba(155, 107, 255, 0.55)"><img src="assets/img/cybersecurity-citadel.png" alt="" /></div>
+          <div id="end-halo" class="abs" data-layout-allow-overflow style="left: 560px; top: -60px; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(115, 182, 255, 0.4) 0%, rgba(115, 182, 255, 0) 60%)"></div>
+          <div id="end-logo">
+            <svg class="pinwheel" viewBox="0 0 180 180" width="184" height="184">
+              <g id="ea"><rect x="93" y="0" width="25" height="87"/><rect x="31" y="31" width="62" height="25"/></g>
+              <g id="eb"><rect x="124" y="31" width="25" height="87"/><rect x="93" y="93" width="31" height="25"/><rect x="149" y="93" width="31" height="25"/></g>
+              <g id="ec"><rect x="0" y="62" width="87" height="25"/><rect x="31" y="87" width="25" height="62"/></g>
+              <g id="ed"><rect x="62" y="93" width="25" height="87"/><rect x="87" y="124" width="62" height="25"/></g>
+            </svg>
+          </div>
+          <div id="end-word" class="center"><span class="mask"><span id="end-word-in" class="kin">TechLab</span></span></div>
+          <div id="end-sub" class="center"><span id="end-sub-in" class="label pop">Coding · Networking · Cybersecurity</span></div>
+          <div id="end-astro"><svg class="astro-svg" viewBox="0 0 20 19" shape-rendering="crispEdges"></svg></div>
+          <div id="end-cta" class="center"><span id="end-cta-in" class="b pop">Start your mission</span></div>
+        </div>
+      </section>
+
+      <!-- ============ FX layer: wipes and flashes over every scene ============ -->
+      <section id="fx" class="scene clip" data-start="0" data-duration="25" data-track-index="5">
+        <div class="slash" id="sl1" data-layout-allow-overflow style="left: -1400px; background: #73b6ff"></div>
+        <div class="slash" id="sl2" data-layout-allow-overflow style="left: -1400px; background: #5be1ff"></div>
+        <div class="slash" id="sl3" data-layout-allow-overflow style="left: -1400px; background: #9b6bff"></div>
+        <div class="slash" id="sl4" data-layout-allow-overflow style="left: -1400px; background: #2f7de1"></div>
+        <div class="stripe" id="st1" data-layout-allow-overflow style="top: 0; background: #73b6ff"></div>
+        <div class="stripe" id="st2" data-layout-allow-overflow style="top: 360px; background: #5be1ff"></div>
+        <div class="stripe" id="st3" data-layout-allow-overflow style="top: 720px; background: #9b6bff"></div>
+        <div id="flash-blue"></div>
+        <div id="flash-white"></div>
+      </section>
+
+      <!-- ============ Audio ============ -->
+      <audio id="vo" data-start="0.5" data-duration="22.08" data-volume="1" data-track-index="6" src="assets/vo/take-a.mp3"></audio>
+      <audio id="music-a" data-start="0" data-duration="22.6" data-media-start="1.02" data-volume="0.3" data-fade-in="0.3" data-fade-out="0.3" data-track-index="9" src="assets/music/bed.mp3"></audio>
+      <audio id="music-b" data-start="22.3" data-duration="2.7" data-media-start="23.32" data-volume="0.55" data-fade-in="0.3" data-fade-out="1.8" data-track-index="10" src="assets/music/bed.mp3"></audio>
+      <!-- SFX are generated from the SFX table in the script below (same frame as the motion they belong to) -->
+      <audio id="sx-0" data-start="0.04" data-duration="0.55" data-volume="0.55" data-track-index="11" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-1" data-start="0.2" data-duration="0.35" data-volume="0.3" data-track-index="12" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-2" data-start="0.47" data-duration="1.3" data-volume="0.75" data-track-index="13" src="assets/sfx/boom.wav"></audio>
+      <audio id="sx-3" data-start="0.48" data-duration="0.18" data-volume="0.7" data-track-index="14" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sx-4" data-start="1.0" data-duration="0.12" data-volume="0.45" data-track-index="11" src="assets/sfx/bong_001.ogg"></audio>
+      <audio id="sx-5" data-start="1.0" data-duration="0.35" data-volume="0.22" data-track-index="12" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-6" data-start="1.86" data-duration="0.55" data-volume="0.6" data-track-index="11" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-7" data-start="2.38" data-duration="0.15" data-volume="0.3" data-track-index="12" src="assets/sfx/impactSoft_medium_004.ogg"></audio>
+      <audio id="sx-8" data-start="4.2" data-duration="0.4" data-volume="0.5" data-track-index="11" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sx-9" data-start="4.9" data-duration="0.4" data-volume="0.5" data-track-index="11" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sx-10" data-start="5.7" data-duration="0.4" data-volume="0.5" data-track-index="11" src="assets/sfx/card-slide-1.ogg"></audio>
+      <audio id="sx-11" data-start="6.4" data-duration="0.55" data-volume="0.55" data-track-index="11" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-12" data-start="7.15" data-duration="0.11" data-volume="0.3" data-track-index="11" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-13" data-start="9.0" data-duration="0.11" data-volume="0.5" data-track-index="11" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-14" data-start="9.04" data-duration="0.6" data-volume="0.32" data-track-index="12" src="assets/sfx/chips-stack-2.ogg"></audio>
+      <audio id="sx-15" data-start="9.5" data-duration="0.11" data-volume="0.5" data-track-index="11" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-16" data-start="10.0" data-duration="0.11" data-volume="0.5" data-track-index="11" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-17" data-start="10.02" data-duration="0.5" data-volume="0.22" data-track-index="12" src="assets/sfx/sparkle.wav"></audio>
+      <audio id="sx-18" data-start="10.42" data-duration="0.55" data-volume="0.55" data-track-index="11" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-19" data-start="10.76" data-duration="0.54" data-volume="0.4" data-track-index="12" src="assets/sfx/impactSoft_heavy_003.ogg"></audio>
+      <audio id="sx-20" data-start="10.8" data-duration="0.5" data-volume="0.28" data-track-index="13" src="assets/sfx/error_005.ogg"></audio>
+      <audio id="sx-21" data-start="11.36" data-duration="0.35" data-volume="0.25" data-track-index="11" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-22" data-start="11.52" data-duration="0.18" data-volume="0.5" data-track-index="12" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sx-23" data-start="11.75" data-duration="0.35" data-volume="0.3" data-track-index="11" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-24" data-start="12.05" data-duration="0.05" data-volume="0.35" data-track-index="12" src="assets/sfx/select_008.ogg"></audio>
+      <audio id="sx-25" data-start="12.4" data-duration="0.25" data-volume="0.12" data-track-index="11" src="assets/sfx/keypress-001.wav"></audio>
+      <audio id="sx-26" data-start="12.52" data-duration="0.25" data-volume="0.12" data-track-index="12" src="assets/sfx/keypress-003.wav"></audio>
+      <audio id="sx-27" data-start="12.63" data-duration="0.25" data-volume="0.12" data-track-index="13" src="assets/sfx/keypress-005.wav"></audio>
+      <audio id="sx-28" data-start="12.74" data-duration="0.25" data-volume="0.12" data-track-index="11" src="assets/sfx/keypress-002.wav"></audio>
+      <audio id="sx-29" data-start="12.85" data-duration="0.25" data-volume="0.12" data-track-index="12" src="assets/sfx/keypress-004.wav"></audio>
+      <audio id="sx-30" data-start="12.96" data-duration="0.25" data-volume="0.12" data-track-index="13" src="assets/sfx/keypress-006.wav"></audio>
+      <audio id="sx-31" data-start="13.07" data-duration="0.25" data-volume="0.12" data-track-index="11" src="assets/sfx/keypress-001.wav"></audio>
+      <audio id="sx-32" data-start="13.18" data-duration="0.25" data-volume="0.12" data-track-index="12" src="assets/sfx/keypress-003.wav"></audio>
+      <audio id="sx-33" data-start="13.52" data-duration="0.55" data-volume="0.6" data-track-index="11" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-34" data-start="14.0" data-duration="1.0" data-volume="0.42" data-track-index="12" src="assets/sfx/riser.wav"></audio>
+      <audio id="sx-35" data-start="14.2" data-duration="0.15" data-volume="0.3" data-track-index="11" src="assets/sfx/impactSoft_medium_004.ogg"></audio>
+      <audio id="sx-36" data-start="15.0" data-duration="1.3" data-volume="0.9" data-track-index="11" src="assets/sfx/boom.wav"></audio>
+      <audio id="sx-37" data-start="15.0" data-duration="0.54" data-volume="0.5" data-track-index="12" src="assets/sfx/impactSoft_heavy_003.ogg"></audio>
+      <audio id="sx-38" data-start="15.76" data-duration="0.35" data-volume="0.3" data-track-index="12" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-39" data-start="16.0" data-duration="0.18" data-volume="0.55" data-track-index="13" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sx-40" data-start="16.0" data-duration="0.55" data-volume="0.35" data-track-index="14" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-41" data-start="16.25" data-duration="0.06" data-volume="0.5" data-track-index="12" src="assets/sfx/click2.ogg"></audio>
+      <audio id="sx-42" data-start="16.45" data-duration="0.05" data-volume="0.4" data-track-index="11" src="assets/sfx/select_008.ogg"></audio>
+      <audio id="sx-43" data-start="16.55" data-duration="0.65" data-volume="0.32" data-track-index="11" src="assets/sfx/impactBell_heavy_003.ogg"></audio>
+      <audio id="sx-44" data-start="17.0" data-duration="0.18" data-volume="0.55" data-track-index="12" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sx-45" data-start="17.05" data-duration="0.05" data-volume="0.4" data-track-index="13" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sx-46" data-start="17.23" data-duration="0.05" data-volume="0.4" data-track-index="11" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sx-47" data-start="17.4" data-duration="0.05" data-volume="0.4" data-track-index="11" src="assets/sfx/click_003.ogg"></audio>
+      <audio id="sx-48" data-start="17.42" data-duration="0.35" data-volume="0.22" data-track-index="12" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-49" data-start="17.6" data-duration="0.65" data-volume="0.35" data-track-index="11" src="assets/sfx/impactBell_heavy_003.ogg"></audio>
+      <audio id="sx-50" data-start="17.65" data-duration="0.3" data-volume="0.4" data-track-index="13" src="assets/sfx/chip-lay-1.ogg"></audio>
+      <audio id="sx-51" data-start="18.0" data-duration="0.18" data-volume="0.55" data-track-index="12" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sx-52" data-start="18.0" data-duration="0.2" data-volume="0.3" data-track-index="13" src="assets/sfx/glitch_004.ogg"></audio>
+      <audio id="sx-53" data-start="18.5" data-duration="0.03" data-volume="0.28" data-track-index="11" src="assets/sfx/glitch_002.ogg"></audio>
+      <audio id="sx-54" data-start="18.1" data-duration="0.5" data-volume="0.15" data-track-index="14" src="assets/sfx/error_005.ogg"></audio>
+      <audio id="sx-55" data-start="19.0" data-duration="1.48" data-volume="0.5" data-track-index="11" src="assets/sfx/impactBell_heavy_000.ogg"></audio>
+      <audio id="sx-56" data-start="19.0" data-duration="0.5" data-volume="0.3" data-track-index="12" src="assets/sfx/sparkle.wav"></audio>
+      <audio id="sx-57" data-start="19.4" data-duration="0.55" data-volume="0.55" data-track-index="13" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-58" data-start="20.0" data-duration="0.11" data-volume="0.35" data-track-index="12" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-59" data-start="20.5" data-duration="0.11" data-volume="0.35" data-track-index="11" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-60" data-start="21.0" data-duration="0.11" data-volume="0.35" data-track-index="11" src="assets/sfx/drop_001.ogg"></audio>
+      <audio id="sx-61" data-start="21.3" data-duration="0.15" data-volume="0.4" data-track-index="11" src="assets/sfx/impactSoft_medium_004.ogg"></audio>
+      <audio id="sx-62" data-start="21.42" data-duration="0.35" data-volume="0.2" data-track-index="12" src="assets/sfx/swish.wav"></audio>
+      <audio id="sx-63" data-start="21.92" data-duration="0.06" data-volume="0.75" data-track-index="11" src="assets/sfx/click2.ogg"></audio>
+      <audio id="sx-64" data-start="22.0" data-duration="1.48" data-volume="0.55" data-track-index="11" src="assets/sfx/impactBell_heavy_000.ogg"></audio>
+      <audio id="sx-65" data-start="22.0" data-duration="0.5" data-volume="0.35" data-track-index="12" src="assets/sfx/sparkle.wav"></audio>
+      <audio id="sx-66" data-start="22.28" data-duration="0.55" data-volume="0.45" data-track-index="13" src="assets/sfx/whoosh.wav"></audio>
+      <audio id="sx-67" data-start="22.86" data-duration="1.3" data-volume="0.6" data-track-index="12" src="assets/sfx/boom.wav"></audio>
+      <audio id="sx-68" data-start="22.88" data-duration="0.18" data-volume="0.55" data-track-index="13" src="assets/sfx/impactSoft_medium_001.ogg"></audio>
+      <audio id="sx-69" data-start="23.5" data-duration="0.15" data-volume="0.35" data-track-index="11" src="assets/sfx/impactSoft_medium_004.ogg"></audio>
+      <audio id="sx-70" data-start="24.0" data-duration="0.35" data-volume="0.2" data-track-index="11" src="assets/sfx/swish.wav"></audio>
+    </div>
+
+    <script>
+      // ---------- Seeded random so every render is identical ----------
+      let seed = 11;
+      const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+      // ---------- Starfield (two parallax layers) ----------
+      [["stars", 110, 2.6], ["stars2", 60, 4.2]].forEach(([id, n, max]) => {
+        const host = document.getElementById(id);
+        for (let i = 0; i < n; i++) {
+          const s = document.createElement("div");
+          s.className = "star";
+          const size = 1 + rand() * (max - 1);
+          Object.assign(s.style, { left: rand() * 2120 + "px", top: rand() * 1280 + "px", width: size + "px", height: size + "px", opacity: (0.25 + rand() * 0.75).toFixed(2) });
+          host.appendChild(s);
+        }
+      });
+
+      // ---------- Astro: the exact sprite and face layers from resources/views/components/astro-mascot.blade.php ----------
+      const ROWS = [
+        ".....##########.....", "...##wwwwwwwwww##...", "..#wwwwwwwwwwwwww#..", ".#wwwwhhvvvvvvwwww#.", ".#wwwhvvvvvvvvvwww#.",
+        "#wwwvvvvvvvvvvvvwww#", "#wwvvvvvvvvvvvvvvww#", "#wwvvvvvvvvvvvvvvww#", "#wwvvvvvvvvvvvvvvww#", "#wwvvvvvvvvvvvvvvww#",
+        "#wwvvvvvvvvvvvvvvww#", "#wwwvvvvvvvvvvvvwww#", ".#wwwvvvvvvvvvvwww#.", ".#wwwwddddddddwwww#.", "..#wwwwwwwwwwwwww#..",
+        "...##wwwwwwwwww##...", "....#gggggggggg#....", "....#ggg#gg#ggg#....", ".....##########.....",
+      ];
+      const COLORS = { "#": "#1b1750", w: "#eef1ff", v: "#3aa0ff", d: "#2b86e6", h: "#c4e8ff", g: "#9aa3d6" };
+      const INK = { k: "#14112e", s: "#ffffff", p: "#ff5c8a", b: "#ff9ec4" };
+      const FACE = {
+        "eye-open": { k: [[6,6],[6,7],[7,7],[6,8],[7,8],[12,6],[12,7],[13,7],[12,8],[13,8]], s: [[7,6],[13,6]] },
+        "eye-happy": { k: [[6,6],[7,6],[5,7],[8,7],[12,6],[13,6],[11,7],[14,7]] },
+        "eye-shut": { k: [[6,8],[7,8],[12,8],[13,8]] },
+        "m-smile": { k: [[7,11],[12,11],[8,12],[9,12],[10,12],[11,12]] },
+        "m-grin": { k: [[7,11],[8,11],[9,11],[10,11],[11,11],[12,11],[8,12],[11,12],[9,13],[10,13]], p: [[9,12],[10,12]] },
+        "m-wide": { k: [[8,11],[9,11],[10,11],[11,11],[8,12],[11,12],[9,13],[10,13]], p: [[9,12],[10,12]] },
+        "m-half": { k: [[8,11],[9,11],[10,11],[11,11],[9,12],[10,12]] },
+        "m-shut": { k: [[8,12],[9,12],[10,12],[11,12]] },
+        "m-o": { k: [[9,11],[10,11],[9,12],[10,12]] },
+        blush: { b: [[4,10],[5,10],[14,10],[15,10]] },
+      };
+      const px = (x, y, c) => `<rect x="${x}" y="${y}" width="1.04" height="1.04" fill="${c}"/>`;
+      let base = "";
+      ROWS.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== ".") base += px(x, y, COLORS[ch]); }));
+      const layer = (name) => `<g class="${name}" style="opacity:0">` + Object.entries(FACE[name]).map(([c, pts]) => pts.map(([x, y]) => px(x, y, INK[c])).join("")).join("") + "</g>";
+      document.querySelectorAll("svg.astro-svg").forEach((svg) => {
+        svg.innerHTML = base + Object.keys(FACE).map(layer).join("");
+      });
+
+      // ---------- Confetti for the cyber win ----------
+      const confetti = document.getElementById("confetti");
+      const CF = ["#ffcf3f", "#73b6ff", "#22c55e", "#9b6bff", "#ffffff", "#5be1ff"];
+      const pieces = [];
+      for (let i = 0; i < 34; i++) {
+        const el = document.createElement("div");
+        el.className = "cf";
+        el.style.background = CF[i % CF.length];
+        if (i % 3 === 0) el.style.borderRadius = "50%";
+        confetti.appendChild(el);
+        const a = Math.PI + (i / 33) * Math.PI + (rand() - 0.5) * 0.3;
+        const d = 320 + rand() * 420;
+        pieces.push({ el, dx: Math.cos(a) * d * 1.5, dy: Math.sin(a) * d * 0.7, rot: (rand() - 0.5) * 900 });
+      }
+
+      const tl = gsap.timeline({ paused: true });
+      const T = (sel, vars, t) => tl.to(sel, vars, t);
+      const FT = (sel, from, to, t) => tl.fromTo(sel, from, to, t);
+      const pop = (sel, t, from = 0.3, dur = 0.42) => FT(sel, { opacity: 0, scale: from }, { opacity: 1, scale: 1, duration: dur, ease: "back.out(2.2)" }, t);
+      const rise = (sel, t, dur = 0.5) => FT(sel, { yPercent: 115 }, { yPercent: 0, duration: dur, ease: "power4.out" }, t);
+      const hl = (sel, t) => { FT(sel, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, t); };
+      const astroFace = (root, t, eyes, mouth) => {
+        tl.set(`${root} svg [class^="eye-"], ${root} svg [class^="m-"]`, { opacity: 0 }, t);
+        tl.set(`${root} .${eyes}`, { opacity: 1 }, t);
+        tl.set(`${root} .${mouth}`, { opacity: 1 }, t);
+      };
+      const talk = (root, t0, t1) => {
+        const frames = ["m-wide", "m-half", "m-o", "m-shut", "m-half", "m-wide", "m-shut", "m-o"];
+        let i = 0;
+        for (let t = t0; t < t1; t += 0.1, i++) {
+          tl.set(`${root} svg [class^="m-"]`, { opacity: 0 }, t);
+          tl.set(`${root} .${frames[(i * 3 + Math.floor(i / 4)) % frames.length]}`, { opacity: 1 }, t);
+        }
+        tl.set(`${root} svg [class^="m-"]`, { opacity: 0 }, t1);
+        tl.set(`${root} .m-smile`, { opacity: 1 }, t1);
+      };
+      // Camera helper: frame point (cx, cy) of a 1920x1080 shot at scale s inside a viewport of w x h
+      const camTo = (sel, cx, cy, s, t, dur, ease = "power3.inOut", w = 1920, h = 1080) =>
+        T(sel, { x: w / 2 - cx * s, y: h / 2 - cy * s, scale: s, duration: dur, ease }, t);
+      const camSet = (sel, cx, cy, s, t, w = 1920, h = 1080) => tl.set(sel, { x: w / 2 - cx * s, y: h / 2 - cy * s, scale: s }, t);
+
+      // ---------- Global: nebula breathes on the 120 BPM beat grid (audio-reactive, subtle) ----------
+      for (let b = 0; b < 25; b += 0.5) {
+        tl.set(".nebula", { opacity: 1 }, b);
+        T(".nebula", { opacity: 0.72, duration: 0.45, ease: "power2.out" }, b);
+      }
+      FT("#stars", { x: 0, y: 0 }, { x: -60, y: -20, duration: 25, ease: "none" }, 0);
+      FT("#stars2", { x: 0, y: 0 }, { x: -150, y: -40, duration: 25, ease: "none" }, 0);
+
+      // ===================== Scene 1: logo hook (0 - 2.3) =====================
+      FT("#arm-a", { x: 0, y: -620, rotation: -90, opacity: 0, svgOrigin: "90 90" }, { y: 0, rotation: 0, opacity: 1, duration: 0.42, ease: "power4.in" }, 0.06);
+      FT("#arm-b", { x: 900, y: 0, rotation: 90, opacity: 0, svgOrigin: "90 90" }, { x: 0, rotation: 0, opacity: 1, duration: 0.42, ease: "power4.in" }, 0.06);
+      FT("#arm-c", { x: -900, y: 0, rotation: 90, opacity: 0, svgOrigin: "90 90" }, { x: 0, rotation: 0, opacity: 1, duration: 0.42, ease: "power4.in" }, 0.06);
+      FT("#arm-d", { x: 0, y: 620, rotation: -90, opacity: 0, svgOrigin: "90 90" }, { y: 0, rotation: 0, opacity: 1, duration: 0.42, ease: "power4.in" }, 0.06);
+      // lock at 0.48 (VO "This is" begins 0.5)
+      FT("#s1-flash", { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1.2, duration: 0.08, ease: "power2.out" }, 0.48);
+      T("#s1-flash", { opacity: 0, scale: 2.2, duration: 0.5, ease: "power2.out" }, 0.56);
+      FT("#s1-ring1", { opacity: 1, scale: 0.9 }, { opacity: 0, scale: 4.2, duration: 0.8, ease: "power3.out", immediateRender: false }, 0.48);
+      FT("#s1-ring2", { opacity: 0.8, scale: 0.9 }, { opacity: 0, scale: 2.8, duration: 0.6, ease: "power3.out", immediateRender: false }, 0.52);
+      FT("#s1-logo-wrap", { scale: 1.25 }, { scale: 1, duration: 0.5, ease: "elastic.out(1.1, 0.45)" }, 0.48);
+      FT("#s1-halo", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.48);
+      T("#s1-all", { keyframes: { x: [0, -14, 12, -8, 5, 0], y: [0, 10, -8, 6, -3, 0] }, duration: 0.28, ease: "none" }, 0.48);
+      // snap-spin on the beat at 1.0, wordmark rises
+      T("#s1-logo", { rotation: 90, duration: 0.45, ease: "back.out(2.5)", transformOrigin: "50% 50%" }, 1.0);
+      T("#s1-logo-wrap", { y: -60, scale: 0.86, duration: 0.5, ease: "power3.out" }, 1.0);
+      T(["#s1-halo", "#s1-flash", "#s1-ring1", "#s1-ring2"], { y: -60, duration: 0.5, ease: "power3.out" }, 1.0);
+      rise("#s1-word-in", 1.0, 0.55);
+      FT("#s1-word", { y: 30 }, { y: -40, duration: 0.6, ease: "power3.out" }, 1.0);
+      FT("#s1-sub-in", { opacity: 0, letterSpacing: "0.8em" }, { opacity: 1, letterSpacing: "0.32em", duration: 0.6, ease: "power3.out" }, 1.25);
+      FT("#s1-sub", { y: 0 }, { y: -40, duration: 0.6, ease: "power3.out" }, 1.0);
+      // dive through the logo into scene 2
+      T("#s1-all", { scale: 9, opacity: 0, duration: 0.42, ease: "power3.in" }, 1.9);
+
+      // ===================== Scene 2: three planets (2.0 - 7.0) =====================
+      FT("#s2-all", { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }, 2.12);
+      tl.set("#s2-head", { y: 220 }, 2.0);
+      rise("#s2-w1", 2.36, 0.5);
+      rise("#s2-l2", 2.95, 0.5);
+      T("#s2-head", { y: 0, scale: 0.62, duration: 0.6, ease: "power4.inOut" }, 3.75);
+      T("#grid", { opacity: 1, duration: 0.8 }, 3.8);
+      FT("#grid", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px 360px", duration: 3.2, ease: "none" }, 3.8);
+      // cards land on "code" 4.2, "networks" 4.9, "cyber" 5.7
+      [["#pc1", "#pg1", 4.2, -1], ["#pc2", "#pg2", 4.9, 1], ["#pc3", "#pg3", 5.7, 1]].forEach(([c, g, t, dir]) => {
+        FT(c, { opacity: 0, rotationY: 80 * dir, rotationX: 25, y: 260, z: -400 }, { opacity: 1, rotationY: 0, rotationX: 0, y: 0, z: 0, duration: 0.65, ease: "back.out(1.4)" }, t);
+        FT(g, { opacity: 0, scale: 0.4 }, { opacity: 0.55, scale: 1, duration: 0.6, ease: "power2.out" }, t + 0.1);
+        T(c, { y: -14, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: 1 }, t + 0.7);
+      });
+      FT("#s2-cards", { rotationY: 0 }, { rotationY: -6, duration: 2.6, ease: "sine.inOut" }, 4.2);
+      // slash wipe out (6.45 - 7.0)
+      ["#sl1", "#sl2", "#sl3", "#sl4"].forEach((s, i) => {
+        FT(s, { x: 0 }, { x: 1600, duration: 0.32, ease: "power3.in" }, 6.42 + i * 0.05);
+        T(s, { x: 4200, duration: 0.36, ease: "power3.out" }, 6.76 + i * 0.05);
+      });
+      T("#grid", { opacity: 0, duration: 0.2 }, 6.7);
+
+      // ===================== Scene 3: rewards (6.6 - 10.8) =====================
+      tl.set("#s3-win", { rotationY: -24, rotationX: 10, x: 260, opacity: 0, transformPerspective: 2000 }, 6.6);
+      T("#s3-win", { rotationY: -14, rotationX: 6, x: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 6.8);
+      T("#s3-win", { rotationY: -6, rotationX: 2, duration: 3.2, ease: "sine.inOut" }, 7.5);
+      // camera inside the window: drift from the profile card down toward the stat cards
+      const W3 = 1140, H3 = 641;
+      camSet("#s3-cam", 820, 300, 0.95, 6.6, W3, H3);
+      camTo("#s3-cam", 690, 470, 1.45, 7.3, 1.5, "power2.inOut", W3, H3);
+      T("#s3-cam", { x: "-=12", duration: 1.6, ease: "none" }, 8.9);
+      rise("#s3-h1", 7.15, 0.5);
+      rise("#s3-h2", 7.45, 0.5);
+      // beat-grid: XP 9.0, Streak 9.5, Gems 10.0 (VO words land on the same beats)
+      pop("#tk1", 9.0, 0.2); hl("#hl-xp", 9.0);
+      pop("#tk2", 9.5, 0.2); hl("#hl-streak", 9.5);
+      pop("#tk3", 10.0, 0.2); hl("#hl-gem", 10.0);
+      FT("#s3-count", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 8.9);
+      // XP count-up as discrete text sets (seek-safe): 0 -> 2,300 over 0.7s with an ease-out
+      tl.set("#s3-num", { textContent: "0" }, 6.6);
+      for (let i = 1; i <= 21; i++) {
+        const k = 1 - Math.pow(1 - i / 21, 3);
+        tl.set("#s3-num", { textContent: Math.round((2300 * k) / 10) * 10 === 2300 || i === 21 ? "2,300" : (Math.round((2300 * k) / 10) * 10).toLocaleString("en-US") }, 9.0 + i * (0.7 / 21));
+      }
+      T("#s3-count", { scale: 1.12, duration: 0.1, transformOrigin: "0% 50%" }, 9.7);
+      T("#s3-count", { scale: 1, duration: 0.3, ease: "back.out(3)" }, 9.8);
+      // whip pan out
+      T("#s3-all", { x: -1900, duration: 0.3, ease: "power3.in" }, 10.45);
+
+      // ===================== Scene 4: ask Astro (10.45 - 14.05) =====================
+      FT("#s4", { x: 1920 }, { x: 0, duration: 0.3, ease: "power3.out" }, 10.45);
+      // "Stuck?" 10.78
+      FT("#s4-stuck-in", { opacity: 0, scale: 2.4 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power4.out" }, 10.75);
+      T("#s4-stuck", { keyframes: { x: [0, -22, 20, -16, 14, -8, 6, 0] }, duration: 0.36, ease: "none" }, 10.98);
+      FT("#s4-stuck-in", { rotation: 0 }, { rotation: -4, duration: 0.15, yoyo: true, repeat: 3, ease: "sine.inOut" }, 11.0);
+      T("#s4-stuck-in", { scale: 0, opacity: 0, rotation: 20, duration: 0.25, ease: "back.in(2)" }, 11.38);
+      // Astro drops in at 11.45 and talks while the VO says "Just ask Astro, your AI tutor"
+      astroFace("#s4-astro", 10.45, "eye-open", "m-smile");
+      FT("#s4-astro", { opacity: 1, y: -900 }, { y: 0, duration: 0.42, ease: "power3.in" }, 11.1);
+      FT("#s4-astro", { scaleX: 1.2, scaleY: 0.78 }, { scaleX: 1, scaleY: 1, duration: 0.55, ease: "elastic.out(1.2, 0.4)" }, 11.52);
+      talk("#s4-astro", 11.6, 13.35);
+      tl.set("#s4-astro .blush", { opacity: 1 }, 12.2);
+      T("#s4-astro", { y: -24, duration: 0.25, ease: "sine.out", yoyo: true, repeat: 5 }, 12.1);
+      pop("#s4-name", 12.15, 0.5);
+      pop("#s4-role", 12.75, 0.6);
+      // chat window: real conversation, Astro's answer streams in
+      const W4 = 1240, H4 = 700;
+      tl.set("#s4-win", { transformPerspective: 2200, rotationY: -22, x: 500, opacity: 0 }, 10.45);
+      T("#s4-win", { rotationY: -6, x: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 11.75);
+      T("#s4-win", { rotationY: 0, duration: 1.6, ease: "sine.inOut" }, 12.35);
+      camSet("#s4-cam", 1000, 300, 1.42, 10.45, W4, H4);
+      camTo("#s4-cam", 1000, 310, 1.6, 11.75, 2.0, "power2.out", W4, H4);
+      hl("#hl-q", 12.05);
+      FT("#s4-wipe", { scaleY: 1 }, { scaleY: 0, duration: 1.0, ease: "steps(9)" }, 12.4);
+      pop("#s4-cap", 12.6, 0.7);
+      // push into Astro's visor
+      astroFace("#s4-astro", 13.4, "eye-happy", "m-grin");
+      T(["#s4-win", "#s4-cap", "#s4-name", "#s4-role"], { opacity: 0, duration: 0.2 }, 13.5);
+      T("#s4-astro", { scale: 14, x: 600, y: 400, duration: 0.5, ease: "power3.in" }, 13.55);
+      FT("#flash-blue", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 13.9);
+      T("#flash-blue", { opacity: 0, duration: 0.35, ease: "power2.out" }, 14.02);
+
+      // ===================== Scene 5: do it for real (13.8 - 19.85) =====================
+      rise("#s5-then-in", 14.2, 0.5);
+      T("#s5-then", { y: -60, duration: 0.8, ease: "power2.out" }, 14.6);
+      // beat-locked: 15.0s (track cue 16.02s) "FOR REAL." slams
+      FT("#s5-real-in", { opacity: 0, scale: 3.2 }, { opacity: 1, scale: 1, duration: 0.2, ease: "power4.in" }, 14.8);
+      T("#s5-type", { keyframes: { x: [0, -24, 20, -14, 9, -4, 0], y: [0, 16, -12, 8, -5, 2, 0] }, duration: 0.32, ease: "none" }, 15.0);
+      FT("#flash-white", { opacity: 0 }, { opacity: 0.65, duration: 0.05 }, 15.0);
+      T("#flash-white", { opacity: 0, duration: 0.3 }, 15.05);
+      T("#s5-real-in", { scale: 1.06, duration: 0.85, ease: "none" }, 15.05);
+      T("#s5-type", { scale: 1.8, opacity: 0, duration: 0.25, ease: "power3.in" }, 15.78);
+
+      // beat-locked: 16.0s (track cue 17.02s) cut to Lab 1, Programming City
+      tl.set("#lab1", { opacity: 1 }, 16.0);
+      camSet("#lab1-cam", 600, 250, 2.2, 16.0);
+      camTo("#lab1-cam", 640, 720, 1.5, 16.08, 0.4, "power3.inOut");
+      hl("#hl-pass", 16.45);
+      FT("#toast", { opacity: 0, y: 40, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 16.55);
+      FT("#tag1", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 16.08);
+      FT("#vo1", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 16.08);
+      
+
+      // beat-locked: 17.0s (track cue 18.02s) cut to Lab 2, Networking Nebula
+      tl.set("#lab2", { opacity: 1 }, 17.0);
+      tl.set("#lab1", { opacity: 0 }, 17.0);
+      camSet("#lab2-cam", 1190, 600, 1.9, 17.0);
+      camTo("#lab2-cam", 960, 540, 1.0, 17.42, 0.35, "power3.inOut");
+      const NODES = { astro: [1034, 476], relay: [1356, 600], rivet: [1032, 726] };
+      const hop = (pk, a, b, t, d = 0.18) => FT(pk, { left: NODES[a][0], top: NODES[a][1], opacity: 1 }, { left: NODES[b][0], top: NODES[b][1], duration: d, ease: "none" }, t);
+      hop("#pk1", "astro", "relay", 17.05); hop("#pk1", "relay", "rivet", 17.23); tl.set("#pk1", { opacity: 0 }, 17.41);
+      hop("#pk2", "rivet", "relay", 17.2); hop("#pk2", "relay", "astro", 17.38); tl.set("#pk2", { opacity: 0 }, 17.56);
+      hop("#pk3", "astro", "relay", 17.4, 0.15); hop("#pk3", "relay", "rivet", 17.55, 0.15); tl.set("#pk3", { opacity: 0 }, 17.7);
+      hl("#hl-done", 17.6);
+      FT("#xp2", { opacity: 0, y: 30, scale: 0.4 }, { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: "back.out(2.6)" }, 17.65);
+      FT("#tag2", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 17.08);
+      FT("#vo2", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 17.08);
+
+      // beat-locked: 18.0s (track cue 19.02s) cut to Lab 3, Cybersecurity Citadel
+      tl.set("#lab3", { opacity: 1 }, 18.0);
+      tl.set("#lab2", { opacity: 0 }, 18.0);
+      camSet("#lab3-cam", 640, 300, 1.55, 18.0);
+      camTo("#lab3-cam", 700, 330, 1.35, 18.0, 1.0, "power2.out");
+      [18.0, 18.5].forEach((t) => { FT("#redvig", { opacity: 1 }, { opacity: 0.25, duration: 0.45, ease: "power2.out" }, t); });
+      hl("#hl-alert", 18.1);
+      hl("#hl-log", 18.35);
+      T("#lab3", { keyframes: { x: [0, -12, 10, -7, 4, 0] }, duration: 0.3, ease: "none" }, 18.5);
+      FT("#tag3", { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 18.08);
+      FT("#vo3", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 18.08);
+      // beat-locked: 19.0s (track cue 20.02s) attack repelled
+      T(["#hl-alert", "#hl-log", "#redvig"], { opacity: 0, duration: 0.15 }, 19.0);
+      FT("#alert-ok", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 19.0);
+      FT("#allclear", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)" }, 19.0);
+      FT("#flash-white", { opacity: 0 }, { opacity: 0.4, duration: 0.05 }, 19.0);
+      T("#flash-white", { opacity: 0, duration: 0.3 }, 19.05);
+      pieces.forEach(({ el, dx, dy, rot }) => {
+        FT(el, { opacity: 0, x: 0, y: 0, rotation: 0, scale: 0.4 }, { opacity: 1, x: dx, y: dy, rotation: rot, scale: 1, duration: 0.5, ease: "power2.out" }, 19.0);
+        T(el, { y: dy + 300, rotation: rot * 2, opacity: 0, duration: 0.6, ease: "power1.in" }, 19.45);
+      });
+      // planet-colour stripe wipe into the outro
+      ["#st1", "#st2", "#st3"].forEach((s, i) => {
+        FT(s, { x: 0 }, { x: 2400, duration: 0.3, ease: "power3.in" }, 19.42 + i * 0.05);
+        T(s, { x: 4800, duration: 0.32, ease: "power3.out" }, 19.74 + i * 0.05);
+      });
+
+      // ===================== Scene 6: level up + CTA + end card (19.5 - 25) =====================
+      tl.set("#s6", { opacity: 0 }, 19.5);
+      tl.set("#s6", { opacity: 1 }, 19.74);
+      rise("#s6-l1-in", 19.82, 0.5);
+      FT("#s6-pill", { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: "back.out(1.8)" }, 19.95);
+      // beat-grid: Coding 20.0, Networking 20.5, Cybersecurity 21.0 (the landing page's own word cycle)
+      tl.set(["#pw2", "#pw3"], { yPercent: 110 }, 19.5);
+      FT("#pw1", { yPercent: 110 }, { yPercent: 0, duration: 0.3, ease: "back.out(1.6)" }, 20.0);
+      T("#pw1", { yPercent: -110, duration: 0.25, ease: "power3.in" }, 20.45);
+      FT("#pw2", { yPercent: 110 }, { yPercent: 0, duration: 0.3, ease: "back.out(1.6)" }, 20.5);
+      T("#pw2", { yPercent: -110, duration: 0.25, ease: "power3.in" }, 20.95);
+      FT("#pw3", { yPercent: 110 }, { yPercent: 0, duration: 0.3, ease: "back.out(1.6)" }, 21.0);
+      T("#s6-pill", { width: 1100, x: -120, duration: 0.3, ease: "power3.out" }, 20.95);
+      tl.set(".pword", { width: 1100 }, 20.95);
+      pop("#s6-btn", 21.3, 0.4);
+      // glove cursor glides in, presses on the strong beat at 22.0 (track cue 23.02s)
+      FT("#s6-cursor", { opacity: 1, x: 1700, y: 1150, rotation: 20 }, { x: 975, y: 790, rotation: 0, duration: 0.55, ease: "power3.out" }, 21.4);
+      T("#s6-cursor", { scale: 0.85, duration: 0.08, ease: "power2.in" }, 21.92);
+      T("#s6-btn", { scale: 0.93, y: 8, boxShadow: "0 2px 0 #1f5fb8", duration: 0.08, ease: "power2.in" }, 21.92);
+      T("#s6-cursor", { scale: 1, duration: 0.2, ease: "back.out(3)" }, 22.0);
+      T("#s6-btn", { scale: 1.06, y: 0, boxShadow: "0 10px 0 #1f5fb8", duration: 0.3, ease: "back.out(3)" }, 22.0);
+      FT("#s6-ring", { opacity: 1, scale: 0.6 }, { opacity: 0, scale: 6, duration: 0.7, ease: "power3.out", immediateRender: false }, 22.0);
+      FT("#flash-white", { opacity: 0 }, { opacity: 0.28, duration: 0.05 }, 22.0);
+      T("#flash-white", { opacity: 0, duration: 0.35 }, 22.05);
+      // hero rushes away, end card assembles
+      T("#s6-hero", { scale: 0.4, opacity: 0, y: -80, duration: 0.4, ease: "power3.in" }, 22.3);
+      tl.set("#end", { opacity: 1 }, 22.5);
+      [["#ea", 0, -500], ["#eb", 600, 0], ["#ec", -600, 0], ["#ed", 0, 500]].forEach(([s, x, y]) => {
+        FT(s, { x, y, opacity: 0, rotation: 90, svgOrigin: "90 90" }, { x: 0, y: 0, opacity: 1, rotation: 0, duration: 0.38, ease: "power4.in" }, 22.5);
+      });
+      FT("#end-logo", { scale: 1.3 }, { scale: 1, duration: 0.5, ease: "elastic.out(1.1, 0.45)" }, 22.88);
+      FT("#end-halo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" }, 22.88);
+      rise("#end-word-in", 22.95, 0.55);
+      FT("#end-sub-in", { opacity: 0, letterSpacing: "0.8em" }, { opacity: 1, letterSpacing: "0.32em", duration: 0.6, ease: "power3.out" }, 23.2);
+      pop("#end-cta-in", 23.5, 0.5);
+      T("#end-cta-in", { scale: 1.05, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, 24.0);
+      ["#ep1", "#ep2", "#ep3"].forEach((e, i) => {
+        FT(e, { opacity: 0, scale: 0.2, x: 300 }, { opacity: 1, scale: 1, x: 0, duration: 0.55, ease: "back.out(1.7)" }, 23.0 + i * 0.12);
+        T(e, { y: -14, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 1 }, 23.6 + i * 0.1);
+      });
+      T("#end-logo svg", { rotation: 90, duration: 0.5, ease: "back.out(2.5)", transformOrigin: "50% 50%" }, 24.0);
+      // Astro peeks in from behind the left planet and waves hello with a happy face
+      astroFace("#end-astro", 22.5, "eye-happy", "m-grin");
+      tl.set("#end-astro .blush", { opacity: 1 }, 22.5);
+      FT("#end-astro", { opacity: 1, y: 420 }, { y: 0, duration: 0.55, ease: "back.out(1.7)" }, 23.25);
+      T("#end-astro", { rotation: 8, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, 23.8);
+      // final fade
+      T(["#end", "#bg"], { opacity: 0, duration: 0.5, ease: "power2.in" }, 24.5);
+
+      // ===================== SFX table: [time, file, volume, duration] =====================
+      const SFX = [
+        [0.04, "whoosh.wav", 0.55, 0.55], [0.2, "swish.wav", 0.3, 0.35],
+        [0.47, "boom.wav", 0.75, 1.3], [0.48, "impactSoft_medium_001.ogg", 0.7, 0.18],
+        [1.0, "bong_001.ogg", 0.45, 0.12], [1.0, "swish.wav", 0.22, 0.35],
+        [1.86, "whoosh.wav", 0.6, 0.55],
+        [2.38, "impactSoft_medium_004.ogg", 0.3, 0.15],
+        [4.2, "card-slide-1.ogg", 0.5, 0.4], [4.9, "card-slide-1.ogg", 0.5, 0.4], [5.7, "card-slide-1.ogg", 0.5, 0.4],
+        [6.4, "whoosh.wav", 0.55, 0.55],
+        [7.15, "drop_001.ogg", 0.3, 0.11],
+        [9.0, "drop_001.ogg", 0.5, 0.11], [9.04, "chips-stack-2.ogg", 0.32, 0.6], [9.5, "drop_001.ogg", 0.5, 0.11], [10.0, "drop_001.ogg", 0.5, 0.11], [10.02, "sparkle.wav", 0.22, 0.5],
+        [10.42, "whoosh.wav", 0.55, 0.55],
+        [10.76, "impactSoft_heavy_003.ogg", 0.4, 0.54], [10.8, "error_005.ogg", 0.28, 0.5],
+        [11.36, "swish.wav", 0.25, 0.35], [11.52, "impactSoft_medium_001.ogg", 0.5, 0.18],
+        [11.75, "swish.wav", 0.3, 0.35], [12.05, "select_008.ogg", 0.35, 0.05],
+        [12.4, "keypress-001.wav", 0.12, 0.25], [12.52, "keypress-003.wav", 0.12, 0.25], [12.63, "keypress-005.wav", 0.12, 0.25], [12.74, "keypress-002.wav", 0.12, 0.25],
+        [12.85, "keypress-004.wav", 0.12, 0.25], [12.96, "keypress-006.wav", 0.12, 0.25], [13.07, "keypress-001.wav", 0.12, 0.25], [13.18, "keypress-003.wav", 0.12, 0.25],
+        [13.52, "whoosh.wav", 0.6, 0.55],
+        [14.0, "riser.wav", 0.42, 1.0], [14.2, "impactSoft_medium_004.ogg", 0.3, 0.15],
+        [15.0, "boom.wav", 0.9, 1.3], [15.0, "impactSoft_heavy_003.ogg", 0.5, 0.54],
+        [15.76, "swish.wav", 0.3, 0.35],
+        [16.0, "impactSoft_medium_001.ogg", 0.55, 0.18], [16.0, "whoosh.wav", 0.35, 0.55], [16.25, "click2.ogg", 0.5, 0.06], [16.45, "select_008.ogg", 0.4, 0.05], [16.55, "impactBell_heavy_003.ogg", 0.32, 0.65],
+        [17.0, "impactSoft_medium_001.ogg", 0.55, 0.18], [17.05, "click_003.ogg", 0.4, 0.05], [17.23, "click_003.ogg", 0.4, 0.05], [17.4, "click_003.ogg", 0.4, 0.05], [17.42, "swish.wav", 0.22, 0.35],
+        [17.6, "impactBell_heavy_003.ogg", 0.35, 0.65], [17.65, "chip-lay-1.ogg", 0.4, 0.3],
+        [18.0, "impactSoft_medium_001.ogg", 0.55, 0.18], [18.0, "glitch_004.ogg", 0.3, 0.2], [18.5, "glitch_002.ogg", 0.28, 0.03], [18.1, "error_005.ogg", 0.15, 0.5],
+        [19.0, "impactBell_heavy_000.ogg", 0.5, 1.48], [19.0, "sparkle.wav", 0.3, 0.5],
+        [19.4, "whoosh.wav", 0.55, 0.55],
+        [20.0, "drop_001.ogg", 0.35, 0.11], [20.5, "drop_001.ogg", 0.35, 0.11], [21.0, "drop_001.ogg", 0.35, 0.11],
+        [21.3, "impactSoft_medium_004.ogg", 0.4, 0.15], [21.42, "swish.wav", 0.2, 0.35],
+        [21.92, "click2.ogg", 0.75, 0.06], [22.0, "impactBell_heavy_000.ogg", 0.55, 1.48], [22.0, "sparkle.wav", 0.35, 0.5],
+        [22.28, "whoosh.wav", 0.45, 0.55], [22.86, "boom.wav", 0.6, 1.3], [22.88, "impactSoft_medium_001.ogg", 0.55, 0.18],
+        [23.5, "impactSoft_medium_004.ogg", 0.35, 0.15], [24.0, "swish.wav", 0.2, 0.35],
+      ];
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["root"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

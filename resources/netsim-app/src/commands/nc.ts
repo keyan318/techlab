@@ -1,4 +1,5 @@
 import type { IpDevice } from '../engine/ipdevice';
+import { ipToString } from '../engine/ip';
 import type { Running } from './shell';
 import { resolveHost } from './resolve';
 
@@ -101,7 +102,12 @@ export function runNc(
     }
     const err = udp
       ? device.probeUdp(res.ip, port, timeoutS * 1000, report)
-      : device.connectTcp(res.ip, port, timeoutS * 1000, report);
+      : device.connectTcp(res.ip, port, timeoutS * 1000, (r) => {
+          // TechLab: record what this real probe observed, so a lab objective can require it.
+          device.recordActivity('tcp', `${ipToString(res.ip)}:${port}`, r === 'open' ? 'open' : r === 'refused' ? 'refused' : 'filtered');
+          report(r);
+        });
+    if (!udp && err) device.recordActivity('tcp', `${ipToString(res.ip)}:${port}`, 'filtered');
     if (err) {
       write(`nc: connect to ${host} port ${port} (${proto}) failed: ${err}\n`);
       done();

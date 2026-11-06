@@ -1,0 +1,324 @@
+{
+  "questions": [
+    {
+      "prompt": "What is a network?",
+      "options": [
+        "A single cable that carries electricity to a device",
+        "Two or more devices connected to share information",
+        "One computer running more than one program at once",
+        "A program that turns names into IP addresses"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In data communication, what is the medium?",
+      "options": [
+        "The information that is being sent",
+        "The rules both sides agree to follow",
+        "The path the message travels on",
+        "The device that starts the talk"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In data communication, what is the protocol?",
+      "options": [
+        "The agreed rules both sides follow",
+        "The cable that links the two sides",
+        "The picture or text being sent across",
+        "The device the message is meant for"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What lets other devices find one host among many?",
+      "options": [
+        "Its address",
+        "Its message",
+        "Its cable",
+        "Its screen"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a link?",
+      "options": [
+        "The rules for sending a message",
+        "The connection between devices",
+        "A program that waits for requests",
+        "A device that sends a message"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which network covers one place, like a classroom or a ship?",
+      "options": [
+        "A cloud",
+        "The Internet",
+        "A LAN",
+        "A WAN"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the biggest WAN of all?",
+      "options": [
+        "The Internet",
+        "A star topology",
+        "A home LAN",
+        "A VLAN"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In a star topology, what is every device connected to?",
+      "options": [
+        "Every other device directly",
+        "Its two nearest neighbours",
+        "One shared backbone cable",
+        "One central switch"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In a star, one cable is cut. What is lost?",
+      "options": [
+        "Half of the network's devices",
+        "Every device on the network",
+        "Only the central switch",
+        "Only the device on that cable"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which topology can be split in two by one broken backbone cable?",
+      "options": [
+        "Hybrid star",
+        "Bus",
+        "Star",
+        "Mesh"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In which topology does data travel around a loop of neighbours?",
+      "options": [
+        "Star",
+        "Mesh",
+        "Ring",
+        "Bus"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How many links does a full mesh of 4 devices need?",
+      "options": [
+        "12",
+        "4",
+        "8",
+        "6"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the main downside of a mesh topology?",
+      "options": [
+        "It has no links",
+        "It is expensive",
+        "It is too slow",
+        "It is unreliable"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which medium carries pulses of light through glass?",
+      "options": [
+        "Fiber-optic",
+        "Twisted pair",
+        "Wireless",
+        "Coaxial pair"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "About how far can one run of twisted-pair Ethernet cable reach?",
+      "options": [
+        "100 meters",
+        "10 meters",
+        "1 kilometer",
+        "10 kilometers"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why is wireless a poor choice while an enemy is jamming the area?",
+      "options": [
+        "Wireless cannot carry any text at all",
+        "The air is shared and can be jammed",
+        "Wireless needs a cable to every device",
+        "Wireless only works over long distances"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does a NIC do?",
+      "options": [
+        "Splits one switch into virtual parts",
+        "Hands out IP addresses to new devices",
+        "Connects a device to the medium",
+        "Turns domain names into IP addresses"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a MAC address?",
+      "options": [
+        "The unique hardware address of a NIC",
+        "The address a host uses to leave its network",
+        "The name of a server on the Internet",
+        "The number of hops to reach a host"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is bandwidth?",
+      "options": [
+        "How far a cable can reach without help",
+        "How many devices share the same link",
+        "How much data a link carries per second",
+        "How long one trip across the link takes"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does ping's time tell you about a link?",
+      "options": [
+        "Its topology",
+        "Its bandwidth",
+        "Its MAC address",
+        "Its latency"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How is a switch different from a hub?",
+      "options": [
+        "A switch repeats every signal to every port",
+        "A switch connects different networks together",
+        "A switch sends traffic only to the right port",
+        "A switch has no ports, only wireless links"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does a router connect?",
+      "options": [
+        "Different networks",
+        "Two ports on a hub",
+        "A NIC to its cable",
+        "Devices in one VLAN"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a host's default gateway?",
+      "options": [
+        "The switch port it is plugged into",
+        "The server that gives it a name",
+        "The router it uses to leave home",
+        "The cable that links it to a hub"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Two devices are plugged into the same switch but in different VLANs. Can they reach each other directly?",
+      "options": [
+        "Only by ping",
+        "Only with Wi-Fi",
+        "Yes, always",
+        "No"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why put the shield controller in its own VLAN?",
+      "options": [
+        "To give it a faster wireless signal",
+        "To keep it apart from others, for security",
+        "To let it share a MAC address with others",
+        "To make its cable reach further than 100 meters"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In the client-server model, what does the server do?",
+      "options": [
+        "Repeats signals to every port",
+        "Connects two different networks",
+        "Asks other machines for pages",
+        "Waits for requests and replies"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which server turns names into IP addresses?",
+      "options": [
+        "A DHCP server",
+        "A DNS server",
+        "A file server",
+        "A mail server"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which server hands out IP addresses?",
+      "options": [
+        "A DNS server",
+        "A web server",
+        "A file server",
+        "A DHCP server"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does a hypervisor do?",
+      "options": [
+        "Joins several computers into one big machine",
+        "Splits one computer into virtual machines",
+        "Checks every cable for a working signal",
+        "Turns a switch into a router for a short time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which cloud model gives you raw servers to manage yourself?",
+      "options": [
+        "SaaS",
+        "PaaS",
+        "IaaS",
+        "DaaS"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Online email you just log in and use is which cloud model?",
+      "options": [
+        "IaaS",
+        "VLAN",
+        "PaaS",
+        "SaaS"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Your packet reaches a remote cloud server, but no reply comes back. What is a classic cause?",
+      "options": [
+        "The server has no route back to you",
+        "Your cable is longer than 100 meters",
+        "Your NIC has two MAC addresses",
+        "The server uses a different topology"
+      ],
+      "correct": "A"
+    }
+  ]
+}

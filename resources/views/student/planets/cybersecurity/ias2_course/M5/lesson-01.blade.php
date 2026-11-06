@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit E.1 Secure Development Life Cycle (SDLC) Integration. --}
         attacker already caused. Earlier is always cheaper.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why fix security flaws early in the SDLC?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Earlier is always cheaper ✓</li>
+            <li class="quiz-option">B. Flaws vanish after release</li>
+            <li class="quiz-option">C. Testing finds nothing later</li>
+            <li class="quiz-option">D. Users like rewrites better</li>
+        </ul>
+        <p class="quiz-explanation"><em>A flaw in design is just a decision on paper. After release it can mean rewrites, notices and real damage.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit E.1 Secure Development Life Cycle (SDLC) Integration. --}
         meant reworking finished code under a deadline. "Next time," Volt says, "loop me in at requirements, not
         the night before launch. A five-minute conversation now saves a five-hour rewrite later."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">When does Volt want to be looped in next time?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The night before launch</li>
+            <li class="quiz-option quiz-correct">B. At requirements ✓</li>
+            <li class="quiz-option">C. After the first breach</li>
+            <li class="quiz-option">D. Only during testing</li>
+        </ul>
+        <p class="quiz-explanation"><em>A five-minute talk at requirements saves a five-hour rewrite later.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -62,6 +84,17 @@ Syllabus: ITP1333 Unit E.1 Secure Development Life Cycle (SDLC) Integration. --}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Security built into every phase — cheaper the earlier it's caught</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what happens in the design phase?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Review code</li>
+            <li class="quiz-option">B. Try to break it</li>
+            <li class="quiz-option quiz-correct">C. Model threats ✓</li>
+            <li class="quiz-option">D. Patch after release</li>
+        </ul>
+        <p class="quiz-explanation"><em>Requirements decide security needs, design models threats, build reviews code, test tries to break it.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

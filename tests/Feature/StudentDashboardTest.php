@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Crew;
 use App\Models\LessonProgress;
+use App\Models\ShopPurchase;
 use App\Models\StudyActivity;
 use App\Models\User;
 use App\Services\CourseProgressService;
@@ -22,11 +23,13 @@ class StudentDashboardTest extends TestCase
         }
     }
 
-    private function crewWithFaculty(): Crew
+    /** A student taking a course on this planet (on its self-paced crew). */
+    private function onPlanet(string $name, string $planet = 'programming', string $course = 'python'): User
     {
-        $faculty = User::factory()->create(['role' => 'faculty']);
+        $user = User::factory()->create(['name' => $name, 'role' => 'student']);
+        Crew::selfPaced($planet, $course)->admit($user);
 
-        return Crew::create(['name' => 'Sasa Crew', 'code' => 'SASA01', 'teacher_id' => $faculty->id]);
+        return $user;
     }
 
     public function test_guests_go_to_login_and_facultys_to_their_dashboard(): void
@@ -62,58 +65,72 @@ class StudentDashboardTest extends TestCase
             ->assertSee('href="'.route('student.dashboard').'"', false);
     }
 
-    public function test_leaderboard_ranks_crewmates_by_xp_and_excludes_other_crews(): void
+    public function test_header_stats_endpoint_returns_xp_gems_and_streak_for_students_only(): void
     {
-        $crew = $this->crewWithFaculty();
-        $other = Crew::create(['name' => 'Other', 'code' => 'OTHER1', 'teacher_id' => $crew->teacher_id]);
+        $user = User::factory()->create(['role' => 'student']);
+        $m1 = collect(CourseProgressService::order())->where('module', 'm1')->count();
+        $this->complete($user, $m1);
 
-        $keyan = User::factory()->create(['name' => 'Keyan', 'crew_id' => $crew->id]);
-        $sasa = User::factory()->create(['name' => 'Sasa', 'crew_id' => $crew->id]);
-        $zed = User::factory()->create(['name' => 'Zed', 'crew_id' => $crew->id]);
-        $out = User::factory()->create(['name' => 'Outsider', 'crew_id' => $other->id]);
+        $home = StudentDashboardService::home($user);
+        $this->actingAs($user)->getJson('/me/stats')
+            ->assertOk()
+            ->assertExactJson(['xp' => $m1 * 100, 'gems' => $home['badges'], 'streak' => $home['streak']]);
+
+        $this->actingAs(User::factory()->create(['role' => 'faculty']))->getJson('/me/stats')->assertForbidden();
+    }
+
+    public function test_leaderboard_ranks_everyone_on_the_planet_by_xp_and_excludes_other_planets(): void
+    {
+        $keyan = $this->onPlanet('Keyan');
+        $sasa = $this->onPlanet('Sasa');
+        $zed = $this->onPlanet('Zed');
+        $out = $this->onPlanet('Outsider', 'networking', 'networking-fundamentals');
 
         $this->complete($keyan, 5);
         $this->complete($sasa, 2);
         $this->complete($zed, 2);
         $this->complete($out, 9);
 
-        $board = StudentDashboardService::leaderboard($sasa);
+        $board = StudentDashboardService::leaderboard($sasa, 'programming');
 
         $this->assertSame(['Keyan', 'Sasa', 'Zed'], array_column($board, 'name'));
         $this->assertSame([1, 2, 2], array_column($board, 'rank'));
         $this->assertSame([500, 200, 200], array_column($board, 'xp'));
         $this->assertTrue($board[1]['me']);
 
-        $this->actingAs($sasa)->get('/progress')->assertOk()->assertSee('Sasa Crew leaderboard')->assertDontSee('Outsider');
+        $this->actingAs($sasa)->get('/progress')->assertOk()->assertSee('leaderboard')->assertDontSee('Outsider');
     }
 
-    public function test_leaderboard_breaks_xp_ties_by_gems_then_streak_and_shows_on_the_dashboard(): void
+    public function test_leaderboard_ranks_by_level_and_spending_xp_never_drops_anyone(): void
     {
-        $crew = $this->crewWithFaculty();
-        $ana = User::factory()->create(['name' => 'Ana', 'crew_id' => $crew->id]);
-        $bo = User::factory()->create(['name' => 'Bo', 'crew_id' => $crew->id]);
+        $ana = $this->onPlanet('Ana');
+        $cy = $this->onPlanet('Cy');
+        $bo = $this->onPlanet('Bo');
 
-        $this->complete($ana, 1);
-        $this->complete($bo, 1);
-        // Same XP and gems, but Bo also studied yesterday: a 2-day streak beats Ana's 1.
-        StudyActivity::create(['user_id' => $bo->id, 'date' => now()->subDay()->toDateString(), 'minutes' => 10]);
+        $this->complete($ana, 3);   // 300 XP: level 6
+        $this->complete($bo, 2);    // 200 XP: level 4
+        $this->complete($cy, 2);
+        // Ana spends most of her XP in the Shop: her balance drops, her level doesn't.
+        ShopPurchase::create(['user_id' => $ana->id, 'item' => 'suit:pilot', 'cost' => 250]);
 
-        $board = StudentDashboardService::leaderboard($ana);
+        $board = StudentDashboardService::leaderboard($ana, 'programming');
 
-        $this->assertSame(['Bo', 'Ana'], array_column($board, 'name'));
-        $this->assertSame([1, 2], array_column($board, 'rank'));
-        $this->assertSame([2, 1], array_column($board, 'streak'));
-        $this->assertSame([0, 0], array_column($board, 'gems'));
+        $this->assertSame(['Ana', 'Bo', 'Cy'], array_column($board, 'name'));
+        $this->assertSame([1, 2, 2], array_column($board, 'rank'));   // same level and XP earned: same place
+        $this->assertSame([6, 4, 4], array_column($board, 'level'));
+        $this->assertSame(['Stardust', 'Stardust', 'Stardust'], array_column(array_column($board, 'tier'), 'name'));
+        $this->assertSame('stardust-default', $board[0]['frame']);
+        $this->assertSame(50, StudentDashboardService::balance($ana));
 
         $this->actingAs($ana)->get('/dashboard')->assertOk()
-            ->assertSee('Leaderboard')
-            ->assertSeeInOrder(['XP · Gems · Streak', 'Bo', 'Ana', '(you)'])
-            ->assertDontSee('No crew yet');
+            ->assertSee('leaderboard')
+            ->assertSee('data-frame="stardust-default"', false)
+            ->assertSeeInOrder(['By level', 'Ana', '(you)', 'Lv 6', 'Bo', 'Lv 4', 'Cy']);
     }
 
-    public function test_no_crew_renders_a_join_prompt(): void
+    public function test_no_course_renders_a_join_prompt(): void
     {
-        $this->actingAs(User::factory()->create())->get('/progress')->assertOk()->assertSee("haven't joined a crew", false);
+        $this->actingAs(User::factory()->create(['planets' => []]))->get('/progress')->assertOk()->assertSee('to compete with everyone on the planet', false);
     }
 
     public function test_activity_ping_accumulates_minutes_and_is_rate_limited(): void

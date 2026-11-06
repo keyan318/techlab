@@ -1,0 +1,389 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g6-l6",
+  "title": "Lesson 6.6: 802.1X, RADIUS & WPA3-Enterprise",
+  "host": {
+    "name": "HANGAR-SW",
+    "platform": "WS-C2960X",
+    "banner": "Cisco IOS Software, C2960X (Relay Console for TechLab)\nSkyport hangar access switch. RADIUS server GRID-RAD: 192.168.100.20, key in flash:radius.txt"
+  },
+  "story": {
+    "alert": "HANGAR · PORTS OPEN TO ANY DEVICE",
+    "victory": "crew07 logs in and lands in VLAN 10 automatically; Doom's laptop gets Access-Reject and a dead port. Volt prints a new Wi-Fi sign: no password on it at all."
+  },
+  "modes": {
+    "rad": {
+      "prompt": "config-radius-server"
+    },
+    "rad-other": {
+      "prompt": "config-radius-server"
+    },
+    "if5": {
+      "prompt": "config-if"
+    },
+    "if6": {
+      "prompt": "config-if"
+    },
+    "if-other": {
+      "prompt": "config-if"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1300 bytes\n!\nhostname HANGAR-SW\n!\ninterface GigabitEthernet0/5\n description crew desk 5\n!\ninterface GigabitEthernet0/6\n description crew desk 6\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      220   radius.txt\n    2  -rw-      560   wifi-audit.txt\n"
+    },
+    {
+      "cmd": "more flash:radius.txt",
+      "text": "GRID-RAD (Citadel RADIUS server)\nAddress: 192.168.100.20   Auth port: 1812   Accounting port: 1813\nShared key: Rad1us-Gr1d\n"
+    },
+    {
+      "cmd": "more flash:wifi-audit.txt",
+      "text": "HANGAR WI-FI AUDIT\n==================\nSSID         Security         Notes\nCREW-WIFI    WPA2-Personal    one passphrase, printed on the hangar wall\nGUEST        open             no encryption at all\n\nOptions: WPA2-Personal, WPA3-Personal, WPA3-Enterprise (802.1X)\nEAP methods on GRID-RAD: PEAP (password in a TLS tunnel), EAP-TLS (certificates on both sides)\n"
+    },
+    {
+      "cmd": "show authentication sessions",
+      "when": [
+        "aaa",
+        "rad-addr",
+        "rad-key",
+        "authn",
+        "authz",
+        "sys",
+        "p5",
+        "p6"
+      ],
+      "sets": [
+        "seen"
+      ],
+      "text": "Interface    MAC Address     Method  Domain  Status  Fg  Session ID\nGi0/5        0200.0000.1a07  dot1x   DATA    Auth        C0A86414000000120\nGi0/6        0200.0000.6666  dot1x   DATA    Unauth      C0A86414000000121\n\nGi0/5: user crew07 (EAP-TLS), Access-Accept, VLAN 10 assigned by RADIUS\nGi0/6: Access-Reject: no valid credentials. Port stays closed."
+    },
+    {
+      "cmd": "show authentication sessions",
+      "when": [
+        "p5"
+      ],
+      "text": "Interface    MAC Address     Method  Domain  Status\nGi0/5        0200.0000.1a07  dot1x   UNKNOWN Running\n! Rivet: the switch asks, but nothing answers. Is the whole AAA/RADIUS part configured?"
+    },
+    {
+      "cmd": "show authentication sessions",
+      "text": "No sessions currently exist. (No port asks for 802.1X yet.)"
+    },
+    {
+      "cmd": "show dot1x all",
+      "when": [
+        "sys"
+      ],
+      "text": "Sysauthcontrol              Enabled\nDot1x Protocol Version            3"
+    },
+    {
+      "cmd": "show dot1x all",
+      "text": "Sysauthcontrol              Disabled"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "aaa new-model",
+      "sets": [
+        "aaa"
+      ]
+    },
+    {
+      "cmd": "radius server <word>",
+      "args": [
+        "GRID-RAD"
+      ],
+      "enters": "rad"
+    },
+    {
+      "cmd": "radius server <word>",
+      "enters": "rad-other",
+      "reply": "% Saved. The Citadel's server is called GRID-RAD."
+    },
+    {
+      "mode": "rad",
+      "cmd": "address ipv4 <ip> auth-port <n> acct-port <n>",
+      "args": [
+        "192.168.100.20",
+        "1812",
+        "1813"
+      ],
+      "sets": [
+        "rad-addr"
+      ]
+    },
+    {
+      "mode": "rad",
+      "cmd": "address ipv4 <rest>",
+      "reply": "% Saved, but check flash:radius.txt for the address and both ports."
+    },
+    {
+      "mode": "rad",
+      "cmd": "key <word>",
+      "args": [
+        "Rad1us-Gr1d"
+      ],
+      "sets": [
+        "rad-key"
+      ]
+    },
+    {
+      "mode": "rad",
+      "cmd": "key <word>",
+      "reply": "% Saved, but it is not the key in flash:radius.txt. RADIUS will ignore this switch."
+    },
+    {
+      "mode": "rad-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "cmd": "aaa authentication dot1x default group radius",
+      "when": [
+        "aaa"
+      ],
+      "sets": [
+        "authn"
+      ]
+    },
+    {
+      "cmd": "aaa authorization network default group radius",
+      "when": [
+        "aaa"
+      ],
+      "sets": [
+        "authz"
+      ]
+    },
+    {
+      "cmd": "aaa <rest>",
+      "store": false,
+      "reply": "% AAA commands need aaa new-model first."
+    },
+    {
+      "cmd": "dot1x system-auth-control",
+      "sets": [
+        "sys"
+      ]
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/5"
+      ],
+      "enters": "if5"
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/6"
+      ],
+      "enters": "if6"
+    },
+    {
+      "cmd": "interface <if>",
+      "enters": "if-other"
+    },
+    {
+      "mode": "if5",
+      "cmd": "switchport mode access",
+      "sets": [
+        "acc5"
+      ]
+    },
+    {
+      "mode": "if6",
+      "cmd": "switchport mode access",
+      "sets": [
+        "acc6"
+      ]
+    },
+    {
+      "mode": "if5",
+      "cmd": "authentication port-control auto",
+      "when": [
+        "acc5"
+      ],
+      "sets": [
+        "pc5"
+      ]
+    },
+    {
+      "mode": "if6",
+      "cmd": "authentication port-control auto",
+      "when": [
+        "acc6"
+      ],
+      "sets": [
+        "pc6"
+      ]
+    },
+    {
+      "mode": "if5",
+      "cmd": "authentication port-control auto",
+      "store": false,
+      "reply": "% Authentication is not allowed on a dynamic port. Set switchport mode access first."
+    },
+    {
+      "mode": "if6",
+      "cmd": "authentication port-control auto",
+      "store": false,
+      "reply": "% Authentication is not allowed on a dynamic port. Set switchport mode access first."
+    },
+    {
+      "mode": "if5",
+      "cmd": "dot1x pae authenticator",
+      "when": [
+        "pc5"
+      ],
+      "sets": [
+        "p5"
+      ]
+    },
+    {
+      "mode": "if6",
+      "cmd": "dot1x pae authenticator",
+      "when": [
+        "pc6"
+      ],
+      "sets": [
+        "p6"
+      ]
+    },
+    {
+      "mode": "if5",
+      "cmd": "dot1x pae authenticator",
+      "reply": ""
+    },
+    {
+      "mode": "if6",
+      "cmd": "dot1x pae authenticator",
+      "reply": ""
+    },
+    {
+      "mode": "if-other",
+      "cmd": "<rest>",
+      "hidden": true
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Point the switch at RADIUS",
+      "body": "Type `enable`, then `more flash:radius.txt`. In `conf t`: `aaa new-model`, then `radius server GRID-RAD` with `address ipv4 192.168.100.20 auth-port 1812 acct-port 1813` and `key <key>`, `exit`. Then `aaa authentication dot1x default group radius`, `aaa authorization network default group radius`, and `dot1x system-auth-control`.",
+      "objectives": [
+        {
+          "id": "aaa",
+          "label": "AAA is on",
+          "check": {
+            "type": "fact",
+            "fact": "aaa"
+          }
+        },
+        {
+          "id": "rad-addr",
+          "label": "RADIUS server address and ports set",
+          "check": {
+            "type": "fact",
+            "fact": "rad-addr"
+          }
+        },
+        {
+          "id": "rad-key",
+          "label": "RADIUS key set",
+          "check": {
+            "type": "fact",
+            "fact": "rad-key"
+          }
+        },
+        {
+          "id": "authn",
+          "label": "802.1X logins go to RADIUS",
+          "check": {
+            "type": "fact",
+            "fact": "authn"
+          }
+        },
+        {
+          "id": "authz",
+          "label": "RADIUS may assign VLANs",
+          "check": {
+            "type": "fact",
+            "fact": "authz"
+          }
+        },
+        {
+          "id": "sys",
+          "label": "802.1X switched on globally",
+          "check": {
+            "type": "fact",
+            "fact": "sys"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Guard a hangar port",
+      "body": "`interface g0/5`, `switchport mode access`, `authentication port-control auto`, `dot1x pae authenticator`. Do the same on `g0/6`, where an unknown laptop is plugged in. `end`, then `show authentication sessions`.",
+      "objectives": [
+        {
+          "id": "p5",
+          "label": "Gi0/5 requires 802.1X",
+          "check": {
+            "type": "fact",
+            "fact": "p5"
+          }
+        },
+        {
+          "id": "p6",
+          "label": "Gi0/6 requires 802.1X",
+          "check": {
+            "type": "fact",
+            "fact": "p6"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Saw crew07 authorized into VLAN 10, and Doom's laptop rejected",
+          "check": {
+            "type": "fact",
+            "fact": "seen"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Fix the Wi-Fi",
+      "body": "Read `more flash:wifi-audit.txt`. Which security mode should CREW-WIFI use? `submit MODE=...`. Which EAP method, with certificates on both sides? `submit EAP=...`.",
+      "objectives": [
+        {
+          "id": "a-mode",
+          "label": "Wi-Fi mode chosen",
+          "check": {
+            "type": "answer",
+            "value": "MODE=WPA3-Enterprise",
+            "alt": [
+              "MODE=WPA3 Enterprise",
+              "MODE=WPA3-Ent"
+            ]
+          }
+        },
+        {
+          "id": "a-eap",
+          "label": "EAP method chosen",
+          "check": {
+            "type": "answer",
+            "value": "EAP=EAP-TLS",
+            "alt": [
+              "EAP=TLS"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,18 +2,19 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Course;
 use App\Models\Crew;
 use App\Services\CourseProgressService;
+use App\Services\CourseTrack;
 use Closure;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Keeps a student out of a course until they are a member of its crew: a faculty
- * captain must have claimed it (generated a code) AND accepted this student's request.
- * No captain assigned at all is just as closed as one whose code you haven't redeemed —
- * there's simply nobody to have accepted you. Covers every way in (course page,
- * overview, lesson URLs, lesson actions), not just the course card.
+ * Keeps a student out of a course until they are on one of its crews: they started it
+ * Self-paced, or a faculty member accepted them into their class. Covers every way in
+ * (course page, overview, lesson URLs, lesson actions), not just the course card.
  * Guests, faculty and admins pass through.
  */
 class EnsureCourseMember
@@ -35,28 +36,38 @@ class EnsureCourseMember
         // An unknown or "coming soon" course isn't this middleware's call — that's a 404
         // the controller itself decides, same as before this gate existed. Only a real,
         // live catalog course is something to actually gate.
-        $catalogCourse = $course ? config("course-catalog.{$planet}.courses.{$course}") : null;
-        if (! $catalogCourse || ! empty($catalogCourse['coming_soon'])) {
+        // A plain config lookup first, with no query — CourseStructure::card() would work
+        // too, but it pulls in CourseTrack::classId() (another crew lookup) for its override
+        // layer, which this check doesn't need and would double the query below.
+        $meta = $course ? config("course-catalog.{$planet}.courses.{$course}") : null;
+        $isRealCourse = $meta !== null;
+        if (! $isRealCourse && $course !== null) {
+            try {
+                $isRealCourse = Course::where('planet', $planet)->where('slug', $course)->exists();
+            } catch (QueryException) {
+                $isRealCourse = false;
+            }
+        }
+        if (! $isRealCourse || ! empty($meta['coming_soon'] ?? null)) {
             return $next($request);
         }
 
-        // The crew and "is this student on its roster" in one round trip.
-        $crew = Crew::where('planet', $planet)->where('course_slug', $course)
-            ->withExists(['roster as is_member' => fn ($q) => $q->whereKey($user->id)])
-            ->first();
+        // The student's track for this course: the self-paced crew or the class they joined.
+        $crew = Crew::forStudent($user, $planet, $course);
 
-        if (! $crew || ! $crew->is_member) {
+        if (! $crew) {
             // The fragment route is fetched by JS, so a redirect would swap the course picker in as a "lesson".
             if ($request->routeIs('student.planet.module.lesson.fragment') || $request->expectsJson()) {
-                abort(403, $crew ? 'Ask to join this course first.' : 'No captain has claimed this course yet.');
+                abort(403, 'Pick Self-paced or join a class first.');
             }
 
             return redirect()->route('student.planet', $planet)
-                ->with('status', $crew ? 'Ask to join that course first.' : 'That course doesn\'t have a captain yet.');
+                ->with('status', 'Pick Self-paced or join a class to open that course.');
         }
 
-        // Handed on so the course hub doesn't look the same crew up again.
+        // Handed on so the course hub and the lesson services don't look the same crew up again.
         $request->attributes->set('crew', $crew);
+        CourseTrack::prime($user, CourseProgressService::keyFor($planet, $course), $crew);
 
         return $next($request);
     }

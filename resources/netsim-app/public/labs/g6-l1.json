@@ -1,0 +1,440 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "citadel-web",
+      "kind": "server",
+      "name": "citadel-web",
+      "x": 20,
+      "y": 280,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.80/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Citadel web: open to Earth, closed to Doom."
+      },
+      "services": {
+        "tcp": [
+          22,
+          3389
+        ],
+        "udp": []
+      }
+    },
+    {
+      "id": "citadel-sw",
+      "kind": "switch",
+      "name": "citadel-sw",
+      "x": 220,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CITADEL-SW"
+    },
+    {
+      "id": "citadel-gw",
+      "kind": "router",
+      "name": "citadel-gw",
+      "x": 420,
+      "y": 170,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "203.0.113.1/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CITADEL-GW"
+    },
+    {
+      "id": "outside-sw",
+      "kind": "switch",
+      "name": "outside-sw",
+      "x": 620,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "OUTSIDE-SW"
+    },
+    {
+      "id": "earth-srv",
+      "kind": "server",
+      "name": "earth-srv",
+      "x": 780,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay page: hello, Citadel."
+      }
+    },
+    {
+      "id": "doom-scan",
+      "kind": "host",
+      "name": "doom-scan",
+      "x": 780,
+      "y": 280,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.66/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-citadel-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "citadel-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel-web.eth0-citadel-sw.eth1",
+      "a": [
+        "citadel-web",
+        "eth0"
+      ],
+      "b": [
+        "citadel-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "citadel-gw.eth0-citadel-sw.eth7",
+      "a": [
+        "citadel-gw",
+        "eth0"
+      ],
+      "b": [
+        "citadel-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "citadel-gw.eth1-outside-sw.eth7",
+      "a": [
+        "citadel-gw",
+        "eth1"
+      ],
+      "b": [
+        "outside-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "earth-srv.eth0-outside-sw.eth0",
+      "a": [
+        "earth-srv",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "doom-scan.eth0-outside-sw.eth1",
+      "a": [
+        "doom-scan",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g6-l1",
+    "title": "Lesson 6.1 — Firewalls: Stateless, Stateful & NGFW",
+    "blurb": "Filter the edge, fix what it breaks, and shut Vex out.",
+    "steps": [
+      {
+        "title": "Filter the edge",
+        "body": "Rivet: \"Only the web page should be open to outsiders.\" On `citadel-gw`: `conf t`, `access-list 110 permit tcp any host 192.168.20.80 eq 80`, then `interface g0/1` (the outside) and `ip access-group 110 in`. Everything else from outside now hits the invisible deny.",
+        "objectives": [
+          {
+            "id": "g6l1-acl",
+            "label": "Access list 110 is applied inbound on Gi0/1",
+            "check": {
+              "type": "iface-config",
+              "device": "citadel-gw",
+              "iface": "eth1",
+              "is": {
+                "aclIn": "110"
+              }
+            }
+          },
+          {
+            "id": "g6l1-ssh",
+            "label": "doom-scan can no longer reach SSH (22) on the web server",
+            "check": {
+              "type": "tcp",
+              "from": "doom-scan",
+              "toDevice": "citadel-web",
+              "port": 22,
+              "expect": "filtered"
+            }
+          },
+          {
+            "id": "g6l1-rdp",
+            "label": "doom-scan can no longer reach remote desktop (3389)",
+            "check": {
+              "type": "tcp",
+              "from": "doom-scan",
+              "toDevice": "citadel-web",
+              "port": 3389,
+              "expect": "filtered"
+            }
+          },
+          {
+            "id": "g6l1-web",
+            "label": "Earth still opens the Citadel web page",
+            "check": {
+              "type": "http",
+              "from": "earth-srv",
+              "url": "http://192.168.20.80/",
+              "expect": "ok",
+              "contains": "Citadel web"
+            }
+          }
+        ]
+      },
+      {
+        "title": "The stateless trap",
+        "body": "From astro, `curl http://203.0.113.10/` fails: the ACL drops Earth's replies, because a stateless filter doesn't know they belong to astro's own connection. Let TCP replies back in: `access-list 110 permit tcp any 192.168.20.0 0.0.0.255 established`. `show access-lists` shows the match counts climbing.",
+        "objectives": [
+          {
+            "id": "g6l1-est",
+            "label": "Access list 110 lets TCP replies in (established)",
+            "check": {
+              "type": "acl",
+              "device": "citadel-gw",
+              "name": "110",
+              "has": "established"
+            }
+          },
+          {
+            "id": "g6l1-out",
+            "label": "astro opens Earth's page again",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://203.0.113.10/",
+              "expect": "ok",
+              "contains": "Earth relay"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Shut Vex out, in the right order",
+        "body": "doom-scan can still load the web page, because rule 10 permits it before anything else is checked. A deny added at the end would never be reached. Insert one in front: `ip access-list extended 110`, then `5 deny ip host 203.0.113.66 any`. `show access-lists` lists it first.",
+        "objectives": [
+          {
+            "id": "g6l1-deny",
+            "label": "Access list 110 denies 203.0.113.66",
+            "check": {
+              "type": "acl",
+              "device": "citadel-gw",
+              "name": "110",
+              "has": "deny ip host 203.0.113.66 any"
+            }
+          },
+          {
+            "id": "g6l1-doomweb",
+            "label": "doom-scan can no longer open the web page",
+            "check": {
+              "type": "http",
+              "from": "doom-scan",
+              "url": "http://192.168.20.80/",
+              "expect": "fail"
+            }
+          },
+          {
+            "id": "g6l1-web2",
+            "label": "Earth still opens the web page",
+            "check": {
+              "type": "http",
+              "from": "earth-srv",
+              "url": "http://192.168.20.80/",
+              "expect": "ok",
+              "contains": "Citadel web"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

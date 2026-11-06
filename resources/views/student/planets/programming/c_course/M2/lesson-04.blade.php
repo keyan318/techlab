@@ -37,30 +37,47 @@ Syllabus: CC102 Unit 2 — Looping Statements (while, do-while). --}}
         the loop never stops.
     </p>
 
-    <h2 class="section-heading">Volt Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which loop checks its condition after each run, so its body always runs at least once?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. <code>while</code></li>
+            <li class="quiz-option">B. <code>for</code></li>
+            <li class="quiz-option quiz-correct">C. <code>do-while</code> ✓</li>
+            <li class="quiz-option">D. <code>if</code></li>
+        </ul>
+        <p class="quiz-explanation"><em>A <code>do-while</code> runs the body first and checks afterwards. A <code>while</code> checks first, so it may never run.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        The storm drained the cells down to nothing. They refill overnight off what's left of the engines — and
-        somebody has been sitting up watching the number climb.
+        A <code>while</code> loop is a <strong>bouncer at a party</strong>. The bouncer checks your ticket <em>before</em> you go in, every time you come back to the door. No ticket the very first time? You never get in at all.
     </p>
 
     <p class="body-text">
-        <strong>Astro</strong>: "Volt. You've been at that panel since midnight."
+        A <code>do-while</code> loop is a <strong>roller coaster</strong>. You ride first, and only <em>after</em> the ride does someone ask “go again?”. So even if the answer is no, you always get at least one ride.
     </p>
 
-    <p class="body-text">
-        <strong>Volt</strong>: "Somebody has to know when it's full."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 350" role="img" aria-label="Left, while: check first. Got a ticket? Yes: enjoy the party, then back to the door. No: go home. No ticket at the door means the party runs 0 times. Right, do-while: go first. Ride the coaster, then go again? Yes loops back, no is done. You always get 1 ride. If nothing changes the answer, the loop never ends.">
+            <text x="162" y="36" font-size="15" fill="#4a35b8" font-weight="800" text-anchor="middle"><tspan font-family="ui-monospace, Menlo, Consolas, monospace">while</tspan> · check first</text><line x1="162" y1="46" x2="162.0" y2="59.0" stroke="#7c5cff" stroke-width="3"/><polygon points="162,70 168.0,59.0 156.0,59.0" fill="#7c5cff"/><polygon points="80,106 162,72 244,106 162,140" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2"/><text x="162" y="111" font-size="13" fill="#4a35b8" font-weight="700" text-anchor="middle">Got a ticket?</text><line x1="162" y1="140" x2="162.0" y2="161.0" stroke="#7c5cff" stroke-width="3"/><polygon points="162,172 168.0,161.0 156.0,161.0" fill="#7c5cff"/><text x="176" y="162" font-size="12" fill="#4a35b8" font-weight="700">yes</text><rect x="97" y="174" width="130" height="40" rx="10" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2"/><text x="162" y="199" font-size="14" fill="#4a35b8" font-weight="700" text-anchor="middle">Enjoy the party</text><path d="M97 194 H58 V106 H74" fill="none" stroke="#7c5cff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polygon points="80,106 69.0,100.0 69.0,112.0" fill="#7c5cff"/><line x1="244" y1="106" x2="287.0" y2="106.0" stroke="#b3261e" stroke-width="3"/><polygon points="298,106 287.0,100.0 287.0,112.0" fill="#b3261e"/><text x="270" y="97" font-size="12" fill="#b3261e" font-weight="700" text-anchor="middle">no</text><text x="270" y="128" font-size="11" fill="#b3261e" font-weight="700" text-anchor="middle">go home</text><rect x="20" y="238" width="285" height="50" rx="25.0" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.8"/><text x="162.5" y="267.68" font-size="13" fill="#4a35b8" text-anchor="middle"></text><text x="162" y="259" font-size="13" fill="#4a35b8" font-weight="800" text-anchor="middle">No ticket at the door?</text><text x="162" y="277" font-size="13" fill="#4a35b8" text-anchor="middle">The party runs 0 times.</text><line x1="320" y1="20" x2="320" y2="290" stroke="#e3e7ee" stroke-width="2"/><text x="478" y="36" font-size="15" fill="#0b6670" font-weight="800" text-anchor="middle"><tspan font-family="ui-monospace, Menlo, Consolas, monospace">do-while</tspan> · go first</text><line x1="478" y1="46" x2="478.0" y2="59.0" stroke="#0fa3b1" stroke-width="3"/><polygon points="478,70 484.0,59.0 472.0,59.0" fill="#0fa3b1"/><rect x="408" y="72" width="140" height="40" rx="10" fill="#e6f8f9" stroke="#0fa3b1" stroke-width="2"/><text x="478" y="97" font-size="14" fill="#0b6670" font-weight="700" text-anchor="middle">Ride the coaster</text><line x1="478" y1="112" x2="478.0" y2="133.0" stroke="#0fa3b1" stroke-width="3"/><polygon points="478,144 484.0,133.0 472.0,133.0" fill="#0fa3b1"/><polygon points="402,178 478,146 554,178 478,210" fill="#e6f8f9" stroke="#0fa3b1" stroke-width="2"/><text x="478" y="183" font-size="13" fill="#0b6670" font-weight="700" text-anchor="middle">Go again?</text><path d="M402 178 H370 V92 H400" fill="none" stroke="#0fa3b1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polygon points="406,92 395.0,86.0 395.0,98.0" fill="#0fa3b1"/><text x="386" y="196" font-size="12" fill="#0b6670" font-weight="700" text-anchor="middle">yes</text><line x1="554" y1="178" x2="599.0" y2="178.0" stroke="#b3261e" stroke-width="3"/><polygon points="610,178 599.0,172.0 599.0,184.0" fill="#b3261e"/><text x="582" y="169" font-size="12" fill="#b3261e" font-weight="700" text-anchor="middle">no</text><text x="582" y="200" font-size="11" fill="#b3261e" font-weight="700" text-anchor="middle">done</text><rect x="335" y="238" width="285" height="50" rx="25.0" fill="#e6f8f9" stroke="#0fa3b1" stroke-width="1.8"/><text x="477.5" y="267.68" font-size="13" fill="#0b6670" text-anchor="middle"></text><text x="478" y="259" font-size="13" fill="#0b6670" font-weight="800" text-anchor="middle">Even if the answer is no,</text><text x="478" y="277" font-size="13" fill="#0b6670" text-anchor="middle">you always get 1 ride.</text><rect x="20" y="304" width="600" height="38" rx="19.0" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="320.0" y="327.68" font-size="13" fill="#7a1a14" text-anchor="middle">Nothing inside ever changes the answer? The loop <tspan font-weight="800">never ends</tspan>.</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Rivet</strong>, already typing: "Or the console watches it and you go to bed. It just repeats
-        the check — <em>is it full yet, is it full yet</em> — and stops the second it is. Could be five rounds,
-        could be fifty. It doesn't get bored and it doesn't fall asleep at four in the morning."
+        For both loops, something inside has to change the answer eventually: the ticket runs out, you get tired of the coaster. Otherwise you're stuck in the loop forever.
     </p>
 
-    <p class="body-text">
-        <strong>Volt</strong>, not moving: "…Show me it works first."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">The condition is false from the very start. What happens?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. while runs 0 times, do-while runs once ✓</li>
+            <li class="quiz-option">B. Both loops run once and then they stop</li>
+            <li class="quiz-option">C. Both loops skip their body completely</li>
+            <li class="quiz-option">D. while runs once, do-while runs 0 times</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>while</code> checks first, so a false condition means its body never runs. <code>do-while</code> runs the body first, then checks, so it always runs once.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -105,6 +122,17 @@ int main() {
     printf("Shield ready\n");
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the code example, what is the last “Charge:” line before “Shield ready”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Charge: 4 ✓</li>
+            <li class="quiz-option">B. Charge: 5</li>
+            <li class="quiz-option">C. Charge: 0</li>
+            <li class="quiz-option">D. Charge: 6</li>
+        </ul>
+        <p class="quiz-explanation"><em>When <code>charge</code> reaches 5, <code>charge &lt; 5</code> is false, so the loop stops before printing 5.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -176,10 +204,10 @@ int main() {
     <div class="quiz-block" data-q="1">
         <p class="quiz-prompt">Q1. When does a while loop check its condition?</p>
         <ul class="quiz-options">
-            <li class="quiz-option quiz-correct">A. Before every run of the body, including the first ✓</li>
-            <li class="quiz-option">B. Only after the body has run once</li>
-            <li class="quiz-option">C. Only at the very end of the program</li>
-            <li class="quiz-option">D. It never checks — it just runs forever</li>
+            <li class="quiz-option">A. Only after the body has run once</li>
+            <li class="quiz-option">B. Only at the very end of the program</li>
+            <li class="quiz-option quiz-correct">C. Before every run of the body ✓</li>
+            <li class="quiz-option">D. Only on the loop's very first run</li>
         </ul>
         <p class="quiz-explanation"><em>while checks its condition before every iteration, including the first — if it's false immediately, the body never runs at all.</em></p>
     </div>
@@ -187,10 +215,10 @@ int main() {
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. What must happen inside a while loop's body to avoid an infinite loop?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Nothing — while loops always stop on their own</li>
-            <li class="quiz-option quiz-correct">B. Something must eventually make the condition false ✓</li>
-            <li class="quiz-option">C. It must contain a printf statement</li>
-            <li class="quiz-option">D. It must contain another while loop</li>
+            <li class="quiz-option">A. Nothing; while loops stop on their own</li>
+            <li class="quiz-option">B. It must contain a printf statement</li>
+            <li class="quiz-option">C. It must contain a second while loop</li>
+            <li class="quiz-option quiz-correct">D. Something must make the condition false ✓</li>
         </ul>
         <p class="quiz-explanation"><em>A while loop keeps running as long as its condition is true — if nothing in the body ever changes that, it never stops.</em></p>
     </div>
@@ -198,10 +226,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. What is the one key difference between while and do-while?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. do-while cannot use variables</li>
-            <li class="quiz-option quiz-correct">B. do-while checks its condition after the body runs, so the body always runs at least once ✓</li>
-            <li class="quiz-option">C. while can only count up, do-while can only count down</li>
-            <li class="quiz-option">D. There is no difference — they always behave identically</li>
+            <li class="quiz-option">A. do-while cannot use any variables</li>
+            <li class="quiz-option quiz-correct">B. do-while always runs at least once ✓</li>
+            <li class="quiz-option">C. while counts up, do-while counts down</li>
+            <li class="quiz-option">D. do-while checks before the body runs</li>
         </ul>
         <p class="quiz-explanation"><em>do-while runs its body first and checks the condition after, guaranteeing at least one run even if the condition starts false.</em></p>
     </div>
@@ -215,17 +243,6 @@ int main() {
             <li class="quiz-option">D. Forever</li>
         </ul>
         <p class="quiz-explanation"><em>while checks before running — since 5 &lt; 5 is false from the start, the body never executes.</em></p>
-    </div>
-
-    <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. Astro said a for loop is often better than a while loop when...</p>
-        <ul class="quiz-options">
-            <li class="quiz-option">A. You are only watching a condition, with no known number of repeats</li>
-            <li class="quiz-option quiz-correct">B. You already know how many times to repeat ✓</li>
-            <li class="quiz-option">C. The loop body needs to run at least once</li>
-            <li class="quiz-option">D. There is never a reason to prefer one over the other</li>
-        </ul>
-        <p class="quiz-explanation"><em>A for loop groups the start, condition and step together, which reads most naturally when the repeat count is known ahead of time.</em></p>
     </div>
 
 </div>

@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "Which two numbers give a risk its rating?",
+      "options": [
+        "Cost and speed of the fix",
+        "Ports and services open on it",
+        "Users and devices affected",
+        "Likelihood and impact"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A risk is both very likely and very damaging. Where does it go on the list?",
+      "options": [
+        "In the middle",
+        "At the top",
+        "At the bottom",
+        "Off the list"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does it mean to treat a risk?",
+      "options": [
+        "Note it and move on",
+        "Wait for an attack first",
+        "Hand it to an insurer",
+        "Fix it yourself, now"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does it mean to transfer a risk?",
+      "options": [
+        "Write the risk down and decide to live with it",
+        "Fix the weakness yourself before the end of the day",
+        "Move the risky server to a different room",
+        "Hand the burden to someone better placed"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which is an example of transferring a risk?",
+      "options": [
+        "Buying insurance",
+        "Ignoring the risk",
+        "Changing a password",
+        "Deleting an account"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When is accepting a risk the right response?",
+      "options": [
+        "When its impact is low",
+        "When nobody has rated it",
+        "When it is very likely",
+        "When it is very damaging"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "The relay console still has its factory password. Likelihood high, impact high. Which response fits?",
+      "options": [
+        "Accept it",
+        "Treat it",
+        "Ignore it",
+        "Transfer it"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why rate risks before deciding what to do?",
+      "options": [
+        "Only rated risks can be attacked",
+        "A crew cannot fix everything at once",
+        "Unrated risks are always low impact",
+        "Rating a risk makes it go away by itself"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is cybercrime?",
+      "options": [
+        "A password that is too short to be safe",
+        "A crime done using computers or networks",
+        "A business dispute between two companies",
+        "A software bug that crashes a program"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is a ransomware attack?",
+      "options": [
+        "Flooding a website with traffic",
+        "Holding files hostage for payment",
+        "Copying a file to sell it on",
+        "Sending fake emails to trick users"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which Philippine law is an example of a cybercrime law?",
+      "options": [
+        "Republic Act 10175",
+        "Republic Act 8293",
+        "Republic Act 10173",
+        "Republic Act 9995"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why preserve evidence before restoring anything?",
+      "options": [
+        "To keep proof of exactly what happened",
+        "To make the backup restore much faster",
+        "Because the attacker asked you to wait",
+        "Because evidence fixes the damage itself"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How do you preserve a file an attacker touched?",
+      "options": [
+        "Hash it before you clean it up",
+        "Rename it so the attacker cannot find it",
+        "Email it to every member of the crew",
+        "Delete it before anyone else sees it"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why should you never pay a ransom?",
+      "options": [
+        "It is always cheaper to buy new computers instead",
+        "The attacker always gives the files back for free",
+        "It funds the next attack and guarantees nothing",
+        "Paying makes the files unreadable for good"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Instead of paying, how do you get scrambled files back?",
+      "options": [
+        "Run the ransom program again",
+        "Restore from a clean backup",
+        "Ask the attacker for a discount",
+        "Rename the scrambled files"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "When is the right moment to report a cyberattack to the authorities?",
+      "options": [
+        "Before you even check what has happened",
+        "Once evidence is kept and service is back",
+        "Never, attacks are a private matter for the crew",
+        "Only after you have paid the ransom in full"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is ITIL?",
+      "options": [
+        "A cipher that shifts each letter by three places",
+        "A law that makes hacking a crime in the Philippines",
+        "A set of practices for running IT services well",
+        "A firewall rule that blocks every unused port"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is change management?",
+      "options": [
+        "A tool that changes files back by itself",
+        "A way to change passwords every day",
+        "A rule that no system may ever change",
+        "A process for making changes safely"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the correct order of change management?",
+      "options": [
+        "Production, then test, then request",
+        "Test, production, then request",
+        "Request, production, then test",
+        "Request, test, then production"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why file a change request first?",
+      "options": [
+        "A request lets you skip the testing step entirely",
+        "The request makes the change happen faster on its own",
+        "It records what was intended and who approved it",
+        "Attackers cannot read a system with a change request"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Where should a change be tested?",
+      "options": [
+        "On the live system everyone depends on",
+        "On the attacker's own computer",
+        "On a test system serving nobody yet",
+        "On a printed copy of the code"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A fix feels very urgent. What should happen?",
+      "options": [
+        "It skips the request because it is urgent",
+        "It goes straight to production to save time",
+        "It still goes request, test, production",
+        "It is tested only after it goes live"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What usually turns an urgent fix into an outage?",
+      "options": [
+        "Testing the change on a separate test system",
+        "Skipping the test and going straight live",
+        "Writing down who approved the change beforehand",
+        "Following the change process in its usual order"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "\"I was sure it would work\" is not the same as what?",
+      "options": [
+        "I asked a friend",
+        "I ran it live",
+        "I wrote it",
+        "I tested it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A risk has low impact but is very likely. Which response fits?",
+      "options": [
+        "Accept it",
+        "Pay a ransom",
+        "Transfer it",
+        "Treat it now"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A risk has high impact, but the crew cannot fully own it alone. Which response fits?",
+      "options": [
+        "Transfer it",
+        "Accept it",
+        "Ignore it",
+        "Hide it away"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which is a correct statement about cybercrime?",
+      "options": [
+        "It only counts if more than one computer is hit",
+        "It is a private dispute settled by payment",
+        "It is handled by law, like theft or extortion",
+        "It is legal as long as nothing is deleted"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Ransomware scrambles the supply logs. What is the first step?",
+      "options": [
+        "Preserve the evidence",
+        "Report it and do nothing else",
+        "Pay the ransom quickly",
+        "Delete every scrambled log"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Who should approve a change before it goes live?",
+      "options": [
+        "Nobody, approvals slow things down",
+        "Whoever finishes the change first",
+        "The attacker who caused the problem",
+        "Someone named in the change request"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why is a change record useful when something goes wrong?",
+      "options": [
+        "It makes the outage shorter",
+        "It undoes the change by itself",
+        "It shows what was intended",
+        "It blocks the attacker's access"
+      ],
+      "correct": "C"
+    }
+  ]
+}

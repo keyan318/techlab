@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit B.3 Zones of Trust. --}}
         goes through the DMZ, never directly.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How should a public system reach a restricted one?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Straight across, if it's needed</li>
+            <li class="quiz-option">B. Through the public zone first</li>
+            <li class="quiz-option quiz-correct">C. Through the DMZ, never directly ✓</li>
+            <li class="quiz-option">D. It should reach it with no filter</li>
+        </ul>
+        <p class="quiz-explanation"><em>Traffic crosses one boundary at a time, never straight from public to restricted.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit B.3 Zones of Trust. --}}
         starmap vault?" "Restricted," the cadet says immediately. "Exactly. It never talks to the outside directly,
         and nothing reaches it except through the DMZ first."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why is the comms relay a DMZ system?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It never talks to anyone outside the Citadel</li>
+            <li class="quiz-option">B. It holds the starmap behind the vault</li>
+            <li class="quiz-option quiz-correct">C. It talks outside and needs a path inward ✓</li>
+            <li class="quiz-option">D. It is the least trusted system there is</li>
+        </ul>
+        <p class="quiz-explanation"><em>It talks to allied fleets but also needs a controlled path inward, so it is filtered on both sides.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -58,6 +80,17 @@ Syllabus: ITP1333 Unit B.3 Zones of Trust. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Traffic crosses one boundary at a time — never straight from public to restricted</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which zone is most trusted and least exposed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Public zone</li>
+            <li class="quiz-option">B. DMZ</li>
+            <li class="quiz-option">C. Buffer zone</li>
+            <li class="quiz-option quiz-correct">D. Restricted ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The restricted zone holds the most sensitive systems: most trusted, least exposed.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

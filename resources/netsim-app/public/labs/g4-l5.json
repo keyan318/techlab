@@ -1,0 +1,428 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "hangar-sw",
+      "kind": "switch",
+      "name": "hangar-sw",
+      "x": 300,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "HANGAR-SW"
+    },
+    {
+      "id": "hangar-srv",
+      "kind": "server",
+      "name": "hangar-srv",
+      "x": 560,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 40,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.21/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 40,
+      "y": 120,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.22/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "dock",
+      "kind": "switch",
+      "name": "dock",
+      "x": 120,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DOCK"
+    },
+    {
+      "id": "desk-a",
+      "kind": "host",
+      "name": "desk-a",
+      "x": 0,
+      "y": 380,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.31/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "desk-b",
+      "kind": "host",
+      "name": "desk-b",
+      "x": 120,
+      "y": 440,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.32/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "doom-probe",
+      "kind": "host",
+      "name": "doom-probe",
+      "x": 360,
+      "y": 380,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.66/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-hangar-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "volt.eth0-hangar-sw.eth1",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "dock.eth7-hangar-sw.eth2",
+      "a": [
+        "dock",
+        "eth7"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth2"
+      ]
+    },
+    {
+      "id": "desk-a.eth0-dock.eth0",
+      "a": [
+        "desk-a",
+        "eth0"
+      ],
+      "b": [
+        "dock",
+        "eth0"
+      ]
+    },
+    {
+      "id": "desk-b.eth0-dock.eth1",
+      "a": [
+        "desk-b",
+        "eth0"
+      ],
+      "b": [
+        "dock",
+        "eth1"
+      ]
+    },
+    {
+      "id": "doom-probe.eth0-hangar-sw.eth4",
+      "a": [
+        "doom-probe",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth4"
+      ]
+    },
+    {
+      "id": "hangar-srv.eth0-hangar-sw.eth7",
+      "a": [
+        "hangar-srv",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth7"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g4-l5",
+    "title": "Lesson 4.5 — Port Security & 802.1X",
+    "blurb": "Every port for its owner and nobody else.",
+    "steps": [
+      {
+        "title": "Lock the crew desks",
+        "body": "On `hangar-sw`: `interface range g0/1 - 2`, `switchport mode access`, `switchport port-security`, `switchport port-security mac-address sticky`. Then ping the server from astro and volt so the switch learns their MACs, and check `show port-security`.",
+        "objectives": [
+          {
+            "id": "g4l5-ps1",
+            "label": "Gi0/1 has port security with sticky MACs",
+            "check": {
+              "type": "iface-config",
+              "device": "hangar-sw",
+              "iface": "eth0",
+              "is": {
+                "mode": "access",
+                "portSecurity": true,
+                "psSticky": true
+              }
+            }
+          },
+          {
+            "id": "g4l5-ps2",
+            "label": "Gi0/2 has port security with sticky MACs",
+            "check": {
+              "type": "iface-config",
+              "device": "hangar-sw",
+              "iface": "eth1",
+              "is": {
+                "mode": "access",
+                "portSecurity": true,
+                "psSticky": true
+              }
+            }
+          },
+          {
+            "id": "g4l5-p1",
+            "label": "astro reaches the hangar server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "hangar-srv"
+            }
+          },
+          {
+            "id": "g4l5-p2",
+            "label": "volt reaches the hangar server",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "hangar-srv"
+            }
+          }
+        ]
+      },
+      {
+        "title": "The hot-desk takes two",
+        "body": "Gi0/3 goes to the docking switch where two laptops share one port. One MAC with shutdown would kill it. Configure it: `interface g0/3`, `switchport mode access`, `switchport port-security`, `switchport port-security maximum 2`, `switchport port-security violation restrict`.",
+        "objectives": [
+          {
+            "id": "g4l5-hd",
+            "label": "Gi0/3 allows 2 MACs, violation restrict",
+            "check": {
+              "type": "iface-config",
+              "device": "hangar-sw",
+              "iface": "eth2",
+              "is": {
+                "portSecurity": true,
+                "psMax": 2,
+                "psViolation": "restrict"
+              }
+            }
+          },
+          {
+            "id": "g4l5-da",
+            "label": "desk-a reaches the hangar server",
+            "check": {
+              "type": "ping",
+              "from": "desk-a",
+              "expect": "success",
+              "toDevice": "hangar-srv"
+            }
+          },
+          {
+            "id": "g4l5-db",
+            "label": "desk-b reaches the hangar server",
+            "check": {
+              "type": "ping",
+              "from": "desk-b",
+              "expect": "success",
+              "toDevice": "hangar-srv"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Switch off what nobody uses",
+        "body": "Only Gi0/1 to Gi0/3 and the server port Gi0/8 are in use. The probe sits on one of the others. `interface range g0/4 - 7`, then `shutdown`.",
+        "objectives": [
+          {
+            "id": "g4l5-sd",
+            "label": "Gi0/5 (the probe's port) is shut down",
+            "check": {
+              "type": "iface-config",
+              "device": "hangar-sw",
+              "iface": "eth4",
+              "is": {
+                "shutdown": true
+              }
+            }
+          },
+          {
+            "id": "g4l5-sd2",
+            "label": "Gi0/7 is shut down",
+            "check": {
+              "type": "iface-config",
+              "device": "hangar-sw",
+              "iface": "eth6",
+              "is": {
+                "shutdown": true
+              }
+            }
+          },
+          {
+            "id": "g4l5-probe",
+            "label": "doom-probe can no longer reach the hangar server",
+            "check": {
+              "type": "ping",
+              "from": "doom-probe",
+              "expect": "fail",
+              "toDevice": "hangar-srv"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

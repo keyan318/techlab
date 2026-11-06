@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit F.1 Communications & Reporting. --}}
         when someone happens to notice.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which event needs immediate escalation?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A resolved false alarm</li>
+            <li class="quiz-option">B. A minor policy exception</li>
+            <li class="quiz-option quiz-correct">C. An active intrusion ✓</li>
+            <li class="quiz-option">D. A proposed policy change</li>
+        </ul>
+        <p class="quiz-explanation"><em>Active intrusions and systems down wake someone now. Minor, resolved items go in the routine report.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit F.1 Communications & Reporting. --}}
         week — that goes in the routine log, I'll see it at the morning briefing. If you escalate everything the
         same way, I stop being able to tell which alert actually needs me awake at 2 AM."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Astro not want every alert at 2 AM?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. He wants no alerts at all, ever</li>
+            <li class="quiz-option">B. The cadet reported nothing urgent</li>
+            <li class="quiz-option quiz-correct">C. He couldn't tell which ones need him ✓</li>
+            <li class="quiz-option">D. Alerts should only go to the council</li>
+        </ul>
+        <p class="quiz-explanation"><em>Escalating everything the same way trains people to ignore alerts. Route each event at the right speed.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -57,6 +79,17 @@ Syllabus: ITP1333 Unit F.1 Communications & Reporting. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">The right event, to the right person, at the right speed</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, where does a recurring pattern go?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Council-level ✓</li>
+            <li class="quiz-option">B. Immediate</li>
+            <li class="quiz-option">C. Routine report</li>
+            <li class="quiz-option">D. Nowhere</li>
+        </ul>
+        <p class="quiz-explanation"><em>Not urgent today, but it needs a group decision: council-level.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

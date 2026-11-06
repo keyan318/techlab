@@ -35,6 +35,17 @@ Syllabus: ITP1333 Unit A.1 Importance of Info Protection. --}}
         due diligence is keeping it.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is the difference between due care and due diligence?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Care is checking; diligence is the lock itself</li>
+            <li class="quiz-option quiz-correct">B. Care is the promise; diligence keeps it ✓</li>
+            <li class="quiz-option">C. Care is for money; diligence is for the law only</li>
+            <li class="quiz-option">D. They are two names for the very same thing</li>
+        </ul>
+        <p class="quiz-explanation"><em>Due care is putting reasonable protection in place. Due diligence is keeping it working over time.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -50,6 +61,17 @@ Syllabus: ITP1333 Unit A.1 Importance of Info Protection. --}}
         financial, legal, trust, operational. Protecting information isn't the reward for winning a siege. It's
         what keeps that bill from arriving again."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">The regulators want a breach report in ten days. Which cost is that?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Trust</li>
+            <li class="quiz-option quiz-correct">B. Legal ✓</li>
+            <li class="quiz-option">C. Financial</li>
+            <li class="quiz-option">D. Operational</li>
+        </ul>
+        <p class="quiz-explanation"><em>Rules and promises a crew must answer to, like regulators and contracts, are the legal cost.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -76,6 +98,17 @@ Syllabus: ITP1333 Unit A.1 Importance of Info Protection. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Four places the cost of one lapse shows up</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does the operational cost mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Missions pause ✓</li>
+            <li class="quiz-option">B. Allies stop believing</li>
+            <li class="quiz-option">C. Repair and replace</li>
+            <li class="quiz-option">D. Regulators and contracts</li>
+        </ul>
+        <p class="quiz-explanation"><em>Operational cost is missions delayed or paused while the crew cleans up.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

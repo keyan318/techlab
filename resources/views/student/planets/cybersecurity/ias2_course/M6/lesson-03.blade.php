@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit F.3 Acceptable Use Enforcement. --}}
         another erodes the policy faster than having no policy at all.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What erodes a policy faster than having none?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Enforcing it for some but not others ✓</li>
+            <li class="quiz-option">B. Enforcing it the very same way for everyone</li>
+            <li class="quiz-option">C. Writing it in very plain words</li>
+            <li class="quiz-option">D. Reviewing it every single year</li>
+        </ul>
+        <p class="quiz-explanation"><em>Consistency matters as much as firmness. Uneven enforcement kills a policy fastest.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit F.3 Acceptable Use Enforcement. --}}
         console access until they complete a policy refresher. "Same rule," Volt says, "but the response has to
         match the pattern, not just the single act."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does the third-time cadet lose console access?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The game was worse than the first one</li>
+            <li class="quiz-option quiz-correct">B. It's a repeated breach after warnings ✓</li>
+            <li class="quiz-option">C. Volt likes the first cadet a lot more</li>
+            <li class="quiz-option">D. It was the cadet's very first mistake</li>
+        </ul>
+        <p class="quiz-explanation"><em>The response matches the pattern: a first minor slip gets a reminder; a repeat after warnings gets access revoked.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -52,6 +74,17 @@ Syllabus: ITP1333 Unit F.3 Acceptable Use Enforcement. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Enforcement fits the pattern, not just the single act — applied consistently</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does a first, minor slip get?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The account disabled</li>
+            <li class="quiz-option">B. Access revoked</li>
+            <li class="quiz-option">C. Nothing at all</li>
+            <li class="quiz-option quiz-correct">D. A reminder and log ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>First, minor and accidental: a reminder and a log entry.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

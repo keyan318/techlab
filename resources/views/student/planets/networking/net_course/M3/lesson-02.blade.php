@@ -30,6 +30,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l2.json) complete
         The address is <strong>leased</strong>, not given for good. The lease has a length. Halfway through, the client quietly asks the same server to <strong>renew</strong> it. If that server is gone, the client later broadcasts to any server, and if nobody answers by the end, the lease expires and the address is lost. The client can also <strong>release</strong> the address on purpose when it leaves. A client that never finds a server is left with no address, or a <code>169.254.x.x</code> one.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does the client do when half its lease is used up?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Broadcasts a brand new Discover message</li>
+            <li class="quiz-option">B. Releases the address for good</li>
+            <li class="quiz-option">C. Gives itself a 169.254 address</li>
+            <li class="quiz-option quiz-correct">D. Asks the same server to renew it ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Halfway through, the client quietly asks the same server to renew the lease.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -38,6 +49,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l2.json) complete
     <p class="body-text">
         <strong>Volt</strong> watches the first attempt fail. "If the first message gets no answer, the server is either off or not on this network. Check that before anything else."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Volt's first Discover gets no answer. What does that point to?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The server is off or not on this network ✓</li>
+            <li class="quiz-option">B. The client already has a fine address set</li>
+            <li class="quiz-option">C. The Offer was sent to the wrong port</li>
+            <li class="quiz-option">D. The lease ran out before it started</li>
+        </ul>
+        <p class="quiz-explanation"><em>If the very first message gets no reply, check whether the server is running and on the same network.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -68,6 +90,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l2.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which step is the client's broadcast for a server?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 2 Offer</li>
+            <li class="quiz-option">B. 3 Request</li>
+            <li class="quiz-option">C. 4 Acknowledge</li>
+            <li class="quiz-option quiz-correct">D. 1 Discover ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Discover is step 1: the client has no address and broadcasts “is there a DHCP server?”</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

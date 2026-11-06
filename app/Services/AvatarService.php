@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\GemSpend;
+use App\Models\ShopPurchase;
 use App\Models\User;
 
 /**
- * The student's pixel-art animal astronaut (config/avatar.php): checking a saved look, rolling a
+ * The pixel-art animal astronaut (config/avatar.php) students and captains (faculty) wear: checking a saved look, rolling a
  * random one, drawing it as SVG rectangles, and their codename (checking and suggesting one).
  *
  * A look is ['animal', 'coat', 'suit', 'suit_color', 'patch', 'helmet', 'visor'].
@@ -29,23 +31,105 @@ class AvatarService
     }
 
     /**
+     * The animals and suits $role can pick: the captain-only ones for faculty (and admins, who use the
+     * captain builder too), the rest for students.
+     *
+     * @return array{animals: array, suits: array}
+     */
+    public static function choicesFor(string $role): array
+    {
+        $c = self::config();
+        $captain = in_array($role, ['faculty', 'admin'], true);
+        $mine = fn (array $items) => array_filter($items, fn (array $item) => ($item['captain'] ?? false) === $captain);
+
+        return ['animals' => $mine($c['animals']), 'suits' => $mine($c['suits'])];
+    }
+
+    /** An animal's or suit's price in XP (0 = free). $kind is "animal" or "suit". */
+    public static function price(string $kind, string $key): int
+    {
+        return (int) (self::config()[$kind === 'animal' ? 'animals' : 'suits'][$key]['xp'] ?? 0);
+    }
+
+    /** What a Shop item is called in shop_purchases: "animal:dog", "suit:pilot", "frame:nova-b". */
+    public static function item(string $kind, string $key): string
+    {
+        return "{$kind}:{$key}";
+    }
+
+    /**
+     * Every item $user has bought: in the Shop, plus suits bought with gems before the Shop existed.
+     *
+     * @return list<string>
+     */
+    public static function purchased(User $user): array
+    {
+        return ShopPurchase::where('user_id', $user->id)->select('item')->toBase()
+            ->unionAll(GemSpend::where('user_id', $user->id)->select('item')->toBase())
+            ->pluck('item')->unique()->values()->all();
+    }
+
+    /**
+     * The animals or suits $user may wear: the free ones and the ones they bought. Captains own all of theirs.
+     *
+     * @param  list<string>|null  $purchased  AvatarService::purchased($user), when the caller already has it
+     * @return list<string>
+     */
+    public static function owned(User $user, string $kind, ?array $purchased = null): array
+    {
+        $purchased ??= self::purchased($user);
+        $choices = self::choicesFor($user->role ?? 'student')[$kind === 'animal' ? 'animals' : 'suits'];
+
+        return array_values(array_filter(array_keys($choices),
+            fn (string $key) => self::price($kind, $key) === 0 || in_array(self::item($kind, $key), $purchased, true)));
+    }
+
+    /** @return list<string> */
+    public static function ownedSuits(User $user, ?array $purchased = null): array
+    {
+        return self::owned($user, 'suit', $purchased);
+    }
+
+    /** @return list<string> */
+    public static function ownedAnimals(User $user, ?array $purchased = null): array
+    {
+        return self::owned($user, 'animal', $purchased);
+    }
+
+    /**
+     * The frames $user may wear at $level: the free default of every rank they've reached, and the ones they bought.
+     *
+     * @return list<string>
+     */
+    public static function ownedFrames(User $user, int $level, ?array $purchased = null): array
+    {
+        $purchased ??= self::purchased($user);
+
+        return array_values(array_filter(array_keys(LevelService::frames()), fn (string $key) => LevelService::frameUnlocked($key, $level)
+            && (LevelService::frame($key)['price'] === 0 || in_array(self::item('frame', $key), $purchased, true))));
+    }
+
+    /**
      * A valid look from whatever was saved or posted: unknown values fall back to the default,
      * and a coat that belongs to another animal falls back to that animal's first coat.
      * Looks saved before the animals (human bodies) keep their suit, patch, helmet and visor.
+     * With a $role, the animal and suit must also be ones that role can pick (captains start as a lion).
      */
-    public static function normalize(?array $look): array
+    public static function normalize(?array $look, ?string $role = null): array
     {
         $c = self::config();
-        $look = array_merge($c['default'], array_filter((array) $look, fn ($v) => $v !== null));
-        $pick = fn (string $key, array $options) => array_key_exists((string) $look[$key], $options) ? (string) $look[$key] : (string) $c['default'][$key];
+        $default = in_array($role, ['faculty', 'admin'], true) ? $c['captain_default'] : $c['default'];
+        ['animals' => $animals, 'suits' => $suits] = $role ? self::choicesFor($role) : $c;
+        $look = array_merge($default, array_filter((array) $look, fn ($v) => $v !== null));
+        $pick = fn (string $key, array $options) => array_key_exists((string) $look[$key], $options) ? (string) $look[$key] : (string) $default[$key];
 
-        $animal = $pick('animal', $c['animals']);
+        $animal = $pick('animal', $animals);
         $coats = $c['animals'][$animal]['coats'];
 
         return [
             'animal' => $animal,
             'coat' => array_key_exists((string) $look['coat'], $coats) ? (string) $look['coat'] : array_key_first($coats),
-            'suit' => $pick('suit', $c['suits']),
+            'suit' => $pick('suit', $suits),
             'suit_color' => $pick('suit_color', $c['suit_colors']),
             'patch' => $pick('patch', $c['patches']),
             'helmet' => filter_var($look['helmet'], FILTER_VALIDATE_BOOL),
@@ -53,15 +137,17 @@ class AvatarService
         ];
     }
 
+    /** A random cadet look (captains' animals and suits are left out). */
     public static function random(): array
     {
         $c = self::config();
-        $animal = array_rand($c['animals']);
+        $choices = self::choicesFor('student');
+        $animal = array_rand($choices['animals']);
 
         return [
             'animal' => $animal,
             'coat' => array_rand($c['animals'][$animal]['coats']),
-            'suit' => array_rand($c['suits']),
+            'suit' => array_rand($choices['suits']),
             'suit_color' => array_rand($c['suit_colors']),
             'patch' => array_rand($c['patches']),
             'helmet' => (bool) random_int(0, 1),

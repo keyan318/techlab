@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "Where do a function's local variables live?",
+      "options": [
+        "On the heap",
+        "In a file",
+        "In <stdlib.h>",
+        "On the stack"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Where does memory from malloc come from?",
+      "options": [
+        "main()",
+        "The disk",
+        "The heap",
+        "The stack"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which header gives you malloc and free?",
+      "options": [
+        "<stdlib.h>",
+        "<stdio.h>",
+        "<math.h>",
+        "<string.h>"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does malloc(bytes) return?",
+      "options": [
+        "A copy of the variable you passed it",
+        "The number of bytes that are left",
+        "The address of the memory it reserved",
+        "The value stored in the new memory block"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which call reserves room for one int?",
+      "options": [
+        "malloc(int)",
+        "malloc(1)",
+        "malloc(sizeof(int))",
+        "sizeof(malloc(int))"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Memory from malloc has no name. How do you reach it?",
+      "options": [
+        "Through the name of the function",
+        "Through the pointer malloc gave you",
+        "Through a global with the same type",
+        "Through the stack, like a local"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does malloc return when there is no room left?",
+      "options": [
+        "The stack",
+        "NULL",
+        "-1",
+        "0 bytes"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does free(spare) do?",
+      "options": [
+        "Sets the value inside it to zero",
+        "Moves the memory onto the stack",
+        "Deletes the pointer variable spare",
+        "Gives the memory back to the heap"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A program keeps calling malloc but never calls free. What is that called?",
+      "options": [
+        "A memory leak",
+        "A stack overflow",
+        "A NULL pointer",
+        "A dangling pointer"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Using a pointer after its memory was freed is called what?",
+      "options": [
+        "A memory leak",
+        "A dangling pointer",
+        "An output parameter",
+        "A NULL check"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why set a pointer to NULL right after free?",
+      "options": [
+        "So the memory is given back faster",
+        "So a later check sees it is no good",
+        "So the value inside becomes zero",
+        "So free can run on it a second time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "The number of cars is only known while the program runs. How do you make the array?",
+      "options": [
+        "int seats[] = { cars };",
+        "malloc(cars + sizeof(int))",
+        "int seats[cars * 0];",
+        "malloc(cars * sizeof(int))"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int *seats = malloc(4 * sizeof(int)); How do you set the first seat to 10?",
+      "options": [
+        "seats = 10;",
+        "&seats[0] = 10;",
+        "seats[0] = 10;",
+        "seats[1] = 10;"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does calloc(n, sizeof(int)) do that malloc does not?",
+      "options": [
+        "Gives back the memory",
+        "Makes the block smaller",
+        "Checks for NULL itself",
+        "Sets every element to 0"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does realloc do?",
+      "options": [
+        "Copies a block onto the stack for safety",
+        "Frees a block and then allocates it again",
+        "Sets every element of a block back to 0",
+        "Resizes a block, keeping what was in it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How many calls to free does one malloc'd array of 50 ints need?",
+      "options": [
+        "1",
+        "0",
+        "50",
+        "51"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a self-referential structure?",
+      "options": [
+        "A struct that copies itself on assignment",
+        "A struct whose members are all ints",
+        "A struct with a pointer to its own type",
+        "A struct that is declared inside main"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Inside typedef struct Stop { ... } Stop;, why is the member written struct Stop *next?",
+      "options": [
+        "A pointer member must always use the word struct",
+        "The name Stop doesn't exist yet in the braces",
+        "next would otherwise point at an int instead",
+        "The typedef name can only be used in main"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What marks the end of a linked list?",
+      "options": [
+        "A next that is NULL",
+        "The head pointer",
+        "A node named End",
+        "A next that is 0 bytes"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does the head pointer of a linked list hold?",
+      "options": [
+        "The first node",
+        "A NULL every time",
+        "The last node",
+        "The number of nodes"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Stop *p = head; while (p != NULL) { ... p = p->next; } What does this do?",
+      "options": [
+        "Walks every node, first to last",
+        "Removes every node in the list",
+        "Adds a node at the end of the list",
+        "Counts down from the last node"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How do you reach the third node of a linked list?",
+      "options": [
+        "Write list[2] like an array",
+        "Call the node by its own name",
+        "Add 2 to the head pointer",
+        "Go through nodes one and two"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the safe order for inserting a new node at the front?",
+      "options": [
+        "Point new->next at head, then move head to new",
+        "Set new->next to NULL, then move head to new",
+        "Move head to new, then point new->next at head",
+        "Free the old head, then make new the head"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Inserting at the front, you move the head first. What goes wrong?",
+      "options": [
+        "The list is freed by itself",
+        "Nothing, the order does not matter",
+        "The rest of the list is lost",
+        "The new node becomes the last one"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Adding at the end of an empty list (head is NULL). What happens?",
+      "options": [
+        "The new node points at itself",
+        "Nothing is added at all",
+        "The new node becomes the head",
+        "The new node is freed straight away"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is adding a stop to a linked list cheaper than to an array?",
+      "options": [
+        "The new node is stored on the stack",
+        "An array cannot hold more than ten elements",
+        "Only pointers change; nothing shifts",
+        "Linked lists do not need any memory at all"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "p is the node before the one to remove. What comes first?",
+      "options": [
+        "Set p->next = NULL",
+        "Save gone = p->next",
+        "Set p = p->next",
+        "Call free(p->next) now"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why is removing the first node a special case?",
+      "options": [
+        "It needs two calls to free",
+        "The head itself has to move",
+        "The list becomes an array",
+        "The first node cannot be freed"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Freeing a whole list, why save next before free(head)?",
+      "options": [
+        "After free, head->next can't be read",
+        "free changes next to point back at head",
+        "Saving next makes free run faster",
+        "free needs next as its second argument"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Every node was made with malloc. How many times must each be freed?",
+      "options": [
+        "Only the head",
+        "At least twice",
+        "Never",
+        "Exactly once"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A list has Station, Market, Park. countStops walks it adding 1 per node. What does it return?",
+      "options": [
+        "4",
+        "3",
+        "0",
+        "2"
+      ],
+      "correct": "B"
+    }
+  ]
+}

@@ -2,8 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { useStore } from '../store';
 import { sim } from '../sim';
-import { IpDevice } from '../engine/ipdevice';
-import { getSession } from '../terminals';
+import { getSession, hasConsole } from '../terminals';
 
 // TechLab: keep the terminal usable but never let it swallow the whole screen —
 // the student still needs to see the lab instructions and the device map above it.
@@ -16,7 +15,7 @@ function TerminalPane({ deviceId, active }: { deviceId: string; active: boolean 
 
   useEffect(() => {
     const device = sim.net.devices.get(deviceId);
-    if (!(device instanceof IpDevice) || !ref.current) return;
+    if (!device || !hasConsole(device) || !ref.current) return;
     const session = getSession(device, {
       onAfterCommand: () => useStore.getState().refresh(),
     });
@@ -32,7 +31,7 @@ function TerminalPane({ deviceId, active }: { deviceId: string; active: boolean 
   useEffect(() => {
     if (!active) return;
     const device = sim.net.devices.get(deviceId);
-    if (!(device instanceof IpDevice)) return;
+    if (!device || !hasConsole(device)) return;
     const session = getSession(device);
     session.fit.fit();
     session.term.focus();
@@ -55,7 +54,7 @@ export function TerminalDock({ height, onResize }: { height: number; onResize: (
   useEffect(() => {
     if (!activeTerminal) return;
     const device = sim.net.devices.get(activeTerminal);
-    if (!(device instanceof IpDevice)) return;
+    if (!device || !hasConsole(device)) return;
     getSession(device).fit.fit();
   }, [height, activeTerminal]);
 

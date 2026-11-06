@@ -91,7 +91,7 @@ export function Flow() {
       onNodeClick={(_, n) => select(n.id)}
       onPaneClick={() => select(null)}
       onNodeDoubleClick={(_, n: DevNode) => {
-        if (n.data.kind !== 'switch') openTerminal(n.id);
+        openTerminal(n.id);
       }}
       onDrop={onDrop}
       onDragOver={(e) => {

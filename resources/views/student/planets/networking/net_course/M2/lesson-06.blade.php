@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l6.json) complete
         Remember: traffic needs a route <em>there</em> and a route <em>back</em>. Set both directions.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">A router has 10.0.0.0/8 and 10.1.1.0/24. Which route does 10.1.1.5 use?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The /8 route, the shortest match</li>
+            <li class="quiz-option">B. The default route 0.0.0.0/0</li>
+            <li class="quiz-option">C. Both routes, in turn, one by one</li>
+            <li class="quiz-option quiz-correct">D. The /24 route, the longest match ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The router picks the most specific match, the route with the longest prefix. That is the /24.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l6.json) complete
     <p class="body-text">
         <strong>Astro</strong> reads the table. "So we teach each tower the far side. One static route each, in both directions."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does each tower need a static route?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Static routes adapt when a link fails</li>
+            <li class="quiz-option">B. The towers already know the far side</li>
+            <li class="quiz-option quiz-correct">C. Each one only knows the networks it touches ✓</li>
+            <li class="quiz-option">D. Static routes stop all of Doom's traffic for good</li>
+        </ul>
+        <p class="quiz-explanation"><em>A router only knows its connected networks. A static route teaches it the far side, in both directions.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -69,6 +91,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l6.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In r1's table, how does it reach 172.16.0.0/24?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Via 10.0.12.1</li>
+            <li class="quiz-option">B. Connected</li>
+            <li class="quiz-option quiz-correct">C. Via 10.0.12.2 ✓</li>
+            <li class="quiz-option">D. Via 192.168.1.1</li>
+        </ul>
+        <p class="quiz-explanation"><em>r1 sends traffic for Earth's network to the next hop 10.0.12.2, which is r2.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

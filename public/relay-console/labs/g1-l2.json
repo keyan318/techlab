@@ -1,0 +1,217 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g1-l2",
+  "title": "Lesson 1.2: Cloud Computing in Networking",
+  "host": {
+    "name": "SKYPORT-EDGE",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nSkyport edge router: Grid side g0/0, Earth Cloud tunnel Tunnel1"
+  },
+  "story": {
+    "alert": "SKYPORT · EARTH CLOUD OFFER RECEIVED",
+    "victory": "Earth Cloud answers from 10.200.1.10. Rivet: \"Half our servers on Codexia, half on Earth, one Grid.\" Volt: \"And now we know which half is ours to patch.\""
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1180 bytes\n!\nhostname SKYPORT-EDGE\n!\ninterface GigabitEthernet0/0\n ip address 192.168.50.1 255.255.255.0\n!\ninterface Tunnel1\n description VPN to Earth Cloud\n ip address 172.31.0.1 255.255.255.252\n tunnel source GigabitEthernet0/1\n tunnel destination 198.51.100.20\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-     1204   earth-offer.txt\n    2  -rw-      980   shared-responsibility.txt\n    3  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:earth-offer.txt",
+      "text": "EARTH CLOUD: OFFER FOR THE CODEXIA GRID\n=======================================\nA. Bare virtual machines, virtual networks and storage. You install\n   and patch the operating system and everything on it.\nB. A managed database platform. Earth runs the servers and the OS;\n   you bring your tables and your app code.\nC. A finished mail and chat app. You just sign in and use it.\nD. Earth Cloud's servers are in Earth's data centers, shared with\n   other customers. The Grid's own servers stay at the Citadel.\n   Linking the two makes the Grid's setup a ______ cloud.\n\nReply with:  submit A=<model>   (IaaS, PaaS or SaaS)\n             submit D=<deployment model>\n"
+    },
+    {
+      "cmd": "more flash:shared-responsibility.txt",
+      "text": "SHARED RESPONSIBILITY: WHO LOOKS AFTER WHAT\n============================================\n                      IaaS        PaaS        SaaS\n  The app itself      crew        crew        earth\n  Operating system    crew        earth       earth\n  Virtual network     crew        earth       earth\n  Physical servers    earth       earth       earth\n  Your data           crew        crew        crew\n\nQuestions from Volt:\n  1. For offer A (IaaS), who patches the operating system?\n     submit OS=<crew or earth>\n  2. For offer C (SaaS), who protects the data you put in it?\n     submit DATA=<crew or earth>\n"
+    },
+    {
+      "cmd": "show ip route",
+      "when": [
+        "cloud-route"
+      ],
+      "text": "Codes: L - local, C - connected, S - static, O - OSPF\n\nGateway of last resort is not set\n\nS        10.200.0.0/16 [1/0] via 172.31.0.2\n\n      172.31.0.0/30 is subnetted, 1 subnets\nC        172.31.0.0/30 is directly connected, Tunnel1\n      192.168.50.0/24 is variably subnetted, 2 subnets\nC        192.168.50.0/24 is directly connected, GigabitEthernet0/0\nL        192.168.50.1/32 is directly connected, GigabitEthernet0/0"
+    },
+    {
+      "cmd": "show ip route",
+      "text": "Codes: L - local, C - connected, S - static, O - OSPF\n\nGateway of last resort is not set\n\n      172.31.0.0/30 is subnetted, 1 subnets\nC        172.31.0.0/30 is directly connected, Tunnel1\n      192.168.50.0/24 is variably subnetted, 2 subnets\nC        192.168.50.0/24 is directly connected, GigabitEthernet0/0\nL        192.168.50.1/32 is directly connected, GigabitEthernet0/0"
+    },
+    {
+      "cmd": "show ip interface brief",
+      "text": "Interface              IP-Address      OK? Method Status                Protocol\nGigabitEthernet0/0     192.168.50.1    YES manual up                    up\nGigabitEthernet0/1     unassigned      YES unset  administratively down down\nTunnel1                172.31.0.1      YES manual up                    up"
+    },
+    {
+      "cmd": "ping <ip>",
+      "args": [
+        "10.200.1.10"
+      ],
+      "when": [
+        "cloud-route"
+      ],
+      "sets": [
+        "cloud-ping"
+      ],
+      "text": "Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to 10.200.1.10, timeout is 2 seconds:\n!!!!!\nSuccess rate is 100 percent (5/5), round-trip min/avg/max = 41/44/52 ms"
+    },
+    {
+      "cmd": "ping <ip>",
+      "args": [
+        "172.31.0.2"
+      ],
+      "text": "Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to 172.31.0.2, timeout is 2 seconds:\n!!!!!\nSuccess rate is 100 percent (5/5), round-trip min/avg/max = 40/42/47 ms"
+    },
+    {
+      "cmd": "ping <ip>",
+      "text": "Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos, timeout is 2 seconds:\n.....\nSuccess rate is 0 percent (0/5)"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "ip route <ip> <ip> <ip>",
+      "args": [
+        "10.200.0.0",
+        "255.255.0.0",
+        "172.31.0.2"
+      ],
+      "sets": [
+        "cloud-route"
+      ]
+    },
+    {
+      "cmd": "ip route <ip> <ip> <ip>",
+      "reply": ""
+    },
+    {
+      "cmd": "no ip route <ip> <ip> <ip>",
+      "args": [
+        "10.200.0.0",
+        "255.255.0.0",
+        "172.31.0.2"
+      ],
+      "clears": [
+        "cloud-route",
+        "cloud-ping"
+      ],
+      "store": false
+    },
+    {
+      "cmd": "no ip route <rest>",
+      "store": false
+    }
+  ],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read Earth's offer",
+      "body": "Type `enable`, then `dir flash:` to list the files, and `more flash:earth-offer.txt` to read the offer. Name each service model with `submit A=IaaS` style answers, and the deployment model with `submit D=...`.",
+      "objectives": [
+        {
+          "id": "read-offer",
+          "label": "Read earth-offer.txt",
+          "check": {
+            "type": "ran",
+            "pattern": "^more\\s+flash:earth-offer"
+          }
+        },
+        {
+          "id": "ans-a",
+          "label": "Offer A named",
+          "check": {
+            "type": "answer",
+            "value": "A=IaaS",
+            "alt": [
+              "A = IaaS"
+            ]
+          }
+        },
+        {
+          "id": "ans-b",
+          "label": "Offer B named",
+          "check": {
+            "type": "answer",
+            "value": "B=PaaS",
+            "alt": [
+              "B = PaaS"
+            ]
+          }
+        },
+        {
+          "id": "ans-c",
+          "label": "Offer C named",
+          "check": {
+            "type": "answer",
+            "value": "C=SaaS",
+            "alt": [
+              "C = SaaS"
+            ]
+          }
+        },
+        {
+          "id": "ans-d",
+          "label": "Deployment model named",
+          "check": {
+            "type": "answer",
+            "value": "D=hybrid",
+            "alt": [
+              "D = hybrid",
+              "D=hybrid cloud"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Route the Grid into the cloud",
+      "body": "Run `show ip route`: the tunnel network 172.31.0.0/30 is there, the cloud network 10.200.0.0/16 is not. Earth's end of the tunnel is 172.31.0.2. Go to `configure terminal` and add `ip route 10.200.0.0 255.255.0.0 172.31.0.2`. Then `end` and `ping 10.200.1.10`.",
+      "objectives": [
+        {
+          "id": "route",
+          "label": "Static route to 10.200.0.0/16 via 172.31.0.2",
+          "check": {
+            "type": "fact",
+            "fact": "cloud-route"
+          }
+        },
+        {
+          "id": "pinged",
+          "label": "The cloud server 10.200.1.10 answers a ping",
+          "check": {
+            "type": "fact",
+            "fact": "cloud-ping"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Settle who patches what",
+      "body": "Read `more flash:shared-responsibility.txt` and answer Volt's two questions with `submit OS=...` and `submit DATA=...`.",
+      "objectives": [
+        {
+          "id": "ans-os",
+          "label": "Who patches the OS in IaaS",
+          "check": {
+            "type": "answer",
+            "value": "OS=crew",
+            "alt": [
+              "OS = crew"
+            ]
+          }
+        },
+        {
+          "id": "ans-data",
+          "label": "Who protects the data in SaaS",
+          "check": {
+            "type": "answer",
+            "value": "DATA=crew",
+            "alt": [
+              "DATA = crew"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

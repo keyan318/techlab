@@ -1,0 +1,515 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "landing",
+      "kind": "router",
+      "name": "landing",
+      "x": 20,
+      "y": 140,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.12.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "10.0.13.1/30",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "LANDING",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "192.168.10.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          },
+          {
+            "addr": "10.0.12.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "10.0.13.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          }
+        ],
+        "passive": [],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "citadel",
+      "kind": "router",
+      "name": "citadel",
+      "x": 300,
+      "y": 20,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.12.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.23.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "203.0.113.2/30",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth2"
+        }
+      ],
+      "cli": "ios",
+      "hostname": "CITADEL",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.12.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "10.0.23.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          }
+        ],
+        "passive": [],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "northwatch",
+      "kind": "router",
+      "name": "northwatch",
+      "x": 580,
+      "y": 140,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.13.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.23.2/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.30.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "NORTHWATCH",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.13.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "10.0.23.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.30.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 580,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.30.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.30.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "earth",
+      "kind": "router",
+      "name": "earth",
+      "x": 560,
+      "y": 0,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.1/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "198.51.100.1/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [
+        {
+          "dest": "192.168.0.0/16",
+          "via": "203.0.113.2",
+          "dev": "eth0"
+        },
+        {
+          "dest": "10.0.0.0/8",
+          "via": "203.0.113.2",
+          "dev": "eth0"
+        }
+      ],
+      "cli": "ios",
+      "hostname": "EARTH"
+    },
+    {
+      "id": "earth-relay",
+      "kind": "server",
+      "name": "earth-relay",
+      "x": 720,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "198.51.100.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "198.51.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay: Grid traffic received loud and clear."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-landing.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "landing",
+        "eth0"
+      ]
+    },
+    {
+      "id": "landing.eth1-citadel.eth0",
+      "a": [
+        "landing",
+        "eth1"
+      ],
+      "b": [
+        "citadel",
+        "eth0"
+      ]
+    },
+    {
+      "id": "landing.eth2-northwatch.eth0",
+      "a": [
+        "landing",
+        "eth2"
+      ],
+      "b": [
+        "northwatch",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth1-northwatch.eth1",
+      "a": [
+        "citadel",
+        "eth1"
+      ],
+      "b": [
+        "northwatch",
+        "eth1"
+      ]
+    },
+    {
+      "id": "northwatch.eth2-volt.eth0",
+      "a": [
+        "northwatch",
+        "eth2"
+      ],
+      "b": [
+        "volt",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth2-earth.eth0",
+      "a": [
+        "citadel",
+        "eth2"
+      ],
+      "b": [
+        "earth",
+        "eth0"
+      ]
+    },
+    {
+      "id": "earth.eth1-earth-relay.eth0",
+      "a": [
+        "earth",
+        "eth1"
+      ],
+      "b": [
+        "earth-relay",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g2-l3",
+    "title": "Lesson 2.3 — OSPF Configuration & Optimization",
+    "blurb": "Steer traffic off the radio, hush the LANs, share the way to Earth.",
+    "steps": [
+      {
+        "title": "Make the radio expensive",
+        "body": "On `landing`, `show ip route ospf` shows Northwatch's network via 10.0.13.2: the radio. Price it out on both ends: `interface g0/2` on landing and `interface g0/0` on northwatch, then `ip ospf cost 50` on each. `show ip route ospf` now points through the Citadel (10.0.12.2).",
+        "objectives": [
+          {
+            "id": "g2l3-c1",
+            "label": "landing's radio port Gi0/2 costs 50",
+            "check": {
+              "type": "iface-config",
+              "device": "landing",
+              "iface": "eth2",
+              "is": {
+                "ospfCost": 50
+              }
+            }
+          },
+          {
+            "id": "g2l3-c2",
+            "label": "northwatch's radio port Gi0/0 costs 50",
+            "check": {
+              "type": "iface-config",
+              "device": "northwatch",
+              "iface": "eth0",
+              "is": {
+                "ospfCost": 50
+              }
+            }
+          },
+          {
+            "id": "g2l3-path1",
+            "label": "astro to volt goes through the Citadel",
+            "check": {
+              "type": "path",
+              "from": "astro",
+              "toDevice": "volt",
+              "through": "citadel",
+              "expect": "through"
+            }
+          },
+          {
+            "id": "g2l3-path2",
+            "label": "volt to astro goes through the Citadel too",
+            "check": {
+              "type": "path",
+              "from": "volt",
+              "toDevice": "astro",
+              "through": "citadel",
+              "expect": "through"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Hush the PC networks",
+        "body": "In `router ospf 1`: `passive-interface g0/0` on landing and `passive-interface g0/2` on northwatch. The networks stay in OSPF; only the hellos stop.",
+        "objectives": [
+          {
+            "id": "g2l3-pa1",
+            "label": "landing Gi0/0 is passive",
+            "check": {
+              "type": "iface-config",
+              "device": "landing",
+              "iface": "eth0",
+              "is": {
+                "ospfPassive": true
+              }
+            }
+          },
+          {
+            "id": "g2l3-pa2",
+            "label": "northwatch Gi0/2 is passive",
+            "check": {
+              "type": "iface-config",
+              "device": "northwatch",
+              "iface": "eth2",
+              "is": {
+                "ospfPassive": true
+              }
+            }
+          },
+          {
+            "id": "g2l3-n",
+            "label": "landing and citadel are still neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "landing",
+              "neighbor": "citadel",
+              "expect": "full"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Share the way to Earth",
+        "body": "Only `citadel` has a default route (to Earth, 203.0.113.1). In its `router ospf 1`, type `default-information originate`. On `landing`, `show ip route` now has an `O*E2 0.0.0.0/0` line. Test from astro: `curl http://198.51.100.10/`.",
+        "objectives": [
+          {
+            "id": "g2l3-def",
+            "label": "landing learned a default route from OSPF",
+            "check": {
+              "type": "route",
+              "device": "landing",
+              "dest": "0.0.0.0/0",
+              "source": "ospf",
+              "expect": "present"
+            }
+          },
+          {
+            "id": "g2l3-earth",
+            "label": "astro opens Earth's relay page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://198.51.100.10/",
+              "expect": "ok",
+              "contains": "Earth relay"
+            }
+          },
+          {
+            "id": "g2l3-earth2",
+            "label": "volt reaches Earth's relay too",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "earth-relay"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

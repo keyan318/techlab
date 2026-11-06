@@ -114,7 +114,7 @@
       "httpServer": {
         "enabled": true,
         "port": 80,
-        "body": "Distress call received. Help is on the way, Captain."
+        "body": "Distress call received. Help is on the way, astronaut."
       }
     }
   ],

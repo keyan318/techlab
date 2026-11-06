@@ -57,7 +57,7 @@
       "httpServer": {
         "enabled": true,
         "port": 80,
-        "body": "Welcome to the Earth Cloud. Message received, Captain."
+        "body": "Welcome to the Earth Cloud. Message received, astronaut."
       }
     }
   ],

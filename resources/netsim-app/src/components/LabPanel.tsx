@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, type SyntheticEvent } from 'react';
 import { useStore } from '../store';
 import { earnedCount, isEarned } from '../labs/grading';
 
@@ -41,8 +41,12 @@ export function LabPanel() {
   const allObjectives = lab.steps.flatMap((s) => s.objectives);
   const passed = earnedCount(lab, results, baseline);
 
+  // TechLab: the steps can't be selected or copied, so students type each command
+  // themselves and remember it better.
+  const block = (e: SyntheticEvent) => e.preventDefault();
+
   return (
-    <div className="lab-panel">
+    <div className="lab-panel" onCopy={block} onCut={block} onContextMenu={block} onDragStart={block}>
       <div className="lab-head">
         <div className="lab-title">{lab.title}</div>
         <button className="tab-close" title="Close lab (keeps the topology)" onClick={() => closeLab()}>
@@ -112,35 +116,38 @@ export function LabPanel() {
             </div>
           );
         })}
+
+        {step.objectives.length > 0 && (
+          <div className="lab-objectives">
+            {step.objectives.map((o) => {
+              const r = results[o.id];
+              // Passing but true from the start: no ✓ until the student's own work in this step passes too.
+              const state = r === undefined ? 'todo' : !r.pass ? 'fail' : isEarned(lab, results, baseline, o.id) ? 'pass' : 'held';
+              return (
+                <div key={o.id} className={`lab-objective ${state === 'held' ? 'todo' : state}`}>
+                  <span className="lab-obj-mark">{state === 'pass' ? '✓' : state === 'fail' ? '✗' : '○'}</span>
+                  <span>
+                    {o.label}
+                    {r && !r.pass && <span className="lab-obj-detail"> — {r.detail}</span>}
+                    {state === 'held' && (
+                      <span className="lab-obj-detail"> — already true at the start, counts once the rest of this step is done</span>
+                    )}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {step.objectives.length > 0 && (
-        <div className="lab-objectives">
-          {step.objectives.map((o) => {
-            const r = results[o.id];
-            // Passing but true from the start: no ✓ until the student's own work in this step passes too.
-            const state = r === undefined ? 'todo' : !r.pass ? 'fail' : isEarned(lab, results, baseline, o.id) ? 'pass' : 'held';
-            return (
-              <div key={o.id} className={`lab-objective ${state === 'held' ? 'todo' : state}`}>
-                <span className="lab-obj-mark">{state === 'pass' ? '✓' : state === 'fail' ? '✗' : '○'}</span>
-                <span>
-                  {o.label}
-                  {r && !r.pass && <span className="lab-obj-detail"> — {r.detail}</span>}
-                  {state === 'held' && (
-                    <span className="lab-obj-detail"> — already true at the start, counts once the rest of this step is done</span>
-                  )}
-                </span>
-              </div>
-            );
-          })}
+      {/* Pinned under the scroll so checking is always one click away. */}
+      <div className="lab-footer">
+        {step.objectives.length > 0 && (
           <button className="btn lab-check" disabled={checking} onClick={() => checkStep()}>
             {checking ? 'Checking (watch the packets)…' : 'Check objectives'}
           </button>
-        </div>
-      )}
-
-      <div className="lab-footer">
-        <button className="btn" onClick={() => exportAttempt()}>
+        )}
+        <button className="btn lab-export" onClick={() => exportAttempt()}>
           Export attempt for submission
         </button>
       </div>

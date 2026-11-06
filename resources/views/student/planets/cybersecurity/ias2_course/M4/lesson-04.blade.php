@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit D.4 Interaction with HR (onboarding, offboarding, separat
         between different people means a mistake, or an abuse, needs two people to go wrong instead of one.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is separation of duties?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Every person gets all the access</li>
+            <li class="quiz-option">B. Accounts are removed at year end</li>
+            <li class="quiz-option quiz-correct">C. One person can't request and approve ✓</li>
+            <li class="quiz-option">D. New staff get admin rights from day one</li>
+        </ul>
+        <p class="quiz-explanation"><em>Splitting request and approval between people means abuse needs two people to go wrong, not one.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit D.4 Interaction with HR (onboarding, offboarding, separat
         problems," Rivet says, "same root cause: nobody re-checked what a person could still do after their role
         changed."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What root cause did Rivet find for both problems?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Nobody re-checked access after a role change ✓</li>
+            <li class="quiz-option">B. The cadet broke into the system on purpose twice</li>
+            <li class="quiz-option">C. The allied fleet hacked the old account</li>
+            <li class="quiz-option">D. The supply software had a bug in it</li>
+        </ul>
+        <p class="quiz-explanation"><em>The transferred cadet's account and the self-approving supply cadet both came from roles changing without a re-check.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -57,6 +79,17 @@ Syllabus: ITP1333 Unit D.4 Interaction with HR (onboarding, offboarding, separat
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Every role change should trigger a re-check of what that person can still do</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what should every role change trigger?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A brand new password</li>
+            <li class="quiz-option quiz-correct">B. An access re-check ✓</li>
+            <li class="quiz-option">C. A pay review</li>
+            <li class="quiz-option">D. A new account</li>
+        </ul>
+        <p class="quiz-explanation"><em>Every promotion, transfer or departure should trigger a re-check of what the person can still do.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

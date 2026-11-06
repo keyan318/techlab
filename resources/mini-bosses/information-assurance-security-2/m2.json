@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What does the AAA model look at?",
+      "options": [
+        "Damage: what got broken in an attack and how",
+        "Access: who, what's allowed, what was done",
+        "Zones: how exposed each system is",
+        "Cost: how much each control will cost"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In AAA, what is authentication?",
+      "options": [
+        "Deciding what you may do",
+        "Encrypting what you send",
+        "Recording what you did",
+        "Proving who you are"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In AAA, what is authorization?",
+      "options": [
+        "Proving who you are with a password",
+        "Recording what you did in a log",
+        "Checking a file's hash for changes",
+        "Deciding what you are allowed to do"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In AAA, what is accounting?",
+      "options": [
+        "Paying for each security control",
+        "Proving who you are at login",
+        "Recording what you actually did",
+        "Deciding which files you may open"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which question does the CIA triad answer?",
+      "options": [
+        "What got broken?",
+        "Who approved it?",
+        "What did it cost?",
+        "Who logged in?"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A login has no record anywhere in the log. Which part of AAA is missing?",
+      "options": [
+        "Accounting",
+        "Availability",
+        "Authorization",
+        "Authentication"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Someone logs in to a console they were never allowed to use. Which part of AAA failed?",
+      "options": [
+        "Authorization",
+        "Availability",
+        "Accounting",
+        "Authentication"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why does a mature design use both CIA and AAA?",
+      "options": [
+        "They are the same model with different names",
+        "AAA replaces CIA once the system is finished",
+        "CIA is for old systems; AAA is for new systems only",
+        "CIA judges damage; AAA controls and traces access"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is defense in depth?",
+      "options": [
+        "Several independent layers of defense",
+        "A single password used on every system",
+        "One very strong firewall at the edge",
+        "Copying the same lock onto every door"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Three firewalls in a row with the same rules. Why is that not real depth?",
+      "options": [
+        "Three firewalls are too slow to use",
+        "Each firewall blocks the others",
+        "Get past one, and you're past all",
+        "Firewalls cannot be placed in a row"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What gives defense in depth its strength?",
+      "options": [
+        "Many copies of a single control",
+        "One very expensive control",
+        "Different kinds of controls",
+        "No controls on the inside"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which set is real defense in depth?",
+      "options": [
+        "Three edge firewalls that all share exactly the same rules",
+        "An edge firewall, a locked account, an encrypted file",
+        "An encrypted file and two more copies of that same file",
+        "One firewall, one copy of it, and a second copy of that"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "If one layer of defense in depth fails, what happens?",
+      "options": [
+        "Every other layer fails too",
+        "The next layer is still there",
+        "The attacker is stopped anyway",
+        "The system shuts itself down"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is a zone of trust?",
+      "options": [
+        "A room where only the commander may enter",
+        "Systems grouped by their trust and exposure",
+        "A copy of the data kept off site for safety",
+        "A password every system in a building shares"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which zone is trusted least?",
+      "options": [
+        "The DMZ",
+        "The buffer zone",
+        "The restricted zone",
+        "The public zone"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is a DMZ for?",
+      "options": [
+        "Backups that nobody is allowed to touch",
+        "The most sensitive systems, trusted most of all",
+        "Systems open to anyone, with no filtering at all",
+        "Systems that talk to both sides, filtered"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "The comms relay talks to allied fleets but also needs a path inward. Which zone fits?",
+      "options": [
+        "No zone at all",
+        "The restricted zone",
+        "The DMZ",
+        "The public zone"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Where does the starmap vault belong?",
+      "options": [
+        "The restricted zone",
+        "The DMZ",
+        "The public zone",
+        "The guest Wi-Fi zone"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which crossing should never happen?",
+      "options": [
+        "Public in to the DMZ web port",
+        "Public straight to restricted",
+        "Restricted to the DMZ",
+        "DMZ out to the public zone"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "When should traffic cross a zone boundary?",
+      "options": [
+        "Never, zones are sealed",
+        "Only for a specific reason",
+        "Whenever a user asks for it",
+        "Only at night when it is quiet"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is least privilege?",
+      "options": [
+        "Each account gets every permission there is",
+        "Accounts share one password between them",
+        "Only the commander has any access at all",
+        "Each account gets only the access it needs"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A port is still listening from a test three months ago. What should you do?",
+      "options": [
+        "Leave it open",
+        "Back it up",
+        "Close it",
+        "Rename it"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A patch was released last week but nobody applied it. What should you do?",
+      "options": [
+        "Apply it",
+        "Print it",
+        "Ignore it",
+        "Delete it"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "The log shows three failed logins at 2 AM, unreviewed. What does this habit miss?",
+      "options": [
+        "Patching",
+        "Least privilege",
+        "Monitoring the logs",
+        "Closing unused ports"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why do the four network defense habits work?",
+      "options": [
+        "Most breaches use a forgotten port, account or flaw",
+        "They make the network faster for every user",
+        "They replace the need for any other security at all",
+        "They are new and exotic, so attackers do not expect them"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why patch known issues quickly?",
+      "options": [
+        "Old patches expire after a week",
+        "Patching closes every open port",
+        "Fix them before someone uses them",
+        "Patches make the screen much brighter"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "An account has had admin rights for a year it does not need. Which habit says shrink it?",
+      "options": [
+        "Patching",
+        "Least privilege",
+        "Defense in depth",
+        "Monitoring"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which question does AAA ask that CIA does not?",
+      "options": [
+        "Was the data changed by someone?",
+        "Who did it, and were they allowed?",
+        "Was the data available on time?",
+        "What was damaged in the attack, and how?"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A public web server needs data from a sensitive system. How should it reach it?",
+      "options": [
+        "By copying the whole system",
+        "Through a second public server",
+        "Straight across, to save some time",
+        "Through the DMZ, never directly"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Ten copies of the same lock. What do they add?",
+      "options": [
+        "No real depth",
+        "Twice the depth",
+        "Ten times the depth",
+        "Perfect security"
+      ],
+      "correct": "A"
+    }
+  ]
+}

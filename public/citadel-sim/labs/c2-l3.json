@@ -6,7 +6,7 @@
   "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
   "story": {
     "alert": "09:15 · DEFENSE AUDIT · CITADEL CORE",
-    "vex": "Improvised walls fall to a patient enemy. Show me your rulebook, Captain — oh, you don't have one. (Commander Vex, Planet Doom)",
+    "vex": "Improvised walls fall to a patient enemy. Show me your rulebook, astronaut — oh, you don't have one. (Commander Vex, Planet Doom)",
     "victory": "DOOM ATTACK REPELLED before it started: every gap is mapped and closed. Astro: \"Guesses don't scale. A framework does. Now we can prove it, not just hope it.\""
   },
   "files": {

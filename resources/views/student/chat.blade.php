@@ -120,6 +120,7 @@
               body: JSON.stringify({ transcript: messages, style: this.style }),
             });
             const j = await res.json().catch(() => ({}));
+            Alpine.store('astroXp').afterStudio(res);
             this.generating = false;
 
             if (!res.ok || !j.ok) {
@@ -289,6 +290,7 @@
               body: JSON.stringify({ conversation_id: this.conversationId, count: this.count }),
             });
             const j = await res.json().catch(() => ({}));
+            Alpine.store('astroXp').afterStudio(res);
             this.generating = false;
             if (!res.ok || !j.ok) {
               this.error = (j && j.error) ? j.error : "Astro couldn't build your quiz just now. Please try again.";
@@ -465,6 +467,7 @@
               body: JSON.stringify({ conversation_id: this.conversationId, count: this.count }),
             });
             const j = await res.json().catch(() => ({}));
+            Alpine.store('astroXp').afterStudio(res);
             this.generating = false;
             if (!res.ok || !j.ok) {
               this.error = (j && j.error) ? j.error : "Astro couldn't build your flashcards just now. Please try again.";
@@ -542,6 +545,7 @@
               body: JSON.stringify({ conversation_id: this.conversationId }),
             });
             const j = await res.json().catch(() => ({}));
+            Alpine.store('astroXp').afterStudio(res);
             this.generating = false;
             if (!res.ok || !j.ok) {
               this.error = (j && j.error) ? j.error : "Astro couldn't pick your key terms just now. Please try again.";
@@ -655,6 +659,7 @@
               body: JSON.stringify({ conversation_id: this.conversationId }),
             });
             const j = await res.json().catch(() => ({}));
+            Alpine.store('astroXp').afterStudio(res);
             this.generating = false;
             if (!res.ok || !j.ok) {
               this.error = (j && j.error) ? j.error : "Astro couldn't write your report just now. Please try again.";
@@ -706,6 +711,40 @@
           this.items = (list || []).filter(w => w && /^https?:\/\//i.test(w.url) && !seen.has(w.url) && seen.add(w.url));
         },
         clear() { this.items = []; this.researching = false; },
+      });
+
+      // Astro costs XP once the day's free uses are gone (AiXpService). Shows the pill by the send
+      // box and the price on each Studio card. Faculty aren't charged, so `charged` stays false for them.
+      Alpine.store('astroXp', {
+        charged: false,
+        balance: 0,
+        freeChatsLeft: 0,
+        freeStudioLeft: 0,
+        costs: {},
+        async load() {
+          try {
+            const res = await fetch('/chat/xp', { headers: { 'Accept': 'application/json' } });
+            if (res.ok) Object.assign(this, await res.json());
+          } catch (e) {}
+        },
+        // A chat answer reports its own XP (`done` event / buffered JSON); no extra request needed.
+        fromChat(xp) {
+          if (!xp) return this.load();
+          this.balance = xp.balance; this.freeChatsLeft = xp.freeLeft;
+        },
+        // A Studio tool sends the new balance in headers when it charged; anything else re-reads it.
+        afterStudio(res) {
+          const b = res.headers.get('X-Xp-Balance'), f = res.headers.get('X-Ai-Free-Left');
+          if (b === null || f === null) return this.load();
+          this.balance = +b; this.freeStudioLeft = +f;
+        },
+        chatLabel() {
+          if (this.freeChatsLeft > 0) return this.freeChatsLeft + ' free message' + (this.freeChatsLeft === 1 ? '' : 's') + ' left';
+          return (this.costs.chat || 0) + ' XP per message · you have ' + this.balance + ' XP';
+        },
+        price(feature) {
+          return this.freeStudioLeft > 0 ? 'Free today' : (this.costs[feature] || 0) + ' XP';
+        },
       });
 
       // Course materials connected to Astro as sources — the "Add from Materials" button.
@@ -774,19 +813,16 @@
         planet: null,       // catalog entry being browsed
         draft: [],          // keys ticked in the picker, "planet|module|lesson"
 
-        storageKey: 'techlab_planet_sources:u{{ auth()->id() }}',
-
+        // Lessons are only sources when the student picks them in this chat — nothing is
+        // remembered between visits, so the sidebar always starts empty.
         init() {
-          try { localStorage.removeItem('techlab_planet_sources'); } catch (e) {}
           try {
-            const saved = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
-            if (Array.isArray(saved)) this.items = saved.filter(i => i && i.planet && i.module && i.lesson);
+            Object.keys(localStorage)
+              .filter(k => k.startsWith('techlab_planet_sources'))
+              .forEach(k => localStorage.removeItem(k));
           } catch (e) {}
-          // Lessons are only added as sources when the student picks them via the Planets picker — never automatically.
-          Alpine.effect(() => {
-            try { localStorage.setItem(this.storageKey, JSON.stringify(this.items)); } catch (e) {}
-          });
         },
+        clear() { this.items = []; this.close(); },
 
         key(p, m, l) { return p + '|' + m + '|' + l; },
         has(p, m, l) { return this.items.some(i => this.key(i.planet, i.module, i.lesson) === this.key(p, m, l)); },
@@ -961,6 +997,9 @@
 
         init() {
           window.addEventListener('astro:load-conversation', e => this.loadConversation(e.detail.id));
+          // /chat?c=ID opens that conversation (a lesson's "Ask Astro about my mistakes" lands here).
+          const openId = Number(new URLSearchParams(location.search).get('c'));
+          if (openId) { history.replaceState(null, '', location.pathname); this.$nextTick(() => this.loadConversation(openId)); }
           window.addEventListener('astro:conversation-deleted', e => { if (e.detail.id === this.conversationId) this.newChat(); });
           const syncStores = () => {
             const ig = this.$store.infographic;
@@ -1120,6 +1159,7 @@
         newChat() {
           this.chatGen++;
           Alpine.store('webSources').clear();
+          Alpine.store('planetSources').clear();
           if (this.abortCtl) { this.abortCtl.abort(); this.abortCtl = null; }
           this.sending = false;
           this.messages = [];
@@ -1230,7 +1270,9 @@
                 interrupted(failure);
                 return;
               }
+              if (res.status === 402 && this.$store.astroXp.charged) this.$store.astroXp.load();
               if (res.ok && j && j.success) {
+                if (this.$store.astroXp.charged) this.$store.astroXp.fromChat(j.xp);
                 if (j.conversation_id && live()) this.setConversation(j.conversation_id);
                 this.afterSaved(j.conversation_id, wasNew, text || label);
                 AstroStatus.settleDom(); status.settle();
@@ -1265,6 +1307,7 @@
                 patch({ content: acc, html: this.md(acc), streaming: false, sources: this.groupSources(d) });
                 this.followStream();
               } else if (ev === 'done') {
+                if (this.$store.astroXp.charged) this.$store.astroXp.fromChat(d.xp);
                 if (d.conversation_id && live()) this.setConversation(d.conversation_id);
                 this.afterSaved(d.conversation_id, wasNew, text || label);
               } else if (ev === 'error') {
@@ -1445,7 +1488,7 @@
 <body
   class="bg-void font-sans text-ink antialiased"
   x-data="{ ...techlabShell(), ...chatShell() }"
-  x-init="initShell(); initChat(); $store.planetSources.init(); $store.materialSources.init()"
+  x-init="initShell(); initChat(); $store.planetSources.init(); {{ $isFacultyChat ? '' : '$store.materialSources.init(); $store.astroXp.load()' }}"
 >
 
   {{-- Space background --}}
@@ -1465,20 +1508,24 @@
     {{-- ── REMOTE / SIDEBAR ────────────────────────── --}}
     @include('components.shell.side-bar')
 
-    {{-- ── SOURCES (left) ───────────────────────────── --}}
+    {{-- ── SOURCES (left) — students only; Astro for Captains has no sources panel. ── --}}
+    @unless($isFacultyChat)
     @include('student.chat.partials.sources-panel')
+    @endunless
 
     {{-- ── TV: ASTRO CHAT (main content) ───────────── --}}
     @include('student.chat.partials.chat-panel')
 
-    {{-- ── STUDIO PANEL ─────────────────────────────── --}}
+    {{-- ── STUDIO PANEL — Astro for Captains only (its PPT tool); students don't get one. ── --}}
+    @if($isFacultyChat)
     @include('student.chat.partials.studio-panel')
+    @endif
 
     {{-- ── Overlays ──────────────────────────────────── --}}
     @unless($isFacultyChat)
     @include('student.chat.partials.planet-picker')
-    @endunless
     @include('student.chat.partials.material-picker')
+    @endunless
     @include('student.chat.partials.infographic-viewer')
     @include('student.chat.partials.quiz-viewer')
     @include('student.chat.partials.flashcards-viewer')
@@ -1493,6 +1540,7 @@
       class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
     ></div>
 
+    @if($isFacultyChat)
     {{-- Studio reopen tab (desktop, shown when Studio is collapsed) --}}
     <button
       x-show="!studioOpen" x-cloak
@@ -1507,6 +1555,7 @@
         <path d="m15 6-6 6 6 6"/>
       </svg>
     </button>
+    @endif
 
   </div>
 </body>

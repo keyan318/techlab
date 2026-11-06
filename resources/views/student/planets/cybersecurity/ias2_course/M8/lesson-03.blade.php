@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit H.3 Site Location Selection. --}}
         compensate for being built in a flood zone with a single power line running in.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Can one strong factor make up for a site's disqualifier?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Yes, if the visibility is very good in all directions</li>
+            <li class="quiz-option quiz-correct">B. No, one good factor doesn't offset it ✓</li>
+            <li class="quiz-option">C. Yes, if the site is close by</li>
+            <li class="quiz-option">D. Only if there is a second line</li>
+        </ul>
+        <p class="quiz-explanation"><em>A site can fail on just one factor and still be a poor choice overall.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit H.3 Site Location Selection. --}}
         doesn't matter if the whole site floods every wet season, and one damaged supply line cuts us off
         completely. One good factor doesn't offset a genuine disqualifier."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why did Astro reject the outpost site?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Its sightlines were far too poor to use</li>
+            <li class="quiz-option">B. It was too far from Doom's base</li>
+            <li class="quiz-option">C. It had too many supply lines in</li>
+            <li class="quiz-option quiz-correct">D. It floods and has one supply line ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Good visibility doesn't help if the site floods every season and one damaged line cuts it off.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -62,6 +84,17 @@ Syllabus: ITP1333 Unit H.3 Site Location Selection. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">One good factor doesn't offset a genuine disqualifier</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which factor means “more than one supply path”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Hazard exposure</li>
+            <li class="quiz-option">B. Approach visibility</li>
+            <li class="quiz-option">C. Proximity to risk</li>
+            <li class="quiz-option quiz-correct">D. Utility redundancy ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Utility redundancy asks if power and communications have more than one path to the site.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

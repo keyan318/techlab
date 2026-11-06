@@ -7,24 +7,23 @@ use Illuminate\Console\Command;
 
 class CreateAdmin extends Command
 {
+    use AsksForAdminPassword;
+
     protected $signature = 'admin:create {email} {--name=Admin}';
 
     protected $description = 'Create an admin account (there is no sign-up form for admins)';
 
     public function handle(): int
     {
-        $email = $this->argument('email');
+        $email = trim($this->argument('email'));
 
         if (User::where('email', $email)->exists()) {
-            $this->error("An account with {$email} already exists.");
+            $this->error("An account with {$email} already exists. To change its password, run: php artisan admin:password {$email}");
 
             return self::FAILURE;
         }
 
-        $password = $this->secret('Password (min 12 characters)');
-        if (strlen((string) $password) < 12) {
-            $this->error('Password is too short.');
-
+        if (($password = $this->askNewPassword()) === null) {
             return self::FAILURE;
         }
 

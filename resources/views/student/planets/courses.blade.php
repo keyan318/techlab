@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Pixelify+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
 
     <meta name="theme-color" content="#06061a">
   <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ filemtime(public_path('css/theme.css')) }}">
@@ -39,52 +39,12 @@
     body { background: #06061a; -webkit-font-smoothing: antialiased; }
     .space { position: fixed; inset: 0; z-index: -1; background: radial-gradient(120% 90% at 50% -10%, #241456 0%, rgba(36,20,86,0) 55%), linear-gradient(160deg, #0a0826 0%, #120a33 45%, #1e1259 100%); }
   </style>
+@include('components.course-card-styles')
 <style>
-  /* Course cards, Codedex-style: a pixel-art banner on top, then COURSE eyebrow, title, blurb and a
-     level pill. The art is dark, so the card stays dark (and its text light) in both themes. */
-  .course-card {
-    --accent: #73b6ff;
-    position: relative; display: flex; flex-direction: column; overflow: hidden; isolation: isolate;
-    color: #eef1ff; background: #0d1028; text-decoration: none;
-    border: 2px solid #252b52; border-radius: 6px;
-    box-shadow: 0 5px 0 #1a1f40, 0 18px 36px -20px rgba(0,0,0,.8);
-    transition: transform .25s cubic-bezier(.32,.72,0,1), box-shadow .25s cubic-bezier(.32,.72,0,1), border-color .2s ease;
-  }
-  a.course-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 9px 0 #1a1f40, 0 26px 44px -18px color-mix(in srgb, var(--accent) 45%, transparent); }
-  a.course-card:active { transform: translateY(1px); box-shadow: 0 2px 0 #1a1f40; transition-duration: .08s; }
-  a.course-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  .course-banner { position: relative; aspect-ratio: 5 / 2; overflow: hidden; border-bottom: 2px solid #252b52; }
-  .course-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; image-rendering: pixelated; transition: transform .5s cubic-bezier(.32,.72,0,1); }
-  a.course-card:hover .course-art { transform: scale(1.04); }
-  .course-banner > svg { position: absolute; right: 18px; bottom: -14px; width: 96px; height: 96px; opacity: .9; }
-  .course-banner .scene-python-space { position: absolute; inset: 0; width: 100%; height: 100%; right: auto; bottom: auto; opacity: 1; }
-  .ps-star { animation: ps-twinkle 3s steps(2, end) infinite; }
-  @keyframes ps-twinkle { 50% { opacity: .25; } }
-  .course-eyebrow { font-family: 'Space Mono', monospace; font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: #9aa3d0; }
-  .course-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.45rem; line-height: 1.2; letter-spacing: -.01em; font-weight: 700; color: #fff; }
-  .course-blurb { font-size: .95rem; line-height: 1.5; color: #c3c9ea; }
-  .course-pill { display: inline-flex; align-items: center; gap: 9px; padding: 7px 14px; border-radius: 99px;
-    font-family: 'Space Mono', monospace; font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #dfe4ff; background: #1b2042; }
-  .course-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 11px; }
-  .course-bars i { width: 3px; background: #48507e; }
-  .course-bars i:nth-child(1) { height: 4px; } .course-bars i:nth-child(2) { height: 7px; } .course-bars i:nth-child(3) { height: 11px; }
-  .course-bars i.on { background: var(--accent); }
-  .course-pct { font-size: 12.5px; font-weight: 600; color: #c3c9ea; }
-  .course-bar { height: 4px; background: #1b2042; overflow: hidden; }
-  .course-bar > i { display: block; height: 100%; background: var(--accent); transition: width .6s cubic-bezier(.32,.72,0,1); }
-  .course-go { display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: .9rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
-  .course-go svg { transition: transform .3s cubic-bezier(.32,.72,0,1); }
-  a.course-card:hover .course-go svg { transform: translateX(4px); }
-  /* Coming soon / locked: same shape, quieter. Not a link, so no hover lift. */
-  .course-card.is-soon { cursor: default; border-style: dashed; box-shadow: none; }
-  .course-card.is-soon .course-banner { filter: saturate(.7); }
-  .course-card.is-closed .course-art { filter: grayscale(.6) brightness(.6); }
-  .soon-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 99px; font-size: 12px; font-weight: 600; color: #ffe08a; background: rgba(245,192,74,.12); border: 1px solid rgba(245,192,74,.3); }
-  .soon-pill i { width: 6px; height: 6px; border-radius: 50%; background: #f5c04a; animation: soon-pulse 2.4s ease-in-out infinite; }
-  @keyframes soon-pulse { 50% { opacity: .35; } }
-  .soon-glyph { position: absolute; inset: 0; display: grid; place-items: center; font-family: 'Space Mono', monospace; font-size: 40px; letter-spacing: .05em; color: rgba(255,255,255,.55); text-shadow: 0 0 24px rgba(155,107,255,.6); }
-  .captain-line { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: rgb(190 198 235); margin-top: 2px; }
-  .captain-line svg { flex: none; opacity: .8; }
+  /* Season 2's "finish Season 1 first" tag: gold while it's still to do, green once it's done. */
+  .prereq-tag { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #ffe08a; background: rgba(245,192,74,.1); border: 1px solid rgba(245,192,74,.3); }
+  .prereq-tag svg { flex: none; }
+  .prereq-tag.is-done { color: #8ff0c0; background: rgba(60,210,140,.1); border-color: rgba(60,210,140,.32); }
   .lock-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 99px; font-size: 12px; font-weight: 600; color: #9fb4ff; background: rgba(115,142,255,.12); border: 1px solid rgba(115,142,255,.3); }
   .code-form { display: flex; gap: 8px; margin-top: 10px; }
   .code-form input { flex: 1; min-width: 0; background: rgba(255,255,255,.06); border: 1px solid rgba(150,170,255,.25); border-radius: 10px; padding: 9px 11px; color: inherit; font-family: 'Space Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
@@ -166,15 +126,22 @@
       <p class="page-status" role="status">{{ session('status') }}</p>
     @endif
 
-    <div class="mt-8 grid gap-6 sm:grid-cols-2">
+    <div class="mt-8 grid gap-6 sm:grid-cols-2" data-tour="course-list">
       @foreach ($courses as $c)
         @php $navigable = (bool) $c['url']; @endphp
         @php $tag = $navigable ? 'a' : 'div'; @endphp
+        @php
+          // Astro's tour points at the first locked course and the first open one.
+          $tourMark = null;
+          if (($c['locked'] ?? false) && empty($tourLocked)) { $tourMark = $tourLocked = 'course-locked'; }
+          elseif ($navigable && empty($tourOpen)) { $tourMark = $tourOpen = 'course-open'; }
+        @endphp
         @php $accent = ['programming' => '#73b6ff', 'networking' => '#5be1ff', 'cybersecurity' => '#b48bff'][$slug] ?? '#73b6ff'; @endphp
         <{{ $tag }} class="course-card {{ $c['soon'] ? 'is-soon' : '' }} {{ ! $navigable && ! $c['soon'] ? 'is-closed' : '' }}" style="--accent: {{ $accent }}"
+          @if ($tourMark) data-tour="{{ $tourMark }}" @endif
           @if ($navigable) href="{{ $c['url'] }}" @endif
           aria-label="{{ $c['soon'] ? 'Coming soon' : ($c['title'].' course'.($navigable ? ', '.$c['percent'].'% complete' : '')) }}"
-          @if ($c['locked'] ?? false) x-data="{ code: '', busy: false, err: '' }" @endif>
+>
           <div class="course-banner" style="background: {{ $c['banner'] }}">
             @if ($c['soon'])
               <div class="soon-glyph" aria-hidden="true">&lt;/&gt;</div>
@@ -191,81 +158,33 @@
               <div class="course-eyebrow">Course</div>
               <div class="course-title mt-1 flex items-center gap-2">
                 <span>{{ $c['title'] }}</span>
-                @if (($c['quiz_badge'] ?? 0) > 0)
-                  <span style="display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9999px;background:#e5484d;color:#fff;font-size:11px;font-weight:700;line-height:1"
-                        aria-label="{{ $c['quiz_badge'] }} new {{ \Illuminate\Support\Str::plural('quiz', $c['quiz_badge']) }}">{{ $c['quiz_badge'] > 9 ? '9+' : $c['quiz_badge'] }}</span>
-                @endif
               </div>
               <div class="course-blurb mt-2">{{ $c['blurb'] }}</div>
-              @if ($c['faculty_name'] ?? null)
+              @if (($c['requires_title'] ?? null) && ! $c['track'])
+                <div>
+                  <span class="prereq-tag {{ $c['requires_done'] ? 'is-done' : '' }}">
+                    @if ($c['requires_done'])
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                      Pre-requisite: {{ $c['requires_title'] }} (done)
+                    @else
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>
+                      Pre-requisite: {{ $c['requires_title'] }}
+                    @endif
+                  </span>
+                </div>
+              @endif
+              @if ($c['track'])
                 <div class="captain-line">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 19.4c.7-3.6 3.6-5.8 7.5-5.8s6.8 2.2 7.5 5.8"/></svg>
-                  Captain: {{ $c['faculty_name'] }}
+                  {{ $c['track']['type'] === 'self_paced' ? 'Self-paced' : 'Class · Captain '.$c['track']['teacher'] }}
                 </div>
               @endif
             @endunless
             <div class="{{ $c['soon'] ? 'my-auto' : 'mt-auto pt-5' }}">
               @if ($c['soon'])
                 <span class="soon-pill"><i></i>Coming soon</span>
-              @elseif ($c['no_captain'] ?? false)
-                <span class="lock-pill">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-                  No captain assigned yet
-                </span>
-                <p class="join-note">Check back once a faculty captain has claimed this course.</p>
-              @elseif ($c['locked'] ?? false)
-                @php
-                  $joinStatus = $c['join_status'] ?? null;
-                  $captain = $c['faculty_name'] ?? 'Your faculty member';
-                @endphp
-                <span class="lock-pill {{ ['accepted' => 'is-ok', 'declined' => 'is-no'][$joinStatus ?? ''] ?? '' }}">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-                  @switch ($joinStatus)
-                    @case ('pending') Waiting for {{ $captain }} to accept you @break
-                    @case ('accepted') Accepted! Check your email for the code @break
-                    @case ('declined') {{ $captain }} declined your request @break
-                    @default {{ $captain }} decides who joins
-                  @endswitch
-                </span>
-                @if ($joinStatus === 'pending')
-                  <p class="join-note">We'll email {{ auth()->user()->email }} when they decide.</p>
-                @elseif ($joinStatus !== 'accepted')
-                  <button type="button" class="join-btn" :disabled="busy" @click.prevent="
-                    busy = true; err = '';
-                    fetch('{{ $c['join_url'] }}', {
-                      method: 'POST', credentials: 'same-origin',
-                      headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                    }).then(r => { if (r.ok) { location.reload(); } else { err = r.status === 429 ? 'Too many tries. Wait a minute.' : 'Something went wrong. Try again.'; busy = false; } })
-                      .catch(() => { err = 'Something went wrong. Try again.'; busy = false; });
-                  ">{{ $joinStatus === 'declined' ? 'Ask again' : 'Ask to join' }}</button>
-                @endif
-                @if ($joinStatus === 'accepted')
-                <p class="join-note">We sent it to {{ auth()->user()->email }}. Not there? Check your spam folder.</p>
-                @php
-                  // @json()'s output is script-tag-safe, not attribute-safe (its own JSON
-                  // quotes are literal ", which would prematurely close this "..." Alpine
-                  // directive). Js::from() HTML-escapes for exactly this context.
-                  $unlockPayload = ['title' => $c['title'], 'url' => route('student.course.overview', ['slug' => $slug, 'course' => $c['id']])];
-                @endphp
-                <form class="code-form" @submit.prevent="
-                  busy = true; err = '';
-                  fetch('{{ route('student.crew.join') }}', {
-                    method: 'POST', credentials: 'same-origin',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                    body: JSON.stringify({ code: code }),
-                  }).then(r => r.json().then(data => ({ ok: r.ok, data })))
-                    .then(({ ok, data }) => {
-                      if (ok) {
-                        window.dispatchEvent(new CustomEvent('course-unlocked', { detail: {{ Illuminate\Support\Js::from($unlockPayload) }} }));
-                      } else { err = data.message || 'That code was not found.'; busy = false; }
-                    })
-                    .catch(() => { err = 'Something went wrong. Try again.'; busy = false; });
-                ">
-                  <input type="text" x-model="code" maxlength="6" placeholder="Enter code" aria-label="Course code" required>
-                  <button type="submit" :disabled="busy || !code">Unlock</button>
-                </form>
-                @endif
-                <p class="code-err" x-show="err" x-text="err" x-cloak></p>
+              @elseif ($c['locked'])
+                @include('student.partials.enroll-choice', ['e' => $c, 'variant' => 'card', 'tourMark' => $tourMark === 'course-locked'])
               @else
                 @php
                   $level = $c['level'] ?? 'Beginner';

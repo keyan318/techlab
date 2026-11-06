@@ -1,0 +1,334 @@
+{
+  "questions": [
+    {
+      "prompt": "What is a stateless packet filter?",
+      "options": [
+        "A filter checking each packet on its own",
+        "A filter that inspects encrypted content",
+        "A filter that knows apps and users by name",
+        "A filter that tracks every open connection"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why does a stateful firewall let replies back in automatically?",
+      "options": [
+        "It blocks nothing from the inside",
+        "It reads the user's password first",
+        "It allows every packet on port 80",
+        "It keeps a table of connections"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does an NGFW add to a stateful firewall?",
+      "options": [
+        "Knowing apps and users, blocking threats",
+        "A second network card for each of its zones",
+        "A label on every packet that passes",
+        "Faster routing tables for the core routers"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How is an IOS ACL read?",
+      "options": [
+        "At random; any match will do",
+        "Top-down; the first match wins",
+        "All lines at once; most matches win",
+        "Bottom-up; the last match wins"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A packet matches no line of an ACL. What happens?",
+      "options": [
+        "It is permitted because nothing blocked it",
+        "It is sent back to the source router",
+        "The invisible deny at the end drops it",
+        "It is held until a new line is added"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which command applies ACL 110 to traffic coming into an interface?",
+      "options": [
+        "access-list 110 apply in",
+        "service-policy 110 input",
+        "ip access-list 110 enable",
+        "ip access-group 110 in"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Where should an extended ACL usually go?",
+      "options": [
+        "In the core, on the fastest link",
+        "On every interface of every router",
+        "Near the source of the traffic to stop",
+        "Close to the destination of the traffic"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a DMZ?",
+      "options": [
+        "The inside network where the crew works",
+        "A separate network for public servers",
+        "A VLAN with no devices in it at all",
+        "A tunnel between two company sites"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which flow should a DMZ design never allow?",
+      "options": [
+        "Inside to the DMZ",
+        "Inside to outside",
+        "Outside to the DMZ web port",
+        "Outside to inside"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why must the DMZ not reach the inside network?",
+      "options": [
+        "DMZ servers have no IP addresses to use",
+        "A hacked DMZ server could reach the crew",
+        "The inside network has no default gateway",
+        "Public servers cannot send any replies"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does default deny mean?",
+      "options": [
+        "Allow everything, then block known attacks",
+        "Block replies but allow every new connection",
+        "Block all, then allow only what is needed",
+        "Deny only the traffic from the DMZ zone"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How is an IDS different from an IPS?",
+      "options": [
+        "An IDS only alerts; an IPS can block",
+        "An IDS can block; an IPS only alerts",
+        "An IDS is on hosts; an IPS is on links",
+        "An IDS uses signatures; an IPS does not"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How does an IDS usually get its copy of the traffic?",
+      "options": [
+        "From the DNS resolver logs",
+        "From the user's own browser",
+        "From a SPAN port or a tap",
+        "From a VPN tunnel endpoint"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the weakness of signature-based detection?",
+      "options": [
+        "It only works on encrypted traffic",
+        "It raises an alert for every packet",
+        "It cannot see any known attack pattern",
+        "It is blind to brand-new attacks"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "An IDS alerts on an authorized vulnerability scan. What is that?",
+      "options": [
+        "A false positive",
+        "A true negative",
+        "A false negative",
+        "A true positive"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which sensor mistake is worse: a false positive or a false negative?",
+      "options": [
+        "Neither, sensors never make them",
+        "A false positive, a harmless alert raised",
+        "They are always exactly as bad",
+        "A false negative, an attack nobody saw"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does a site-to-site VPN join?",
+      "options": [
+        "One person to a network",
+        "Two VLANs on a switch",
+        "A PC to its gateway",
+        "Two whole networks"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does IKE phase 1 build?",
+      "options": [
+        "A secure channel between the two routers",
+        "A list of interesting traffic to encrypt",
+        "The encrypted tunnel for the user's data",
+        "A GRE tunnel for routing protocols"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What lets two routers create shared keys without ever sending them?",
+      "options": [
+        "A crypto map name",
+        "The transform set",
+        "Diffie-Hellman",
+        "A pre-shared ACL"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In an IPsec VPN, what does the ACL in the crypto map decide?",
+      "options": [
+        "Which ports the firewall should block",
+        "Which traffic is interesting to encrypt",
+        "Which routers may become IKE neighbors",
+        "Which users may log in to the VPN at all"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why wrap traffic in GRE inside IPsec?",
+      "options": [
+        "So PCs can see the tunnel themselves",
+        "So the tunnel needs no encryption at all now",
+        "So multicast and routing updates can cross",
+        "So the VPN can skip IKE phase 1 entirely"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does a remote access VPN join?",
+      "options": [
+        "One person to the network",
+        "Two VLANs on a trunk",
+        "Two whole networks",
+        "Two routers in one site room"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why do TLS VPNs pass through almost any firewall?",
+      "options": [
+        "They run over HTTPS on port 443",
+        "They only run inside the company network",
+        "They are not encrypted, so firewalls allow them",
+        "They use no ports at all to connect"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a split tunnel?",
+      "options": [
+        "Only company traffic uses the VPN",
+        "Two VPNs are used at the same time",
+        "All of the laptop's traffic uses the VPN",
+        "The tunnel is split between two routers"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why do devices trust a server's certificate?",
+      "options": [
+        "It is stored on the router",
+        "It has a long name",
+        "A trusted CA signed it",
+        "The server sent it first"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How does a client check live whether a certificate was revoked?",
+      "options": [
+        "DHCP",
+        "SNMP",
+        "LDP",
+        "OCSP"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In 802.1X, what is the switch's role?",
+      "options": [
+        "Supplicant",
+        "Certificate authority",
+        "Authentication server",
+        "Authenticator"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which UDP port does RADIUS use for authentication?",
+      "options": [
+        "1813",
+        "1812",
+        "53",
+        "443"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which EAP method uses certificates on both sides and no passwords?",
+      "options": [
+        "PEAP",
+        "EAP-TLS",
+        "EAP-MD5",
+        "LEAP"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does DNSSEC protect?",
+      "options": [
+        "The size of DNS records",
+        "The integrity of DNS answers",
+        "The speed of DNS lookups",
+        "The privacy of all DNS queries"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which port does DNS over TLS (DoT) use?",
+      "options": [
+        "853",
+        "1812",
+        "53",
+        "443"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a DNS sinkhole?",
+      "options": [
+        "A resolver that encrypts every query with TLS on port 853",
+        "A safe server that answers for bad domains and logs who asked",
+        "A server that signs every DNS record with a private key",
+        "A firewall rule that blocks every DNS packet leaving the site"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why might a company block outbound DNS except from its own resolver?",
+      "options": [
+        "So DNS lookups become faster for everyone",
+        "So the sinkhole can use port 53 alone",
+        "So clients cannot go around the filtering",
+        "So DNSSEC signatures are no longer needed"
+      ],
+      "correct": "C"
+    }
+  ]
+}

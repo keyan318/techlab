@@ -1,10 +1,10 @@
-<x-pixel-app :title="$title.' — Materials'">
+<x-pixel-app :title="$title.' — Supplementary Materials'">
   @include('student.course.partials.hero')
 
   <div class="mx-auto grid max-w-[1200px] items-start gap-10 px-4 py-10 sm:px-8 xl:grid-cols-[minmax(0,1fr)_340px]">
     <section class="px-card min-w-0 p-5 sm:p-8" aria-labelledby="materials-h">
       <header class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="materials-h" class="px-font text-[clamp(1.4rem,3vw,2rem)] font-medium leading-tight">Course materials</h2>
+        <h2 id="materials-h" class="px-font text-[clamp(1.4rem,3vw,2rem)] font-medium leading-tight">Supplementary materials</h2>
         <p class="text-[15px] text-muted">Added by {{ $crew?->faculty?->name ?? 'your captain' }}</p>
       </header>
 
@@ -54,7 +54,7 @@
           @endif
         </article>
       @empty
-        <p class="mt-4 text-[15px] leading-relaxed text-muted">No extra materials yet. Anything your captain uploads — slides, handouts, readings — shows up here, and Astro will answer from it.</p>
+        <p class="mt-4 text-[15px] leading-relaxed text-muted">No supplementary materials yet. Anything your captain uploads — slides, handouts, readings — shows up here, and Astro will answer from it.</p>
       @endforelse
     </section>
 

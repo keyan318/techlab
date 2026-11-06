@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "In C, what number stands for true?",
+      "options": [
+        "100",
+        "1",
+        "0",
+        "-1"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In C, what does 7 > 3 evaluate to?",
+      "options": [
+        "0",
+        "4",
+        "1",
+        "7"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which operator checks whether two values are equal?",
+      "options": [
+        "=>",
+        "==",
+        "!=",
+        "="
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does the single = do in C?",
+      "options": [
+        "Checks if two values are equal",
+        "Checks if two values differ",
+        "Stores a value in a variable",
+        "Compares two values by size"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does 5 != 5 evaluate to?",
+      "options": [
+        "1",
+        "5",
+        "0",
+        "10"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "When is a && b true?",
+      "options": [
+        "Only when both sides are true",
+        "When both sides are false",
+        "When exactly one side is true",
+        "When at least one side is true"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When is a || b true?",
+      "options": [
+        "Only when both sides are true",
+        "Only when both sides are false",
+        "When at least one side is true",
+        "Only when the left side is true"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does !0 evaluate to?",
+      "options": [
+        "1",
+        "-1",
+        "10",
+        "0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "shield is 40 and hull is 90. What is shield > 50 && hull > 50?",
+      "options": [
+        "0",
+        "40",
+        "90",
+        "1"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "shield is 40 and hull is 90. What is shield < 50 || hull < 50?",
+      "options": [
+        "40",
+        "1",
+        "0",
+        "50"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "When does the code inside an if block run?",
+      "options": [
+        "Only when its condition is true",
+        "Every time, then it checks the condition",
+        "Once before and once after the check",
+        "Only when its condition is false"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In an if / else if / else chain, which branch runs when two conditions are true?",
+      "options": [
+        "The last one that is true",
+        "The else branch at the end",
+        "Both of the true branches",
+        "The first one that is true"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "When does the else branch of an if / else if / else chain run?",
+      "options": [
+        "Every time, after the matching branch runs",
+        "When all of the conditions above are true",
+        "When none of the conditions above are true",
+        "When the first condition alone is false"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "fuel is 10. if (fuel >= 50) prints \"Full\", else if (fuel >= 20) prints \"Half\", else prints \"Low\". What prints?",
+      "options": [
+        "Nothing",
+        "Half",
+        "Low",
+        "Full"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "fuel is 50 in the same chain (>= 50 Full, >= 20 Half, else Low). What prints?",
+      "options": [
+        "Low",
+        "Full",
+        "Full and Half",
+        "Half"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "When does a switch read better than a long if / else if chain?",
+      "options": [
+        "When the program has no variables at all",
+        "When one variable is matched against set values",
+        "When the conditions use ranges like >= 30",
+        "When each condition compares a different variable"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a switch, what does break; do?",
+      "options": [
+        "Leaves the switch after a case runs",
+        "Skips the matching case entirely",
+        "Restarts the switch from the top",
+        "Ends the whole program straight away"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A case has no break;. What happens after its code runs?",
+      "options": [
+        "The default case runs, then it stops",
+        "The switch stops anyway at the next case",
+        "The compiler quietly adds the break for you",
+        "It falls through into the next case's code"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In a switch, when does the default case run?",
+      "options": [
+        "Only when the value is zero",
+        "When the value matched no case",
+        "When two cases match the value",
+        "Always, before any of the cases"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "bay is 4 and the switch only has case 1, case 2 and case 3. What runs?",
+      "options": [
+        "Nothing, the program crashes",
+        "case 3, the closest one",
+        "case 1, the first one",
+        "The default case"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "When does a while loop check its condition?",
+      "options": [
+        "Only once, before the first run",
+        "After each run of its body",
+        "Before each run of its body",
+        "Only once, after the last run"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which loop always runs its body at least once?",
+      "options": [
+        "for",
+        "while",
+        "a nested for",
+        "do-while"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "The condition of a while loop is false the very first time. How many times does its body run?",
+      "options": [
+        "Forever",
+        "1",
+        "2",
+        "0"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What happens if nothing inside a loop ever makes its condition false?",
+      "options": [
+        "The loop skips straight to the end",
+        "The loop runs exactly once",
+        "The compiler stops it after ten runs",
+        "The loop never stops"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int c = 0; while (c < 3) { printf(\"%d \", c); c++; } What prints?",
+      "options": [
+        "0 1 2",
+        "3",
+        "1 2 3",
+        "0 1 2 3"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In for (int i = 0; i < 4; i++), which part runs only once, before the loop starts?",
+      "options": [
+        "The loop body",
+        "int i = 0",
+        "i < 4",
+        "i++"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a for loop, when does the step (like i++) run?",
+      "options": [
+        "Before every run of the body",
+        "After every run of the body",
+        "Only once, after the last run",
+        "Only once, before the first run"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How many times does for (int i = 0; i < 5; i++) run its body?",
+      "options": [
+        "5",
+        "0",
+        "4",
+        "6"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does for (int t = 3; t >= 1; t--) printf(\"%d \", t); print?",
+      "options": [
+        "3 2 1",
+        "1 2 3",
+        "3 2 1 0",
+        "2 1 0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When is a for loop the natural choice?",
+      "options": [
+        "When you do not know when to stop",
+        "When you are matching a list of values",
+        "When you know how many times to repeat",
+        "When the loop must run at least once"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does i++ do to i?",
+      "options": [
+        "Doubles it",
+        "Takes 1 from it",
+        "Adds 2 to it",
+        "Adds 1 to it"
+      ],
+      "correct": "D"
+    }
+  ]
+}

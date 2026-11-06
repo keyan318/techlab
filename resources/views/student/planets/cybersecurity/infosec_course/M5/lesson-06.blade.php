@@ -33,6 +33,17 @@ Syllabus: ITP1232 Unit E, Data & Network Security Services (capstone). --}}
         The Citadel only holds when all of them hold.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why must all the security services hold together?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Only one is needed at any time</li>
+            <li class="quiz-option">B. Attacks only ever come one at a time</li>
+            <li class="quiz-option quiz-correct">C. None of them replaces the others ✓</li>
+            <li class="quiz-option">D. Hashing covers every other step</li>
+        </ul>
+        <p class="quiz-explanation"><em>Real attacks come several at once. The Citadel only holds when all of them hold.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -47,6 +58,17 @@ Syllabus: ITP1232 Unit E, Data & Network Security Services (capstone). --}}
         mine." <strong>Volt</strong> adds: "Every lesson you've learned just held the line at once. That's what
         Information Security actually is."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What is new about Vex's final attack?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Everything comes at the same time ✓</li>
+            <li class="quiz-option">B. It uses a brand-new trick</li>
+            <li class="quiz-option">C. It only targets the inbox</li>
+            <li class="quiz-option">D. It comes straight from Earth's own fleet</li>
+        </ul>
+        <p class="quiz-explanation"><em>Astro: he's not doing anything you haven't beaten, just all of it at once. Work the list.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -76,6 +98,17 @@ Syllabus: ITP1232 Unit E, Data & Network Security Services (capstone). --}}
             <text x="320" y="185" text-anchor="middle" font-size="15" font-weight="700" fill="#0d5c26">DOOM ATTACK REPELLED — CODEXIA IS SAFE</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which service rejects the forged order?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Awareness</li>
+            <li class="quiz-option">B. Integrity checking</li>
+            <li class="quiz-option">C. Authentication</li>
+            <li class="quiz-option quiz-correct">D. Non-repudiation ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Non-repudiation (signatures) exposes the forged order. Integrity restores the tampered file.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

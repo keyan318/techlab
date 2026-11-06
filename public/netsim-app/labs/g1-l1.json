@@ -1,0 +1,400 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 40,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 40,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.11/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 40,
+      "y": 320,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "deck-sw",
+      "kind": "switch",
+      "name": "deck-sw",
+      "x": 300,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DECK-SW"
+    },
+    {
+      "id": "deck-rtr",
+      "kind": "router",
+      "name": "deck-rtr",
+      "x": 560,
+      "y": 180,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.1/24",
+          "up": false
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DECK-RTR"
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-deck-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "volt.eth0-deck-sw.eth1",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "rivet.eth0-deck-sw.eth2",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth2"
+      ]
+    },
+    {
+      "id": "deck-rtr.eth0-deck-sw.eth6",
+      "a": [
+        "deck-rtr",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth6"
+      ]
+    },
+    {
+      "id": "deck-rtr.eth1-deck-sw.eth7",
+      "a": [
+        "deck-rtr",
+        "eth1"
+      ],
+      "b": [
+        "deck-sw",
+        "eth7"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g1-l1",
+    "title": "Lesson 1.1 — Switches, Routers & VLANs Revisited",
+    "blurb": "Wake the deck router, split the switch into two VLANs, and route between them.",
+    "steps": [
+      {
+        "title": "Wake the deck router",
+        "body": "Rivet: \"Cisco ports start shut down.\" Double-click `deck-rtr` to open its console. Type `enable`, then `configure terminal`. Go to `interface g0/0` and type `no shutdown`. Then `interface g0/1`, give it `ip address 192.168.20.1 255.255.255.0` and `no shutdown`. Type `end`, then `show ip interface brief` to see both ports up.",
+        "objectives": [
+          {
+            "id": "g1l1-g00",
+            "label": "deck-rtr GigabitEthernet0/0 is no longer shut down",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-rtr",
+              "iface": "eth0",
+              "is": {
+                "shutdown": false
+              }
+            }
+          },
+          {
+            "id": "g1l1-g01",
+            "label": "deck-rtr GigabitEthernet0/1 is 192.168.20.1/24",
+            "check": {
+              "type": "iface-ip",
+              "device": "deck-rtr",
+              "iface": "eth1",
+              "cidr": "192.168.20.1/24"
+            }
+          },
+          {
+            "id": "g1l1-g01up",
+            "label": "deck-rtr GigabitEthernet0/1 is up",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-rtr",
+              "iface": "eth1",
+              "is": {
+                "shutdown": false
+              }
+            }
+          },
+          {
+            "id": "g1l1-gw",
+            "label": "astro can reach its gateway 192.168.10.1",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toAddr": "192.168.10.1"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Split the deck into VLANs",
+        "body": "Astro: \"Crew on one network, workshop on another.\" On `deck-sw`: `enable`, `conf t`, then `vlan 10`, `name CREW`, `vlan 20`, `name WORKSHOP`, `exit`. Put the crew ports in VLAN 10: `interface range g0/1 - 2`, `switchport access vlan 10`. Rivet's port joins VLAN 20: `interface g0/3`, `switchport access vlan 20`. The router's two cables need the same split: `interface g0/7` (to g0/0) goes in VLAN 10, `interface g0/8` (to g0/1) in VLAN 20. Check with `show vlan brief`.",
+        "objectives": [
+          {
+            "id": "g1l1-v-astro",
+            "label": "Switch port Gi0/1 (astro) is in VLAN 10",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth0",
+              "is": {
+                "accessVlan": 10
+              }
+            }
+          },
+          {
+            "id": "g1l1-v-volt",
+            "label": "Switch port Gi0/2 (volt) is in VLAN 10",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth1",
+              "is": {
+                "accessVlan": 10
+              }
+            }
+          },
+          {
+            "id": "g1l1-v-rivet",
+            "label": "Switch port Gi0/3 (rivet) is in VLAN 20",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth2",
+              "is": {
+                "accessVlan": 20
+              }
+            }
+          },
+          {
+            "id": "g1l1-v-r0",
+            "label": "Switch port Gi0/7 (router g0/0) is in VLAN 10",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth6",
+              "is": {
+                "accessVlan": 10
+              }
+            }
+          },
+          {
+            "id": "g1l1-v-r1",
+            "label": "Switch port Gi0/8 (router g0/1) is in VLAN 20",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth7",
+              "is": {
+                "accessVlan": 20
+              }
+            }
+          },
+          {
+            "id": "g1l1-route",
+            "label": "astro reaches rivet through the router",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          },
+          {
+            "id": "g1l1-route2",
+            "label": "volt reaches rivet through the router",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Lock the PC ports",
+        "body": "Volt: \"A port that is only for a PC should say so, or a stranger's switch could talk it into carrying every VLAN.\" On `deck-sw`, set the three PC ports to access mode: `interface range g0/1 - 3`, then `switchport mode access`. `show interfaces g0/1 switchport` shows \"static access\".",
+        "objectives": [
+          {
+            "id": "g1l1-m-astro",
+            "label": "Gi0/1 is an access port",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth0",
+              "is": {
+                "mode": "access"
+              }
+            }
+          },
+          {
+            "id": "g1l1-m-volt",
+            "label": "Gi0/2 is an access port",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth1",
+              "is": {
+                "mode": "access"
+              }
+            }
+          },
+          {
+            "id": "g1l1-m-rivet",
+            "label": "Gi0/3 is an access port",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth2",
+              "is": {
+                "mode": "access"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

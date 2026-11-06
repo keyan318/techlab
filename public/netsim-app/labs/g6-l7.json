@@ -1,0 +1,573 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "nameserver": "192.168.100.53"
+    },
+    {
+      "id": "rogue-pc",
+      "kind": "host",
+      "name": "rogue-pc",
+      "x": 20,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.77/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "nameserver": "198.51.100.53"
+    },
+    {
+      "id": "grid-dns",
+      "kind": "server",
+      "name": "grid-dns",
+      "x": 200,
+      "y": 0,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.53/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "dnsServer": {
+        "enabled": true,
+        "records": [
+          [
+            "codexia-update.net",
+            "198.51.100.66"
+          ],
+          [
+            "earth.relay",
+            "198.51.100.10"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sinkhole",
+      "kind": "server",
+      "name": "sinkhole",
+      "x": 200,
+      "y": 340,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.66/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Blocked by the Grid: this site is malicious. Volt has been told."
+      }
+    },
+    {
+      "id": "grid-sw",
+      "kind": "switch",
+      "name": "grid-sw",
+      "x": 220,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "GRID-SW"
+    },
+    {
+      "id": "gate",
+      "kind": "router",
+      "name": "gate",
+      "x": 440,
+      "y": 170,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "198.51.100.1/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "GATE"
+    },
+    {
+      "id": "outside-sw",
+      "kind": "switch",
+      "name": "outside-sw",
+      "x": 640,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "OUTSIDE-SW"
+    },
+    {
+      "id": "earth-srv",
+      "kind": "server",
+      "name": "earth-srv",
+      "x": 800,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "198.51.100.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "198.51.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay page."
+      }
+    },
+    {
+      "id": "earth-dns",
+      "kind": "server",
+      "name": "earth-dns",
+      "x": 800,
+      "y": 170,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "198.51.100.53/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "198.51.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "dnsServer": {
+        "enabled": true,
+        "records": [
+          [
+            "codexia-update.net",
+            "198.51.100.66"
+          ],
+          [
+            "earth.relay",
+            "198.51.100.10"
+          ]
+        ]
+      },
+      "services": {
+        "tcp": [
+          443,
+          853
+        ],
+        "udp": []
+      }
+    },
+    {
+      "id": "doom-site",
+      "kind": "server",
+      "name": "doom-site",
+      "x": 800,
+      "y": 320,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "198.51.100.66/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "198.51.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Doom update: install me, trust me."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-grid-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "grid-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rogue-pc.eth0-grid-sw.eth1",
+      "a": [
+        "rogue-pc",
+        "eth0"
+      ],
+      "b": [
+        "grid-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "grid-dns.eth0-grid-sw.eth2",
+      "a": [
+        "grid-dns",
+        "eth0"
+      ],
+      "b": [
+        "grid-sw",
+        "eth2"
+      ]
+    },
+    {
+      "id": "sinkhole.eth0-grid-sw.eth3",
+      "a": [
+        "sinkhole",
+        "eth0"
+      ],
+      "b": [
+        "grid-sw",
+        "eth3"
+      ]
+    },
+    {
+      "id": "gate.eth0-grid-sw.eth7",
+      "a": [
+        "gate",
+        "eth0"
+      ],
+      "b": [
+        "grid-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "gate.eth1-outside-sw.eth7",
+      "a": [
+        "gate",
+        "eth1"
+      ],
+      "b": [
+        "outside-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "earth-srv.eth0-outside-sw.eth0",
+      "a": [
+        "earth-srv",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "earth-dns.eth0-outside-sw.eth1",
+      "a": [
+        "earth-dns",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "doom-site.eth0-outside-sw.eth2",
+      "a": [
+        "doom-site",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth2"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g6-l7",
+    "title": "Lesson 6.7 — DNS Security",
+    "blurb": "Doom's fake update domain, a sinkhole, and no way around it.",
+    "steps": [
+      {
+        "title": "Sinkhole the fake domain",
+        "body": "From astro, `nslookup codexia-update.net` answers 198.51.100.66: Doom. Double-click `grid-dns` (Windows Server). `Get-DnsServerResourceRecord` lists its records. Replace the bad one: `Remove-DnsServerResourceRecord -ZoneName codexia-update.net -Name @ -RRType A -Force`, then `Add-DnsServerResourceRecordA -ZoneName codexia-update.net -Name @ -IPv4Address 192.168.100.66`. From astro: `curl http://codexia-update.net/`.",
+        "objectives": [
+          {
+            "id": "g6l7-dns",
+            "label": "codexia-update.net now resolves to the sinkhole for astro",
+            "check": {
+              "type": "dns",
+              "from": "astro",
+              "name": "codexia-update.net",
+              "expect": "resolves",
+              "addr": "192.168.100.66"
+            }
+          },
+          {
+            "id": "g6l7-page",
+            "label": "astro gets the warning page instead of Doom's",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://codexia-update.net/",
+              "expect": "ok",
+              "contains": "Blocked by the Grid"
+            }
+          }
+        ]
+      },
+      {
+        "title": "No asking anyone else",
+        "body": "rogue-pc ignores the Grid resolver and asks Earth's public one, which still gives Doom's address. On `gate`: `ip access-list extended GRID-DNS`, then `permit udp host 192.168.100.53 any eq domain`, `deny udp any any eq domain`, `deny tcp any any eq 853`, `permit ip any any`, `exit`. Apply it where the terminals' traffic enters: `interface g0/0`, `ip access-group GRID-DNS in`.",
+        "objectives": [
+          {
+            "id": "g6l7-acl",
+            "label": "GRID-DNS is applied inbound on gate Gi0/0",
+            "check": {
+              "type": "iface-config",
+              "device": "gate",
+              "iface": "eth0",
+              "is": {
+                "aclIn": "GRID-DNS"
+              }
+            }
+          },
+          {
+            "id": "g6l7-rogue",
+            "label": "rogue-pc can no longer use Earth's resolver",
+            "check": {
+              "type": "dns",
+              "from": "rogue-pc",
+              "name": "codexia-update.net",
+              "expect": "blocked"
+            }
+          },
+          {
+            "id": "g6l7-dot",
+            "label": "DNS over TLS (853) to outside resolvers is blocked",
+            "check": {
+              "type": "tcp",
+              "from": "rogue-pc",
+              "toDevice": "earth-dns",
+              "port": 853,
+              "expect": "filtered"
+            }
+          },
+          {
+            "id": "g6l7-web",
+            "label": "astro still reaches Earth's web page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://198.51.100.10/",
+              "expect": "ok",
+              "contains": "Earth relay"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Close the DoH door",
+        "body": "DNS over HTTPS hides in ordinary port 443 traffic, so block it to the known public resolver only. Rules are checked in order and `permit ip any any` comes last, so insert before it: `ip access-list extended GRID-DNS`, then `35 deny tcp any host 198.51.100.53 eq 443`. `show access-lists` shows it in place.",
+        "objectives": [
+          {
+            "id": "g6l7-doh",
+            "label": "DoH (443) to Earth's resolver is blocked",
+            "check": {
+              "type": "tcp",
+              "from": "rogue-pc",
+              "toDevice": "earth-dns",
+              "port": 443,
+              "expect": "filtered"
+            }
+          },
+          {
+            "id": "g6l7-acl2",
+            "label": "GRID-DNS denies HTTPS to 198.51.100.53",
+            "check": {
+              "type": "acl",
+              "device": "gate",
+              "name": "GRID-DNS",
+              "has": "deny tcp any host 198.51.100.53 eq 443"
+            }
+          },
+          {
+            "id": "g6l7-web2",
+            "label": "astro still reaches Earth's web page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://198.51.100.10/",
+              "expect": "ok",
+              "contains": "Earth relay"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

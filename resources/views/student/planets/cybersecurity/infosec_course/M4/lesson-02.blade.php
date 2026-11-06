@@ -33,6 +33,17 @@ Syllabus: ITP1232 Unit D.2 Enterprise Security Architecture (Zones of Trust). --
         the firewall instead of spreading to everything behind it.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does default-deny mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Allow all, then block what looks wrong</li>
+            <li class="quiz-option">B. Block only the traffic coming from the public dock</li>
+            <li class="quiz-option quiz-correct">C. Block all, then allow only what's needed ✓</li>
+            <li class="quiz-option">D. Allow every port the server has open</li>
+        </ul>
+        <p class="quiz-explanation"><em>Block everything by default, then allow only the specific traffic a zone needs.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -46,6 +57,17 @@ Syllabus: ITP1232 Unit D.2 Enterprise Security Architecture (Zones of Trust). --
         can walk straight to the command deck." <strong>Astro</strong>: "Then we build the wall. Public stays
         public. The command deck stays ours, with one door open for the one service the dock still needs."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What was the real problem with the device on the dock?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The dock was meant to be private</li>
+            <li class="quiz-option">B. The device was one of the crew's</li>
+            <li class="quiz-option quiz-correct">C. The network was one flat room ✓</li>
+            <li class="quiz-option">D. The firewall blocked the web port</li>
+        </ul>
+        <p class="quiz-explanation"><em>The dock was always public. The problem was that anything on it could reach the command deck.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -79,6 +101,17 @@ Syllabus: ITP1232 Unit D.2 Enterprise Security Architecture (Zones of Trust). --
             <text x="410" y="122" font-size="12" fill="#b3261e">✕ blocked by default policy</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is allowed through the firewall?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. tcp/80 only ✓</li>
+            <li class="quiz-option">B. Everything</li>
+            <li class="quiz-option">C. tcp/3389</li>
+            <li class="quiz-option">D. The command deck</li>
+        </ul>
+        <p class="quiz-explanation"><em>The firewall blocks by default and allows only tcp/80 to the web server.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

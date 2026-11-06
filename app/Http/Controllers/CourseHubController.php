@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Crew;
 use App\Models\CrewQuizAttempt;
 use App\Models\ModuleMaterial;
+use App\Services\CourseEnrollmentService;
 use App\Services\CourseOverviewService;
+use App\Services\StudentDashboardService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +19,8 @@ use Illuminate\View\View;
 /**
  * A course's hub — the page a student lands on after picking a course, before the lessons.
  *
- * Four tabs share one header: Home (the chapters), Materials (whatever the faculty uploaded),
+ * Four tabs share one header: Home (the chapters), Supplementary Materials (whatever the faculty
+ * uploaded — class tracks only, a self-paced course has no faculty),
  * Quiz (the faculty's quizzes) and Crew (the captain and the roster). Membership is already
  * enforced by the `course.member` middleware, so these methods only build what each tab shows.
  */
@@ -30,6 +33,12 @@ class CourseHubController extends Controller
 
     public function materials(string $slug, string $course): View|RedirectResponse
     {
+        // Supplementary materials come from a class's faculty; a self-paced course has none, so no tab.
+        $crew = request()->attributes->get('crew') ?? (Auth::check() ? Crew::viewFor(Auth::user(), $slug, $course) : null);
+        if (! $crew || $crew->isSelfPaced()) {
+            return redirect()->route('student.course.overview', ['slug' => $slug, 'course' => $course]);
+        }
+
         return $this->tab('materials', $slug, $course, function (?Crew $crew) {
             $modules = $crew ? $this->modules($crew) : [];
 
@@ -64,9 +73,8 @@ class CourseHubController extends Controller
     {
         return $this->tab('crew', $slug, $course, fn (?Crew $crew) => [
             'captain' => $crew?->faculty,
-            'roster' => $crew
-                ? $crew->roster()->wherePivot('role', 'student')->orderBy('name')->get()
-                : collect(),
+            // The crew's own leaderboard: XP, gems and streak earned in this crew only.
+            'board' => $crew ? StudentDashboardService::crewLeaderboard($crew, Auth::user()) : [],
         ]);
     }
 
@@ -90,11 +98,13 @@ class CourseHubController extends Controller
         // The course.member middleware already found the crew for a student; anyone else looks it up.
         // The captain (faculty) loads only on the tabs that show it.
         $crew = request()->attributes->get('crew')
-            ?? Crew::where('planet', $slug)->where('course_slug', $course)->first();
+            ?? Crew::viewFor(Auth::user(), $slug, $course);
         $seen = $crew ? self::seenAt($crew, Auth::id()) : ['quizzes' => null, 'materials' => null];
 
         // The tab's own badge comes from $extra (0, it was just looked at), so it wins over badges().
         return view("student.course.{$tab}", $data + $extra($crew, $seen) + [
+            // A student's way of learning this course, and the way to switch it (Self-paced <-> a class).
+            'enroll' => (Auth::user()->role ?? 'student') === 'student' ? CourseEnrollmentService::forCard(Auth::user(), $slug, $course) : null,
             'tab' => $tab,
             'slug' => $slug,
             'course' => $course,
@@ -131,7 +141,11 @@ class CourseHubController extends Controller
 
         return $crew->quizzes()->published()->regular()->withCount('questions')->orderBy('id')->get()->values()
             ->map(function ($q, $i) use ($attempts, $seenAt) {
+                // A started quiz whose clock ran out while the page was closed is graded now.
                 $a = $attempts->get($q->id);
+                if ($a?->inProgress()) {
+                    $q->closeIfExpired($a);
+                }
 
                 return [
                     'id' => $q->id,
@@ -141,8 +155,9 @@ class CourseHubController extends Controller
                     'questions' => $q->questions_count,
                     'minutes' => $q->minutes,
                     'due_at' => $q->due_at,
-                    // done: taken it. missed: the deadline passed first. available: still open.
+                    // taking: started, clock still running. done: taken it. missed: the deadline passed first. available: still open.
                     'status' => match (true) {
+                        (bool) $a?->inProgress() => 'taking',
                         $a !== null => 'done',
                         $q->isPastDue() => 'missed',
                         default => 'available',

@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "What is a memory address?",
+      "options": [
+        "The name you gave to a variable",
+        "The number of a variable's memory box",
+        "The type of a variable",
+        "The value that a variable is holding now"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does the & operator give you?",
+      "options": [
+        "The address of a variable",
+        "The value of a variable",
+        "The size of a variable in bytes",
+        "The type of a variable"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a pointer?",
+      "options": [
+        "An array with only one element",
+        "A function that returns a value",
+        "A variable that holds an address",
+        "A variable that holds one letter"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How do you read int *where;?",
+      "options": [
+        "where is the address of an int called *",
+        "where is an int that cannot be changed",
+        "where is a pointer to an int",
+        "where is an int multiplied by something"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int lamp = 7; int *where = &lamp; What is *where?",
+      "options": [
+        "0",
+        "The address of lamp",
+        "7",
+        "where"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which format specifier prints an address?",
+      "options": [
+        "%f",
+        "%p",
+        "%a",
+        "%d"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is dereferencing a pointer?",
+      "options": [
+        "Giving the pointer a new name",
+        "Setting the pointer back to zero",
+        "Copying the pointer into an array",
+        "Using the value at its address"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int light = 0; int *signal = &light; *signal = 2; What is light now?",
+      "options": [
+        "1",
+        "2",
+        "0",
+        "The address of signal"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In the declaration int *p;, what does the * mean?",
+      "options": [
+        "p is a pointer",
+        "p is an array",
+        "Multiply by p",
+        "The value at p"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In the expression *p + 1, what does the * mean?",
+      "options": [
+        "p is being declared as a pointer",
+        "The value at the address in p",
+        "Multiply p by one",
+        "The address of p"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "int pressure = 40; int *gauge = &pressure; *gauge = *gauge + 10; What is pressure?",
+      "options": [
+        "4010",
+        "50",
+        "10",
+        "40"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A pointer was declared but never given an address. What is the danger in writing through it?",
+      "options": [
+        "It always points at the first variable in main",
+        "It writes the value into every variable at once",
+        "C stops the program before anything happens",
+        "It holds a random address and can break things"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why does swapCopies(int a, int b) leave main's variables unchanged?",
+      "options": [
+        "It only swaps its own copies",
+        "It swaps them, then swaps them back",
+        "It never runs without a return",
+        "It swaps only the first one"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which parameters let a swap function change main's variables?",
+      "options": [
+        "int a[], int b",
+        "int *a, int *b",
+        "int &a, int &b",
+        "int a, int b"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How do you call void swap(int *a, int *b) on trackA and trackB?",
+      "options": [
+        "swap(*trackA, *trackB);",
+        "swap(trackA, &trackB);",
+        "swap(trackA, trackB);",
+        "swap(&trackA, &trackB);"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is passing by address?",
+      "options": [
+        "Giving pointers so a function can reach the caller's variables",
+        "Giving a function a return type that is an address",
+        "Giving a function the name of a global variable to work with",
+        "Giving a function a copy of each value so it cannot change them"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why does scanf need &fuel rather than fuel?",
+      "options": [
+        "It must put the number in your variable",
+        "The & makes it read whole numbers only",
+        "The & stops it from printing the number",
+        "It needs to know how big the number is"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "battery is 30. addCharge(int *cell, int amount) does *cell = *cell + amount. After addCharge(&battery, 25), what is battery?",
+      "options": [
+        "30",
+        "25",
+        "55",
+        "5"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How many values can return send back?",
+      "options": [
+        "None at all",
+        "Exactly one",
+        "As many as you like",
+        "Up to two"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is an output parameter?",
+      "options": [
+        "A parameter that must be the last in the list",
+        "The value that return hands back to the caller",
+        "A pointer a function writes an answer through",
+        "A parameter the function prints on the screen"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "shareParts(38, 4, &each, &left) sets *each = 38 / 4 and *left = 38 % 4. What is left?",
+      "options": [
+        "9",
+        "9.5",
+        "2",
+        "4"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "shareParts(38, 4, &each, &left) sets *each = 38 / 4. What is each?",
+      "options": [
+        "2",
+        "10",
+        "9.5",
+        "9"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Before calling a function with output parameters, what does the caller make?",
+      "options": [
+        "A second copy of the function",
+        "A global for each answer",
+        "A prototype for each answer",
+        "Variables to hold the answers"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "minMax(70, 25, &lo, &hi) puts the smaller in lo and the bigger in hi. What is hi?",
+      "options": [
+        "95",
+        "25",
+        "45",
+        "70"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does NULL mean for a pointer?",
+      "options": [
+        "It points at zero",
+        "It points at nothing",
+        "It is not declared yet",
+        "It points at main()"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What usually happens when you dereference a NULL pointer?",
+      "options": [
+        "It prints NULL",
+        "It reads a zero",
+        "The program crashes",
+        "It skips the line quietly"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which check should come before using *reading?",
+      "options": [
+        "if (&reading == NULL)",
+        "if (reading > 0)",
+        "if (reading != NULL)",
+        "if (*reading != 0)"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "You declare a pointer but have nothing for it to point at yet. What is the good habit?",
+      "options": [
+        "Set it to NULL",
+        "Set it to 0.5",
+        "Leave it alone",
+        "Point it at main"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int *spare = NULL; if (spare == NULL) prints \"Empty\", else prints *spare. What prints?",
+      "options": [
+        "Empty",
+        "Nothing",
+        "NULL",
+        "0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "An int * pointer must point at what?",
+      "options": [
+        "A double",
+        "A char",
+        "Any type",
+        "An int"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int a = 3; int *p = &a; int *q = p; *q = 9; What is a?",
+      "options": [
+        "9",
+        "12",
+        "The address of q",
+        "3"
+      ],
+      "correct": "A"
+    }
+  ]
+}

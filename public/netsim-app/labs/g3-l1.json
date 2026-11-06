@@ -1,0 +1,513 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "core",
+      "kind": "router",
+      "name": "core",
+      "x": 300,
+      "y": 20,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.1.0.1/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.1.0.5/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.100.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [
+        {
+          "dest": "192.168.60.0/24",
+          "via": "10.1.0.2",
+          "dev": "eth0"
+        }
+      ],
+      "cli": "ios",
+      "hostname": "CORE",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.1.0.0",
+            "wildcard": "0.0.0.7",
+            "area": 0
+          },
+          {
+            "addr": "192.168.100.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth2"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "grid-srv",
+      "kind": "server",
+      "name": "grid-srv",
+      "x": 560,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.100.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.100.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Grid server: hangar traffic arrived through the core."
+      }
+    },
+    {
+      "id": "dist-a",
+      "kind": "router",
+      "name": "dist-a",
+      "x": 120,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.1.0.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.60.2/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DIST-A",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.1.0.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.60.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth1"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "dist-b",
+      "kind": "router",
+      "name": "dist-b",
+      "x": 480,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.1.0.6/30",
+          "up": false
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.60.3/24",
+          "up": false
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DIST-B"
+    },
+    {
+      "id": "acc",
+      "kind": "switch",
+      "name": "acc",
+      "x": 300,
+      "y": 290,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "ACC"
+    },
+    {
+      "id": "pc1",
+      "kind": "host",
+      "name": "pc1",
+      "x": 160,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.60.2",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "pc2",
+      "kind": "host",
+      "name": "pc2",
+      "x": 440,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.60.22/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.60.2",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "core.eth0-dist-a.eth0",
+      "a": [
+        "core",
+        "eth0"
+      ],
+      "b": [
+        "dist-a",
+        "eth0"
+      ]
+    },
+    {
+      "id": "core.eth1-dist-b.eth0",
+      "a": [
+        "core",
+        "eth1"
+      ],
+      "b": [
+        "dist-b",
+        "eth0"
+      ]
+    },
+    {
+      "id": "core.eth2-grid-srv.eth0",
+      "a": [
+        "core",
+        "eth2"
+      ],
+      "b": [
+        "grid-srv",
+        "eth0"
+      ]
+    },
+    {
+      "id": "dist-a.eth1-acc.eth6",
+      "a": [
+        "dist-a",
+        "eth1"
+      ],
+      "b": [
+        "acc",
+        "eth6"
+      ]
+    },
+    {
+      "id": "dist-b.eth1-acc.eth7",
+      "a": [
+        "dist-b",
+        "eth1"
+      ],
+      "b": [
+        "acc",
+        "eth7"
+      ]
+    },
+    {
+      "id": "pc1.eth0-acc.eth0",
+      "a": [
+        "pc1",
+        "eth0"
+      ],
+      "b": [
+        "acc",
+        "eth0"
+      ]
+    },
+    {
+      "id": "pc2.eth0-acc.eth1",
+      "a": [
+        "pc2",
+        "eth0"
+      ],
+      "b": [
+        "acc",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g3-l1",
+    "title": "Lesson 3.1 — Hierarchical Design",
+    "blurb": "Access, distribution, core: set up each layer for its job.",
+    "steps": [
+      {
+        "title": "Access layer: ports for PCs",
+        "body": "Rivet: \"PC ports should be access ports that start forwarding at once.\" On `acc`: `enable`, `conf t`, `interface range g0/1 - 2`, `switchport mode access`, `spanning-tree portfast`. Read the PortFast warning: it is exactly why only PC ports get it.",
+        "objectives": [
+          {
+            "id": "g3l1-m1",
+            "label": "acc Gi0/1 is an access port with PortFast",
+            "check": {
+              "type": "iface-config",
+              "device": "acc",
+              "iface": "eth0",
+              "is": {
+                "mode": "access",
+                "portfast": true
+              }
+            }
+          },
+          {
+            "id": "g3l1-m2",
+            "label": "acc Gi0/2 is an access port with PortFast",
+            "check": {
+              "type": "iface-config",
+              "device": "acc",
+              "iface": "eth1",
+              "is": {
+                "mode": "access",
+                "portfast": true
+              }
+            }
+          },
+          {
+            "id": "g3l1-up7",
+            "label": "The uplink to dist-a (Gi0/7) has no PortFast",
+            "check": {
+              "type": "iface-config",
+              "device": "acc",
+              "iface": "eth6",
+              "is": {
+                "portfast": false
+              }
+            }
+          },
+          {
+            "id": "g3l1-p1",
+            "label": "pc1 reaches the Grid server",
+            "check": {
+              "type": "ping",
+              "from": "pc1",
+              "expect": "success",
+              "toDevice": "grid-srv"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Distribution layer: the second router",
+        "body": "dist-b is cabled but off. On `dist-b`: `interface g0/0` and `no shutdown`, `interface g0/1` and `no shutdown`. Then `router ospf 1` with `network 10.1.0.4 0.0.0.3 area 0`, `network 192.168.60.0 0.0.0.255 area 0` and `passive-interface g0/1` (no hellos toward the hangar).",
+        "objectives": [
+          {
+            "id": "g3l1-b0",
+            "label": "dist-b Gi0/0 (to core) is up",
+            "check": {
+              "type": "iface-config",
+              "device": "dist-b",
+              "iface": "eth0",
+              "is": {
+                "shutdown": false
+              }
+            }
+          },
+          {
+            "id": "g3l1-b1",
+            "label": "dist-b Gi0/1 (to the hangar) is up and passive",
+            "check": {
+              "type": "iface-config",
+              "device": "dist-b",
+              "iface": "eth1",
+              "is": {
+                "shutdown": false,
+                "ospfPassive": true
+              }
+            }
+          },
+          {
+            "id": "g3l1-nb",
+            "label": "dist-b and core are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "core",
+              "neighbor": "dist-b",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g3l1-two",
+            "label": "core has two paths to the hangar network",
+            "check": {
+              "type": "route",
+              "device": "core",
+              "dest": "192.168.60.0/24",
+              "source": "ospf",
+              "expect": "present",
+              "paths": 2
+            }
+          }
+        ]
+      },
+      {
+        "title": "Core layer: no special cases",
+        "body": "Astro: \"The core runs on the routing protocol, nothing hand-made.\" On `core`, `show ip route` shows `S 192.168.60.0/24 via 10.1.0.2`: a static route someone added during an outage. A static route beats OSPF, so the core ignores dist-b completely. Remove it: `conf t`, `no ip route 192.168.60.0 255.255.255.0 10.1.0.2`. `show ip route` now shows the hangar through both distribution routers. Finish with `curl http://192.168.100.10/` from pc2.",
+        "objectives": [
+          {
+            "id": "g3l1-nostatic",
+            "label": "core has no static route for the hangar",
+            "check": {
+              "type": "route",
+              "device": "core",
+              "dest": "192.168.60.0/24",
+              "source": "static",
+              "expect": "absent"
+            }
+          },
+          {
+            "id": "g3l1-http",
+            "label": "pc2 opens the Grid server",
+            "check": {
+              "type": "http",
+              "from": "pc2",
+              "url": "http://192.168.100.10/",
+              "expect": "ok",
+              "contains": "through the core"
+            }
+          },
+          {
+            "id": "g3l1-path",
+            "label": "The hangar's traffic crosses the core",
+            "check": {
+              "type": "path",
+              "from": "pc2",
+              "toDevice": "grid-srv",
+              "through": "core",
+              "expect": "through"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

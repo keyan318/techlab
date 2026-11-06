@@ -38,6 +38,17 @@ The Relay Lab is the NetSim simulator; passing it (see public/netsim-app/labs/m1
         <strong>address</strong> is what lets other devices find one host among many.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In data communication, what is the medium?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The set of rules both sides follow</li>
+            <li class="quiz-option">B. The device that starts the talk</li>
+            <li class="quiz-option quiz-correct">C. The path the message travels on ✓</li>
+            <li class="quiz-option">D. The information inside the message</li>
+        </ul>
+        <p class="quiz-explanation"><em>The medium is the road: a cable, radio waves or light in a fiber. The rules are the protocol.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -50,6 +61,17 @@ The Relay Lab is the NetSim simulator; passing it (see public/netsim-app/labs/m1
         <strong>Rivet</strong> holds up two dead consoles. "Two devices, one relay switch in the middle. But
         they have no addresses yet, so neither one can be found. Give each one an address and we are a network."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Rivet says the two consoles still can't be found. What are they missing?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A second relay switch</li>
+            <li class="quiz-option">B. A longer cable between them</li>
+            <li class="quiz-option">C. A faster radio signal</li>
+            <li class="quiz-option quiz-correct">D. An address for each console ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>An address is what lets other devices find one host among many. Give each console one and they form a network.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -74,6 +96,17 @@ The Relay Lab is the NetSim simulator; passing it (see public/netsim-app/labs/m1
             <text x="320" y="170" text-anchor="middle" font-size="14" font-weight="700" fill="#4a35b8">Protocol: the rules both sides follow</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does the protocol stand for?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The rules both sides follow ✓</li>
+            <li class="quiz-option">B. The cable between the two</li>
+            <li class="quiz-option">C. The console that receives</li>
+            <li class="quiz-option">D. The words inside the message</li>
+        </ul>
+        <p class="quiz-explanation"><em>The protocol is the agreed set of rules, so the sender and receiver understand each other.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -11,6 +11,7 @@ import { shellOs } from '../os';
 import { panelArp, panelFirewall, panelRoutes } from '../commands/windows/panel';
 import { formatGetNetTcp } from '../commands/windows/tools';
 import { adapterNameOf } from '../commands/windows/util';
+import { iosNameOf } from '../commands/ios/names';
 
 const WIN = () => shellOs() === 'windows';
 
@@ -255,7 +256,7 @@ function IfaceRow({ deviceId, ifaceName }: { deviceId: string; ifaceName: string
         {iface.up ? 'UP' : 'DOWN'}
       </button>
       <div className="iface-name">
-        {WIN() ? adapterNameOf(device as IpDevice, ifaceName) : ifaceName}
+        {device?.cli === 'ios' ? iosNameOf(device, ifaceName) : WIN() ? adapterNameOf(device as IpDevice, ifaceName) : ifaceName}
         <span className="iface-mac">{iface.mac}</span>
         {iface.link ? null : <span className="iface-unplugged">unplugged</span>}
       </div>
@@ -450,7 +451,15 @@ export function Inspector() {
         </section>
       )}
 
-      {ipd && (
+      {device.cli === 'ios' && (
+        <section className="inspector-arp-note">
+          <span className="hint">
+            This {swd ? 'switch' : 'router'} runs Cisco IOS. Configure it in its console: <code>enable</code>, then <code>configure terminal</code>. Type <code>?</code> for the commands.
+          </span>
+        </section>
+      )}
+
+      {ipd && device.cli !== 'ios' && (
         <section className="inspector-arp-note">
           <span className="hint">
             Addresses set here run the same code as <code>{WIN() ? 'netsh interface ip set address' : 'ip address add'}</code> in the terminal.
@@ -459,9 +468,9 @@ export function Inspector() {
       )}
 
       <div className="inspector-actions">
-        {ipd && (
+        {(ipd || device.cli === 'ios') && (
           <button className="btn" onClick={() => openTerminal(device.id)}>
-            Open terminal
+            {device.cli === 'ios' ? 'Open console' : 'Open terminal'}
           </button>
         )}
         <button className="btn danger" onClick={() => deleteDevice(device.id)}>

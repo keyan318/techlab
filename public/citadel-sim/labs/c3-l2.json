@@ -6,7 +6,7 @@
   "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
   "story": {
     "alert": "20:14 · SUPPLY LOGS LOCKED · CITADEL CORE",
-    "vex": "Pay the toll or the supply logs stay scrambled forever. Your call, Captain. (Commander Vex, Planet Doom)",
+    "vex": "Pay the toll or the supply logs stay scrambled forever. Your call, astronaut. (Commander Vex, Planet Doom)",
     "victory": "DOOM ATTACK REPELLED without paying a single credit. Astro: \"We never pay pirates. We back up, we restore, and we remember who did this — that's what the law is for.\""
   },
   "files": {

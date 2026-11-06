@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "An active intrusion is happening right now. How should it be reported?",
+      "options": [
+        "Immediate escalation",
+        "A routine report for next week",
+        "A council item for next month",
+        "Not at all, it may stop"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A false alarm that was already resolved last week. How should it be reported?",
+      "options": [
+        "Immediate escalation at 2 AM",
+        "A routine report",
+        "An emergency council meeting",
+        "A call to every crew member"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A pattern of the same minor issue keeps recurring and may need a policy change. Where should it go?",
+      "options": [
+        "Nowhere, it is minor",
+        "Straight to the MSSP",
+        "To the council",
+        "Wake the lead now"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why not make every alert feel urgent?",
+      "options": [
+        "Alerts can only be sent once",
+        "People learn to ignore alerts",
+        "The council forbids it outright",
+        "Urgent alerts cost more money"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is the goal of a reporting structure?",
+      "options": [
+        "The right event reaches the right person at the right speed",
+        "Every event wakes the security lead in the middle of the night",
+        "Only the most serious events are ever written down anywhere",
+        "Each crew member decides alone who should hear about it"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the correct order of change management?",
+      "options": [
+        "Approve, request, verify, implement",
+        "Request, implement, approve, verify",
+        "Implement, verify, request, approve",
+        "Request, approve, implement, verify"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What happens in the verify step?",
+      "options": [
+        "Someone signs off on the planned change",
+        "Someone proposes the change and the reason",
+        "The change is made on the live system",
+        "Confirm it worked and nothing else broke"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "An unapproved change happened to work. Why is it still a risk?",
+      "options": [
+        "Approved changes always run faster afterwards",
+        "Unapproved changes are deleted the next day",
+        "The change will certainly fail next time",
+        "Nobody with a wider view caught conflicts"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "\"An unapproved change that happens to work is…\" what?",
+      "options": [
+        "A new standard",
+        "A fine shortcut to keep",
+        "Luck, not process",
+        "Proof of real skill"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Who weighs the risk against the benefit before a change?",
+      "options": [
+        "Someone with authority to approve",
+        "Any crew member who is nearby",
+        "The attacker who caused the issue",
+        "The person making the change alone"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What makes an acceptable use policy real?",
+      "options": [
+        "Enforcement",
+        "A longer document",
+        "A new title",
+        "A signature only"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A first-time, minor, accidental breach of the AUP. What fits?",
+      "options": [
+        "Ignoring it completely this time",
+        "A reminder and a note in the record",
+        "Disabling the account on the spot",
+        "Revoking every permission they have"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A deliberate breach for the third time this month, after two warnings. What fits?",
+      "options": [
+        "Rewriting the AUP so the act is allowed",
+        "Nothing, since no real harm was done yet",
+        "A firmer response, like revoking access",
+        "Another gentle reminder, like the first two"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why does consistent enforcement matter?",
+      "options": [
+        "Consistency removes every risk",
+        "Consistency makes the logs much shorter",
+        "Policies only count if read aloud",
+        "Uneven enforcement erodes the policy"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is an administrative control?",
+      "options": [
+        "A firewall rule that blocks a port",
+        "A tool that enforces a rule on its own",
+        "A rule or review carried out by people",
+        "A password policy the system checks"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which is an example of a technical control?",
+      "options": [
+        "A firewall rule",
+        "A signed approval",
+        "An access review",
+        "A background check"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which is an example of an administrative control?",
+      "options": [
+        "An access-control list",
+        "A firewall rule on a port",
+        "A periodic access review",
+        "A rejected weak password"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which question can a technical control NOT answer?",
+      "options": [
+        "Is this port allowed through the firewall?",
+        "Should this person be trusted with it?",
+        "Does this file need a password to open it?",
+        "Is this password long enough to accept?"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does a security program need leadership's visible support?",
+      "options": [
+        "Visible support replaces the need for a budget",
+        "Leaders are the only people who must follow the rules",
+        "Written endorsements are enough to run a program",
+        "Leaders who skip rules teach rules are optional"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does resourcing a security program mean?",
+      "options": [
+        "Giving it the time, budget and staff it needs",
+        "Buying the most expensive tool there is",
+        "Letting each department fund its own rules",
+        "Signing the policy and approving it with a nod"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A leader signs a policy, never funds it and bypasses it when it is inconvenient. What message does this send?",
+      "options": [
+        "That the policy is ready for audit",
+        "That the policy does not really matter",
+        "That the policy is working very well indeed",
+        "That the crew should follow it more"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A leader refuses to skip the access log even when in a hurry. What is this?",
+      "options": [
+        "Poor resourcing",
+        "Leading by example",
+        "A breach of the policy",
+        "Wasting time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does operational accountability mean?",
+      "options": [
+        "Each department keeps its own budget",
+        "Each account is shared by a whole team of people",
+        "Each sensitive act traces to one person",
+        "Each change is approved by the council"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Three people share one shield-duty login. What does that break?",
+      "options": [
+        "Accountability",
+        "Network bandwidth",
+        "Encryption",
+        "Availability"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Nothing bad has happened on a shared account yet. Why remove it anyway?",
+      "options": [
+        "Shared accounts always slow the system down",
+        "Shared accounts cannot have strong passwords",
+        "The account will be hacked by tomorrow",
+        "You can't trace later what happened"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Removing a shared account assumes the crew is dishonest. Is that true?",
+      "options": [
+        "No, it is about tracing, not distrust",
+        "No, it is about saving money on licences",
+        "Yes, it means that nobody is trusted",
+        "Yes, shared accounts mean that people lie"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What should replace a shared account?",
+      "options": [
+        "A longer password on the same account",
+        "A guest account with no password",
+        "One named account for each person",
+        "A second shared account for backup"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which control is enforced automatically and consistently?",
+      "options": [
+        "An administrative control",
+        "A technical control",
+        "A verbal reminder",
+        "A council decision"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "An implementer could not see a conflict with another system. Which step would have caught it?",
+      "options": [
+        "Request",
+        "Verify",
+        "Implement",
+        "Approve"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Two people break the same rule; one is punished and one is ignored. What happens to the policy?",
+      "options": [
+        "It becomes stronger",
+        "It loses its force",
+        "It is rewritten",
+        "It is unaffected"
+      ],
+      "correct": "B"
+    }
+  ]
+}

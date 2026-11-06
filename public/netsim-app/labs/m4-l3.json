@@ -99,7 +99,7 @@
       "httpServer": {
         "enabled": true,
         "port": 80,
-        "body": "Earth answers: all systems logical, Captain."
+        "body": "Earth answers: all systems logical, astronaut."
       }
     }
   ],

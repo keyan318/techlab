@@ -177,7 +177,7 @@
       <p class="mt-2 max-w-md text-sm text-muted" x-text="fc.error"></p>
       <p x-show="fc.errorKind === 'insufficient_content'" x-cloak class="mt-2 max-w-md text-xs text-[#ffcf85]">Tip: chat a bit more with Astro about the topic first, then try again.</p>
       <div class="mt-6 flex items-center gap-2">
-        <button type="button" @click="fc.generate()" :class="fc.errorKind === 'insufficient_content' ? 'hidden' : ''" class="rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-5 py-2 text-sm font-semibold text-[#07142e] transition hover:-translate-y-[2px]">Try again</button>
+        <button type="button" @click="fc.generate()" :class="['insufficient_content', 'xp'].includes(fc.errorKind) ? 'hidden' : ''" class="rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-5 py-2 text-sm font-semibold text-[#07142e] transition hover:-translate-y-[2px]">Try again</button>
         <button type="button" @click="fc.close()" class="rounded-full px-4 py-2 text-sm text-muted transition hover:text-ink">Close</button>
       </div>
     </section>

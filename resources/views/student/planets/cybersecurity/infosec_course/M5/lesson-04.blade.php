@@ -31,6 +31,17 @@ Syllabus: ITP1232 Unit E, Public Key Cryptography. --}}
         sender's public key should never be trusted, no matter how convincing it looks.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which key signs a message?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The private key ✓</li>
+            <li class="quiz-option">B. The public key, shared</li>
+            <li class="quiz-option">C. A shared key</li>
+            <li class="quiz-option">D. A hash key</li>
+        </ul>
+        <p class="quiz-explanation"><em>You sign with your private key. Anyone can verify with your public key.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -44,6 +55,17 @@ Syllabus: ITP1232 Unit E, Public Key Cryptography. --}}
         <strong>Astro</strong> reads the two reports side by side. "One verifies against the Allied Fleet's key on
         file. The other has no matching key at all. Act only on what's actually signed."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why can't Doom forge the allied fleet's signature?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. They can't copy its letterhead</li>
+            <li class="quiz-option">B. They don't know its public key</li>
+            <li class="quiz-option">C. They can't send it any messages</li>
+            <li class="quiz-option quiz-correct">D. They don't have its private key ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Forging a valid signature requires the private key, and only the real owner has it.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -74,6 +96,17 @@ Syllabus: ITP1232 Unit E, Public Key Cryptography. --}}
             <text x="475" y="162" text-anchor="middle" font-size="14" font-weight="700" fill="#7a1a14">MESSAGE-B: no matching key — forged</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is wrong with MESSAGE-B?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. No matching key ✓</li>
+            <li class="quiz-option">B. It was verified</li>
+            <li class="quiz-option">C. It is too short</li>
+            <li class="quiz-option">D. It was signed</li>
+        </ul>
+        <p class="quiz-explanation"><em>MESSAGE-B has no matching key, so it is a forgery. Act only on what verifies.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

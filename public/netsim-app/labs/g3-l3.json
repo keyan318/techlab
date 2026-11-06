@@ -1,0 +1,442 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "landing",
+      "kind": "router",
+      "name": "landing",
+      "x": 20,
+      "y": 150,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.12.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "10.0.13.1/30",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "LANDING",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "192.168.10.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          },
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.255.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth0"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "citadel",
+      "kind": "router",
+      "name": "citadel",
+      "x": 300,
+      "y": 20,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.12.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.24.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CITADEL",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.255.255",
+            "area": 0
+          }
+        ],
+        "passive": [],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "northwatch",
+      "kind": "router",
+      "name": "northwatch",
+      "x": 300,
+      "y": 300,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.13.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.34.1/30",
+          "up": false
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "NORTHWATCH",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.13.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          }
+        ],
+        "passive": [],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "skyport",
+      "kind": "router",
+      "name": "skyport",
+      "x": 580,
+      "y": 150,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.24.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.34.2/30",
+          "up": false
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.50.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "SKYPORT",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.255.255",
+            "area": 0
+          },
+          {
+            "addr": "192.168.50.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth2"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 580,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.50.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.50.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-landing.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "landing",
+        "eth0"
+      ]
+    },
+    {
+      "id": "landing.eth1-citadel.eth0",
+      "a": [
+        "landing",
+        "eth1"
+      ],
+      "b": [
+        "citadel",
+        "eth0"
+      ]
+    },
+    {
+      "id": "landing.eth2-northwatch.eth0",
+      "a": [
+        "landing",
+        "eth2"
+      ],
+      "b": [
+        "northwatch",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth1-skyport.eth0",
+      "a": [
+        "citadel",
+        "eth1"
+      ],
+      "b": [
+        "skyport",
+        "eth0"
+      ]
+    },
+    {
+      "id": "northwatch.eth1-skyport.eth1",
+      "a": [
+        "northwatch",
+        "eth1"
+      ],
+      "b": [
+        "skyport",
+        "eth1"
+      ]
+    },
+    {
+      "id": "skyport.eth2-rivet.eth0",
+      "a": [
+        "skyport",
+        "eth2"
+      ],
+      "b": [
+        "rivet",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g3-l3",
+    "title": "Lesson 3.3 — Redundant Paths & Convergence",
+    "blurb": "Close the ring, then prove the Grid survives a cut cable.",
+    "steps": [
+      {
+        "title": "Close the ring",
+        "body": "The Northwatch–Skyport cable is plugged in but both ends are shut, and Northwatch doesn't run OSPF on it. On `northwatch`: `interface g0/1`, `no shutdown`, then `router ospf 1`, `network 10.0.34.0 0.0.0.3 area 0`. On `skyport`: `interface g0/1`, `no shutdown` (its OSPF already covers 10.0.0.0/16).",
+        "objectives": [
+          {
+            "id": "g3l3-up1",
+            "label": "northwatch Gi0/1 is up",
+            "check": {
+              "type": "iface-config",
+              "device": "northwatch",
+              "iface": "eth1",
+              "is": {
+                "shutdown": false
+              }
+            }
+          },
+          {
+            "id": "g3l3-up2",
+            "label": "skyport Gi0/1 is up",
+            "check": {
+              "type": "iface-config",
+              "device": "skyport",
+              "iface": "eth1",
+              "is": {
+                "shutdown": false
+              }
+            }
+          },
+          {
+            "id": "g3l3-nb",
+            "label": "northwatch and skyport are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "northwatch",
+              "neighbor": "skyport",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g3l3-ecmp",
+            "label": "landing has two equal paths to Skyport's LAN",
+            "check": {
+              "type": "route",
+              "device": "landing",
+              "dest": "192.168.50.0/24",
+              "source": "ospf",
+              "expect": "present",
+              "paths": 2
+            }
+          }
+        ]
+      },
+      {
+        "title": "Prove it survives",
+        "body": "Volt: \"Test it like Doom would.\" Look at `show ip route ospf` on landing: Skyport's network appears twice. Press Check objectives: the grader cuts one link at a time for a moment, follows the routing, and puts the link back. Try it yourself too: `shutdown` on landing's g0/1, `traceroute 192.168.50.10` from landing, then `no shutdown`.",
+        "objectives": [
+          {
+            "id": "g3l3-s1",
+            "label": "astro still reaches rivet if landing's link to the Citadel fails",
+            "check": {
+              "type": "survives",
+              "from": "astro",
+              "toDevice": "rivet",
+              "cut": {
+                "device": "landing",
+                "iface": "eth1"
+              }
+            }
+          },
+          {
+            "id": "g3l3-s2",
+            "label": "astro still reaches rivet if landing's link to Northwatch fails",
+            "check": {
+              "type": "survives",
+              "from": "astro",
+              "toDevice": "rivet",
+              "cut": {
+                "device": "landing",
+                "iface": "eth2"
+              }
+            }
+          },
+          {
+            "id": "g3l3-s3",
+            "label": "astro still reaches rivet if the Citadel–Skyport cable fails",
+            "check": {
+              "type": "survives",
+              "from": "astro",
+              "toDevice": "rivet",
+              "cut": {
+                "device": "citadel",
+                "iface": "eth1"
+              }
+            }
+          },
+          {
+            "id": "g3l3-p",
+            "label": "astro reaches rivet now",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

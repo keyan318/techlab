@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit H.2 Physical Vulnerability Assessment (PVA). --}}
         first — not treating every finding with the same urgency regardless of severity.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How should assessment findings be fixed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Critical ones first ✓</li>
+            <li class="quiz-option">B. All at the same time</li>
+            <li class="quiz-option">C. Cheapest ones first</li>
+            <li class="quiz-option">D. In the order found</li>
+        </ul>
+        <p class="quiz-explanation"><em>Each finding gets a severity. Fix the critical gaps first.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit H.2 Physical Vulnerability Assessment (PVA). --}}
         useful — low. Rank them honestly, or we'll spend a week fixing the low-severity panel while the door stays
         broken."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why is the side door critical but the camera only moderate?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The camera costs more to repair</li>
+            <li class="quiz-option quiz-correct">B. The door is a way straight in ✓</li>
+            <li class="quiz-option">C. The door is newer than the camera</li>
+            <li class="quiz-option">D. The camera covers the starmap</li>
+        </ul>
+        <p class="quiz-explanation"><em>A broken door is a direct way in. The blind spot is a gap, but the door there is still locked.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -60,6 +82,17 @@ Syllabus: ITP1333 Unit H.2 Physical Vulnerability Assessment (PVA). --}}
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">Rank findings by severity — fix the critical gap before the cosmetic one</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which area covers blind spots?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Access control</li>
+            <li class="quiz-option">B. Structure</li>
+            <li class="quiz-option">C. Severity</li>
+            <li class="quiz-option quiz-correct">D. Surveillance ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Surveillance covers blind spots and disabled sensors. Access control covers doors and exits.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

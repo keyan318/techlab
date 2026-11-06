@@ -6,6 +6,10 @@ import { createMusic } from './music.js';
 const params = new URLSearchParams(location.search);
 const rawLab = params.get('lab');
 const labId = rawLab && /^[a-z0-9-]{1,64}$/.test(rawLab) ? rawLab : null;
+// TechLab passes ?file= when the course's faculty member rewrote this lab (or is test-playing a draft of it in
+// the lab editor): load their version instead.
+const rawFile = params.get('file');
+const labFile = rawFile && /^\/(student\/planet\/[a-z0-9-]+\/lab\/m\d+\/lesson\d+\/file|faculty\/course-editor\/[a-z0-9-]+\/sim-lab-draft\/[A-Za-z0-9]{40})\.json$/.test(rawFile) ? rawFile : null;
 const rawUser = params.get('u');
 const userId = rawUser && /^[0-9]{1,20}$/.test(rawUser) ? rawUser : null;
 const embedded = labId !== null && window.parent !== window;
@@ -418,7 +422,7 @@ if (!labId) {
   print('Open this simulator from a lesson\'s "Defend it yourself" button.\n', 'sys');
   input.disabled = true;
 } else {
-  fetch(`labs/${labId}.json`, { cache: 'no-cache' })
+  fetch(labFile || `labs/${labId}.json`, { cache: 'no-cache', credentials: 'same-origin' })
     .then((r) => {
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       return r.json();

@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "In a hierarchical network, where do users and devices plug in?",
+      "options": [
+        "The backbone area 0",
+        "The core layer",
+        "The distribution layer",
+        "The access layer"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which layer handles routing between VLANs, gateways and policy?",
+      "options": [
+        "Distribution",
+        "Access",
+        "Core",
+        "Edge port layer"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the core layer's only job?",
+      "options": [
+        "Filter traffic and apply QoS rules to it",
+        "Move traffic fast and never go down",
+        "Hand out addresses to every device",
+        "Give users ports with VLANs and PortFast"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is a collapsed core?",
+      "options": [
+        "An access layer with no VLANs at all",
+        "A core switch that has failed for good",
+        "A core layer with only one cable left",
+        "Core and distribution merged into one"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why should every access switch have two uplinks?",
+      "options": [
+        "So it needs no IP address",
+        "So it can run two VLANs at once",
+        "So it can skip spanning tree",
+        "So one failure can't cut it off"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why avoid hand-made static routes in the core?",
+      "options": [
+        "They make the core switches run too fast",
+        "They stop VLANs from reaching the core layer",
+        "They override routing and undo redundancy",
+        "They can only be typed on access switches"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does scalability mean for a network design?",
+      "options": [
+        "It still works when the network grows",
+        "It costs less every year it is running",
+        "It uses only one switch for everything",
+        "It needs no redundant links at all"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the summary of 10.30.0.0/24 to 10.30.3.0/24?",
+      "options": [
+        "10.30.0.0/16",
+        "10.30.0.0/24",
+        "10.30.0.0/22",
+        "10.30.3.0/22"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why summarize routes?",
+      "options": [
+        "So routers can skip the hello messages",
+        "So every subnet is advertised one by one",
+        "Smaller tables and less work for routers",
+        "So that each link has a higher cost"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a single point of failure (SPOF)?",
+      "options": [
+        "A switch with spare unused ports",
+        "One part that everything depends on",
+        "A link that has a backup next to it",
+        "A router that runs two protocols"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Two independent links are each up 99% of the time. In parallel, how available is the pair?",
+      "options": [
+        "99.99%",
+        "99.995%",
+        "98%",
+        "99%"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Adding more devices in a chain (in series) does what to availability?",
+      "options": [
+        "Has no effect",
+        "Lowers it",
+        "Doubles it",
+        "Raises it"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is convergence?",
+      "options": [
+        "Splitting one network into many subnets",
+        "Two links joined into one logical link",
+        "A router taking over a virtual gateway",
+        "Routers agreeing on new paths"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "By default, how long does OSPF wait without hellos before declaring a neighbor dead?",
+      "options": [
+        "40 seconds",
+        "4 seconds",
+        "10 seconds",
+        "400 seconds"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which feature can detect a silent link failure in milliseconds?",
+      "options": [
+        "CDP",
+        "BFD",
+        "STP",
+        "DTP"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Two equal-cost paths both carry traffic. What is that called?",
+      "options": [
+        "BPDU",
+        "SPOF",
+        "HSRP",
+        "ECMP"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does EtherChannel do?",
+      "options": [
+        "Shares a virtual gateway between routers",
+        "Tags frames with a VLAN number",
+        "Bundles parallel links into one link",
+        "Blocks extra links between switches"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is a ring a popular low-cost Layer 3 design?",
+      "options": [
+        "Every node is directly linked to all",
+        "Every node has two ways out",
+        "It needs no routing protocol at all",
+        "It needs only one cable in total"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why do PCs need a first hop redundancy protocol?",
+      "options": [
+        "A PC needs two DNS servers to work",
+        "A PC knows only one gateway address",
+        "A PC can only use one cable at a time",
+        "A PC cannot learn routes from OSPF"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In HSRP, what do the PCs use as their gateway?",
+      "options": [
+        "The active router's real IP",
+        "The standby router's real IP",
+        "The switch's management IP",
+        "The virtual IP address"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the default HSRP priority?",
+      "options": [
+        "255",
+        "1",
+        "0",
+        "100"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A router with a higher HSRP priority comes back online. When does it take over again?",
+      "options": [
+        "Only if preempt is set",
+        "Only after a reboot",
+        "Never, once it was standby",
+        "Always, straight away"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How is VRRP different from HSRP?",
+      "options": [
+        "It is open, with a master and backup",
+        "It gives each router its own virtual MAC",
+        "It is Cisco only and uses active and standby",
+        "It needs no virtual IP address at all"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which FHRP also load-balances by giving each router its own virtual MAC?",
+      "options": [
+        "HSRP",
+        "GLBP",
+        "VRRP",
+        "OSPF"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "The active HSRP router loses its uplink but its LAN port stays up. What fixes this?",
+      "options": [
+        "Turning off preempt",
+        "Interface tracking",
+        "A higher hello timer",
+        "A second virtual IP"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does standby 10 track g0/0 20 do?",
+      "options": [
+        "Lowers priority by 20 while g0/0 is down",
+        "Makes g0/0 the active router in group 20",
+        "Sends HSRP hellos every 20 seconds on g0/0",
+        "Raises the priority to 20 when g0/0 is up"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which command checks HSRP on both routers?",
+      "options": [
+        "show hsrp interface all",
+        "show ip ospf brief",
+        "show standby brief",
+        "show vlan brief now"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "An OSPF neighbor is missing. Which of these is a likely cause?",
+      "options": [
+        "An area mismatch on the link",
+        "The HSRP priority is too high",
+        "The VLAN has too many PCs",
+        "A PC has the wrong DNS server"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When troubleshooting a mixed network, what is the right approach?",
+      "options": [
+        "Reboot every device and check again an hour later",
+        "Restore an old backup and hope it was the right one",
+        "Read, form a theory, change one thing, test",
+        "Change several settings at once to save some time"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why test failover?",
+      "options": [
+        "Tests reset the HSRP priority",
+        "Failover only works after a test",
+        "An untested backup is only a hope",
+        "Testing makes the links run faster"
+      ],
+      "correct": "C"
+    }
+  ]
+}

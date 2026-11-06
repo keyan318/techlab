@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit F.6 Operational Accountability. --}}
         you need most when something eventually does go wrong.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does a shared account break?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The speed of the console itself</li>
+            <li class="quiz-option">B. The strength of every password</li>
+            <li class="quiz-option">C. The firewall at the network edge</li>
+            <li class="quiz-option quiz-correct">D. Tracing an action to one person ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>If three people share a login, there's no way to know which of them did something.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit F.6 Operational Accountability. --}}
         wrong on this console, we won't be able to tell who was at the controls. One account, one person, always
         — that's not paperwork, that's the only way an audit trail means anything."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Rivet disable “shift-shared” when nothing bad happened?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The login had been hacked the night before</li>
+            <li class="quiz-option">B. The console was being moved to storage</li>
+            <li class="quiz-option">C. Doom had asked for that account by name</li>
+            <li class="quiz-option quiz-correct">D. When something does, nobody could tell who ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>One account, one person, always. That is the only way an audit trail means anything.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -51,6 +73,17 @@ Syllabus: ITP1333 Unit F.6 Operational Accountability. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Accountability is exactly what you need when something eventually goes wrong</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does one account per person give?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Faster logins</li>
+            <li class="quiz-option quiz-correct">B. Every action a name ✓</li>
+            <li class="quiz-option">C. Fewer passwords to remember</li>
+            <li class="quiz-option">D. Shared blame</li>
+        </ul>
+        <p class="quiz-explanation"><em>With one account per person, every action has a name, which is exactly what you need when things go wrong.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

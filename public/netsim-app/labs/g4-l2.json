@@ -1,0 +1,349 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 40,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 40,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "guest",
+      "kind": "host",
+      "name": "guest",
+      "x": 40,
+      "y": 320,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.30.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.30.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "deck-sw",
+      "kind": "switch",
+      "name": "deck-sw",
+      "x": 300,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DECK-SW",
+      "vlans": {
+        "eth0": 10,
+        "eth1": 20,
+        "eth2": 30
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ],
+        [
+          20,
+          "WORKSHOP"
+        ],
+        [
+          30,
+          "GUESTS"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "access"
+        },
+        "eth1": {
+          "mode": "access"
+        },
+        "eth2": {
+          "mode": "access"
+        }
+      }
+    },
+    {
+      "id": "deck-rtr",
+      "kind": "router",
+      "name": "deck-rtr",
+      "x": 560,
+      "y": 180,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DECK-RTR"
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-deck-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-deck-sw.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "guest.eth0-deck-sw.eth2",
+      "a": [
+        "guest",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth2"
+      ]
+    },
+    {
+      "id": "deck-rtr.eth0-deck-sw.eth7",
+      "a": [
+        "deck-rtr",
+        "eth0"
+      ],
+      "b": [
+        "deck-sw",
+        "eth7"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g4-l2",
+    "title": "Lesson 4.2 — Inter-VLAN Routing",
+    "blurb": "Three VLANs, one router port, one cable.",
+    "steps": [
+      {
+        "title": "A trunk to the router",
+        "body": "On `deck-sw`: `interface g0/8`, `switchport mode trunk`. On `deck-rtr`: `interface g0/0`, `no shutdown`. The physical port gets no address.",
+        "objectives": [
+          {
+            "id": "g4l2-trunk",
+            "label": "deck-sw Gi0/8 is a trunk",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-sw",
+              "iface": "eth7",
+              "is": {
+                "mode": "trunk"
+              }
+            }
+          },
+          {
+            "id": "g4l2-up",
+            "label": "deck-rtr Gi0/0 is up",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-rtr",
+              "iface": "eth0",
+              "is": {
+                "shutdown": false
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "One sub-interface per VLAN",
+        "body": "On `deck-rtr`: `interface g0/0.10`, `encapsulation dot1Q 10`, `ip address 192.168.10.1 255.255.255.0`. Then the same for `g0/0.20` (VLAN 20, 192.168.20.1). Check with `show ip interface brief`.",
+        "objectives": [
+          {
+            "id": "g4l2-s10",
+            "label": "g0/0.10 handles VLAN 10",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-rtr",
+              "iface": "eth0.10",
+              "is": {
+                "dot1q": 10
+              }
+            }
+          },
+          {
+            "id": "g4l2-s20",
+            "label": "g0/0.20 handles VLAN 20",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-rtr",
+              "iface": "eth0.20",
+              "is": {
+                "dot1q": 20
+              }
+            }
+          },
+          {
+            "id": "g4l2-p",
+            "label": "astro reaches rivet through the router",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Bring the guests in",
+        "body": "Add `g0/0.30` for VLAN 30 with 192.168.30.1/24. One cable now routes three VLANs.",
+        "objectives": [
+          {
+            "id": "g4l2-s30",
+            "label": "g0/0.30 handles VLAN 30",
+            "check": {
+              "type": "iface-config",
+              "device": "deck-rtr",
+              "iface": "eth0.30",
+              "is": {
+                "dot1q": 30
+              }
+            }
+          },
+          {
+            "id": "g4l2-pg",
+            "label": "guest reaches its gateway",
+            "check": {
+              "type": "ping",
+              "from": "guest",
+              "expect": "success",
+              "toAddr": "192.168.30.1"
+            }
+          },
+          {
+            "id": "g4l2-pg2",
+            "label": "guest reaches rivet",
+            "check": {
+              "type": "ping",
+              "from": "guest",
+              "expect": "success",
+              "toDevice": "rivet"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What does data-centric security protect?",
+      "options": [
+        "Only the doors to the server room",
+        "Only the passwords on each account",
+        "The data itself, not just the door",
+        "Only the network cables and ports"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why protect the data itself and not only the door?",
+      "options": [
+        "Doors are always stronger than any file permission",
+        "Files cannot be copied once a door is locked",
+        "Doors fail: passwords leak, accounts get taken",
+        "Attackers never try to get through the door"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What are the two steps of data-centric security?",
+      "options": [
+        "Classify files, then lock secret ones",
+        "Print every file, then shred the copies",
+        "Delete old files, then copy the new ones",
+        "Rename every file, then hide the folders"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A file only the crew who need it should read is classified as what?",
+      "options": [
+        "Public",
+        "Secret",
+        "Deleted",
+        "Masked"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How do you lock a secret file so only approved accounts can open it?",
+      "options": [
+        "Move the file to the desktop",
+        "Turn off the console screen",
+        "Give the file a much longer name",
+        "Attach a permission to the file"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A guest account can still read the starmap copy. What does this show?",
+      "options": [
+        "The door was not the only way in",
+        "The guest account is safe to keep",
+        "The starmap file is public by design",
+        "Passwords are no longer needed"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is data masking?",
+      "options": [
+        "Copying a file to a second backup server",
+        "Hiding a file's sensitive parts before sharing",
+        "Locking a file so the wrong accounts cannot open it",
+        "Deleting a file once it has been read by someone"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "After masking, what does a crew ID number look like?",
+      "options": [
+        "The full number",
+        "A blank file",
+        "****",
+        "An error code"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How is masking different from a file permission?",
+      "options": [
+        "Masking deletes the whole file before sending",
+        "Masking only works on files that are public",
+        "Masking assumes outsiders will see the file",
+        "Masking stops the wrong account from opening it"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why mask a list before sending it over a channel Doom is tapping?",
+      "options": [
+        "So the allies cannot read any of the names",
+        "So the harmful numbers are gone if read",
+        "So the file travels faster over the channel",
+        "So the channel turns off Doom's tap"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "After masking, which parts of the file stay readable?",
+      "options": [
+        "Only the crew ID numbers",
+        "The names and structure",
+        "Only the access codes",
+        "Nothing at all"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why use a security standard instead of fixing problems one crisis at a time?",
+      "options": [
+        "So attackers can read the rules",
+        "So every single fix happens much faster",
+        "So no passwords are ever needed",
+        "So nothing important gets skipped"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How many functions does the NIST Cybersecurity Framework have?",
+      "options": [
+        "7",
+        "10",
+        "5",
+        "3"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which NIST CSF function is about knowing your assets and risks?",
+      "options": [
+        "Protect",
+        "Recover fully",
+        "Detect",
+        "Identify"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Strong passwords and file permissions fit which NIST CSF function?",
+      "options": [
+        "Protect",
+        "Detect",
+        "Respond",
+        "Recover"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Sensors and log monitoring fit which NIST CSF function?",
+      "options": [
+        "Detect",
+        "Recover",
+        "Identify",
+        "Protect"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Disabling a captured account during an attack fits which NIST CSF function?",
+      "options": [
+        "Protect",
+        "Respond",
+        "Identify",
+        "Detect"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Restoring files from a backup fits which NIST CSF function?",
+      "options": [
+        "Detect",
+        "Respond",
+        "Identify",
+        "Recover"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A defense fits none of the five NIST functions. What does that tell you?",
+      "options": [
+        "The defense protects everything",
+        "The defense must be deleted now",
+        "The framework is missing a function",
+        "You may have a gap to look at"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is surveillance in the privacy sense?",
+      "options": [
+        "Being sent an email with a virus",
+        "Being asked to change your password",
+        "Being hacked through an open firewall",
+        "Being tracked without your consent"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which command shows what is listening or connected on a Windows machine?",
+      "options": [
+        "netstat -an",
+        "tasklist",
+        "taskkill /f",
+        "ipconfig"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which command shows what programs are running?",
+      "options": [
+        "route print",
+        "nslookup",
+        "tasklist",
+        "netstat -an"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "You find a process sending data out without permission. What stops it?",
+      "options": [
+        "tasklist",
+        "ping",
+        "taskkill",
+        "netstat"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why can \"free\" software be a privacy risk?",
+      "options": [
+        "Free software never runs on Windows",
+        "Sometimes your data is the payment",
+        "Free software always has a virus",
+        "Free software cannot be removed"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which sign suggests something is quietly phoning home?",
+      "options": [
+        "A program that starts quickly when you open it",
+        "Regular outbound traffic to an unknown address",
+        "A screen that turns off after ten minutes",
+        "A password that has twelve characters"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is endpoint hardening?",
+      "options": [
+        "Basic steps making one machine harder to break into",
+        "Calling for help after someone has already broken in",
+        "Making a computer case out of stronger metal",
+        "Adding more memory so the machine runs faster"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why disable unused accounts like Guest?",
+      "options": [
+        "Guest accounts make the computer run slower",
+        "An account nobody uses, nobody watches",
+        "Disabling them gives the user more storage",
+        "Guest accounts cannot have any password"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which password best fits a strong password policy?",
+      "options": [
+        "R7!tvex-Orbit9",
+        "password123",
+        "codexia2026",
+        "1234567890abcdef"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why stop services nobody needs?",
+      "options": [
+        "They make every password shorter",
+        "They block the firewall logs",
+        "They use up all the printer paper",
+        "Each is a door nobody is watching"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "The three hardening habits don't fix one specific attack. Why use them?",
+      "options": [
+        "Together they shrink the number of ways in",
+        "Together they make the computer faster",
+        "Together they replace the need for backups",
+        "Together they stop every attack ever made"
+      ],
+      "correct": "A"
+    }
+  ]
+}

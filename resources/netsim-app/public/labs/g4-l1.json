@@ -1,0 +1,426 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.11/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "scribe",
+      "kind": "host",
+      "name": "scribe",
+      "x": 20,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.11/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "arc-sw1",
+      "kind": "switch",
+      "name": "arc-sw1",
+      "x": 240,
+      "y": 160,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "ARC-SW1",
+      "vlans": {
+        "eth0": 10,
+        "eth1": 20
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ],
+        [
+          20,
+          "ARCHIVE"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "access"
+        },
+        "eth1": {
+          "mode": "access"
+        }
+      }
+    },
+    {
+      "id": "arc-sw2",
+      "kind": "switch",
+      "name": "arc-sw2",
+      "x": 460,
+      "y": 160,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "ARC-SW2",
+      "vlans": {
+        "eth0": 10,
+        "eth1": 20
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "access"
+        },
+        "eth1": {
+          "mode": "access"
+        }
+      }
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 680,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.12/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "archive-srv",
+      "kind": "server",
+      "name": "archive-srv",
+      "x": 680,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.12/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Citadel archive: floor two, VLAN 20."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-arc-sw1.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "arc-sw1",
+        "eth0"
+      ]
+    },
+    {
+      "id": "scribe.eth0-arc-sw1.eth1",
+      "a": [
+        "scribe",
+        "eth0"
+      ],
+      "b": [
+        "arc-sw1",
+        "eth1"
+      ]
+    },
+    {
+      "id": "volt.eth0-arc-sw2.eth0",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "arc-sw2",
+        "eth0"
+      ]
+    },
+    {
+      "id": "archive-srv.eth0-arc-sw2.eth1",
+      "a": [
+        "archive-srv",
+        "eth0"
+      ],
+      "b": [
+        "arc-sw2",
+        "eth1"
+      ]
+    },
+    {
+      "id": "arc-sw1.eth7-arc-sw2.eth7",
+      "a": [
+        "arc-sw1",
+        "eth7"
+      ],
+      "b": [
+        "arc-sw2",
+        "eth7"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g4-l1",
+    "title": "Lesson 4.1 — VLAN Trunking & 802.1Q",
+    "blurb": "One cable, two VLANs. Tag them.",
+    "steps": [
+      {
+        "title": "Make it a trunk",
+        "body": "On both switches: `enable`, `conf t`, `interface g0/8`, `switchport mode trunk`. Then `show interfaces trunk`. astro (floor one) can now reach volt (floor two) in VLAN 10.",
+        "objectives": [
+          {
+            "id": "g4l1-t1",
+            "label": "arc-sw1 Gi0/8 is a trunk",
+            "check": {
+              "type": "iface-config",
+              "device": "arc-sw1",
+              "iface": "eth7",
+              "is": {
+                "mode": "trunk"
+              }
+            }
+          },
+          {
+            "id": "g4l1-t2",
+            "label": "arc-sw2 Gi0/8 is a trunk",
+            "check": {
+              "type": "iface-config",
+              "device": "arc-sw2",
+              "iface": "eth7",
+              "is": {
+                "mode": "trunk"
+              }
+            }
+          },
+          {
+            "id": "g4l1-p10",
+            "label": "astro reaches volt across the trunk (VLAN 10)",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Create the missing VLAN",
+        "body": "VLAN 20 still doesn't cross. On `arc-sw2`, `show interfaces trunk`: \"Vlans allowed and active\" lists only 1 and 10, and `show vlan brief` shows why: VLAN 20 was never created there. Create it: `vlan 20`, `name ARCHIVE`.",
+        "objectives": [
+          {
+            "id": "g4l1-h20",
+            "label": "scribe opens the archive server across the trunk (VLAN 20)",
+            "check": {
+              "type": "http",
+              "from": "scribe",
+              "url": "http://192.168.20.12/",
+              "expect": "ok",
+              "contains": "Citadel archive"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Lock the trunk down",
+        "body": "Volt: \"VLAN 1 untagged and every VLAN allowed is an open door.\" On both switches, `interface g0/8`: `switchport trunk native vlan 99` and `switchport trunk allowed vlan 10,20,99`. Do both ends, or CDP reports a native VLAN mismatch.",
+        "objectives": [
+          {
+            "id": "g4l1-n1",
+            "label": "arc-sw1 trunk: native VLAN 99, allows only 10, 20 and 99",
+            "check": {
+              "type": "iface-config",
+              "device": "arc-sw1",
+              "iface": "eth7",
+              "is": {
+                "native": 99,
+                "allowed": [
+                  10,
+                  20,
+                  99
+                ]
+              }
+            }
+          },
+          {
+            "id": "g4l1-n2",
+            "label": "arc-sw2 trunk: native VLAN 99, allows only 10, 20 and 99",
+            "check": {
+              "type": "iface-config",
+              "device": "arc-sw2",
+              "iface": "eth7",
+              "is": {
+                "native": 99,
+                "allowed": [
+                  10,
+                  20,
+                  99
+                ]
+              }
+            }
+          },
+          {
+            "id": "g4l1-p10b",
+            "label": "astro still reaches volt",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          },
+          {
+            "id": "g4l1-p20b",
+            "label": "scribe still reaches the archive server",
+            "check": {
+              "type": "ping",
+              "from": "scribe",
+              "expect": "success",
+              "toDevice": "archive-srv"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

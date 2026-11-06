@@ -36,26 +36,47 @@ Syllabus: CC102 Unit 4 — Arrays (introduction to multidimensional arrays: trav
         <code>total = 0</code> outside both loops, and add <code>grid[r][c]</code> into it on every visit.
     </p>
 
-    <h2 class="section-heading">Rivet Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">For each single value of <code>r</code>, how much of the inner loop runs?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. All of it: every value of <code>c</code> ✓</li>
+            <li class="quiz-option">B. One step: a single value of <code>c</code></li>
+            <li class="quiz-option">C. None of it: <code>c</code> waits for the end</li>
+            <li class="quiz-option">D. Half of it: every other value of <code>c</code></li>
+        </ul>
+        <p class="quiz-explanation"><em>The inner loop finishes a whole row before <code>r</code> moves to the next one.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Every panel is patched. The last thing anyone needs is one number: what the whole hull is putting out,
-        all rows, all panels, added up.
+        An usher counting tickets doesn't jump around the cinema. They pick a row, walk <strong>every seat in it</strong> from left to right, then move to the next row and do it all again.
     </p>
 
     <p class="body-text">
-        <strong>Rivet</strong>: "Walk a row, adding as I go. Then drop down and walk the next one. Same running
-        total the whole way — I just don't put it down between rows."
+        The row is the <strong>outer loop</strong> (<code>r</code>), and the seat is the <strong>inner loop</strong> (<code>c</code>). For every single row, the inner loop walks the whole row before <code>r</code> moves on. It's like a clock: the minute hand goes all the way round before the hour hand moves one step.
     </p>
 
-    <p class="body-text">
-        <strong>Volt</strong>: "So a walk inside a walk."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 315" role="img" aria-label="An usher visits seats in order 1 to 6: row 0 seats 0, 1, 2, then on to row 1 seats 0, 1, 2. The outer loop r picks the row, the inner loop c walks every seat, 2 rows times 3 seats is 6 visits.">
+            <text x="210" y="40" font-size="14" fill="#0b6670" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">c = 0</text><text x="330" y="40" font-size="14" fill="#0b6670" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">c = 1</text><text x="450" y="40" font-size="14" fill="#0b6670" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">c = 2</text><text x="118" y="101" font-size="14" fill="#4a35b8" font-weight="800" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">r = 0</text><rect x="160" y="60" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="168" y="66" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="210" y="116" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle">1</text><circle cx="164" cy="64" r="13" fill="#e8457c" stroke="#fff" stroke-width="2"/><text x="164" y="69" font-size="13" fill="#fff" font-weight="800" text-anchor="middle">1</text><rect x="280" y="60" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="288" y="66" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="330" y="116" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle">2</text><circle cx="284" cy="64" r="13" fill="#e8457c" stroke="#fff" stroke-width="2"/><text x="284" y="69" font-size="13" fill="#fff" font-weight="800" text-anchor="middle">2</text><rect x="400" y="60" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="408" y="66" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="450" y="116" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle">3</text><circle cx="404" cy="64" r="13" fill="#e8457c" stroke="#fff" stroke-width="2"/><text x="404" y="69" font-size="13" fill="#fff" font-weight="800" text-anchor="middle">3</text><text x="118" y="201" font-size="14" fill="#4a35b8" font-weight="800" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">r = 1</text><rect x="160" y="160" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="168" y="166" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="210" y="216" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle">4</text><circle cx="164" cy="164" r="13" fill="#e8457c" stroke="#fff" stroke-width="2"/><text x="164" y="169" font-size="13" fill="#fff" font-weight="800" text-anchor="middle">4</text><rect x="280" y="160" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="288" y="166" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="330" y="216" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle">5</text><circle cx="284" cy="164" r="13" fill="#e8457c" stroke="#fff" stroke-width="2"/><text x="284" y="169" font-size="13" fill="#fff" font-weight="800" text-anchor="middle">5</text><rect x="400" y="160" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="408" y="166" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="450" y="216" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle">6</text><circle cx="404" cy="164" r="13" fill="#e8457c" stroke="#fff" stroke-width="2"/><text x="404" y="169" font-size="13" fill="#fff" font-weight="800" text-anchor="middle">6</text><line x1="262" y1="105" x2="270.0" y2="105.0" stroke="#e8457c" stroke-width="2.5"/><polygon points="278,105 270.0,99.0 270.0,111.0" fill="#e8457c"/><line x1="382" y1="105" x2="390.0" y2="105.0" stroke="#e8457c" stroke-width="2.5"/><polygon points="398,105 390.0,99.0 390.0,111.0" fill="#e8457c"/><line x1="262" y1="205" x2="270.0" y2="205.0" stroke="#e8457c" stroke-width="2.5"/><polygon points="278,205 270.0,199.0 270.0,211.0" fill="#e8457c"/><line x1="382" y1="205" x2="390.0" y2="205.0" stroke="#e8457c" stroke-width="2.5"/><polygon points="398,205 390.0,199.0 390.0,211.0" fill="#e8457c"/><path d="M502 95 H540 V145 H140 V195 H150" fill="none" stroke="#e8457c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6,5"/><polygon points="157,195 148.0,189.0 148.0,201.0" fill="#e8457c"/><text x="548" y="112" font-size="12" fill="#9c1f4c" font-weight="700">row done:</text><text x="548" y="128" font-size="12" fill="#9c1f4c" font-weight="700">next row</text><rect x="20" y="268" width="190" height="36" rx="18.0" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.8"/><text x="115.0" y="290.32" font-size="12" fill="#4a35b8" text-anchor="middle">outer <tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">r</tspan> · picks the row</text><rect x="225" y="268" width="190" height="36" rx="18.0" fill="#e6f8f9" stroke="#0fa3b1" stroke-width="1.8"/><text x="320.0" y="290.32" font-size="12" fill="#0b6670" text-anchor="middle">inner <tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">c</tspan> · walks every seat</text><rect x="430" y="268" width="190" height="36" rx="18.0" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><text x="525.0" y="290.32" font-size="12" fill="#1d6b43" text-anchor="middle">2 rows × 3 seats = 6 visits</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Rivet</strong>: "A walk inside a walk. The outer one picks which row I'm on. The inner one does
-        the whole row before the outer one moves down. Nothing gets counted twice, nothing gets missed."
+        Add a running total like the checkout screen from Lesson 4.3, and the usher can add up every seat in the whole cinema.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">2 rows, 3 seats each. Which seat does the usher visit right after <code>(0,2)</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. (0,3), the next seat along</li>
+            <li class="quiz-option quiz-correct">B. (1,0), start of the next row ✓</li>
+            <li class="quiz-option">C. (1,2), the seat right below</li>
+            <li class="quiz-option">D. (0,0), back to the first seat</li>
+        </ul>
+        <p class="quiz-explanation"><em>Seat 2 is the end of row 0, so the inner loop is done. The outer loop moves to row 1, and the inner loop starts again at seat 0.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -90,6 +111,17 @@ int main() {
     }
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">What is the last line the code example prints?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Cell 0,2: 3</li>
+            <li class="quiz-option">B. Cell 2,3: 6</li>
+            <li class="quiz-option">C. Cell 1,0: 4</li>
+            <li class="quiz-option quiz-correct">D. Cell 1,2: 6 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The last visit is row 1, column 2, which holds 6.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -191,7 +223,7 @@ int main() {
             <li class="quiz-option">A. The column</li>
             <li class="quiz-option quiz-correct">B. The row ✓</li>
             <li class="quiz-option">C. The total sum</li>
-            <li class="quiz-option">D. Nothing — only the inner loop matters</li>
+            <li class="quiz-option">D. The size</li>
         </ul>
         <p class="quiz-explanation"><em>By convention, the outer loop's counter (often r) selects the row, and the inner loop's counter (often c) selects the column within it.</em></p>
     </div>
@@ -210,10 +242,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. In what order does a nested loop visit a grid's cells?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Every column first, across all rows, before moving to the next column</li>
-            <li class="quiz-option quiz-correct">B. Every column of row 0 first, then every column of row 1, and so on ✓</li>
-            <li class="quiz-option">C. In a random order each time the program runs</li>
-            <li class="quiz-option">D. Only the first cell of each row is ever visited</li>
+            <li class="quiz-option">A. All of column 0 first, then all of column 1</li>
+            <li class="quiz-option quiz-correct">B. All of row 0 first, then all of row 1 ✓</li>
+            <li class="quiz-option">C. Only the first cell of every row, in order</li>
+            <li class="quiz-option">D. Row 0 and row 1 together, one cell each</li>
         </ul>
         <p class="quiz-explanation"><em>The inner loop finishes completely for each value of the outer loop — so all of row 0's columns run before row 1 even begins.</em></p>
     </div>
@@ -232,10 +264,10 @@ int main() {
     <div class="quiz-block" data-q="5">
         <p class="quiz-prompt">Q5. If the inner loop's closing brace is accidentally placed one line too early — closing before total is updated for a cell — what happens?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Nothing — C ignores misplaced braces</li>
-            <li class="quiz-option quiz-correct">B. That update line falls outside the inner loop, so it doesn't run for every cell the way it was meant to ✓</li>
-            <li class="quiz-option">C. The program automatically fixes the brace placement</li>
-            <li class="quiz-option">D. It causes total to reset to 0 every time</li>
+            <li class="quiz-option">A. Nothing, since C ignores brace placement</li>
+            <li class="quiz-option">B. The compiler moves the brace back for you</li>
+            <li class="quiz-option">C. total is reset to 0 on every single pass</li>
+            <li class="quiz-option quiz-correct">D. The update no longer runs for every cell ✓</li>
         </ul>
         <p class="quiz-explanation"><em>Brace placement decides exactly what's inside a loop — a line left outside the inner loop's braces only runs once (or as part of the outer loop) instead of for every cell.</em></p>
     </div>

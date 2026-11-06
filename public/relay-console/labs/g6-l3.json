@@ -1,0 +1,201 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g6-l3",
+  "title": "Lesson 6.3: Intrusion Detection & Prevention",
+  "host": {
+    "name": "SHIELD-IPS",
+    "platform": "IPS sensor",
+    "banner": "Shield intrusion sensor (Relay Console for TechLab)\nWatching the Citadel edge link"
+  },
+  "story": {
+    "alert": "SHIELD-IPS · 4 ALERTS OVERNIGHT · NOTHING BLOCKED",
+    "victory": "Vex's next password storm hits the sensor and stops dead. Volt's drill scan runs without a single alert. Volt: \"Now it watches AND acts, and it knows a friend from an enemy.\""
+  },
+  "running": "! SHIELD-IPS sensor configuration\n!\nsensor mode promiscuous\nmonitor interface GigabitEthernet0/1\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show alerts",
+      "when": [
+        "inline",
+        "block"
+      ],
+      "sets": [
+        "seen"
+      ],
+      "text": "ID  Time      Detection  Source          Destination        What\nA1  02:13:07  signature  203.0.113.66    192.168.20.80:22   SID 2001219 SSH brute force: 412 logins/min\nA2  02:14:55  anomaly    192.168.30.44   198.51.100.53:53   DNS volume 40x this host's normal level\nA3  02:15:10  signature  203.0.113.66    192.168.20.80:80   SID 2011768 web path traversal \"../../etc/passwd\"\nA4  02:16:00  signature  192.168.20.5    192.168.20.0/24    SID 1000123 TCP SYN port sweep\n\nSensor mode: INLINE.\nA1: BLOCKED, attacker 203.0.113.66 denied inline for 60 minutes."
+    },
+    {
+      "cmd": "show alerts",
+      "text": "ID  Time      Detection  Source          Destination        What\nA1  02:13:07  signature  203.0.113.66    192.168.20.80:22   SID 2001219 SSH brute force: 412 logins/min\nA2  02:14:55  anomaly    192.168.30.44   198.51.100.53:53   DNS volume 40x this host's normal level\nA3  02:15:10  signature  203.0.113.66    192.168.20.80:80   SID 2011768 web path traversal \"../../etc/passwd\"\nA4  02:16:00  signature  192.168.20.5    192.168.20.0/24    SID 1000123 TCP SYN port sweep\n\nSensor mode: PROMISCUOUS (copy of traffic from a SPAN port). Action on every alert: alert only."
+    },
+    {
+      "cmd": "show sensor mode",
+      "when": [
+        "inline"
+      ],
+      "text": "Sensor mode: inline (traffic passes through the sensor)"
+    },
+    {
+      "cmd": "show sensor mode",
+      "text": "Sensor mode: promiscuous (watching a copy of traffic from SPAN port Gi0/24 on the core switch)"
+    },
+    {
+      "cmd": "show signature <n>",
+      "args": [
+        "2001219"
+      ],
+      "text": "SID 2001219  ET SCAN Potential SSH brute force\n  Engine: signature (pattern: >30 SSH connection attempts per minute from one source)\n  Action: alert"
+    },
+    {
+      "cmd": "show signature <n>",
+      "args": [
+        "1000123"
+      ],
+      "text": "SID 1000123  TCP SYN port sweep\n  Engine: signature (pattern: SYN to >50 ports in 10 seconds)\n  Action: alert   Exclusions: none"
+    },
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      410   drill-memo.txt\n"
+    },
+    {
+      "cmd": "more flash:drill-memo.txt",
+      "text": "MEMO FROM ASTRO\nVolt's Drill is authorized every night from 02:00 to 03:00.\nDrill scanner: 192.168.20.5 (scans our own Citadel network only).\n"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "sensor mode inline",
+      "sets": [
+        "inline"
+      ]
+    },
+    {
+      "cmd": "sensor mode promiscuous",
+      "clears": [
+        "inline"
+      ],
+      "store": false
+    },
+    {
+      "cmd": "signature <n> action deny-attacker-inline",
+      "args": [
+        "2001219"
+      ],
+      "when": [
+        "inline"
+      ],
+      "sets": [
+        "block"
+      ]
+    },
+    {
+      "cmd": "signature <n> action deny-attacker-inline",
+      "args": [
+        "2001219"
+      ],
+      "store": false,
+      "reply": "% A sensor in promiscuous mode only sees a copy. It cannot block anything until it is inline."
+    },
+    {
+      "cmd": "signature <n> action <word>",
+      "reply": "% Saved. The brute force is signature 2001219; block it with action deny-attacker-inline."
+    },
+    {
+      "cmd": "signature <n> exclude source <ip>",
+      "args": [
+        "1000123",
+        "192.168.20.5"
+      ],
+      "sets": [
+        "tuned"
+      ]
+    },
+    {
+      "cmd": "signature <n> exclude source <ip>",
+      "reply": "% Saved, but the memo names the drill scanner and its signature (1000123, 192.168.20.5)."
+    }
+  ],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Read the night",
+      "body": "Type `enable`, then `show alerts` and `more flash:drill-memo.txt`. Which alert came from anomaly-based detection? `submit ANOMALY=A<n>`. Which one is a false positive? `submit FALSEPOS=A<n>`. And this sensor watches a network link: `submit SENSOR=NIDS` or `HIDS`?",
+      "objectives": [
+        {
+          "id": "a-anom",
+          "label": "Anomaly-based alert found",
+          "check": {
+            "type": "answer",
+            "value": "ANOMALY=A2"
+          }
+        },
+        {
+          "id": "a-fp",
+          "label": "False positive found",
+          "check": {
+            "type": "answer",
+            "value": "FALSEPOS=A4"
+          }
+        },
+        {
+          "id": "a-sensor",
+          "label": "Sensor type named",
+          "check": {
+            "type": "answer",
+            "value": "SENSOR=NIDS",
+            "alt": [
+              "SENSOR=NIPS"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "From watching to blocking",
+      "body": "Run `show sensor mode`. In `conf t`: `sensor mode inline`, then `signature 2001219 action deny-attacker-inline` (the SSH brute force). `end`, then `show alerts`.",
+      "objectives": [
+        {
+          "id": "inline",
+          "label": "Sensor is inline",
+          "check": {
+            "type": "fact",
+            "fact": "inline"
+          }
+        },
+        {
+          "id": "block",
+          "label": "SSH brute force signature blocks the attacker",
+          "check": {
+            "type": "fact",
+            "fact": "block"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Saw the attacker blocked",
+          "check": {
+            "type": "fact",
+            "fact": "seen"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Tune out the false alarm",
+      "body": "Volt's drill scanner is 192.168.20.5, authorized in the memo. In `conf t`: `signature 1000123 exclude source 192.168.20.5`.",
+      "objectives": [
+        {
+          "id": "tuned",
+          "label": "Drill scanner excluded from the port-sweep signature",
+          "check": {
+            "type": "fact",
+            "fact": "tuned"
+          }
+        }
+      ]
+    }
+  ]
+}

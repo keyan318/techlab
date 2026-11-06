@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit F.2 Change Management. --}}
         work is luck, not process.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What step comes right after “request” in change management?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Verify</li>
+            <li class="quiz-option">B. Implement</li>
+            <li class="quiz-option">C. Report</li>
+            <li class="quiz-option quiz-correct">D. Approve ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Request, approve, implement, verify, in that order.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit F.2 Change Management. --}}
         touching the relay, they'd have told you it conflicts with a scheduled diagnostic tomorrow. Being right
         this time doesn't make skipping approval safe next time."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why is Astro unhappy, even though Rivet's change worked?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The change broke the shield relay for good</li>
+            <li class="quiz-option">B. Rivet did the change in daylight</li>
+            <li class="quiz-option quiz-correct">C. Skipping approval was luck, not process ✓</li>
+            <li class="quiz-option">D. Volt had already made the change</li>
+        </ul>
+        <p class="quiz-explanation"><em>Volt would have warned it conflicts with tomorrow's diagnostic. Being right once doesn't make skipping safe.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -61,6 +83,17 @@ Syllabus: ITP1333 Unit F.2 Change Management. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Skipping approval is a risk even when the change happens to work</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what happens in the last step?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Propose the change</li>
+            <li class="quiz-option quiz-correct">B. Confirm it worked ✓</li>
+            <li class="quiz-option">C. Make the change</li>
+            <li class="quiz-option">D. Weigh other work</li>
+        </ul>
+        <p class="quiz-explanation"><em>Verify: confirm it worked as intended and nothing else broke.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

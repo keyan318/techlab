@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l4.json) complete
         A simple rule: to talk inside one network, use a switch. To talk between networks, you need a router.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does a router do that a switch does not?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Learns the MAC address behind each port</li>
+            <li class="quiz-option quiz-correct">B. Connects different networks together ✓</li>
+            <li class="quiz-option">C. Joins devices inside one network</li>
+            <li class="quiz-option">D. Splits one switch into two VLANs</li>
+        </ul>
+        <p class="quiz-explanation"><em>A switch connects devices inside one network. To talk between networks, you need a router.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Warning</h2>
 
     <p class="body-text">
@@ -38,6 +49,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l4.json) complete
     <p class="body-text">
         <strong>Astro</strong> approves both. "Segment first, connect second."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt want the shield console in its own zone?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. So a hacked comms console can't reach it ✓</li>
+            <li class="quiz-option">B. So the shields get a faster cable</li>
+            <li class="quiz-option">C. So the switch has fewer ports to look after</li>
+            <li class="quiz-option">D. So comms can share the shield wiring</li>
+        </ul>
+        <p class="quiz-explanation"><em>Putting sensitive devices in a separate VLAN keeps them apart. A hack on comms can't reach the shields directly.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -68,6 +90,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l4.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how do devices in different VLANs reach each other?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Through a hub</li>
+            <li class="quiz-option">B. Through the same port</li>
+            <li class="quiz-option quiz-correct">C. Through the router ✓</li>
+            <li class="quiz-option">D. Through a bus cable</li>
+        </ul>
+        <p class="quiz-explanation"><em>Devices in different VLANs cannot talk directly, even on one switch. They need the router to cross.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "What is a function?",
+      "options": [
+        "A loop that runs a fixed number of times",
+        "A header file that lends you printf",
+        "A variable that holds several values",
+        "A named block of code you can run again"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does it mean to call a function?",
+      "options": [
+        "To run it by its name",
+        "To give it a name and a type",
+        "To delete it from the file",
+        "To write out its body once"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does void mean in void beep()?",
+      "options": [
+        "The function sends no value back",
+        "The function takes no parameters",
+        "The function never runs at all",
+        "The function is empty inside"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "main calls beep(); four times. How many times does beep's body run?",
+      "options": [
+        "0",
+        "4",
+        "1",
+        "5"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which of these is itself a function every C program has?",
+      "options": [
+        "include",
+        "main",
+        "stdio.h",
+        "return"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Without a prototype, where must a function be defined?",
+      "options": [
+        "Inside the main function body",
+        "In a file called stdio.h",
+        "Above the code that calls it",
+        "Below the code that calls it"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a parameter?",
+      "options": [
+        "A variable holding a value passed into a function",
+        "The name you give a function when you write it",
+        "A comment that explains what a function does",
+        "A value that a function sends back when it is done"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "void report(int level) is called as report(75);. What does level hold during that call?",
+      "options": [
+        "level",
+        "Nothing",
+        "75",
+        "0"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How long does a parameter exist?",
+      "options": [
+        "Until the next printf is reached",
+        "Only while that call is running",
+        "Until main calls a different function",
+        "For as long as the program runs"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How do you separate two parameters in a function's definition?",
+      "options": [
+        "With a new line",
+        "With a plus sign",
+        "With a comma",
+        "With a semicolon"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why give a function a parameter?",
+      "options": [
+        "So it can work on a new value each call",
+        "So it never needs to print anything at all",
+        "So it can run without being called at all",
+        "So it can only be called a single time"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does return a + b; do in int add(int a, int b)?",
+      "options": [
+        "Restarts the function with a + b",
+        "Prints the sum on the screen",
+        "Stores the sum in a new variable",
+        "Sends the sum back to the caller"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does the int in int add(int a, int b) promise?",
+      "options": [
+        "The function prints an int",
+        "The function takes only one int",
+        "The function ends with return 0;",
+        "The function sends back an int"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int total = add(3, 4); What does total hold?",
+      "options": [
+        "34",
+        "12",
+        "7",
+        "3"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What happens to code written after return in the same block?",
+      "options": [
+        "It never runs",
+        "It runs twice",
+        "It runs first",
+        "It runs once"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A function returns a value. Where can that call be used?",
+      "options": [
+        "Anywhere a value of that type fits",
+        "Only as the very last line of main",
+        "Only inside a printf, nowhere else",
+        "Only on a line of its own, never inside"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the difference between a void function and an int function?",
+      "options": [
+        "Only the void one can be called",
+        "Only the void one can take parameters",
+        "Only the int one can print text",
+        "Only the int one sends a value back"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is a function prototype?",
+      "options": [
+        "The full function, body and all",
+        "A one-line preview without the body",
+        "A comment that names the function",
+        "The first time a function is called"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How does a prototype end?",
+      "options": [
+        "With an opening brace",
+        "With a colon",
+        "With a semicolon",
+        "With return 0"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which is a correct prototype for addParts?",
+      "options": [
+        "int addParts(int a, int b) {",
+        "int addParts(a, b) return;",
+        "int addParts(int a, int b);",
+        "addParts(int a, int b);"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "With a prototype above main, where can the full definition go?",
+      "options": [
+        "Only above the prototype",
+        "Nowhere, it is not needed",
+        "Only inside the main body",
+        "Further down, after main"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why write prototypes above main?",
+      "options": [
+        "The compiler cannot read anything written below main",
+        "main can sit at the top, like a table of contents",
+        "Prototypes let the functions skip their parameters",
+        "The functions run faster when they have a prototype"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "The prototype says int f(int a); but the real definition takes a float. What happens?",
+      "options": [
+        "The compiler reports that they don't match",
+        "Nothing, a prototype is only a comment",
+        "The compiler quietly changes the prototype",
+        "The program uses whichever one comes first"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int addParts(int a, int b) returns a + b. What does printf(\"%d\", addParts(20, 5)); print?",
+      "options": [
+        "15",
+        "25",
+        "205",
+        "100"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "int total = addParts(12, 30); report(total); What value does report receive?",
+      "options": [
+        "12",
+        "42",
+        "1230",
+        "30"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why split a program into several functions?",
+      "options": [
+        "C forbids long main functions",
+        "Each one does one clear job",
+        "Functions run in a random order",
+        "The program needs fewer lines"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a program built from functions, what is main's job?",
+      "options": [
+        "Holding the prototypes for all the functions",
+        "Printing every value that the program uses",
+        "Doing every calculation itself, step by step",
+        "Calling the others and passing answers on"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "reportTotal(int total) prints a number. Does it need to know how that number was worked out?",
+      "options": [
+        "No, it only needs the value it receives",
+        "Yes, it must repeat the same calculation",
+        "Yes, it must call the function that made it",
+        "No, because it never receives any value"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int sq(int n) returns n * n. What does sq(sq(2)) give?",
+      "options": [
+        "8",
+        "22",
+        "16",
+        "4"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A function has two parameters. What does a call to it need?",
+      "options": [
+        "One value, the other is guessed",
+        "No values, they are set inside",
+        "Two values, in any order at all",
+        "Two values, in the same order"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which line calls a function named check with the value 5?",
+      "options": [
+        "check = 5;",
+        "void check(5);",
+        "check(5);",
+        "int check(5) {"
+      ],
+      "correct": "C"
+    }
+  ]
+}

@@ -20,6 +20,7 @@ import {
   runTnc,
 } from './tools';
 import { tokenize } from './util';
+import { runAddDnsA, runGetDnsRecords, runRemoveDnsRecord } from './dnsserver';
 
 const HELP = `NetSim commands (real Windows syntax, curated subset). Commands are not case-sensitive.
 
@@ -42,6 +43,7 @@ const HELP = `NetSim commands (real Windows syntax, curated subset). Commands ar
   netsh advfirewall ...                   Windows Defender Firewall (type: netsh advfirewall)
   New-NetNat / Add-NetNatStaticMapping / Get-NetNat / Remove-NetNat   NAT on a router
   Get-NetTCPConnection                    TCP connection table
+  Get-DnsServerResourceRecord / Add-DnsServerResourceRecordA / Remove-DnsServerResourceRecord   DNS server records
   hostname | ver | cls | help
 
 Adapters are named "Ethernet", "Ethernet 2", "Ethernet 3", ... (use quotes when the name has a space).
@@ -135,6 +137,15 @@ export class WinShell {
       case 'get-nettcpconnection':
         write(formatGetNetTcp(d));
         break;
+      case 'get-dnsserverresourcerecord':
+        runGetDnsRecords(d, args, write);
+        break;
+      case 'add-dnsserverresourcerecorda':
+        runAddDnsA(d, args, write);
+        break;
+      case 'remove-dnsserverresourcerecord':
+        runRemoveDnsRecord(d, args, write);
+        break;
       default: {
         const hint = LINUX_HINTS[cmd];
         write(`'${raw}' is not recognized as an internal or external command,\noperable program or batch file.\n`);
@@ -152,9 +163,14 @@ export class WinShell {
     for (let i = 0; i < args.length; i++) {
       const a = args[i].toLowerCase();
       if (a === '-n' || a === '/n') {
-        count = Number(args[++i]);
+        const raw = args[++i];
+        count = Number(raw);
         if (!Number.isInteger(count) || count <= 0) {
           write('Bad value for option -n, valid range is from 1 to 4294967295.\n');
+          // TechLab: a mistyped `-n` (e.g. `ping -n 192.168.1.20`, missing the count) swallows the
+          // host into the count slot — never pings, but a stale pass from an earlier real ping to
+          // this same target must not keep crediting the student, so invalidate it here too.
+          if (raw) this.device.recordActivity('ping', raw.toLowerCase(), 'fail');
           done();
           return null;
         }

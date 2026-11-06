@@ -60,6 +60,7 @@ export function runCurl(
   const resolver = resolveHost(device, host, (res) => {
     if (finished) return;
     if ('error' in res) {
+      device.recordActivity('http', host, 'fail');
       write(`curl: (6) Could not resolve host: ${host}\n`);
       finish();
       return;
@@ -74,6 +75,8 @@ export function runCurl(
       TIMEOUT_MS,
       (r) => {
         if (finished) return;
+        // TechLab: record what this real request observed, so a lab objective can require it.
+        device.recordActivity('http', host, r.ok ? 'ok' : 'fail');
         if (r.ok) {
           if (verbose) {
             write(`> GET ${path} HTTP/1.1\n> Host: ${host}\n>\n`);
@@ -96,6 +99,7 @@ export function runCurl(
       verbose ? () => write(`* Connected to ${host} (${ipToString(ip)}) port ${port}\n`) : undefined,
     );
     if (err) {
+      device.recordActivity('http', host, 'fail');
       write(`curl: (7) Failed to connect to ${host} port ${port}: ${err}\n`);
       finish();
     }

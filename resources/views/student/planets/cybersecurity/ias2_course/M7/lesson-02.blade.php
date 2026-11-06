@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit G.2 Business Continuity Planning (BCP). --}}
         organization keep operating at all, systems or no systems?"
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does BCP cover that DR doesn't?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Restoring a server from the last backup</li>
+            <li class="quiz-option quiz-correct">B. Keeping the whole organization running ✓</li>
+            <li class="quiz-option">C. Replacing one broken hard drive in IT</li>
+            <li class="quiz-option">D. Rebooting the relay console's systems</li>
+        </ul>
+        <p class="quiz-explanation"><em>DR restores IT systems. BCP keeps the whole organization working, with or without systems.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit G.2 Business Continuity Planning (BCP). --}}
         speaks for the crew to our allies while we're relocated? That's not a DR question — DR would have nothing
         to restore here. That's business continuity."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why is the hull breach a BCP question, not DR?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The relay console is badly damaged</li>
+            <li class="quiz-option">B. Every backup was lost in the breach</li>
+            <li class="quiz-option quiz-correct">C. Every system works; the hall doesn't ✓</li>
+            <li class="quiz-option">D. The firewall stopped all of the traffic</li>
+        </ul>
+        <p class="quiz-explanation"><em>DR would have nothing to restore. The question is where command works from and who speaks for the crew.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -54,6 +76,17 @@ Syllabus: ITP1333 Unit G.2 Business Continuity Planning (BCP). --}}
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">DR asks how systems come back; BCP asks how the organization keeps running at all</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does disaster recovery do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Keeps the crew going</li>
+            <li class="quiz-option">B. Finds a new location</li>
+            <li class="quiz-option quiz-correct">C. Restores IT systems ✓</li>
+            <li class="quiz-option">D. Talks to the allies</li>
+        </ul>
+        <p class="quiz-explanation"><em>DR restores the IT systems. BCP keeps the whole crew operating.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

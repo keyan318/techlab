@@ -31,31 +31,47 @@ for (int i = 0; i &lt; 5; i++) {
         building up.
     </p>
 
-    <h2 class="section-heading">Rivet Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">After the loop in the explanation finishes, what does <code>total</code> hold?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The last element only</li>
+            <li class="quiz-option">B. How many elements there are</li>
+            <li class="quiz-option">C. 0, its starting value</li>
+            <li class="quiz-option quiz-correct">D. The sum of every element ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Each pass adds the current element, so after five passes <code>total</code> is the sum of all five.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Volt was right — more than one panel took damage. Now Astro has to decide whether to spend the last of
-        the salvage on them, and he wants one number, not four.
+        At a supermarket checkout, the screen shows <strong>0</strong> before the first item. Every beep adds that item's price to the total. After the last item, the screen shows the whole bill.
     </p>
 
     <p class="body-text">
-        <strong>Astro</strong>: "Don't read me a list. Tell me what the whole repair costs."
+        <code>total</code> is that screen. It's set to 0 <strong>before</strong> the loop starts, and every pass through the loop does <code>total = total + emitters[i];</code>, one beep per locker. A variable that builds up a result like this is called an <strong>accumulator</strong>.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Same walk down the row as yesterday. Only this time I carry a running total
-        with me." He mimes it, hand moving along the bench. "Start at nothing. Add each one as I pass it. By the
-        end of the row, I'm holding the answer."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 340" role="img" aria-label="Items priced 80, 45, 90, 30 and 100 roll to a scanner. The total screen starts at 0, then shows 80, 125, 215, 245, and finally 345. int total = 0 goes before the loop so the screen starts at zero. If you reset it inside the loop you would only pay for the last item.">
+            <text x="210" y="44" font-size="13" fill="#14306b" text-anchor="middle">each beep:  <tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">total = total + emitters[i];</tspan></text><rect x="28" y="104" width="58" height="56" rx="8" fill="#fff0d9" stroke="#f08c1a" stroke-width="2"/><rect x="42" y="94" width="30" height="14" rx="3" fill="#fff" stroke="#f08c1a" stroke-width="1.5"/><text x="57" y="140" font-size="17" fill="#8a4b00" font-weight="800" text-anchor="middle">80</text><rect x="98" y="104" width="58" height="56" rx="8" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2"/><rect x="112" y="94" width="30" height="14" rx="3" fill="#fff" stroke="#7c5cff" stroke-width="1.5"/><text x="127" y="140" font-size="17" fill="#4a35b8" font-weight="800" text-anchor="middle">45</text><rect x="168" y="104" width="58" height="56" rx="8" fill="#e6f8f9" stroke="#0fa3b1" stroke-width="2"/><rect x="182" y="94" width="30" height="14" rx="3" fill="#fff" stroke="#0fa3b1" stroke-width="1.5"/><text x="197" y="140" font-size="17" fill="#0b6670" font-weight="800" text-anchor="middle">90</text><rect x="238" y="104" width="58" height="56" rx="8" fill="#e9f7ef" stroke="#2fa56b" stroke-width="2"/><rect x="252" y="94" width="30" height="14" rx="3" fill="#fff" stroke="#2fa56b" stroke-width="1.5"/><text x="267" y="140" font-size="17" fill="#1d6b43" font-weight="800" text-anchor="middle">30</text><rect x="308" y="104" width="58" height="56" rx="8" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="322" y="94" width="30" height="14" rx="3" fill="#fff" stroke="#2f6fe0" stroke-width="1.5"/><text x="337" y="140" font-size="17" fill="#14306b" font-weight="800" text-anchor="middle">100</text><rect x="20" y="162" width="380" height="20" rx="10" fill="#5b6b86"/><circle cx="38" cy="172" r="5" fill="#cfd7e6"/><circle cx="74" cy="172" r="5" fill="#cfd7e6"/><circle cx="110" cy="172" r="5" fill="#cfd7e6"/><circle cx="146" cy="172" r="5" fill="#cfd7e6"/><circle cx="182" cy="172" r="5" fill="#cfd7e6"/><circle cx="218" cy="172" r="5" fill="#cfd7e6"/><circle cx="254" cy="172" r="5" fill="#cfd7e6"/><circle cx="290" cy="172" r="5" fill="#cfd7e6"/><circle cx="326" cy="172" r="5" fill="#cfd7e6"/><circle cx="362" cy="172" r="5" fill="#cfd7e6"/><line x1="40" y1="200" x2="109.0" y2="200.0" stroke="#9aa5b8" stroke-width="2.5"/><polygon points="120,200 109.0,194.0 109.0,206.0" fill="#9aa5b8"/><text x="130" y="205" font-size="12" fill="#5b6b86" font-style="italic">items roll to the scanner</text><rect x="400" y="96" width="46" height="86" rx="8" fill="#1b2440"/><line x1="408" y1="139" x2="438" y2="139" stroke="#ff5a5a" stroke-width="3"/><rect x="466" y="30" width="154" height="200" rx="12" fill="#1b2440"/><text x="543" y="56" font-size="12" fill="#9aa5b8" font-weight="800" text-anchor="middle" letter-spacing="2">TOTAL</text><text x="484" y="84" font-size="13" fill="#9aa5b8" font-family="ui-monospace, Menlo, Consolas, monospace">start</text><text x="604" y="84" font-size="14" fill="#e8f0ff" font-weight="600" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">0</text><text x="484" y="109" font-size="13" fill="#9aa5b8" font-family="ui-monospace, Menlo, Consolas, monospace">+80</text><text x="604" y="109" font-size="14" fill="#e8f0ff" font-weight="600" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">80</text><text x="484" y="134" font-size="13" fill="#9aa5b8" font-family="ui-monospace, Menlo, Consolas, monospace">+45</text><text x="604" y="134" font-size="14" fill="#e8f0ff" font-weight="600" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">125</text><text x="484" y="159" font-size="13" fill="#9aa5b8" font-family="ui-monospace, Menlo, Consolas, monospace">+90</text><text x="604" y="159" font-size="14" fill="#e8f0ff" font-weight="600" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">215</text><text x="484" y="184" font-size="13" fill="#9aa5b8" font-family="ui-monospace, Menlo, Consolas, monospace">+30</text><text x="604" y="184" font-size="14" fill="#e8f0ff" font-weight="600" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">245</text><text x="484" y="209" font-size="13" fill="#9aa5b8" font-family="ui-monospace, Menlo, Consolas, monospace">+100</text><text x="604" y="209" font-size="16" fill="#86e0b0" font-weight="800" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">345</text><rect x="20" y="246" width="600" height="36" rx="18.0" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><text x="320.0" y="268.68" font-size="13" fill="#1d6b43" text-anchor="middle"><tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">int total = 0;</tspan> before the loop: the screen starts at zero</text><rect x="20" y="292" width="600" height="36" rx="18.0" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="320.0" y="314.68" font-size="13" fill="#7a1a14" text-anchor="middle">Reset it inside the loop? You'd only pay for the last item.</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Volt</strong>: "And you start it at nothing every time?"
+        If the cashier reset the screen to 0 for every item, you'd only pay for the last thing in your cart. That is exactly what happens if you write <code>int total = 0;</code> <em>inside</em> the loop.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Start it <em>before</em> the walk. Start it inside the walk and it resets at
-        every panel and you end up with the last number instead of the total. Ask me how I know."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why must <code>int total = 0;</code> be written before the loop, not inside it?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Inside, it resets to 0 on every item ✓</li>
+            <li class="quiz-option">B. Inside, the loop would run forever</li>
+            <li class="quiz-option">C. Before, it makes the loop run faster</li>
+            <li class="quiz-option">D. It doesn't matter where you write it</li>
+        </ul>
+        <p class="quiz-explanation"><em>Inside the loop, <code>total</code> would go back to 0 on every pass and only the last item would count. Outside, it keeps growing.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -92,6 +108,17 @@ int main() {
     printf("Total output: %d\n", total);
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">What does the code example print?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Total output: 345 ✓</li>
+            <li class="quiz-option">B. Total output: 100</li>
+            <li class="quiz-option">C. Total output: 5</li>
+            <li class="quiz-option">D. Total output: 0</li>
+        </ul>
+        <p class="quiz-explanation"><em>80 + 45 + 90 + 30 + 100 = 345.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -156,9 +183,9 @@ int main() {
         <p class="quiz-prompt">Q1. What is an accumulator?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. Another name for an array</li>
-            <li class="quiz-option quiz-correct">B. A variable that builds up a result across repeated passes of a loop ✓</li>
-            <li class="quiz-option">C. A type of function</li>
-            <li class="quiz-option">D. The loop's condition</li>
+            <li class="quiz-option">B. A function that adds two numbers</li>
+            <li class="quiz-option">C. The condition that ends a loop</li>
+            <li class="quiz-option quiz-correct">D. A variable a loop keeps adding to ✓</li>
         </ul>
         <p class="quiz-explanation"><em>An accumulator starts at a known value and is updated on every loop pass, gradually building toward a final result like a sum.</em></p>
     </div>
@@ -166,10 +193,10 @@ int main() {
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. Where must an accumulator like total be declared?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Inside the loop's body, so it resets every pass</li>
-            <li class="quiz-option quiz-correct">B. Outside (before) the loop, so it keeps its value across every pass ✓</li>
-            <li class="quiz-option">C. Inside the array's brackets</li>
-            <li class="quiz-option">D. It doesn't matter where it's declared</li>
+            <li class="quiz-option quiz-correct">A. Before the loop, outside its body ✓</li>
+            <li class="quiz-option">B. Inside the loop, at the very top</li>
+            <li class="quiz-option">C. Inside the array's square brackets</li>
+            <li class="quiz-option">D. Anywhere; the place doesn't matter</li>
         </ul>
         <p class="quiz-explanation"><em>Declaring total outside the loop means it's set to 0 only once — if it were inside the loop, it would reset to 0 every single pass instead of accumulating.</em></p>
     </div>
@@ -177,10 +204,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. What does <code>total = total + emitters[i];</code> mean?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. total is compared to emitters[i]</li>
-            <li class="quiz-option quiz-correct">B. total is reassigned to its own old value plus the current element ✓</li>
-            <li class="quiz-option">C. emitters[i] is replaced with the value of total</li>
-            <li class="quiz-option">D. It causes an infinite loop</li>
+            <li class="quiz-option">A. total is compared with emitters[i]</li>
+            <li class="quiz-option">B. emitters[i] is set to the value of total</li>
+            <li class="quiz-option quiz-correct">C. total becomes its old value plus emitters[i] ✓</li>
+            <li class="quiz-option">D. total is reset to the value of emitters[i]</li>
         </ul>
         <p class="quiz-explanation"><em>This is a running update: the right side computes with total's current value, and the result becomes total's new value.</em></p>
     </div>
@@ -189,22 +216,11 @@ int main() {
         <p class="quiz-prompt">Q4. Before the loop runs at all, what must total already hold for the sum to come out correct?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. The array's last element</li>
-            <li class="quiz-option quiz-correct">B. 0 — starting anywhere else would throw off every element added afterward ✓</li>
+            <li class="quiz-option quiz-correct">B. 0 ✓</li>
             <li class="quiz-option">C. The array's size</li>
-            <li class="quiz-option">D. It doesn't matter what it starts at</li>
+            <li class="quiz-option">D. The array's first element</li>
         </ul>
         <p class="quiz-explanation"><em>Since every element gets added onto whatever total already holds, it must start at 0 — any other starting value would shift the final sum.</em></p>
-    </div>
-
-    <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. Why did Rivet want one combined total instead of five separate printouts?</p>
-        <ul class="quiz-options">
-            <li class="quiz-option">A. Printing five lines is not possible in C</li>
-            <li class="quiz-option quiz-correct">B. The decision they needed to make (can the shield hold) depended on one combined number, not five separate readings ✓</li>
-            <li class="quiz-option">C. Arrays can only ever be printed as a single sum</li>
-            <li class="quiz-option">D. Accumulators are required by C syntax whenever a for loop is used</li>
-        </ul>
-        <p class="quiz-explanation"><em>The real question — is the total output enough — needs one combined number, which is exactly what an accumulator is for.</em></p>
     </div>
 
 </div>

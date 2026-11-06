@@ -32,6 +32,20 @@ class AdminDashboardTest extends TestCase
             ->assertSee('Joy Santos');
     }
 
+    public function test_dashboard_shows_growth_and_a_leaderboard_per_planet(): void
+    {
+        $crew = Crew::create(['name' => 'Net crew', 'planet' => 'networking', 'course_slug' => 'networking-fundamentals', 'type' => Crew::SELF_PACED, 'code' => 'NETSP1']);
+        $ana = User::factory()->create(['role' => 'student', 'name' => 'Ana Reyes']);
+        $crew->roster()->attach($ana->id, ['role' => 'student']);
+
+        $this->actingAs($this->admin())->get(route('admin.dashboard'))->assertOk()
+            ->assertSee('Planet leaderboards')
+            ->assertSee('Networking Nebula')
+            ->assertSee('Ana Reyes')
+            ->assertSee('+1 joined this week')
+            ->assertSee('No astronauts here yet.');
+    }
+
     public function test_only_admins_reach_the_dashboard(): void
     {
         $this->actingAs(User::factory()->create(['role' => 'faculty']))

@@ -78,7 +78,7 @@
       "httpServer": {
         "enabled": true,
         "port": 80,
-        "body": "Earth relay online. Message received, Captain."
+        "body": "Earth relay online. Message received, astronaut."
       }
     }
   ],

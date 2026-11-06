@@ -36,6 +36,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
         <strong>Reading tracert.</strong> Each line is one router on the path. Where the addresses stop moving forward, or the same router answers again and the trace ends early, that router is where the packets stop. Fix there, then trace again.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why change only one thing at a time?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. So the fix takes less total time</li>
+            <li class="quiz-option">B. So the log stays short and clean</li>
+            <li class="quiz-option">C. So you can skip testing at the end</li>
+            <li class="quiz-option quiz-correct">D. So you know which change fixed it ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Change one thing at a time, or you will not know what fixed the problem.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -44,6 +55,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
     <p class="body-text">
         <strong>Rivet</strong> runs the trace. It gets to the first tower, then the second, and then goes cold. <strong>Volt</strong> warns him. "Fix that one and test. There may be a second fault hiding behind it."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt warn Rivet to test after the first fix?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The first tower may break down again quite soon</li>
+            <li class="quiz-option quiz-correct">B. A second fault may be hiding behind it ✓</li>
+            <li class="quiz-option">C. Testing is only allowed at the start</li>
+            <li class="quiz-option">D. The trace can only run one more time</li>
+        </ul>
+        <p class="quiz-explanation"><em>One fault can hide another. Re-test after every fix to find the next break.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -87,6 +109,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l5.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what happens if the test of a theory fails?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Go back to step 2 ✓</li>
+            <li class="quiz-option">B. Go back to step 1</li>
+            <li class="quiz-option">C. Skip to step 5</li>
+            <li class="quiz-option">D. Stop and document</li>
+        </ul>
+        <p class="quiz-explanation"><em>If the test fails, return to step 2 and make a new theory of probable cause.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

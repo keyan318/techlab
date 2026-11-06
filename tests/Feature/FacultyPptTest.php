@@ -63,39 +63,4 @@ class FacultyPptTest extends TestCase
         $zip->close();
         @unlink($file);
     }
-
-    public function test_faculty_downloads_a_pptx_from_their_chat(): void
-    {
-        $this->mock(QuizNimService::class, fn ($m) => $m->shouldReceive('completeJson')->once()->andReturn($this->deckJson()));
-
-        $faculty = User::factory()->create(['role' => 'faculty']);
-        $conv = Conversation::create(['user_id' => $faculty->id, 'title' => 'Loops']);
-        $conv->messages()->create(['role' => 'user', 'content' => 'Make a presentation about Python loops, playful style for 12 year olds']);
-        $conv->messages()->create(['role' => 'assistant', 'content' => 'Sure! Loops repeat instructions.']);
-
-        $res = $this->actingAs($faculty)->post(route('faculty.chat.ppt'), ['conversation_id' => $conv->id]);
-
-        $res->assertOk();
-        $this->assertStringContainsString('presentationml.presentation', $res->headers->get('Content-Type'));
-        $this->assertSame('6', $res->headers->get('X-Ppt-Slides'));
-    }
-
-    public function test_ppt_needs_a_faculty_and_their_own_conversation(): void
-    {
-        $student = User::factory()->create(['role' => 'student']);
-        $faculty = User::factory()->create(['role' => 'faculty']);
-        $other = Conversation::create(['user_id' => $student->id, 'title' => 'x']);
-
-        $this->actingAs($student)->postJson(route('faculty.chat.ppt'), ['conversation_id' => $other->id])->assertForbidden();
-        $this->actingAs($faculty)->postJson(route('faculty.chat.ppt'), ['conversation_id' => $other->id])->assertNotFound();
-
-        $empty = Conversation::create(['user_id' => $faculty->id, 'title' => 'y']);
-        $this->actingAs($faculty)->postJson(route('faculty.chat.ppt'), ['conversation_id' => $empty->id])->assertStatus(422);
-    }
-
-    public function test_faculty_studio_shows_ppt_tile(): void
-    {
-        $faculty = User::factory()->create(['role' => 'faculty']);
-        $this->actingAs($faculty)->get(route('faculty.chat'))->assertOk()->assertSee('Presentation from this chat')->assertSee(route('faculty.chat.ppt'), false);
-    }
 }

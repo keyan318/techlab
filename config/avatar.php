@@ -9,6 +9,9 @@
 |   ink (fixed colours) → the chosen coat (f, F fur; k, K markings) → suit colour (s, S) → patch (p).
 | Helmet glass uses the visor colour: 'v' = glass, 'V' = the glass rim, 'x' = a highlight.
 | With the helmet on, anything of the head outside the glass (ears, whiskers) is left out.
+| Animals and suits marked 'captain' => true are only for faculty (the Captain's own builder); students get the rest.
+| A student animal or suit with 'xp' is bought once with XP in the Shop (a ShopPurchase row) before it can be worn;
+| the cat and the Explorer suit are free.
 | Rows not listed are empty. Keep every row exactly 24 characters (AvatarOnboardingTest checks it).
 */
 
@@ -59,7 +62,7 @@ return [
             13 => '.....WWoffmmmmfFoWW.....',
             14 => '........oooooooo........',
         ]],
-        'dog' => ['label' => 'Dog', 'coats' => [
+        'dog' => ['label' => 'Dog', 'xp' => 200, 'coats' => [
             'golden' => ['label' => 'Golden', 'f' => '#e8b05c', 'F' => '#c98d3c', 'k' => '#8a5a2b', 'K' => '#6e4420'],
             'chocolate' => ['label' => 'Chocolate', 'f' => '#9a6240', 'F' => '#7a4a2e', 'k' => '#4e2c1d', 'K' => '#3a2015'],
             'spotty' => ['label' => 'Spotty', 'f' => '#f4f4f8', 'F' => '#cfd3e2', 'k' => '#2b2234', 'K' => '#17121e'],
@@ -77,7 +80,7 @@ return [
             13 => '.......offfnnffFo.......',
             14 => '........oooooooo........',
         ]],
-        'cow' => ['label' => 'Cow', 'coats' => [
+        'cow' => ['label' => 'Cow', 'xp' => 400, 'coats' => [
             'classic' => ['label' => 'Classic', 'f' => '#f6f6f8', 'F' => '#cfd3e2', 'k' => '#2b2234', 'K' => '#17121e'],
             'brown' => ['label' => 'Brown', 'f' => '#f6f6f8', 'F' => '#cfd3e2', 'k' => '#7a4a2a', 'K' => '#5a361e'],
             'highland' => ['label' => 'Highland', 'f' => '#c9763a', 'F' => '#a85d29', 'k' => '#8a4a1f', 'K' => '#6c3815'],
@@ -95,7 +98,7 @@ return [
             13 => '.......ouuuuuuuuo.......',
             14 => '........oooooooo........',
         ]],
-        'bird' => ['label' => 'Bird', 'coats' => [
+        'bird' => ['label' => 'Bird', 'xp' => 300, 'coats' => [
             'sky' => ['label' => 'Sky', 'f' => '#4aa8ff', 'F' => '#2f7fd6', 'k' => '#e3f2ff', 'K' => '#bcd9f5'],
             'sunny' => ['label' => 'Sunny', 'f' => '#ffd23f', 'F' => '#e0ad1c', 'k' => '#fff4c2', 'K' => '#f2dd8a'],
             'cardinal' => ['label' => 'Cardinal', 'f' => '#e8443a', 'F' => '#bd2f27', 'k' => '#ffd6cc', 'K' => '#f0b2a4'],
@@ -115,7 +118,7 @@ return [
             13 => '.......offkkkkfFo.......',
             14 => '........oooooooo........',
         ]],
-        'pig' => ['label' => 'Pig', 'coats' => [
+        'pig' => ['label' => 'Pig', 'xp' => 400, 'coats' => [
             'pink' => ['label' => 'Pink', 'f' => '#ffb6c8', 'F' => '#ec8fa9', 'k' => '#f57f9f', 'K' => '#b8465f'],
             'rosy' => ['label' => 'Rosy', 'f' => '#ffcfd9', 'F' => '#f3a9bb', 'k' => '#ff97b2', 'K' => '#c45470'],
             'muddy' => ['label' => 'Muddy', 'f' => '#b9805a', 'F' => '#9a6542', 'k' => '#e88aa0', 'K' => '#8e3e52'],
@@ -133,6 +136,67 @@ return [
             12 => '......offkkkkkkfFo......',
             13 => '.......offfffffFo.......',
             14 => '........oooooooo........',
+        ]],
+        // Captain-only animals (faculty pick these in their own onboarding; students never see them).
+        // mane k/K around the face f/F, cream muzzle
+        'lion' => ['label' => 'Lion', 'captain' => true, 'coats' => [
+            'golden' => ['label' => 'Golden', 'f' => '#f5c063', 'F' => '#d99a3a', 'k' => '#c4651b', 'K' => '#9e4f12'],
+            'shadow' => ['label' => 'Shadow mane', 'f' => '#e8b05c', 'F' => '#c98d3c', 'k' => '#4e2c1d', 'K' => '#3a2015'],
+            'snow' => ['label' => 'Snow', 'f' => '#f6efe0', 'F' => '#d8ccb4', 'k' => '#e3cf9e', 'K' => '#bfa36c'],
+        ], 'rows' => [
+            2 => '........oooooooo........',
+            3 => '......ookkkkkkkkKo......',
+            4 => '.....okkocoooocokKo.....',
+            5 => '....okkkoffffffokKKo....',
+            6 => '....okkofffffffFokKo....',
+            7 => '....okkokkffffkkokKo....',
+            8 => '....okkofeffffeFokKo....',
+            9 => '....okkofoffffoFokKo....',
+            10 => '....okkofqqnnqqfokko....',
+            11 => '....okkoqqmqqmqqokko....',
+            12 => '....okkooqqmmqqookKo....',
+            13 => '.....okkoqqqqqqokKo.....',
+            14 => '......okkkooookKko......',
+        ]],
+        // fur f/F, face k/K under a heavy brow
+        'gorilla' => ['label' => 'Gorilla', 'captain' => true, 'coats' => [
+            'silverback' => ['label' => 'Silverback', 'f' => '#3a3449', 'F' => '#2c2738', 'k' => '#8a8099', 'K' => '#5d5570'],
+            'mountain' => ['label' => 'Mountain', 'f' => '#4e3a30', 'F' => '#3a2a22', 'k' => '#a07e68', 'K' => '#6e5444'],
+            'snow' => ['label' => 'Snow', 'f' => '#e6e9f2', 'F' => '#bfc5d6', 'k' => '#8f98c9', 'K' => '#646c9e'],
+        ], 'rows' => [
+            2 => '.........oooooo.........',
+            3 => '.......ooffffffoo.......',
+            4 => '......offffffffFFo......',
+            5 => '.....offffffffffFFo.....',
+            6 => '....offfkkkkkkkkfFFo....',
+            7 => '....offKKKKKKKKKKFFo....',
+            8 => '...okfkkkekkkkekkkFko...',
+            9 => '...okfkkkokkkkokkkFko...',
+            10 => '....ofkkkkkKKkkkkkFo....',
+            11 => '....ofkkkoKKKKokkkFo....',
+            12 => '....offkkkooookkkFFo....',
+            13 => '.....offkkkkkkkkFFo.....',
+            14 => '......oooooooooooo......',
+        ]],
+        // head feathers f/F, brown body k/K, hooked beak
+        'eagle' => ['label' => 'Eagle', 'captain' => true, 'coats' => [
+            'bald' => ['label' => 'Bald', 'f' => '#f6f6f8', 'F' => '#cfd3e2', 'k' => '#7a4a2a', 'K' => '#5a361e'],
+            'golden' => ['label' => 'Golden', 'f' => '#d9a14a', 'F' => '#b07a2c', 'k' => '#6e4420', 'K' => '#4e2c1d'],
+            'harpy' => ['label' => 'Harpy', 'f' => '#aab0c4', 'F' => '#878da3', 'k' => '#3a3449', 'K' => '#2c2738'],
+        ], 'rows' => [
+            2 => '.........oooooo.........',
+            3 => '.......ooffffffoo.......',
+            4 => '......offfffffffFo......',
+            5 => '.....offfffffffffFo.....',
+            6 => '....offfffffffffffFo....',
+            7 => '....ofoooffffffoooFo....',
+            8 => '....offeoofbbfooefFo....',
+            9 => '....offoofbbbbfoofFo....',
+            10 => '....offffbbbbbbfffFo....',
+            11 => '....okfffbbBBbbfffKo....',
+            12 => '....okkkkoBBBBokkkKo....',
+            13 => '.....okkkkoBBokkkKo.....',
+            14 => '......oooooooooooo......',
         ]],
     ],
 
@@ -172,6 +236,13 @@ return [
         'patch' => 'star', 'helmet' => true, 'visor' => 'sky',
     ],
 
+    // A new captain (faculty) before anything is picked.
+    'captain_default' => [
+        'animal' => 'lion', 'coat' => 'golden', 'suit' => 'admiral', 'suit_color' => 'midnight',
+        'patch' => 'star', 'helmet' => false, 'visor' => 'gold',
+    ],
+
+    // Suit prices in XP (bought in the Shop). Explorer is free.
     'suits' => [
         'explorer' => ['label' => 'Explorer', 'rows' => [
             15 => '........oggggggo........',
@@ -190,7 +261,7 @@ return [
             28 => '......ogGggooggGgo......',
             29 => '......oooooooooooo......',
         ]],
-        'pilot' => ['label' => 'Pilot', 'rows' => [
+        'pilot' => ['label' => 'Pilot', 'xp' => 300, 'rows' => [
             15 => '........oggggggo........',
             16 => '.....oossssssssssoo.....',
             17 => '....oyysssswwssssyyo....',
@@ -207,7 +278,7 @@ return [
             28 => '......ogGggooggGgo......',
             29 => '......oooooooooooo......',
         ]],
-        'engineer' => ['label' => 'Engineer', 'rows' => [
+        'engineer' => ['label' => 'Engineer', 'xp' => 600, 'rows' => [
             15 => '........oggggggo........',
             16 => '.....oowsswwwwsswoo.....',
             17 => '....owwwsswwwwsswwwo....',
@@ -224,7 +295,7 @@ return [
             28 => '......ogGggooggGgo......',
             29 => '......oooooooooooo......',
         ]],
-        'commander' => ['label' => 'Commander', 'rows' => [
+        'commander' => ['label' => 'Commander', 'xp' => 900, 'rows' => [
             15 => '........oyyyyyyo........',
             16 => '.....ossswwwwwwssso.....',
             17 => '....osssswwyywwsssso....',
@@ -239,6 +310,61 @@ return [
             26 => '.......owwwoowwwo.......',
             27 => '.......ogggoogggo.......',
             28 => '......ogGggooggGgo......',
+            29 => '......oooooooooooo......',
+        ]],
+        // Captain-only suits: wider shoulders, gold braid, more commanding than the cadet suits.
+        // gold epaulettes with fringe, medals, gold hem
+        'admiral' => ['label' => 'Admiral', 'captain' => true, 'rows' => [
+            15 => '........oyyyyyyo........',
+            16 => '....ooyyssswwsssyyoo....',
+            17 => '..ooyyyyysswwssyyyyyoo..',
+            18 => '..oysysyssywwyssysysyo..',
+            19 => '....ospnpsswwssssSso....',
+            20 => '....osysysywwysssSso....',
+            21 => '....oyyoSSSyySSSoyyo....',
+            22 => '....ogGossySSyssoGgo....',
+            23 => '.....osssssSSssssso.....',
+            24 => '.....osssssSSssssso.....',
+            25 => '.....oyyyyyooyyyyyo.....',
+            26 => '.......oSSSooSSSo.......',
+            27 => '.......ogggoogggo.......',
+            28 => '......ogGggooggGgo......',
+            29 => '......oooooooooooo......',
+        ]],
+        // a cape (suit shade) behind epaulettes
+        'marshal' => ['label' => 'Marshal', 'captain' => true, 'rows' => [
+            15 => '........oyyyyyyo........',
+            16 => '...oooosssswwssssoooo...',
+            17 => '..oSoyyyssswwsssyyyoSo..',
+            18 => '.oSSoyyssswwwwsssyyoSSo.',
+            19 => '.oSSosSssswwwwsssSsoSSo.',
+            20 => '.oSSosSsssswwssssSsoSSo.',
+            21 => '.oSSoggoyyyyyyyyoggoSSo.',
+            22 => 'oSSSogGossssssssoGgoSSSo',
+            23 => 'oSSSSooossSSSSssoooSSSSo',
+            24 => 'oSSSSSoosssSSsssooSSSSSo',
+            25 => 'oSSSSSSosSsoosSsoSSSSSSo',
+            26 => '.ooSSSSosssoosssoSSSSoo.',
+            27 => '...oooSogggoogggoSooo...',
+            28 => '......ogGggooggGgo......',
+            29 => '......oooooooooooo......',
+        ]],
+        // long greatcoat with a sash in the patch colour
+        'commodore' => ['label' => 'Commodore', 'captain' => true, 'rows' => [
+            15 => '........oyyyyyyo........',
+            16 => '.....ooppssssssyyoo.....',
+            17 => '....oyysppsssssssyyo....',
+            18 => '....osSssppssssssSso....',
+            19 => '....osSssssppssssSso....',
+            20 => '....osSssssssppssSso....',
+            21 => '....oggoSSSyySppoggo....',
+            22 => '....ogGosssSSsssoGgo....',
+            23 => '.....osssssSSssssso.....',
+            24 => '.....osssssSSssssso.....',
+            25 => '.....oSSSSSooSSSSSo.....',
+            26 => '.......oSSSooSSSo.......',
+            27 => '.......oGGGooGGGo.......',
+            28 => '......ogGGGooGGGgo......',
             29 => '......oooooooooooo......',
         ]],
     ],

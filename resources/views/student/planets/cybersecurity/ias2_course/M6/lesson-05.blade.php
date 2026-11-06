@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit F.5 Management Practices. --}}
         really matter."
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does a leader who skips a rule teach everyone?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. That the rule is now stronger</li>
+            <li class="quiz-option quiz-correct">B. That the rule is optional ✓</li>
+            <li class="quiz-option">C. That the rule needs more staff</li>
+            <li class="quiz-option">D. That the rule will be reviewed</li>
+        </ul>
+        <p class="quiz-explanation"><em>Leading by example matters: a leader who skips a rule teaches everyone it's optional.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit F.5 Management Practices. --}}
         enough. The fastest way to kill this program isn't a hacker — it's me, deciding the rules don't apply to
         me today."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Astro refuse to skip the sign-in log?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The log was already broken that morning</li>
+            <li class="quiz-option">B. The cadet was not allowed to offer it</li>
+            <li class="quiz-option quiz-correct">C. It would show rules don't apply to the important ✓</li>
+            <li class="quiz-option">D. Astro was not really running late at all that day, in fact</li>
+        </ul>
+        <p class="quiz-explanation"><em>The fastest way to kill the program isn't a hacker, it's a leader deciding the rules don't apply to them.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -57,6 +79,17 @@ Syllabus: ITP1333 Unit F.5 Management Practices. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">A program leadership doesn't visibly follow is a program nobody else follows either</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does resourcing mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Real time, budget, staff ✓</li>
+            <li class="quiz-option">B. An approving nod only</li>
+            <li class="quiz-option">C. Leaders quietly skip the rules</li>
+            <li class="quiz-option">D. A policy with no owner</li>
+        </ul>
+        <p class="quiz-explanation"><em>Resourcing means giving the program real time, budget and staff, not just a nod.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

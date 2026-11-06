@@ -36,7 +36,8 @@ class FrontDoorsTest extends TestCase
     {
         $this->get('/faculty/register')->assertOk();
 
-        $this->facultySignUp('jcruz@catsu.edu.ph')->assertRedirect(route('faculty.dashboard'));
+        // Straight into the captain's onboarding (Astro's hello + build your captain).
+        $this->facultySignUp('jcruz@catsu.edu.ph')->assertRedirect(route('faculty.welcome'));
 
         $this->assertSame('faculty', User::firstWhere('email', 'jcruz@catsu.edu.ph')->role);
         $this->assertAuthenticated();
@@ -53,7 +54,7 @@ class FrontDoorsTest extends TestCase
     {
         config(['faculty.email_domain' => '']);
 
-        $this->facultySignUp('someone@gmail.com')->assertRedirect(route('faculty.dashboard'));
+        $this->facultySignUp('someone@gmail.com')->assertRedirect(route('faculty.welcome'));
     }
 
     public function test_student_pages_no_longer_offer_a_faculty_option(): void

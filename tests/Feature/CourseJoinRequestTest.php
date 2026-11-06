@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Mail\JoinRequestAccepted;
 use App\Mail\JoinRequestDeclined;
 use App\Models\CourseAssignment;
 use App\Models\CourseJoinRequest;
@@ -13,8 +12,8 @@ use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 /**
- * Ask to join → faculty accepts (the code is emailed) or declines (the student can
- * ask again). See CourseGatingTest for what happens once the code is redeemed.
+ * Ask to join → faculty accepts (the student is enrolled on the spot, no email) or
+ * declines (emailed; the student can ask again).
  */
 class CourseJoinRequestTest extends TestCase
 {
@@ -63,7 +62,7 @@ class CourseJoinRequestTest extends TestCase
         $this->assertFalse($student->fresh()->belongsToCrew($crew->id));
     }
 
-    public function test_accepting_emails_the_code_and_lets_the_student_redeem_it(): void
+    public function test_accepting_enrolls_the_student_without_an_email(): void
     {
         Mail::fake();
         $crew = $this->captainedCrew();
@@ -77,11 +76,28 @@ class CourseJoinRequestTest extends TestCase
             ->assertRedirect(route('faculty.dashboard'));
 
         $this->assertSame('accepted', $joinRequest->fresh()->status);
-        Mail::assertQueued(JoinRequestAccepted::class, function (JoinRequestAccepted $mail) use ($student, $crew) {
-            return $mail->hasTo($student->email) && str_contains($mail->render(), $crew->code);
-        });
+        Mail::assertNothingQueued();
+        Mail::assertNothingSent();
+        $this->assertTrue($student->fresh()->belongsToCrew($crew->id));
+        $this->assertSame($crew->id, $student->fresh()->crew_id);
 
-        $this->actingAs($student)->postJson(route('student.crew.join'), ['code' => $crew->code])->assertOk();
+        // A refresh shows the course open: no lock, no code box.
+        $this->actingAs($student)->get(route('student.planet', 'networking'))
+            ->assertOk()
+            ->assertSee(route('student.course.overview', ['slug' => 'networking', 'course' => 'networking-fundamentals']), false)
+            ->assertDontSee('Enter code')
+            ->assertDontSee('Waiting for Joy Santos to accept you');
+    }
+
+    public function test_a_student_accepted_under_the_old_email_flow_is_let_in_on_refresh(): void
+    {
+        $crew = $this->captainedCrew();
+        $student = $this->student();
+        $crew->joinRequests()->create(['user_id' => $student->id, 'status' => CourseJoinRequest::ACCEPTED, 'decided_at' => now()]);
+        $this->assertFalse($student->belongsToCrew($crew->id));
+
+        $this->actingAs($student)->get(route('student.planet', 'networking'))->assertOk()->assertDontSee('Enter code');
+
         $this->assertTrue($student->fresh()->belongsToCrew($crew->id));
     }
 
@@ -141,7 +157,6 @@ class CourseJoinRequestTest extends TestCase
         $this->actingAs($student)->postJson(route('student.join-request.store', $crew))->assertOk();
         $joinRequest = CourseJoinRequest::where('crew_id', $crew->id)->firstOrFail();
         $this->actingAs($crew->faculty)->post(route('faculty.join-requests.accept', $joinRequest));
-        $this->actingAs($student)->postJson(route('student.crew.join'), ['code' => $crew->code])->assertOk();
 
         $this->actingAs($student)->get($lessonUrl)->assertOk();
         $this->actingAs($student)->get($overviewUrl)->assertOk();

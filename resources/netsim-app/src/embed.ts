@@ -14,6 +14,14 @@ const raw = new URLSearchParams(location.search).get('lab');
 
 export const embedLab: string | null = raw && /^[a-z0-9-]{1,64}$/.test(raw) ? raw : null;
 
+// TechLab passes ?file= when the course's faculty member rewrote this lab (new instructions or checks):
+// load their version instead of labs/<id>.json. Only TechLab's lab-file path (and the lab editor's draft path,
+// when the faculty member test-plays a draft) is accepted.
+const rawFile = new URLSearchParams(location.search).get('file');
+
+export const embedFile: string | null =
+  rawFile && /^\/(student\/planet\/[a-z0-9-]+\/lab\/m\d+\/lesson\d+\/file|faculty\/course-editor\/[a-z0-9-]+\/sim-lab-draft\/[A-Za-z0-9]{40})\.json$/.test(rawFile) ? rawFile : null;
+
 export const embedded: boolean = embedLab !== null && window.parent !== window;
 
 // TechLab students use Windows PCs, so every device console speaks Windows commands in a lab.

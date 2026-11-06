@@ -28,6 +28,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
         Work in four steps: Physical, Addressing, Routing, Services. After each fix, run the test again before you move up. Some fixes are in the Command Prompt and some are in the Inspector panels.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why start the final mission at the bottom layer?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Services are the hardest faults of all to fix</li>
+            <li class="quiz-option quiz-correct">B. A cable fault hides everything above it ✓</li>
+            <li class="quiz-option">C. The top layers never break in a raid</li>
+            <li class="quiz-option">D. Routing must be set before addresses</li>
+        </ul>
+        <p class="quiz-explanation"><em>Nothing above a broken cable can work, so fix the Physical layer first and test as you climb.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
     <p class="body-text">
         "Everything we learned has led here," says Astro. "Fix the network from the bottom up. When the page loads, it is Earth talking to us."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What does Astro say a loaded page will mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Doom has left the area</li>
+            <li class="quiz-option quiz-correct">B. Earth is talking to them ✓</li>
+            <li class="quiz-option">C. The shields are recharged</li>
+            <li class="quiz-option">D. The router was replaced</li>
+        </ul>
+        <p class="quiz-explanation"><em>When the page loads, the network is fixed from the bottom up, and it is Earth talking to the crew.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -72,6 +94,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l6.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which layer holds the DNS record and web server?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Services ✓</li>
+            <li class="quiz-option">B. Physical</li>
+            <li class="quiz-option">C. Addressing</li>
+            <li class="quiz-option">D. Routing</li>
+        </ul>
+        <p class="quiz-explanation"><em>Layer 4, Services, holds the DNS record and the web server. It is fixed last.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

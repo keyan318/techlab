@@ -20,6 +20,8 @@ class CourseCertificateTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private const HUB = ['slug' => 'cybersecurity', 'course' => 'information-security-1'];
 
     private function student(array $attrs = []): User
@@ -107,9 +109,11 @@ class CourseCertificateTest extends TestCase
             ->assertSee('View Certificate')
             ->assertSee(route('student.course.certificate', self::HUB), false);
 
+        $this->certificateAsHtml();
         $this->actingAs($user)->get(route('student.course.certificate', self::HUB))
             ->assertOk()
-            ->assertSee('CERTIFICATE')
+            ->assertHeader('Content-Type', 'application/pdf')
+            ->assertSee('Certificate of Completion')
             ->assertSee('Rosa Mendez')
             ->assertSee('Information Assurance and Security 1')
             ->assertSee('ITP1232')
@@ -126,6 +130,7 @@ class CourseCertificateTest extends TestCase
         CrewQuizAttempt::where('user_id', $user->id)->update(['finished_at' => Carbon::parse('2026-03-14 16:30')]);
 
         // Issued when the final exam was passed, not whenever the page is opened.
+        $this->certificateAsHtml();
         $this->actingAs($user)->get(route('student.course.certificate', self::HUB))->assertSee('March 14, 2026');
 
         // One number per student and course, the same on every visit, different for anyone else.

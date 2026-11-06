@@ -24,7 +24,9 @@
                 @if ($c['blurb'])
                   <span class="line-clamp-2 text-[14px] leading-relaxed text-muted">{{ $c['blurb'] }}</span>
                 @endif
-                @if ($c['captain'])
+                @if ($c['self_paced'])
+                  <span class="mt-auto pt-3 text-[13px] text-muted">Self-paced</span>
+                @elseif ($c['captain'])
                   <span class="mt-auto pt-3 text-[13px] text-muted">Captain: {{ $c['captain'] }}</span>
                 @endif
               </span>
@@ -35,8 +37,8 @@
     @else
       <section class="px-card mt-10 p-8">
         <p class="px-font text-2xl font-medium">You haven't joined a course yet</p>
-        <p class="mt-2 max-w-[56ch] text-muted">Pick a planet, ask to join a course, and your captain will send you a code. Once you're in, the course shows up here.</p>
-        <a href="{{ route('student.planets') }}" class="px-btn px-btn-yellow mt-6">Browse planets</a>
+        <p class="mt-2 max-w-[56ch] text-muted">Pick a planet, then start a course Self-paced or join a captain's class. Once you're in, the course shows up here.</p>
+        <a href="{{ route('student.planets') }}" class="px-btn px-btn-blue mt-6">Browse planets</a>
       </section>
     @endif
   </div>

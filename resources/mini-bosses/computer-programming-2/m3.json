@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "What is the difference between a simple and a structured data type?",
+      "options": [
+        "A simple one can hold many values of any type at once",
+        "A structured one can only ever hold whole numbers",
+        "A structured one groups many values under one name",
+        "A simple one has to be declared inside a function"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int lamps[6]; What are the first and last valid indexes?",
+      "options": [
+        "0 and 6",
+        "1 and 6",
+        "0 and 5",
+        "1 and 5"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int a[4] = {1, 2}; What is a[3]?",
+      "options": [
+        "0",
+        "A random number",
+        "2",
+        "1"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int a[] = {7, 8, 9}; How many elements does a have?",
+      "options": [
+        "9",
+        "0",
+        "24",
+        "3"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which expression gives the number of elements in lamps?",
+      "options": [
+        "sizeof(lamps) * sizeof(lamps[0])",
+        "sizeof(lamps) / sizeof(lamps[0])",
+        "sizeof(lamps) - sizeof(lamps[0])",
+        "sizeof(lamps[0]) / sizeof(lamps)"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is visiting every element of an array, one index at a time, called?",
+      "options": [
+        "A traversal",
+        "A typedef",
+        "A recursion",
+        "A prototype"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int b[5] = {2, 0, 3, 0, 1}; A loop counts the elements equal to 0. What is the count?",
+      "options": [
+        "2",
+        "3",
+        "1",
+        "0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When finding the largest element, why keep its index and not just its value?",
+      "options": [
+        "C cannot compare two values directly",
+        "The index also tells you where it is",
+        "An index takes less space than a value",
+        "The value would change after the loop"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "int v[4] = {5, 9, 2, 9}; A loop keeps best = i only when v[i] > v[best], starting at best = 0. What is best at the end?",
+      "options": [
+        "0",
+        "1",
+        "3",
+        "9"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A loop over a 6-element array uses i <= 6. What goes wrong?",
+      "options": [
+        "It misses the first element",
+        "It stops one element early",
+        "It reads one past the end",
+        "It loops forever without end"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How do you write an array parameter in a function?",
+      "options": [
+        "int *lamps[], with a star in front",
+        "int lamps, with no brackets at all",
+        "int lamps[6], always with the size",
+        "int lamps[], with empty brackets"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why pass an array's size as a second parameter?",
+      "options": [
+        "C does not allow an array to be passed on its own",
+        "The function needs it to make a copy of the array",
+        "The function cannot tell how long the array is",
+        "The size is used as the array's first element"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A function changes an array it was given. Does the caller's array change?",
+      "options": [
+        "Only if the function returns the array at the end",
+        "Yes, C passes the address of its first element",
+        "Only if the array was declared as a global",
+        "No, the function only gets a copy of the array"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "int l[3] = {40, 60, 80}; A function halves every element. What does l hold afterwards?",
+      "options": [
+        "80 120 160",
+        "20 30 40",
+        "40 60 80",
+        "20 60 80"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Used on its own, what does an array's name stand for?",
+      "options": [
+        "The type of its elements",
+        "The value held in its first element",
+        "The address of its first element",
+        "The number of elements it has"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int n[3] = {10, 20, 30}; int *p = n; What is *(p + 2)?",
+      "options": [
+        "10",
+        "20",
+        "12",
+        "30"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "When you add 1 to an int pointer, how far does it move?",
+      "options": [
+        "One int along",
+        "It does not move",
+        "One byte along",
+        "Two ints along"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "lamps[i] is a short way of writing what?",
+      "options": [
+        "(lamps * i) + 1",
+        "&lamps + i",
+        "*lamps + i",
+        "*(lamps + i)"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int n[3] = {10, 20, 30}; int *p = n; What is *p + 1?",
+      "options": [
+        "30",
+        "10",
+        "20",
+        "11"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What marks the end of a C string?",
+      "options": [
+        "A full stop at the end",
+        "The null character '\\0'",
+        "A space after the last letter",
+        "The newline character '\\n'"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "The word \"BAKERY\" has 6 letters. How many chars does it need?",
+      "options": [
+        "6",
+        "5",
+        "7",
+        "12"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which format specifier prints a string?",
+      "options": [
+        "%t",
+        "%c",
+        "%d",
+        "%s"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does strlen(\"Lamp\") return?",
+      "options": [
+        "4",
+        "3",
+        "5",
+        "0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which function checks whether two strings match?",
+      "options": [
+        "strlen",
+        "strcmp",
+        "strcpy",
+        "strcat"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does strcmp return when two strings are exactly the same?",
+      "options": [
+        "1",
+        "-1",
+        "The length",
+        "0"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does strcat(street, \" Street\"); do?",
+      "options": [
+        "Sticks \" Street\" onto the end of street",
+        "Checks if street ends with \" Street\"",
+        "Copies \" Street\" over the start of street",
+        "Counts the letters of \" Street\""
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What happens if strcpy copies text that does not fit in the destination?",
+      "options": [
+        "It cuts the text off to make it fit",
+        "It refuses and returns an error",
+        "It writes past the end of the array",
+        "It makes the array bigger to fit it"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why can't you compare two strings with ==?",
+      "options": [
+        "== compares addresses, not the letters",
+        "== only works on two char variables",
+        "== only works on strings of the same length",
+        "== changes one string into the other"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int b[2][3] = {{10, 20, 30}, {5, 5, 5}}; What is b[0][2]?",
+      "options": [
+        "10",
+        "30",
+        "20",
+        "5"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "When passing a 2D array to a function, which size must the parameter give?",
+      "options": [
+        "The number of columns",
+        "Neither, both can be empty",
+        "Both sizes, rows first",
+        "The number of rows"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "char names[2][10] = {\"Main\", \"Harbor\"}; What is names[1]?",
+      "options": [
+        "The letter 'H' only",
+        "The string \"Main\"",
+        "The string \"Harbor\"",
+        "The letter 'a' of Main"
+      ],
+      "correct": "C"
+    }
+  ]
+}

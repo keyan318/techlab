@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'crew_id', 'planets', 'avatar', 'codename'])]
+#[Fillable(['name', 'first_name', 'last_name', 'email', 'password', 'role', 'crew_id', 'planets', 'avatar', 'codename', 'program', 'year_level'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -21,6 +21,23 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     public const PLANETS = ['programming', 'networking', 'cybersecurity'];
+
+    /** CICT programs a student picks at sign-up (and in Settings); the admin dashboard counts students by them. */
+    public const PROGRAMS = [
+        'IT' => 'Information Technology',
+        'IS' => 'Information Systems',
+        'CS' => 'Computer Science',
+        'BLIS' => 'Library and Information Science',
+        'EMC' => 'Entertainment and Multimedia Computing',
+    ];
+
+    public const YEAR_LEVELS = [1 => '1st year', 2 => '2nd year', 3 => '3rd year', 4 => '4th year'];
+
+    /** The full name the app shows everywhere, from the separate first and last names. */
+    public static function joinName(string $first, string $last): string
+    {
+        return trim(preg_replace('/\s+/', ' ', trim($first).' '.trim($last)));
+    }
 
     /**
      * Conversations this user has had with Astro.
@@ -55,6 +72,23 @@ class User extends Authenticatable
     }
 
     /**
+     * Each use of Astro's AI (chat, Studio tools) and the XP it cost.
+     */
+    public function aiUsages(): HasMany
+    {
+        return $this->hasMany(AiUsage::class);
+    }
+
+    /**
+     * The first admin ever made (lowest id): the only admin who can add or remove other admins.
+     */
+    public function isOwnerAdmin(): bool
+    {
+        return $this->role === 'admin'
+            && (int) $this->id === (int) self::where('role', 'admin')->min('id');
+    }
+
+    /**
      * Planets this user enrolled in. Accounts from before enrollment (null) and
      * faculty get every planet.
      *
@@ -75,6 +109,12 @@ class User extends Authenticatable
     protected function displayName(): Attribute
     {
         return Attribute::get(fn () => $this->codename ?: $this->name);
+    }
+
+    /** Agreed to the current Terms (config/terms.php)? Until then EnsureTermsAccepted keeps them on /terms. */
+    public function hasAcceptedTerms(): bool
+    {
+        return $this->terms_accepted_at !== null && $this->terms_version === config('terms.version');
     }
 
     public function isEnrolledIn(string $planet): bool
@@ -111,6 +151,12 @@ class User extends Authenticatable
             'password' => 'hashed',
             'planets' => 'array',
             'avatar' => 'array',
+            'tour_seen' => 'array',
+            'streak_seen_on' => 'date',
+            'first_login_at' => 'datetime',
+            'terms_accepted_at' => 'datetime',
+            'rank_seen' => 'integer',
+            'year_level' => 'integer',
         ];
     }
 }

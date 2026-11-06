@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "What is a trunk?",
+      "options": [
+        "A port that is in no VLAN at all",
+        "One link that carries many VLANs",
+        "One VLAN that spans many switches",
+        "A router port with no address"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How big is the 802.1Q tag inserted in a frame?",
+      "options": [
+        "4 bytes",
+        "64 bytes",
+        "12 bits",
+        "1 byte"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Do PCs on access ports see 802.1Q tags?",
+      "options": [
+        "Yes, on every single frame",
+        "Only for the native VLAN",
+        "No, the switch removes them",
+        "Only if the PC asks for them"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is special about the native VLAN on a trunk?",
+      "options": [
+        "It has the highest number",
+        "It carries only broadcasts",
+        "Its frames are dropped",
+        "Its frames cross untagged"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Both ends of a trunk disagree on the native VLAN. What can happen?",
+      "options": [
+        "Frames leak between VLANs",
+        "The tags get bigger",
+        "Every VLAN is blocked",
+        "The trunk runs twice as fast"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "VLAN 20 is missing on a switch in the middle of the path. What happens to VLAN 20 frames?",
+      "options": [
+        "They are silently dropped",
+        "They are sent as VLAN 1",
+        "They are sent back tagged 10",
+        "They are flooded to every port"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which command shows which VLANs really cross a trunk?",
+      "options": [
+        "show interfaces trunk",
+        "show spanning-tree root",
+        "show vlan brief all",
+        "show ip route trunk"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In router-on-a-stick, what does encapsulation dot1Q 10 on a sub-interface do?",
+      "options": [
+        "Makes it handle frames tagged VLAN 10",
+        "Turns the sub-interface into a trunk",
+        "Gives the sub-interface the address .10",
+        "Shuts down every VLAN except 10"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the main weakness of router-on-a-stick?",
+      "options": [
+        "PCs must use two default gateways",
+        "The one link becomes a bottleneck",
+        "It needs a cable for every VLAN",
+        "It cannot route more than one VLAN"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "On a Layer 3 switch, what is an SVI?",
+      "options": [
+        "A physical port that has been set as a trunk link",
+        "The router that is elected as the root bridge",
+        "A VLAN's virtual interface (interface vlan 10)",
+        "The tag that marks a frame with its VLAN number"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What must you turn on so a Layer 3 switch routes between its SVIs?",
+      "options": [
+        "ip ospf",
+        "ip routing",
+        "vlan routing",
+        "no switchport"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why are loops between switches so dangerous?",
+      "options": [
+        "Loops give two PCs the same IP address",
+        "Loops make every switch reboot at the same time",
+        "Frames have no time-to-live and circle forever",
+        "Loops turn every trunk into an access port"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which switch becomes the root bridge?",
+      "options": [
+        "The one with the most ports in use",
+        "The one with the highest MAC address",
+        "The one with the lowest bridge ID",
+        "The newest one on the network"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In what steps do spanning tree priorities go?",
+      "options": [
+        "1",
+        "100",
+        "1024",
+        "4096"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does spanning-tree vlan 10 root primary set the priority to?",
+      "options": [
+        "28672",
+        "24576",
+        "32768",
+        "4096"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which port on a non-root switch has the lowest cost to the root?",
+      "options": [
+        "The edge port",
+        "The designated port",
+        "The root port",
+        "The alternate port"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is RSTP so much faster than the original STP?",
+      "options": [
+        "Alternate ports are already chosen",
+        "It only runs on a single VLAN",
+        "It never blocks any port at all",
+        "It turns off broadcasts completely"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why make different switches root for different VLANs in Rapid PVST+?",
+      "options": [
+        "So BPDUs are never sent at all",
+        "So each uplink carries some VLANs",
+        "So every VLAN shares one tree",
+        "So each switch needs fewer ports in use"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does PortFast do?",
+      "options": [
+        "Makes a trunk port carry traffic twice as fast",
+        "Lets a PC port skip the listen and learn wait",
+        "Blocks every BPDU that arrives on a trunk port",
+        "Lets the port join two VLANs at the same time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A BPDU arrives on a PortFast port with BPDU Guard. What happens?",
+      "options": [
+        "The BPDU is passed on",
+        "The port joins VLAN 1",
+        "The port is err-disabled",
+        "The port becomes the root"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does Root Guard stop?",
+      "options": [
+        "An access port from skipping its normal wait",
+        "A PC from getting an address from DHCP",
+        "A switch below it taking the root role",
+        "A trunk from carrying the native VLAN"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How do you bring an err-disabled port back after fixing the cause?",
+      "options": [
+        "show interfaces status",
+        "spanning-tree portfast off",
+        "clear spanning-tree root",
+        "shutdown, then no shutdown"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does switchport port-security maximum 1 do?",
+      "options": [
+        "Lets only one MAC use the port",
+        "Sets the port speed to exactly 1 Gbps",
+        "Lets the port carry only one VLAN",
+        "Lets one switch connect to the port"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does mac-address sticky do?",
+      "options": [
+        "Fixes the switch's own MAC so it never changes",
+        "Blocks every MAC except the switch's own one",
+        "Copies the MAC of the router onto the port",
+        "Learns the first MAC, saves it in the config"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the default port security violation mode?",
+      "options": [
+        "protect",
+        "ignore",
+        "restrict",
+        "shutdown"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Port security is rejected on a port. What is the likely reason?",
+      "options": [
+        "The port has never had a cable plugged in",
+        "The port is not set to switchport mode access",
+        "The port is already in VLAN 10 as an access port",
+        "The port has PortFast turned on for a PC"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In 802.1X, what is the PC called?",
+      "options": [
+        "The root bridge",
+        "The authenticator",
+        "The RADIUS server",
+        "The supplicant"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How does switch spoofing let an attacker hop VLANs?",
+      "options": [
+        "The attacker plugs two cables into one port",
+        "The attacker copies the MAC of the root bridge",
+        "The attacker sends BPDUs with priority zero",
+        "The laptop negotiates a trunk using DTP"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which command turns DTP off on a port?",
+      "options": [
+        "switchport nonegotiate",
+        "switchport trunk off now",
+        "no spanning-tree dtp",
+        "switchport mode dynamic"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How do you defend against double tagging?",
+      "options": [
+        "Put every user in VLAN 1",
+        "Use only one switch per floor",
+        "Make the native VLAN an unused one",
+        "Turn on PortFast on every trunk port"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Guests on a guest network must not see each other. Which feature fits?",
+      "options": [
+        "Root Guard",
+        "Private VLANs",
+        "EtherChannel links",
+        "Rapid PVST+"
+      ],
+      "correct": "B"
+    }
+  ]
+}

@@ -27,38 +27,47 @@ Syllabus: CC102 Unit 1 — Basic Programming Concepts (flowchart, pseudocode). -
         it has already caused a real system to misbehave.
     </p>
 
-    <h2 class="section-heading">Volt Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In a flowchart, which shape marks a step like “Print Power: online”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. An oval</li>
+            <li class="quiz-option">B. An arrow</li>
+            <li class="quiz-option quiz-correct">C. A rectangle ✓</li>
+            <li class="quiz-option">D. A circle with a cross</li>
+        </ul>
+        <p class="quiz-explanation"><em>Rectangles are steps. Ovals mark the start and end, and arrows show the order between them.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        The console can say one line. Now it has to run the Wanderer's restart sequence: power first, then
-        coolant, then everything else.
+        Before a road trip, you plan the route. You can draw it on a <strong>map</strong>, with the stops in boxes and arrows between them. That is a <strong>flowchart</strong>. Or you can write it as <strong>turn-by-turn directions</strong> on a sticky note. That is <strong>pseudocode</strong>.
     </p>
 
     <p class="body-text">
-        Rivet reaches for the keyboard. <strong>Volt</strong> puts a hand flat on it.
+        Both describe the exact same trip. Writing the C code is actually getting in the car and driving it.
     </p>
 
-    <p class="body-text">
-        <strong>Volt</strong>: "Coolant before power and that line blows out through the floor we're standing on.
-        Write the order down first. Then type."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 345" role="img" aria-label="Planning a road trip two ways. A map flowchart: Home, get gas, buy snacks, Beach. The same trip as written directions: START, go to the gas station, buy snacks, END. Writing C code is actually driving. Ovals are start or end, boxes are one step, arrows show what comes next.">
+            <rect x="20" y="40" width="270" height="250" rx="12" fill="#fffaf2" stroke="#f08c1a" stroke-width="2"/><rect x="20" y="40" width="270" height="40" rx="12" fill="#fff0d9"/><rect x="21" y="62" width="268" height="18" fill="#fff0d9"/><line x1="20" y1="80" x2="290" y2="80" stroke="#f08c1a" stroke-width="2"/><rect x="20" y="40" width="270" height="250" rx="12" fill="none" stroke="#f08c1a" stroke-width="2"/><text x="38" y="66" font-size="12" fill="#8a4b00" font-weight="800" letter-spacing="1">MAP · FLOWCHART</text><ellipse cx="155" cy="108" rx="55" ry="18" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2"/><text x="155" y="113" font-size="14" fill="#4a35b8" font-weight="700" text-anchor="middle">Home</text><rect x="90" y="146" width="130" height="32" rx="8" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><text x="155" y="167" font-size="14" fill="#14306b" font-weight="700" text-anchor="middle">Get gas</text><rect x="90" y="196" width="130" height="32" rx="8" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><text x="155" y="217" font-size="14" fill="#14306b" font-weight="700" text-anchor="middle">Buy snacks</text><ellipse cx="155" cy="262" rx="55" ry="18" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2"/><text x="155" y="267" font-size="14" fill="#4a35b8" font-weight="700" text-anchor="middle">Beach</text><line x1="155" y1="126" x2="155.0" y2="136.0" stroke="#7c5cff" stroke-width="3"/><polygon points="155,145 161.0,136.0 149.0,136.0" fill="#7c5cff"/><line x1="155" y1="178" x2="155.0" y2="186.0" stroke="#7c5cff" stroke-width="3"/><polygon points="155,195 161.0,186.0 149.0,186.0" fill="#7c5cff"/><line x1="155" y1="228" x2="155.0" y2="234.0" stroke="#7c5cff" stroke-width="3"/><polygon points="155,243 161.0,234.0 149.0,234.0" fill="#7c5cff"/><line x1="300" y1="125" x2="331.0" y2="125.0" stroke="#e8457c" stroke-width="3"/><polygon points="342,125 331.0,119.0 331.0,131.0" fill="#e8457c"/><line x1="342" y1="125" x2="309.0" y2="125.0" stroke="#e8457c" stroke-width="3"/><polygon points="298,125 309.0,131.0 309.0,119.0" fill="#e8457c"/><text x="320" y="112" font-size="11" fill="#e8457c" font-weight="700" text-anchor="middle">same</text><text x="320" y="146" font-size="11" fill="#e8457c" font-weight="700" text-anchor="middle">trip</text><rect x="350" y="40" width="270" height="170" rx="12" fill="#f5f9ff" stroke="#2f6fe0" stroke-width="2"/><rect x="350" y="40" width="270" height="40" rx="12" fill="#e8f0ff"/><rect x="351" y="62" width="268" height="18" fill="#e8f0ff"/><line x1="350" y1="80" x2="620" y2="80" stroke="#2f6fe0" stroke-width="2"/><rect x="350" y="40" width="270" height="170" rx="12" fill="none" stroke="#2f6fe0" stroke-width="2"/><text x="368" y="66" font-size="12" fill="#14306b" font-weight="800" letter-spacing="1">DIRECTIONS · PSEUDOCODE</text><text x="370" y="108" font-size="14" fill="#14306b" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">START</text><text x="370" y="134" font-size="14" fill="#14306b" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;go&#160;to&#160;the&#160;gas&#160;station</text><text x="370" y="160" font-size="14" fill="#14306b" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;buy&#160;snacks</text><text x="370" y="186" font-size="14" fill="#14306b" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">END</text><line x1="360" y1="252" x2="612" y2="252" stroke="#9aa5b8" stroke-width="3"/><line x1="368" y1="252" x2="604" y2="252" stroke="#fff" stroke-width="1.5" stroke-dasharray="10,8"/><rect x="445" y="222" width="80" height="22" rx="7" fill="#ffb3cb" stroke="#e8457c" stroke-width="2"/><path d="M460 222 L470 206 H500 L512 222 Z" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><circle cx="463" cy="246" r="8" fill="#1b2440"/><circle cx="507" cy="246" r="8" fill="#1b2440"/><text x="485" y="280" font-size="13" fill="#9c1f4c" font-weight="700" text-anchor="middle">C code = actually driving</text><rect x="20" y="298" width="190" height="36" rx="18" fill="#f3f0ff" stroke="#7c5cff" stroke-width="1.8"/><ellipse cx="46" cy="316" rx="13" ry="7" fill="#fff" stroke="#7c5cff" stroke-width="1.8"/><text x="68" y="321" font-size="13" fill="#4a35b8"><tspan font-weight="800">Oval</tspan> · start or end</text><rect x="225" y="298" width="190" height="36" rx="18" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="1.8"/><rect x="238" y="309" width="24" height="14" rx="3" fill="#fff" stroke="#2f6fe0" stroke-width="1.8"/><text x="272" y="321" font-size="13" fill="#14306b"><tspan font-weight="800">Box</tspan> · one step</text><rect x="430" y="298" width="190" height="36" rx="18" fill="#ffe3ec" stroke="#e8457c" stroke-width="1.8"/><line x1="443" y1="316" x2="459.0" y2="316.0" stroke="#e8457c" stroke-width="2.5"/><polygon points="467,316 459.0,310.0 459.0,322.0" fill="#e8457c"/><text x="477" y="321" font-size="13" fill="#9c1f4c"><tspan font-weight="800">Arrow</tspan> · what's next</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Rivet</strong>: "I know the order."
+        <strong>Why plan first?</strong> If the plan forgot the gas stop, you fix it with a pencil in two seconds. If you only find out halfway down the highway with an empty tank, it is a much bigger problem. Programmers plan on paper for the same reason.
     </p>
 
-    <p class="body-text">
-        <strong>Volt</strong> doesn't move his hand. "Write it down."
-    </p>
-
-    <p class="body-text">
-        <strong>Rivet</strong> sighs, drops the keyboard, and picks up a marker instead. "Power. Coolant.
-        Systems. Plan first, picture second, code last. Happy?"
-    </p>
-
-    <p class="body-text">
-        <strong>Volt</strong>: "Getting there."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why plan the route before you start driving?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Maps make the car drive faster on the road</li>
+            <li class="quiz-option">B. Drivers are not allowed to leave without one</li>
+            <li class="quiz-option">C. The car can only follow routes drawn in ink</li>
+            <li class="quiz-option quiz-correct">D. A missing stop is easier to fix on paper ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Catching a forgotten step on paper costs a pencil mark. Catching it after the program (or the car) is already running costs a lot more.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -114,6 +123,17 @@ int main() {
     return 0;
 }</code></pre>
 
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">When this pseudocode becomes C, what does each PRINT line turn into?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. One comment, in the same order</li>
+            <li class="quiz-option">B. One variable, in the same order</li>
+            <li class="quiz-option quiz-correct">C. One <code>printf</code> call, in the same order ✓</li>
+            <li class="quiz-option">D. One <code>printf</code> that prints all three lines</li>
+        </ul>
+        <p class="quiz-explanation"><em>One pseudocode line becomes one <code>printf</code>, in the same order as the plan.</em></p>
+    </div>
+
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
     <p class="body-text">
@@ -168,10 +188,10 @@ int main() {
     <div class="quiz-block" data-q="1">
         <p class="quiz-prompt">Q1. In a flowchart, what does an oval usually mark?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. A loop</li>
-            <li class="quiz-option quiz-correct">B. The start or end of the plan ✓</li>
-            <li class="quiz-option">C. A variable</li>
-            <li class="quiz-option">D. An error</li>
+            <li class="quiz-option">A. A loop that repeats</li>
+            <li class="quiz-option quiz-correct">B. The start or the end ✓</li>
+            <li class="quiz-option">C. A step to carry out</li>
+            <li class="quiz-option">D. An error to fix</li>
         </ul>
         <p class="quiz-explanation"><em>Ovals mark start and end points; rectangles mark steps, and arrows show the order between them.</em></p>
     </div>
@@ -179,10 +199,10 @@ int main() {
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. What is pseudocode?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Code that intentionally does not compile</li>
-            <li class="quiz-option quiz-correct">B. A plan written in plain, structured sentences, not real code ✓</li>
-            <li class="quiz-option">C. A type of C syntax error</li>
-            <li class="quiz-option">D. A flowchart shape</li>
+            <li class="quiz-option">A. C code that is meant not to compile</li>
+            <li class="quiz-option quiz-correct">B. A plan written in plain sentences ✓</li>
+            <li class="quiz-option">C. A kind of C syntax error message</li>
+            <li class="quiz-option">D. A shape used inside a flowchart</li>
         </ul>
         <p class="quiz-explanation"><em>Pseudocode is a structured plan in plain language — close enough in shape to real code that turning it into C is mostly direct.</em></p>
     </div>
@@ -190,10 +210,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. Why plan with a flowchart or pseudocode before writing real code?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. C requires it to compile</li>
-            <li class="quiz-option quiz-correct">B. It is cheaper to catch a missing or out-of-order step on paper than after it causes real problems ✓</li>
-            <li class="quiz-option">C. It makes the program run faster</li>
-            <li class="quiz-option">D. It is not useful — most programmers skip it</li>
+            <li class="quiz-option">A. C needs a plan before it can compile</li>
+            <li class="quiz-option quiz-correct">B. Mistakes are cheaper to fix on paper ✓</li>
+            <li class="quiz-option">C. It makes the finished program run faster</li>
+            <li class="quiz-option">D. It isn't useful; most coders skip it</li>
         </ul>
         <p class="quiz-explanation"><em>Planning first catches mistakes while they are cheap to fix — before the console is actually running the sequence.</em></p>
     </div>
@@ -212,10 +232,10 @@ int main() {
     <div class="quiz-block" data-q="5">
         <p class="quiz-prompt">Q5. If a flowchart's arrows show steps happening out of order, what is the biggest risk?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. None — order never matters in C</li>
-            <li class="quiz-option quiz-correct">B. The program runs the steps in the wrong sequence, since C runs statements top to bottom exactly as written ✓</li>
-            <li class="quiz-option">C. The program will refuse to compile</li>
-            <li class="quiz-option">D. The console will crash instantly</li>
+            <li class="quiz-option">A. None, because order never matters in C</li>
+            <li class="quiz-option quiz-correct">B. The code runs the steps in the wrong order ✓</li>
+            <li class="quiz-option">C. The program will refuse to compile at all</li>
+            <li class="quiz-option">D. The console will crash the moment it starts</li>
         </ul>
         <p class="quiz-explanation"><em>C runs each statement in the order it is written — a plan drawn out of order becomes code that runs out of order too.</em></p>
     </div>

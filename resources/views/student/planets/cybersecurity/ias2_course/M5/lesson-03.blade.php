@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit E.3 Web Application Security (OWASP Top 10). --}}
         who shouldn't have it.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why is a hardcoded credential dangerous?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It makes the whole application run much slower</li>
+            <li class="quiz-option">B. It locks every user out of the database</li>
+            <li class="quiz-option quiz-correct">C. Anyone who reads the file has the password ✓</li>
+            <li class="quiz-option">D. It changes itself every time it is used</li>
+        </ul>
+        <p class="quiz-explanation"><em>It's invisible until the file, its backup or its history reaches someone who shouldn't have it.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit E.3 Web Application Security (OWASP Top 10). --}}
         it out, put it somewhere only the application itself can reach, and rotate it — assume it's already been
         seen."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt say to rotate the password?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The old one had expired today</li>
+            <li class="quiz-option">B. Rotation makes the tool run much faster</li>
+            <li class="quiz-option">C. Vex asked for a new password</li>
+            <li class="quiz-option quiz-correct">D. Assume it has already been seen ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Pull it out of the file, store it safely, and change it, because someone may already have read it.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -58,6 +80,17 @@ Syllabus: ITP1333 Unit E.3 Web Application Security (OWASP Top 10). --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">A hardcoded credential is invisible until someone looks — then it's already too late</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is the final safe state?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Typed in plain text</li>
+            <li class="quiz-option">B. Read by everyone</li>
+            <li class="quiz-option quiz-correct">C. Rotated and secured ✓</li>
+            <li class="quiz-option">D. Kept in the config</li>
+        </ul>
+        <p class="quiz-explanation"><em>The fix is removing the password from the file and changing it: rotated and secured.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -29,6 +29,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l7.json) complete
         Plan first, then configure, then test. Check each device with <code>ipconfig</code> and <code>route print</code> before you ping.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Where must every host's default gateway sit?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. On Earth's relay network</li>
+            <li class="quiz-option">B. On any subnet of the ship</li>
+            <li class="quiz-option quiz-correct">C. On the host's own subnet ✓</li>
+            <li class="quiz-option">D. On the far end of the WAN</li>
+        </ul>
+        <p class="quiz-explanation"><em>A host can only reach a gateway on its own subnet. From there, the router carries traffic onward.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l7.json) complete
     <p class="body-text">
         <strong>Astro</strong> makes the call. "This is the moment. Build the network, bring the decks up, and send our first message to Earth." <strong>Rivet</strong> is already at the router. "The router is blank. Every address, every gateway. Let's go."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What does Rivet find when he gets to the router?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It is jammed by Doom's ship</li>
+            <li class="quiz-option">B. It has the wrong type of cable</li>
+            <li class="quiz-option">C. It is already fully set up</li>
+            <li class="quiz-option quiz-correct">D. It is blank, with nothing set ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The router is blank: every address and every gateway still has to be configured.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -66,6 +88,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l7.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the mission map, which subnet is the shield deck on?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 192.168.20.128/24</li>
+            <li class="quiz-option">B. 203.0.113.0/24</li>
+            <li class="quiz-option quiz-correct">C. 192.168.20.128/25 ✓</li>
+            <li class="quiz-option">D. 192.168.20.0/24</li>
+        </ul>
+        <p class="quiz-explanation"><em>The shield deck is the upper half, 192.168.20.128/25, with volt at .140 and the gateway at .129.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

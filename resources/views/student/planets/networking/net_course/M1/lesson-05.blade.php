@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l5.json) complete
         Why it matters: fewer machines to buy and power, workloads kept apart from each other, and a VM can be copied or restored in minutes. Common tools are VirtualBox, VMware, Hyper-V and KVM.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is a hypervisor?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A server that turns names into IP addresses</li>
+            <li class="quiz-option">B. A cable that links two physical servers</li>
+            <li class="quiz-option">C. A client that asks a server for a page</li>
+            <li class="quiz-option quiz-correct">D. Software that splits one machine into VMs ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A hypervisor splits one physical computer into several virtual machines, each with its own OS and IP address.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -38,6 +49,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l5.json) complete
     <p class="body-text">
         The simulator has no full virtual machines, but the idea is the same: one server, several services at once.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">How does Rivet run three services with only one server?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. By wiring three servers in a ring</li>
+            <li class="quiz-option">B. By giving the clients more cables</li>
+            <li class="quiz-option quiz-correct">C. With virtualization on one machine ✓</li>
+            <li class="quiz-option">D. By turning two services off for good</li>
+        </ul>
+        <p class="quiz-explanation"><em>Virtualization lets one server do several jobs, and each one acts like it has the machine to itself.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -66,6 +88,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l5.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does each VM have of its own?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Its own power cord</li>
+            <li class="quiz-option">B. Its own hardware box</li>
+            <li class="quiz-option">C. Its own hypervisor</li>
+            <li class="quiz-option quiz-correct">D. Its own OS and IP ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Each virtual machine runs its own operating system and has its own IP, so it looks like a separate computer.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

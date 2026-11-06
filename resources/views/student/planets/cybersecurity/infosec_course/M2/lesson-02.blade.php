@@ -33,6 +33,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l2.js
         outside your control, and strips out the part that matters most before that happens.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How is masking different from a file permission?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Masking stops the wrong account opening it</li>
+            <li class="quiz-option">B. Masking deletes the file before it is sent</li>
+            <li class="quiz-option quiz-correct">C. Masking assumes outsiders will see the file ✓</li>
+            <li class="quiz-option">D. Masking hides the names but keeps the codes</li>
+        </ul>
+        <p class="quiz-explanation"><em>A permission stops the wrong account opening it. Masking assumes it will be seen and strips the harmful parts first.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -47,6 +58,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l2.js
         those — that's how they'll know who's aboard. Crew IDs and access codes are what Doom could actually use.
         Mask those, and Doom's intercepted copy is just stars — nothing they can act on."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why doesn't Rivet just cancel the transfer?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Doom stopped tapping the relay</li>
+            <li class="quiz-option">B. There is a second safe channel</li>
+            <li class="quiz-option quiz-correct">C. The allies need the crew list ✓</li>
+            <li class="quiz-option">D. Masking makes the file encrypted</li>
+        </ul>
+        <p class="quiz-explanation"><em>The allies need names to know who's aboard. So the crew keeps sending, but masks the IDs and codes.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -77,6 +99,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l2.js
             <text x="532" y="176" text-anchor="middle" font-size="11.5" fill="#175a3a">only stars — useless</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does Doom see after masking?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Full crew IDs</li>
+            <li class="quiz-option">B. The access codes</li>
+            <li class="quiz-option">C. Nothing at all</li>
+            <li class="quiz-option quiz-correct">D. Only stars ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The masked file shows **** where the IDs and codes were, so Doom's copy is useless.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

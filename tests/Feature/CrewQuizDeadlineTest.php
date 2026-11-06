@@ -34,13 +34,21 @@ class CrewQuizDeadlineTest extends TestCase
         return $quiz;
     }
 
+    /** Press Start, then hand in: the only way a quiz is taken now. */
+    private function take(User $student, CrewQuiz $quiz, array $body)
+    {
+        $this->actingAs($student)->postJson(route('student.quiz.start', $quiz));
+
+        return $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), $body);
+    }
+
     public function test_a_quiz_can_be_taken_before_its_deadline(): void
     {
         [$student, $crew] = $this->setUp2();
         $quiz = $this->quiz($crew, ['due_at' => now()->addDay()]);
 
         $this->actingAs($student)->getJson(route('student.quiz.show', $quiz))->assertOk();
-        $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), [
+        $this->take($student, $quiz, [
             'answers' => [$quiz->questions->first()->id => 1],
         ])->assertOk()->assertJsonPath('result.score', 1);
     }
@@ -51,14 +59,14 @@ class CrewQuizDeadlineTest extends TestCase
         $quiz = $this->quiz($crew, ['due_at' => now()->subMinute()]);
 
         $this->actingAs($student)->getJson(route('student.quiz.show', $quiz))->assertForbidden();
-        $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), ['answers' => []])->assertForbidden();
+        $this->take($student, $quiz, ['answers' => []])->assertForbidden();
     }
 
     public function test_someone_who_already_submitted_keeps_their_result_after_the_deadline(): void
     {
         [$student, $crew] = $this->setUp2();
         $quiz = $this->quiz($crew, ['due_at' => now()->addDay()]);
-        $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), [
+        $this->take($student, $quiz, [
             'answers' => [$quiz->questions->first()->id => 1],
         ])->assertOk();
 
@@ -87,7 +95,7 @@ class CrewQuizDeadlineTest extends TestCase
         $this->actingAs($student)->getJson(route('student.quiz.show', $quiz))->assertNotFound();
     }
 
-    public function test_the_badge_counts_new_quizzes_and_clears_when_the_tab_is_opened(): void
+    public function test_new_quizzes_are_counted_but_no_badge_shows_now_the_quiz_tab_is_gone(): void
     {
         [$student, $crew] = $this->setUp2();
         $this->quiz($crew);
@@ -95,10 +103,10 @@ class CrewQuizDeadlineTest extends TestCase
 
         $this->assertSame(2, CourseHubController::unseenQuizCount($crew, $student->id));
 
-        // The badge shows on the Home tab and on the course card before the tab is opened.
+        // The hub has no Quiz tab any more, so neither the hub nor the course card shows a quiz badge.
         $this->actingAs($student)->get(route('student.course.overview', ['slug' => 'programming', 'course' => 'python']))
-            ->assertOk()->assertSee('2 new quizzes');
-        $this->actingAs($student)->get(route('student.planet', 'programming'))->assertOk()->assertSee('2 new quizzes');
+            ->assertOk()->assertDontSee('2 new quizzes');
+        $this->actingAs($student)->get(route('student.planet', 'programming'))->assertOk()->assertDontSee('2 new quizzes');
 
         // Opening the Quiz tab is what marks them seen.
         $this->actingAs($student)->get(route('student.course.quiz', ['slug' => 'programming', 'course' => 'python']))->assertOk();
@@ -109,7 +117,7 @@ class CrewQuizDeadlineTest extends TestCase
     {
         [$student, $crew] = $this->setUp2();
         $quiz = $this->quiz($crew);
-        $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), [
+        $this->take($student, $quiz, [
             'answers' => [$quiz->questions->first()->id => 1],
         ])->assertOk();
 
@@ -126,7 +134,7 @@ class CrewQuizDeadlineTest extends TestCase
         $cb = $quiz->questions()->create(['prompt' => 'Pick the private ranges.', 'type' => 'checkboxes', 'options' => ['10.0.0.0/8', '8.8.8.8', '192.168.0.0/16'], 'correct_index' => 0, 'correct_indexes' => [0, 2], 'position' => 2]);
         $dd = $quiz->questions()->create(['prompt' => 'Default HTTPS port?', 'type' => 'dropdown', 'options' => ['80', '443', '22'], 'correct_index' => 1, 'position' => 3]);
 
-        $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), ['answers' => [
+        $this->take($student, $quiz, ['answers' => [
             $mc->id => 1, $tf->id => 0, $cb->id => [2, 0], $dd->id => 1,
         ]])->assertOk()->assertJsonPath('result.score', 4)->assertJsonPath('result.total', 4);
     }
@@ -142,11 +150,11 @@ class CrewQuizDeadlineTest extends TestCase
         ]);
 
         // Half right is still wrong — no partial credit.
-        $this->actingAs($student)->postJson(route('student.quiz.submit', $quiz), ['answers' => [$cb->id => [0]]])
+        $this->take($student, $quiz, ['answers' => [$cb->id => [0]]])
             ->assertOk()->assertJsonPath('result.score', 0);
 
         $other = $this->studentIn('programming', 'python');
-        $this->actingAs($other)->postJson(route('student.quiz.submit', $quiz), ['answers' => [$cb->id => [0, 1, 2]]])
+        $this->take($other, $quiz, ['answers' => [$cb->id => [0, 1, 2]]])
             ->assertOk()->assertJsonPath('result.score', 0);
     }
 
@@ -155,7 +163,7 @@ class CrewQuizDeadlineTest extends TestCase
         [$student, $crew] = $this->setUp2();
         $quiz = $this->quiz($crew);
 
-        $body = $this->actingAs($student)->getJson(route('student.quiz.show', $quiz))->assertOk()->json();
+        $body = $this->actingAs($student)->postJson(route('student.quiz.start', $quiz))->assertOk()->json();
 
         $this->assertSame('multiple_choice', $body['questions'][0]['type']);
         $this->assertStringNotContainsString('correct', json_encode($body['questions']));
@@ -166,7 +174,7 @@ class CrewQuizDeadlineTest extends TestCase
         $crew = $this->crewFor('programming', 'python');
 
         $this->actingAs($crew->faculty)->post(route('faculty.quizzes.store', $crew), [
-            'title' => 'Week 4', 'due_at' => now()->addWeek()->toDateTimeString(),
+            'title' => 'Week 4', 'minutes' => 20, 'due_at' => now()->addWeek()->toDateTimeString(),
             'questions' => [
                 ['prompt' => 'Pick two', 'type' => 'checkboxes', 'options' => ['a', 'b', 'c'], 'correct_many' => [0, 2]],
             ],
@@ -183,7 +191,7 @@ class CrewQuizDeadlineTest extends TestCase
         $crew = $this->crewFor('programming', 'python');
 
         $this->actingAs($crew->faculty)->post(route('faculty.quizzes.store', $crew), [
-            'title' => 'Broken',
+            'title' => 'Broken', 'minutes' => 20,
             'questions' => [['prompt' => 'Pick two', 'type' => 'checkboxes', 'options' => ['a', 'b'], 'correct_many' => []]],
         ])->assertSessionHasErrors('questions');
     }

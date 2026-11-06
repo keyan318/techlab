@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\CourseProgressService;
+use App\Services\MiniBossService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class EnsureLessonUnlocked
     public function handle(Request $request, Closure $next): Response
     {
         $course = (string) $request->route('slug');
-        $user   = $request->user();
+        $user = $request->user();
 
         if (! CourseProgressService::exists($course) || ! $user) {
             return $next($request);
@@ -35,17 +36,31 @@ class EnsureLessonUnlocked
             abort(404);
         }
 
+        // Faculty and admins read (and edit) every lesson: no locks, and opening one isn't progress.
+        if (($user->role ?? 'student') !== 'student') {
+            return $next($request);
+        }
+
         if (! CourseProgressService::isUnlocked($user, $module, $lesson, $course)) {
             // The fragment route is fetched by JS — a redirect would be followed
             // and the wrong lesson silently swapped in, so refuse it outright.
             if ($request->routeIs('student.planet.module.lesson.fragment') || $request->expectsJson()) {
-                abort(403, 'This lesson is locked. Complete the previous challenge first.');
+                abort(403, 'This lesson is locked. Complete the previous challenge first (and, self-paced, beat the mini boss of the module before).');
+            }
+
+            // Self-paced, held at the end of a module: the way on is through its mini boss.
+            if ($boss = CourseProgressService::blockingBoss($user, $module, $lesson, $course)) {
+                return redirect(MiniBossService::urlForKey($course, $boss) ?? route('student.planet', CourseProgressService::planetFor($course)));
             }
 
             $target = CourseProgressService::furthestUnlocked($user, $course);
+            // The first lesson not done is itself held by a mini boss: go there instead.
+            if ($boss = CourseProgressService::blockingBoss($user, $target['module'], $target['lesson'], $course)) {
+                return redirect(MiniBossService::urlForKey($course, $boss) ?? route('student.planet', CourseProgressService::planetFor($course)));
+            }
 
             return redirect()->route('student.planet.module.lesson', [
-                'slug'   => $course,
+                'slug' => $course,
                 'module' => $target['module'],
                 'lesson' => $target['lesson'],
             ]);

@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "Why do files outlast a program?",
+      "options": [
+        "They are copied into every variable at the start",
+        "They are saved inside the program's own code",
+        "They live on the stack, which is never wiped",
+        "They are kept on storage, not in main memory"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What kind of file can you open and read in a notepad?",
+      "options": [
+        "A text file",
+        "A heap file",
+        "A binary file",
+        "A stack file"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is in a binary file?",
+      "options": [
+        "Only the names of the variables",
+        "Bytes just as they sit in memory",
+        "Only numbers written as words",
+        "Lines of text that end with '\\n'"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What type is a file pointer?",
+      "options": [
+        "FILE *",
+        "int *",
+        "char *",
+        "file"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which mode opens a file to add to its end without erasing it?",
+      "options": [
+        "\"rb\"",
+        "\"a\"",
+        "\"w\"",
+        "\"r\""
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "The file already exists and you open it with \"w\". What happens?",
+      "options": [
+        "New text goes on the end",
+        "fopen returns NULL",
+        "It is emptied first",
+        "It is left as it was"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "fopen(\"missing.txt\", \"r\") cannot find the file. What does it return?",
+      "options": [
+        "0 lines",
+        "NULL",
+        "An empty FILE",
+        "EOF"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does fclose(f) do?",
+      "options": [
+        "Moves back to the start of the file",
+        "Deletes the file from the storage",
+        "Empties the file but keeps it open",
+        "Finishes writing and lets go of it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which mode creates a new binary file to write?",
+      "options": [
+        "\"wb\"",
+        "\"rb\"",
+        "\"r\"",
+        "\"w\""
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does fputc('K', f) do?",
+      "options": [
+        "Prints K on the screen",
+        "Reads the character K from the file",
+        "Checks if the file holds a K",
+        "Writes the character K to the file"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does fgetc return when nothing is left to read?",
+      "options": [
+        "0",
+        "'\\0'",
+        "NULL",
+        "EOF"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why must the variable you read fgetc into be an int, not a char?",
+      "options": [
+        "fgetc can only return whole numbers",
+        "EOF is a number outside the char range",
+        "An int makes the loop run faster",
+        "A char cannot hold a letter from a file"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which loop reads a file one character at a time until the end?",
+      "options": [
+        "while ((c = fgetc(f)) != EOF)",
+        "while ((c = fputc(f)) != EOF)",
+        "while (fgetc(f) == NULL)",
+        "while (c != '\\0') fgetc(f);"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "After writing a file, how do you read it from the beginning?",
+      "options": [
+        "Keep it open and call fgetc right away",
+        "Call fputc with EOF to rewind it",
+        "Close it and open it again with \"r\"",
+        "Open it again with \"w\" to start over"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Does fputs add a newline after the text?",
+      "options": [
+        "Yes, but only in \"a\" mode",
+        "No, it adds a space",
+        "No, add \\n yourself",
+        "Yes, always one"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does fgets(line, 50, f) read?",
+      "options": [
+        "Exactly 50 lines from the file",
+        "One line, at most 49 characters",
+        "One word, up to the first space",
+        "The whole file in a single call"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does fgets return at the end of the file?",
+      "options": [
+        "EOF",
+        "0 lines",
+        "NULL",
+        "'\\n'"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is fgets safer than strcat?",
+      "options": [
+        "It reads the whole file into the heap for you",
+        "It always adds a newline at the end of a line",
+        "It never writes more than the array can hold",
+        "It checks that the file exists before reading"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "The logbook has 5 lines. You open it with \"a\" and write one line. How many lines does it have?",
+      "options": [
+        "0",
+        "6",
+        "5",
+        "1"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How is fprintf different from printf?",
+      "options": [
+        "It writes to the screen and the file",
+        "It can only write numbers, not text",
+        "It needs the file name as a string",
+        "It takes the file as its first input"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "fprintf(f, \"%s %d\\n\", \"Station\", 40); What does the file get?",
+      "options": [
+        "%s %d",
+        "Station40\\n",
+        "Station 40",
+        "\"Station\", 40"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In fscanf(f, \"%s %d\", name, &riders);, why does name have no &?",
+      "options": [
+        "fscanf adds the & for strings itself",
+        "name is a global, so it needs no &",
+        "An array name is already an address",
+        "%s reads into a copy of the string"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does %s in fscanf stop at?",
+      "options": [
+        "A space",
+        "A comma",
+        "A capital letter",
+        "The number 0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "To read a decimal with fscanf in this course, which type and code do you use?",
+      "options": [
+        "char with %c each",
+        "int with %d",
+        "float with %f",
+        "double with %lf"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does fscanf return?",
+      "options": [
+        "The file pointer",
+        "The line number",
+        "The last value that it read",
+        "How many values it read"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "while (fscanf(f, \"%s %d\", name, &riders) == 2) — when does it stop?",
+      "options": [
+        "When it cannot read both values",
+        "When name is two letters long",
+        "After exactly two lines of the file",
+        "When riders becomes 2"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "fwrite(crew, sizeof(Crew), 4, f); How many items does it write?",
+      "options": [
+        "4",
+        "4 bytes",
+        "1",
+        "sizeof(Crew)"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does fread return?",
+      "options": [
+        "NULL at the start",
+        "How many items it read",
+        "The file's name",
+        "The bytes it read as text"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why check got == 4 after fread(remembered, sizeof(Crew), 4, f)?",
+      "options": [
+        "To free the four structs that were read",
+        "To know the whole file really came back",
+        "To turn the bytes back into readable text",
+        "To make sure the file was opened with \"w\""
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is the trade-off of a binary file?",
+      "options": [
+        "Unreadable to people, and needs the same struct",
+        "It cannot be closed once it has been opened",
+        "It can only hold text, and must end with a newline",
+        "It is much slower than a text file for the program"
+      ],
+      "correct": "A"
+    }
+  ]
+}

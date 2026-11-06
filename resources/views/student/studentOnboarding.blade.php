@@ -103,10 +103,6 @@
     }
 
     .planets { animation: fadeUp .6s ease both; }
-    .planets-head { text-align: center; margin-bottom: 30px; }
-    .planets-head h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.02em; }
-    .planets-head p  { color: var(--muted); margin: 10px auto 0; max-width: 620px; }
-
     /* Planet cards, Codedex-style: pixel-art banner on top, then an eyebrow, title, blurb and a pill.
        The cards are dark in both themes (the art is dark), so their text is always light. */
     .planet-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
@@ -221,11 +217,6 @@
       <div class="onboard-wrap">
 
         <section class="planets">
-          <div class="planets-head">
-            <h2>Choose your mission planet</h2>
-            <p>Pick the world you want to conquer. You can explore them all, one track at a time — your progress is saved per planet.</p>
-          </div>
-
           @php
             // One entry per planet. Twinkle stars sit in each banner's open sky: [left %, top %, size %].
             $planetCards = [
@@ -233,7 +224,7 @@
                 'slug' => 'programming', 'class' => 'prog', 'name' => 'Programming City',
                 'blurb' => config('course-catalog.programming.description'),
                 'art' => 'images/programming-city-pixel.png', 'w' => 1250, 'h' => 500,
-                'lock' => 'Ask your teacher for a crew join code to land here.',
+                'lock' => 'Pick a course, Self-paced or Join Class, to land here.',
                 'stars' => [[4, 30, .45], [22, 6, .5], [34, 18, .4], [64, 4, .5], [77, 12, .4], [94, 6, .45]],
               ],
               [
@@ -253,7 +244,7 @@
             ];
           @endphp
 
-          <div class="planet-grid">
+          <div class="planet-grid" data-tour="planet-list">
             @foreach ($planetCards as $card)
               @php
                 $progress = $planetProgress[$card['slug']] ?? null;   // null = not enrolled yet
@@ -262,7 +253,8 @@
               @endphp
 
               @if ($progress)
-              <a class="planet-card {{ $card['class'] }}" href="{{ route('student.planet', $card['slug']) }}"
+              @php $tourMark = empty($tourMarked); $tourMarked = true; // Astro's tour points at the student's own planet @endphp
+              <a class="planet-card {{ $card['class'] }}" @if ($tourMark) data-tour="planet-card" @endif href="{{ route('student.planet', $card['slug']) }}"
                  aria-label="{{ $card['name'] }}, {{ $pct }}% complete">
                 <div class="pc-scene" aria-hidden="true">
                   <img class="pc-art" src="{{ asset($card['art']) }}" width="{{ $card['w'] }}" height="{{ $card['h'] }}" alt="" decoding="async">

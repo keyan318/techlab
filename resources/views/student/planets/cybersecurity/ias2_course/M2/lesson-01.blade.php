@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit B.1 The CIA Triad and Other Security Models. --}}
         control and trace who could cause it.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In the AAA model, what is accounting?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Proving who you are to the system</li>
+            <li class="quiz-option">B. Deciding what you are allowed to do</li>
+            <li class="quiz-option">C. Counting how much the system costs</li>
+            <li class="quiz-option quiz-correct">D. Recording what you actually did ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Authentication proves who you are, authorization decides what you may do, accounting records what you did.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit B.1 The CIA Triad and Other Security Models. --}}
         Third: is it in the log at all — accounting. If any one of those three is missing, we have a gap, even
         before we ask whether confidentiality, integrity or availability got hurt."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Rivet asks if the 03:00 login is in the log at all. Which A is that?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Authentication</li>
+            <li class="quiz-option quiz-correct">B. Accounting ✓</li>
+            <li class="quiz-option">C. Authorization</li>
+            <li class="quiz-option">D. Availability</li>
+        </ul>
+        <p class="quiz-explanation"><em>Whether there's a record of the action is accounting. Proving identity is authentication.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -54,6 +76,17 @@ Syllabus: ITP1333 Unit B.1 The CIA Triad and Other Security Models. --}}
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">CIA judges the damage; AAA controls and traces who could cause it</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does CIA do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Judges the damage ✓</li>
+            <li class="quiz-option">B. Traces who did it</li>
+            <li class="quiz-option">C. Controls the access</li>
+            <li class="quiz-option">D. Signs every request</li>
+        </ul>
+        <p class="quiz-explanation"><em>CIA judges the damage. AAA controls and traces who could cause it.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

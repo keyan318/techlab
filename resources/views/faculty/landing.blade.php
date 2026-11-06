@@ -114,7 +114,7 @@
     <main>
         <div class="wrap">
             <section class="hero">
-                <h1 aria-label="Level up your lessons, automation, AI partner and courses">
+                <h1 aria-label="Level up your lessons, teaching and courses">
                     <span class="line line-1" aria-hidden="true">Level up your</span>
                     <span class="decode" id="decode" aria-hidden="true">Lessons</span>
                 </h1>
@@ -133,7 +133,7 @@
                     <div class="card">
                         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg></div>
                         <h3>Your crew</h3>
-                        <p>Create a crew and share its join code. Students board with the code, and you see them on your roster.</p>
+                        <p>Open a class for your course. Students find you under Join Class and ask to join; accept them and they're on your roster.</p>
                     </div>
                     <div class="card">
                         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16M9 8h7"/></svg></div>
@@ -163,7 +163,7 @@
                 <div class="steps">
                     <div class="step"><div><b>Create your faculty account</b><span>Sign up with your school email address.</span></div></div>
                     <div class="step"><div><b>Sign in</b><span>Next time, use Faculty sign in. It opens your own dashboard.</span></div></div>
-                    <div class="step"><div><b>Create your crew</b><span>Share the join code with your students and start posting modules.</span></div></div>
+                    <div class="step"><div><b>Create your crew</b><span>Accept the students who ask to join, and start posting modules.</span></div></div>
                 </div>
             </section>
 
@@ -197,7 +197,7 @@
         // Decode effect: the highlighted phrase scrambles, then locks in letter by letter.
         (function () {
             var el = document.getElementById('decode');
-            var words = ['Lessons', 'Automation', 'AI Partner', 'Courses'];
+            var words = ['Lessons', 'Teaching', 'Courses'];
             if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             var h1 = el.parentNode, glyphs = '01<>/{}#$%&*+=?', i = 0, widths = {};
             function fit(word) { if (widths[word]) el.style.width = widths[word] + 'px'; }

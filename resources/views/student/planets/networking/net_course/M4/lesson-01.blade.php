@@ -37,6 +37,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
         When something fails at 3 a.m., a good diagram and a clean address plan turn a long search into a quick fix.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why record a baseline of the network?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. To bill each user for their usage</li>
+            <li class="quiz-option">B. To approve a change before testing</li>
+            <li class="quiz-option">C. To give each device a fixed address forever</li>
+            <li class="quiz-option quiz-correct">D. To tell when something is not normal ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A baseline records what normal delay and load look like, so you can spot when something is wrong.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -45,6 +56,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
     <p class="body-text">
         <strong>Volt</strong> pins the address plan to the wall: servers on <code>.2</code> to <code>.9</code>, printers on <code>.10</code> to <code>.19</code>, crew devices from DHCP at <code>.100</code> to <code>.150</code>. <strong>Rivet</strong> starts a ping sweep. "First job: find out what is actually down."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What does Volt pin to the wall?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A list of Doom's ship names</li>
+            <li class="quiz-option quiz-correct">B. The address plan for the ship ✓</li>
+            <li class="quiz-option">C. The router's backup admin password</li>
+            <li class="quiz-option">D. The jammer's radio channels</li>
+        </ul>
+        <p class="quiz-explanation"><em>Volt pins the address plan: servers on .2-.9, printers on .10-.19, crew devices from DHCP on .100-.150.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -79,6 +101,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l1.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In FCAPS, what does the C stand for?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Configuration ✓</li>
+            <li class="quiz-option">B. Communication</li>
+            <li class="quiz-option">C. Cabling</li>
+            <li class="quiz-option">D. Control</li>
+        </ul>
+        <p class="quiz-explanation"><em>C is Configuration management: know and control how every device is set up.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

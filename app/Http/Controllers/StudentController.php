@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\CourseJoinRequest;
 use App\Models\Crew;
 use App\Services\AvatarService;
+use App\Services\CourseStructure;
+use App\Services\LevelService;
 use App\Services\StudentDashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +30,8 @@ class StudentController extends Controller
             return redirect(route('faculty.dashboard'));
         }
 
+        // The daily login reward lands before the numbers are read, so today's XP already shows.
+        StudentDashboardService::claimDailyReward(Auth::user());
         $data = StudentDashboardService::home(Auth::user());
 
         // Local preview only: with no crew yet the leaderboard would be empty, so show sample
@@ -37,27 +41,81 @@ class StudentController extends Controller
             $data['leaderboardSample'] = true;
         }
 
+        // A new rank's celebration comes first; the streak pop-up waits for the next visit.
+        $data['rankUp'] = self::rankUp(Auth::user(), $data['level']);
+        $data['streakPop'] = $data['rankUp'] ? null : self::streakPop(Auth::user(), $data['streak']);
+
         return view('student.dashboard', $data);
+    }
+
+    /**
+     * Astro's streak pop-up: once a day, the first time the student lands here with a streak going.
+     * It also shows the daily login XP (claimed in dashboard() on the day's first visit).
+     * In a fresh first-login session it waits while Astro's home tour still has to play, so the two never pop up together.
+     * Local only: /dashboard?streak=N previews an N-day streak (any day, any number of times).
+     */
+    private static function streakPop($user, int $streak): ?array
+    {
+        if (app()->isLocal() && request()->filled('streak')) {
+            return StudentDashboardService::streakCard($user, (int) request('streak'), StudentDashboardService::DAILY_LOGIN_XP);
+        }
+        if ($streak < 1 || $user->streak_seen_on?->isToday()
+            || (session('tour_fresh') && ! in_array('home', $user->tour_seen ?? [], true))) {
+            return null;
+        }
+        $user->forceFill(['streak_seen_on' => today()])->save();
+
+        return StudentDashboardService::streakCard($user, reward: StudentDashboardService::DAILY_LOGIN_XP);
+    }
+
+    /**
+     * The "Rank up!" celebration: once per new rank, the first time the student lands here after reaching it
+     * (users.rank_seen remembers the highest one shown). Like the streak pop-up, it waits while Astro's first home tour
+     * still has to play. Local only: /dashboard?rankup=N previews reaching level N's rank.
+     */
+    private static function rankUp($user, int $level): ?array
+    {
+        if (app()->isLocal() && request()->filled('rankup')) {
+            $level = max(1, (int) request('rankup'));
+
+            return LevelService::rank($level) + ['frame' => LevelService::defaultFrame($level)];
+        }
+        $tier = LevelService::tierFor($level);
+        if ($tier <= (int) $user->rank_seen
+            || (session('tour_fresh') && ! in_array('home', $user->tour_seen ?? [], true))) {
+            return null;
+        }
+        $user->forceFill(['rank_seen' => $tier])->save();
+
+        return LevelService::rank($level) + ['frame' => LevelService::defaultFrame($level)];
+    }
+
+    /** XP, gems and streak for the badge in the lesson, lab and editor headers (fetched after the page loads). */
+    public function stats(): JsonResponse
+    {
+        return response()->json(StudentDashboardService::chips(Auth::user()));
     }
 
     /** Made-up classmates for the local leaderboard preview, with the real student last. */
     private static function sampleLeaderboard($user, array $data): array
     {
+        // [name, level, frame variant]: one of every few ranks, so the preview shows the frames and badges.
         $rows = [
-            ['CosmicPaws42', 1250, 5, 12], ['TurboWoof17', 1100, 4, 9], ['NovaChirp88', 1100, 4, 3],
-            ['LaserOink23', 870, 3, 6], ['MegaMoo61', 640, 2, 2], ['Sasa Dela Cruz', 300, 1, 1],
+            ['CosmicPaws42', 104, 'b'], ['TurboWoof17', 73, 'a'], ['NovaChirp88', 52, 'b'],
+            ['LaserOink23', 34, 'default'], ['MegaMoo61', 18, 'a'], ['Sasa Dela Cruz', 4, 'default'],
         ];
 
         $board = [];
-        foreach ($rows as $i => [$name, $xp, $gems, $streak]) {
+        foreach ($rows as $i => [$name, $level, $variant]) {
             mt_srand($i + 1); // the same astronauts on every reload
             $board[] = ['id' => -1 - $i, 'name' => $name, 'avatar' => $i === 5 ? null : AvatarService::random(),
-                'xp' => $xp, 'gems' => $gems, 'streak' => $streak, 'rank' => $i + 1, 'me' => false];
+                'xp' => LevelService::xpToReach($level), 'level' => $level, 'tier' => LevelService::rank($level),
+                'frame' => LevelService::tiers()[LevelService::tierFor($level)]['key'].'-'.$variant, 'rank' => $i + 1, 'me' => false];
         }
         mt_srand();
 
-        $board[] = ['id' => $user->id, 'name' => $user->display_name, 'avatar' => $user->avatar, 'xp' => $data['xp'],
-            'gems' => $data['badges'], 'streak' => $data['streak'], 'rank' => 7, 'me' => true];
+        $board[] = ['id' => $user->id, 'name' => $user->display_name, 'avatar' => $user->avatar, 'xp' => 0, 'level' => $data['level'],
+            'tier' => $data['tier'], 'frame' => $data['frame'], 'rank' => 7, 'me' => true];
 
         return $board;
     }
@@ -149,7 +207,7 @@ class StudentController extends Controller
             ->whereNotNull('course_slug')
             ->get()
             ->map(function (Crew $crew) {
-                $meta = config("course-catalog.{$crew->planet}.courses.{$crew->course_slug}", []);
+                $meta = CourseStructure::card($crew->planet, $crew->course_slug);
 
                 return [
                     'name' => $meta['title'] ?? $crew->name,
@@ -159,6 +217,7 @@ class StudentController extends Controller
                     'art' => $meta['art'] ?? null,
                     'scene' => $meta['scene'] ?? null,
                     'captain' => $crew->faculty?->name,
+                    'self_paced' => $crew->isSelfPaced(),
                     'url' => route('student.course.overview', ['slug' => $crew->planet, 'course' => $crew->course_slug]),
                 ];
             })
@@ -202,10 +261,7 @@ class StudentController extends Controller
                 : back()->withInput()->withErrors(['code' => $message]);
         }
 
-        Auth::user()->update(['crew_id' => $crew->id]);
-        if (! $crew->roster()->where('user_id', Auth::id())->exists()) {
-            $crew->roster()->attach(Auth::id(), ['role' => 'student']);
-        }
+        $crew->admit(Auth::user());
 
         // Land them straight in the course they just unlocked, not on a generic list.
         $destination = $crew->planet && $crew->course_slug

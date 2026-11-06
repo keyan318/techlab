@@ -5,11 +5,13 @@
   $fmt      = fn (int $m) => $m >= 60 ? intdiv($m, 60).'h '.str_pad($m % 60, 2, '0', STR_PAD_LEFT).'m' : $m.'m';
   $axisMins = $weekly['axisMax'] * 60;
   $perf     = $performance;
-  $medal    = ['#f5c04a', '#c4ccdd', '#d99562'];
   $me       = collect($leaderboard)->firstWhere('me', true);
-  // The classmate just above you: the lowest XP that still beats yours.
-  $ahead    = $me ? collect($leaderboard)->filter(fn ($r) => $r['xp'] > $me['xp'])->last() : null;
+  // The classmate just above you on the board (ranked by level, then XP earned).
+  $ahead    = $me ? collect($leaderboard)->filter(fn ($r) => $r['rank'] < $me['rank'])->last() : null;
   $gemsLeft = max(0, $modulesTotal - $modulesDone);
+  $gemsPerModule = \App\Services\StudentDashboardService::GEMS_PER_MODULE;
+  $gemsEarned = $modulesDone * $gemsPerModule;
+  $gemsTotal  = $modulesTotal * $gemsPerModule;
 @endphp
 <x-pixel-app title="Progress">
   <div class="mx-auto grid max-w-[1400px] gap-10 px-4 py-8 sm:px-8 xl:grid-cols-[minmax(0,1fr)_340px]">
@@ -23,8 +25,8 @@
       <header class="px-card px-feature p-6 sm:p-8" aria-labelledby="hello-h">
         <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
           @if ($user->avatar)
-            <a href="{{ route('student.avatar') }}" class="px-avatar px-avatar-astro px-avatar-xl" title="Change my astronaut" aria-label="Change my astronaut">
-              <x-astronaut :look="$user->avatar" class="h-[132px] w-auto" />
+            <a href="{{ route('student.shop') }}" class="flex-none" title="Frames, animals and suits in the Shop" aria-label="Open the Shop">
+              <x-avatar-frame :frame="$frame" :level="$level" :look="$user->avatar" :name="$user->display_name" :size="150" crop="full" />
             </a>
           @else
             <a href="{{ route('student.avatar') }}" class="px-avatar px-avatar-xl" title="Make your astronaut" aria-label="Make your astronaut">{{ $initials }}</a>
@@ -39,7 +41,7 @@
             </p>
 
             <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span class="px-font text-[1.25rem] font-semibold">Level {{ $level }}</span>
+              <x-rank-badge :level="$level" size="md" />
               <span class="text-[15px] text-muted">Astronaut · {{ $crew ? $crew->name : 'No crew yet' }}</span>
             </div>
             <div class="mt-3 flex max-w-[520px] items-center gap-3" role="progressbar" aria-valuenow="{{ $levelXp }}" aria-valuemin="0" aria-valuemax="{{ $xpPerLevel }}" aria-label="XP toward level {{ $level + 1 }}">
@@ -89,13 +91,13 @@
           </ol>
         </div>
 
-        {{-- Gems: one per module cleared --}}
+        {{-- Gems: GEMS_PER_MODULE per module cleared --}}
         <div class="px-card flex flex-col p-6">
           <div class="flex items-center gap-4">
             <x-px-icon name="gem" :size="40" />
             <div class="flex min-w-0 flex-col-reverse">
-              <p class="mt-1 text-[14px] text-muted">{{ \Illuminate\Support\Str::plural('Gem', $modulesDone) }} · 1 per module</p>
-              <p class="px-font text-[2rem] font-semibold leading-none">{{ $modulesDone }} <span class="text-[1rem] text-muted">/ {{ $modulesTotal }}</span></p>
+              <p class="mt-1 text-[14px] text-muted">{{ \Illuminate\Support\Str::plural('Gem', $gemsEarned) }} · {{ $gemsPerModule }} per module</p>
+              <p class="px-font text-[2rem] font-semibold leading-none">{{ $gemsEarned }} <span class="text-[1rem] text-muted">/ {{ $gemsTotal }}</span></p>
             </div>
           </div>
           <p class="mt-auto pt-5 text-[14px] text-muted">
@@ -105,19 +107,19 @@
           </p>
         </div>
 
-        {{-- Crew rank: and how far to the next spot --}}
+        {{-- Planet rank: and how far to the next spot --}}
         <div class="px-card flex flex-col p-6">
           <div class="flex items-center gap-4">
             <x-px-icon name="medal" :size="40" />
             <div class="flex min-w-0 flex-col-reverse">
-              <p class="mt-1 text-[14px] text-muted">{{ $me ? 'Crew rank · of '.count($leaderboard) : 'Crew rank' }}</p>
+              <p class="mt-1 text-[14px] text-muted">{{ $me ? 'Planet rank · of '.count($leaderboard) : 'Planet rank' }}</p>
               <p class="px-font text-[2rem] font-semibold leading-none">{{ $me ? '#'.$me['rank'] : '—' }}</p>
             </div>
           </div>
           <p class="mt-auto pt-5 text-[14px] text-muted">
-            @if (! $crew) Join a course crew to get ranked.
+            @if (! $me) Start a course to get ranked.
             @elseif ($ahead) <b class="text-ink">{{ number_format($ahead['xp'] - $me['xp']) }} XP</b> behind #{{ $ahead['rank'] }}, {{ explode(' ', $ahead['name'])[0] }}
-            @elseif ($me) You're at the top of your crew!
+            @elseif ($me) You're at the top of {{ $leaderboardTitle }}!
             @else Not ranked yet. @endif
           </p>
         </div>
@@ -199,7 +201,7 @@
         </section>
       </div>
 
-      {{-- Planets: picture, progress and a gem per module --}}
+      {{-- Planets: picture, progress and a gem badge per module --}}
       <section aria-labelledby="pl-h">
         <h2 id="pl-h" class="px-font mb-5 text-[clamp(1.6rem,3vw,2.2rem)] font-medium">Your planets</h2>
         @if (! count($planets))
@@ -225,7 +227,7 @@
                     </div>
                     <p class="mt-2 text-[14px] text-muted">{{ $p['completed'] }}/{{ $p['total'] }} lessons · {{ $p['modulesDone'] }}/{{ $p['modulesTotal'] }} modules</p>
 
-                    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="{{ $p['modulesDone'] }} of {{ $p['modulesTotal'] }} gems collected">
+                    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="{{ $p['modulesDone'] }} of {{ $p['modulesTotal'] }} modules cleared">
                       @for ($i = 0; $i < $p['modulesTotal']; $i++)
                         <li @class(['px-gem', 'is-off' => $i >= $p['modulesDone']]) aria-hidden="true"><x-px-icon name="gem" :size="22" /></li>
                       @endfor
@@ -261,28 +263,18 @@
         @endif
       </section>
 
-      {{-- Crew leaderboard --}}
+      {{-- Planet leaderboard: every student on the planet (each course's own crew board is on its Crew tab) --}}
       <section class="px-card p-6" aria-labelledby="lb-h">
         <div class="flex items-end justify-between gap-3">
-          <h2 id="lb-h" class="px-font min-w-0 text-[1.2rem] font-semibold leading-tight">{{ $crew ? $crew->name.' leaderboard' : 'Crew leaderboard' }}</h2>
-          @if ($crew)<span class="flex-none text-[12px] text-muted">By XP</span>@endif
+          <h2 id="lb-h" class="px-font min-w-0 text-[1.2rem] font-semibold leading-tight">{{ $leaderboardTitle ? $leaderboardTitle.' leaderboard' : 'Leaderboard' }}</h2>
+          @if (count($leaderboard))<span class="flex-none text-[12px] text-muted">By level</span>@endif
         </div>
-        @if (! $crew)
-          <p class="mt-4 text-[15px] text-muted">You haven't joined a crew yet. <a href="{{ route('student.courses') }}" class="text-[#4fa8ff] underline-offset-4 hover:underline">Join a course</a> to compete with your classmates.</p>
-        @elseif (! count($leaderboard))
-          <p class="mt-4 text-[15px] text-muted">No students in this crew yet.</p>
+        @if (! count($leaderboard))
+          <p class="mt-4 text-[15px] text-muted"><a href="{{ route('student.courses') }}" class="text-[#4fa8ff] underline-offset-4 hover:underline">Join a course</a> to compete with everyone on the planet.</p>
         @else
-          <ol class="mt-5 flex max-h-[420px] flex-col gap-2 overflow-y-auto p-1">
+          <ol class="mt-5 flex max-h-[460px] flex-col gap-2 overflow-y-auto p-1">
             @foreach ($leaderboard as $row)
-              <li @class(['px-inner flex items-center gap-3 px-3 py-2.5', 'px-me' => $row['me']]) @if ($row['me']) aria-current="true" @endif>
-                <span class="px-font flex h-7 w-7 flex-none items-center justify-center text-[13px] font-bold {{ $row['rank'] <= 3 ? 'text-[#0b0b22]' : 'bg-[var(--px-track)] text-muted' }}"
-                      @if ($row['rank'] <= 3) style="background: {{ $medal[$row['rank'] - 1] }}" @endif>{{ $row['rank'] }}</span>
-                <span class="flex h-9 w-9 flex-none items-end justify-center overflow-hidden bg-[#1d1660] text-[12px] font-semibold text-white/80" aria-hidden="true">
-                  @if (! empty($row['avatar']))<x-astronaut :look="$row['avatar']" crop="bust" class="h-10 w-10" />@else<span class="mb-2">{{ mb_strtoupper(mb_substr($row['name'], 0, 1)) }}</span>@endif
-                </span>
-                <span class="min-w-0 flex-1 truncate text-[14px] font-medium">{{ $row['name'] }}@if ($row['me']) <span class="text-muted">(you)</span>@endif</span>
-                <span class="px-font flex-none text-[14px] font-semibold text-[#4fa8ff]">{{ number_format($row['xp']) }} XP</span>
-              </li>
+              @include('student.partials.leaderboard-row', ['row' => $row, 'i' => $loop->index, 'frameSize' => 104])
             @endforeach
           </ol>
         @endif

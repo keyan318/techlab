@@ -50,10 +50,10 @@
         <div class="grid h-14 w-14 place-items-center rounded-full bg-rose-100 text-rose-500">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
         </div>
-        <h3 class="mt-3 font-display text-base font-semibold text-slate-900" x-text="ig.errorKind === 'empty_source' ? 'Nothing to visualize yet' : 'Couldn\'t build your infographic'"></h3>
+        <h3 class="mt-3 font-display text-base font-semibold text-slate-900" x-text="ig.errorKind === 'empty_source' ? 'Nothing to visualize yet' : (ig.errorKind === 'xp' ? 'Out of XP' : 'Couldn\'t build your infographic')"></h3>
         <p class="mt-1 max-w-md text-sm text-slate-600" x-text="ig.error"></p>
         <div class="mt-4 flex items-center gap-2">
-          <button type="button" x-show="ig.errorKind !== 'empty_source'" @click="ig.retry()" class="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold !text-white transition hover:bg-slate-700">Try again</button>
+          <button type="button" x-show="!['empty_source', 'xp'].includes(ig.errorKind)" @click="ig.retry()" class="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold !text-white transition hover:bg-slate-700">Try again</button>
           <button type="button" @click="ig.close()" class="rounded-full px-4 py-2 text-sm text-slate-600 transition hover:text-slate-900">Close</button>
         </div>
       </div>

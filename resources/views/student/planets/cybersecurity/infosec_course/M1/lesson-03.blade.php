@@ -34,6 +34,17 @@ Syllabus: ITP1232 Unit A.3 Anatomy of an Attack. --}}
         the door that stays open after the original break-in is long over.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which attack stage is most worth finding afterwards?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The recon scan</li>
+            <li class="quiz-option">B. The first entry</li>
+            <li class="quiz-option quiz-correct">C. The hideout ✓</li>
+            <li class="quiz-option">D. The data-grab</li>
+        </ul>
+        <p class="quiz-explanation"><em>The hideout (a new account or hidden program) is the door that stays open long after the break-in is over.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -48,6 +59,17 @@ Syllabus: ITP1232 Unit A.3 Anatomy of an Attack. --}}
         through a port that shouldn't exist. <strong>Astro</strong>: "Recon, entry, hideout, grab. Volt, that account
         and that port — that's the door they're planning to use again. Shut it."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt want the whole log before touching anything?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The sensors caught the exit, not entry ✓</li>
+            <li class="quiz-option">B. The log is the only copy of the starmap</li>
+            <li class="quiz-option">C. Doom asked the crew to send them the full log</li>
+            <li class="quiz-option">D. The sensors already showed every stage</li>
+        </ul>
+        <p class="quiz-explanation"><em>Volt only caught the data leaving. Reading the log start to finish shows every stage, including the hideout.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -82,6 +104,17 @@ Syllabus: ITP1232 Unit A.3 Anatomy of an Attack. --}}
             <text x="320" y="145" text-anchor="middle" font-size="13" fill="#4a35b8">Volt's sensors caught the exit at 04:12 — the hideout is what's left to close</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what happened at 03:47?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A port scan</li>
+            <li class="quiz-option">B. A file left</li>
+            <li class="quiz-option quiz-correct">C. A weak login ✓</li>
+            <li class="quiz-option">D. The alarm went</li>
+        </ul>
+        <p class="quiz-explanation"><em>03:40 was the port scan (recon), and 03:47 was the weak login (entry).</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

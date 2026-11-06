@@ -1,0 +1,406 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g2-l5",
+  "title": "Lesson 2.5: BGP Path Selection, Communities & Filtering",
+  "host": {
+    "name": "SKYPORT",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nSkyport border router, AS 65010. Peers: Earth Relay 203.0.113.1 (AS 64500), Moonbase 198.18.0.1 (AS 64600)"
+  },
+  "story": {
+    "alert": "SKYPORT · UNEXPECTED ROUTE FROM AS 66666",
+    "victory": "Grid traffic leaves through Moonbase, and Doom's fake route to the Citadel bounces off the filter. Volt: \"They'll try again. The prefix list will be waiting.\""
+  },
+  "modes": {
+    "router": {
+      "prompt": "config-router"
+    },
+    "rmap": {
+      "prompt": "config-route-map"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1480 bytes\n!\nhostname SKYPORT\n!\nrouter bgp 65010\n neighbor 198.18.0.1 remote-as 64600\n neighbor 203.0.113.1 remote-as 64500\n network 192.168.0.0 mask 255.255.0.0\n!\nip route 192.168.0.0 255.255.0.0 Null0\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show ip bgp summary",
+      "text": "BGP router identifier 10.0.0.1, local AS number 65010\n\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n198.18.0.1      4        64600     112     104       22    0    0 01:22:10        3\n203.0.113.1     4        64500     131     119       22    0    0 01:22:14        3"
+    },
+    {
+      "cmd": "show ip bgp <ip>",
+      "args": [
+        "10.99.0.0"
+      ],
+      "text": "BGP routing table entry for 10.99.0.0/16, version 18\nPaths: (1 available, best #1, table default, not advertised to EBGP peer)\n  Not advertised to any peer\n  64600\n    198.18.0.1 from 198.18.0.1 (198.18.0.1)\n      Origin IGP, metric 0, localpref 100, valid, external, best\n      Community: no-export"
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "moon-active",
+        "filter-active"
+      ],
+      "text": "BGP table version is 22, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *   0.0.0.0          203.0.113.1              0             0 64500 i\n *>                   198.18.0.1               0    200      0 64600 64500 i\n *   198.51.100.0/24  203.0.113.1              0             0 64500 i\n *>                   198.18.0.1               0    200      0 64600 64500 i\n *>  10.99.0.0/16     198.18.0.1               0    200      0 64600 i\n *>  192.168.0.0/16   0.0.0.0                  0         32768 i",
+      "sets": [
+        "seen-moon",
+        "seen-clean"
+      ]
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "moon-active"
+      ],
+      "text": "BGP table version is 22, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *   0.0.0.0          203.0.113.1              0             0 64500 i\n *>                   198.18.0.1               0    200      0 64600 64500 i\n *   198.51.100.0/24  203.0.113.1              0             0 64500 i\n *>                   198.18.0.1               0    200      0 64600 64500 i\n *>  10.99.0.0/16     198.18.0.1               0    200      0 64600 i\n *>  192.168.0.0/16   0.0.0.0                  0         32768 i\n *>  192.168.20.0     203.0.113.1              0             0 64500 66666 i",
+      "sets": [
+        "seen-moon"
+      ]
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "filter-active"
+      ],
+      "text": "BGP table version is 22, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  0.0.0.0          203.0.113.1              0             0 64500 i\n *                    198.18.0.1               0             0 64600 64500 i\n *>  198.51.100.0/24  203.0.113.1              0             0 64500 i\n *                    198.18.0.1               0             0 64600 64500 i\n *>  10.99.0.0/16     198.18.0.1               0             0 64600 i\n *>  192.168.0.0/16   0.0.0.0                  0         32768 i",
+      "sets": [
+        "seen-clean"
+      ]
+    },
+    {
+      "cmd": "show ip bgp",
+      "text": "BGP table version is 22, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  0.0.0.0          203.0.113.1              0             0 64500 i\n *                    198.18.0.1               0             0 64600 64500 i\n *>  198.51.100.0/24  203.0.113.1              0             0 64500 i\n *                    198.18.0.1               0             0 64600 64500 i\n *>  10.99.0.0/16     198.18.0.1               0             0 64600 i\n *>  192.168.0.0/16   0.0.0.0                  0         32768 i\n *>  192.168.20.0     203.0.113.1              0             0 64500 66666 i"
+    },
+    {
+      "cmd": "clear ip bgp * soft",
+      "when": [
+        "lp200",
+        "applied",
+        "pl-ok",
+        "pl-applied"
+      ],
+      "sets": [
+        "moon-active",
+        "filter-active"
+      ],
+      "text": ""
+    },
+    {
+      "cmd": "clear ip bgp * soft",
+      "when": [
+        "lp200",
+        "applied"
+      ],
+      "sets": [
+        "moon-active"
+      ],
+      "text": ""
+    },
+    {
+      "cmd": "clear ip bgp * soft",
+      "when": [
+        "pl-ok",
+        "pl-applied"
+      ],
+      "sets": [
+        "filter-active"
+      ],
+      "text": ""
+    },
+    {
+      "cmd": "clear ip bgp * soft",
+      "text": ""
+    },
+    {
+      "cmd": "show ip prefix-list",
+      "when": [
+        "pl-ok"
+      ],
+      "text": "ip prefix-list NO-GRID: 2 entries\n   seq 5 deny 192.168.0.0/16 le 32\n   seq 10 permit 0.0.0.0/0 le 32"
+    },
+    {
+      "cmd": "show ip prefix-list",
+      "when": [
+        "pl-deny"
+      ],
+      "text": "ip prefix-list NO-GRID: 1 entries\n   seq 5 deny 192.168.0.0/16 le 32\n! Volt: careful, a prefix list ends with an invisible \"deny everything\". Add the permit."
+    },
+    {
+      "cmd": "show ip prefix-list",
+      "text": ""
+    },
+    {
+      "cmd": "show route-map",
+      "when": [
+        "lp200"
+      ],
+      "text": "route-map MOON-FIRST, permit, sequence 10\n  Match clauses:\n  Set clauses:\n    local-preference 200"
+    },
+    {
+      "cmd": "show route-map",
+      "text": ""
+    }
+  ],
+  "config": [
+    {
+      "cmd": "route-map <word> permit <n>",
+      "args": [
+        "MOON-FIRST",
+        null
+      ],
+      "enters": "rmap"
+    },
+    {
+      "cmd": "route-map <word> permit <n>",
+      "enters": "rmap",
+      "reply": "% Saved. The orders call it MOON-FIRST; the neighbor command must use the same name."
+    },
+    {
+      "mode": "rmap",
+      "cmd": "set local-preference <n>",
+      "args": [
+        "200"
+      ],
+      "sets": [
+        "lp200"
+      ]
+    },
+    {
+      "mode": "rmap",
+      "cmd": "set local-preference <n>",
+      "reply": "% Saved, but the orders say 200 (anything above the default 100 wins)."
+    },
+    {
+      "mode": "rmap",
+      "cmd": "match <rest>"
+    },
+    {
+      "cmd": "router bgp <n>",
+      "args": [
+        "65010"
+      ],
+      "enters": "router"
+    },
+    {
+      "cmd": "router bgp <n>",
+      "store": false,
+      "reply": "% BGP is already running with AS number 65010"
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> route-map <word> in",
+      "args": [
+        "198.18.0.1",
+        "MOON-FIRST"
+      ],
+      "sets": [
+        "applied"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> route-map <word> <word>",
+      "reply": "% Saved, but that is not \"MOON-FIRST, inbound, on Moonbase 198.18.0.1\"."
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> prefix-list <word> in",
+      "args": [
+        "203.0.113.1",
+        "NO-GRID"
+      ],
+      "sets": [
+        "pl-applied"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> prefix-list <word> <word>",
+      "reply": "% Saved, but the hijack comes in from Earth's session (203.0.113.1): apply NO-GRID there, inbound."
+    },
+    {
+      "cmd": "ip prefix-list <word> seq <n> deny <cidr> le <n>",
+      "args": [
+        "NO-GRID",
+        null,
+        "192.168.0.0/16",
+        "32"
+      ],
+      "sets": [
+        "pl-deny"
+      ]
+    },
+    {
+      "cmd": "ip prefix-list <word> deny <cidr> le <n>",
+      "args": [
+        "NO-GRID",
+        "192.168.0.0/16",
+        "32"
+      ],
+      "sets": [
+        "pl-deny"
+      ]
+    },
+    {
+      "cmd": "ip prefix-list <word> seq <n> permit <cidr> le <n>",
+      "args": [
+        "NO-GRID",
+        null,
+        "0.0.0.0/0",
+        "32"
+      ],
+      "when": [
+        "pl-deny"
+      ],
+      "sets": [
+        "pl-ok"
+      ]
+    },
+    {
+      "cmd": "ip prefix-list <word> permit <cidr> le <n>",
+      "args": [
+        "NO-GRID",
+        "0.0.0.0/0",
+        "32"
+      ],
+      "when": [
+        "pl-deny"
+      ],
+      "sets": [
+        "pl-ok"
+      ]
+    },
+    {
+      "cmd": "ip prefix-list <word> seq <n> permit <cidr> le <n>",
+      "args": [
+        "NO-GRID",
+        null,
+        "0.0.0.0/0",
+        "32"
+      ],
+      "reply": "% Saved. Order matters: add the deny for the Grid's space first (seq 5), then this permit.",
+      "store": false
+    },
+    {
+      "cmd": "ip prefix-list <rest>",
+      "reply": "% Saved, but it does not match Volt's orders."
+    }
+  ],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Read the table",
+      "body": "Type `enable`, then `show ip bgp`. Look at 198.51.100.0/24: two paths, one marked `>`. Hand in its next hop with `submit BEST=...`, and the reason it won with `submit REASON=as-path` style (weight, local-pref, as-path or med).",
+      "objectives": [
+        {
+          "id": "ans-best",
+          "label": "Best next hop named",
+          "check": {
+            "type": "answer",
+            "value": "BEST=203.0.113.1"
+          }
+        },
+        {
+          "id": "ans-why",
+          "label": "Reason named",
+          "check": {
+            "type": "answer",
+            "value": "REASON=as-path",
+            "alt": [
+              "REASON=aspath",
+              "REASON=as path",
+              "REASON=shortest as-path",
+              "REASON=shortest as path"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Prefer Moonbase",
+      "body": "In `conf t`: `route-map MOON-FIRST permit 10`, then `set local-preference 200`, then `exit`. Apply it: `router bgp 65010`, `neighbor 198.18.0.1 route-map MOON-FIRST in`. Then `end`, `clear ip bgp * soft` and `show ip bgp`: the `>` moves to 198.18.0.1 with LocPrf 200.",
+      "objectives": [
+        {
+          "id": "rm",
+          "label": "Route-map sets local preference 200",
+          "check": {
+            "type": "fact",
+            "fact": "lp200"
+          }
+        },
+        {
+          "id": "applied",
+          "label": "Route-map applied inbound on Moonbase",
+          "check": {
+            "type": "fact",
+            "fact": "applied"
+          }
+        },
+        {
+          "id": "moon",
+          "label": "Moonbase is now the best path",
+          "check": {
+            "type": "fact",
+            "fact": "seen-moon"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Refuse the hijack",
+      "body": "Find the bad route in `show ip bgp` and name the AS that originated it: `submit HIJACK=<AS number>` (the last number in its path). Then in `conf t`: `ip prefix-list NO-GRID seq 5 deny 192.168.0.0/16 le 32`, `ip prefix-list NO-GRID seq 10 permit 0.0.0.0/0 le 32`, and in `router bgp 65010`: `neighbor 203.0.113.1 prefix-list NO-GRID in`. `end`, `clear ip bgp * soft`, `show ip bgp`.",
+      "objectives": [
+        {
+          "id": "ans-hijack",
+          "label": "Hijacker's AS named",
+          "check": {
+            "type": "answer",
+            "value": "HIJACK=66666",
+            "alt": [
+              "HIJACK=AS66666"
+            ]
+          }
+        },
+        {
+          "id": "pl",
+          "label": "Prefix list NO-GRID denies the Grid's own space and permits the rest",
+          "check": {
+            "type": "fact",
+            "fact": "pl-ok"
+          }
+        },
+        {
+          "id": "pl-applied",
+          "label": "NO-GRID applied inbound on Earth's session",
+          "check": {
+            "type": "fact",
+            "fact": "pl-applied"
+          }
+        },
+        {
+          "id": "clean",
+          "label": "The hijacked route is gone from the table",
+          "check": {
+            "type": "fact",
+            "fact": "seen-clean"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Read a community",
+      "body": "Run `show ip bgp 10.99.0.0`. Moonbase tagged that route. May Skyport pass it on to Earth Relay, another AS? `submit EXPORT=yes` or `submit EXPORT=no`.",
+      "objectives": [
+        {
+          "id": "ans-comm",
+          "label": "Community rule applied",
+          "check": {
+            "type": "answer",
+            "value": "EXPORT=no"
+          }
+        }
+      ]
+    }
+  ]
+}

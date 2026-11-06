@@ -22,9 +22,11 @@ class LessonSourceService
     public const PLANETS = [
         'programming' => 'Programming',
         'networking' => 'Networking',
+        'networking-2' => 'Networking 2',
         'cybersecurity' => 'Cybersecurity',
         'information-assurance-security-2' => 'Information Assurance and Security 2',
         'computer-programming-1' => 'Computer Programming 1',
+        'computer-programming-2' => 'Computer Programming 2',
     ];
 
     /** Max characters of a single lesson sent to the model. */
@@ -60,6 +62,10 @@ class LessonSourceService
             // planet's enrolment rather than needing its own — a student is
             // enrolled in Programming City, not in each course inside it.
             if (! $user->isEnrolledIn(CourseProgressService::planetFor($slug))) {
+                continue;
+            }
+            // A course switched off in config/course-catalog.php (e.g. Python) isn't offered.
+            if (CourseProgressService::isHidden($slug)) {
                 continue;
             }
             $out[] = ['slug' => $slug, 'title' => $label, 'modules' => $this->modules($slug)];
@@ -104,7 +110,7 @@ class LessonSourceService
 
     private function moduleTitle(string $planet, string $module): string
     {
-        $title = config("course-structure.{$planet}.modules.{$module}.title");
+        $title = CourseStructure::moduleTitle($planet, $module);
 
         return $title ?: 'Module '.substr($module, 1);
     }
@@ -112,6 +118,7 @@ class LessonSourceService
     private function path(string $planet, string $module, string $lesson): ?string
     {
         if (! isset(self::PLANETS[$planet])
+            || CourseProgressService::isHidden($planet)
             || ! preg_match('/^M\d+$/', $module)
             || ! preg_match('/^lesson-\d+$/', $lesson)) {
             return null;
@@ -162,10 +169,17 @@ class LessonSourceService
 
     private function text(string $file): string
     {
+        return self::plainText(File::get($file));
+    }
+
+    /** A lesson's Blade HTML as plain teaching text. Also used by CourseModuleSummaryService. */
+    public static function plainText(string $html): string
+    {
         // Drop Blade comments, forms (exercise plumbing), scripts, diagrams and the lab iframe; keep the teaching text.
-        $html = File::get($file);
         $html = preg_replace('/\{\{--.*?--\}\}/s', '', $html);
         $html = preg_replace('#<(form|script|style|svg|iframe)\b.*?</\1>#is', '', $html);
+        // Checkpoints unlock the lesson's stages: Astro never sees their answers.
+        $html = preg_replace('#<div class="checkpoint-block"[^>]*>.*?</div>#s', '', $html);
         $html = preg_replace('/@(csrf|php.*?@endphp)/s', '', $html);
         $html = preg_replace('#</(p|h[1-6]|li|pre|div)>#i', "\n", $html);
         $text = html_entity_decode(strip_tags($html));

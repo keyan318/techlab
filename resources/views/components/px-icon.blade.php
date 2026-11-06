@@ -1,5 +1,5 @@
 {{-- Small pixel-style icons drawn on a 16x16 grid. Decorative: pair them with text. --}}
-@props(['name', 'size' => 28])
+@props(['name', 'size' => 28, 'tier' => 0])
 <svg viewBox="0 0 16 16" width="{{ $size }}" height="{{ $size }}" shape-rendering="crispEdges" aria-hidden="true" focusable="false" {{ $attributes->merge(['class' => 'flex-none']) }}>
   @switch($name)
     @case('star')
@@ -19,9 +19,11 @@
       <polygon points="1.6,6 8,6 8,14" fill="#1e9bd8"/>
       @break
     @case('flame')
-      <path d="M8 0C9 4 13.5 6 13.5 10.5a5.5 5.5 0 0 1-11 0C2.5 7.5 5 6 6 3c1 1 1.5 2 2 2C8 3.5 7 2 8 0Z" fill="#e0510f"/>
-      <path d="M8 3C9 6 12 7 12 10.5a4 4 0 0 1-8 0C4 8.5 6 7.5 6.5 6c.7.7 1 1.2 1.5 1.2C8 5.5 7.5 4.5 8 3Z" fill="#ff8a1f"/>
-      <path d="M8 8c1 2 3 2.5 3 4.5a3 3 0 0 1-6 0C5 11 7 10 8 8Z" fill="#ffd23a"/>
+      {{-- tier = how far the streak has evolved (StudentDashboardService::STREAK_TIERS): orange → red → violet → blue. --}}
+      @php $fc = \App\Services\StudentDashboardService::STREAK_TIERS[$tier]['colors'] ?? \App\Services\StudentDashboardService::STREAK_TIERS[0]['colors']; @endphp
+      <path d="M8 0C9 4 13.5 6 13.5 10.5a5.5 5.5 0 0 1-11 0C2.5 7.5 5 6 6 3c1 1 1.5 2 2 2C8 3.5 7 2 8 0Z" fill="{{ $fc[1] }}"/>
+      <path d="M8 3C9 6 12 7 12 10.5a4 4 0 0 1-8 0C4 8.5 6 7.5 6.5 6c.7.7 1 1.2 1.5 1.2C8 5.5 7.5 4.5 8 3Z" fill="{{ $fc[2] }}"/>
+      <path d="M8 8c1 2 3 2.5 3 4.5a3 3 0 0 1-6 0C5 11 7 10 8 8Z" fill="{{ $fc[4] }}"/>
       @break
     @case('book')
       <rect x="2" y="0" width="12" height="16" fill="#0b4f9c"/>

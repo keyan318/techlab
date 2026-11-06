@@ -30,6 +30,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l2.json) complete
         <li><strong>Mesh</strong>: devices have many links to each other. Very reliable but expensive. A full mesh of <em>n</em> devices needs <em>n × (n − 1) ÷ 2</em> links.</li>
     </ul>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In a star topology, what happens when one device's cable fails?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The whole network goes down</li>
+            <li class="quiz-option">B. The ring reverses direction</li>
+            <li class="quiz-option quiz-correct">C. Only that one device is lost ✓</li>
+            <li class="quiz-option">D. Every device needs a new address</li>
+        </ul>
+        <p class="quiz-explanation"><em>In a star, each device has its own cable to the central switch, so one broken cable cuts off only that device.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -41,6 +52,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l2.json) complete
     <p class="body-text">
         Rivet has already cabled astro, rivet and volt to the relay. Your job is to give the crew addresses and prove every path works.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why did Astro pick a star over a bus for the ship?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A bus needs no central relay switch at all</li>
+            <li class="quiz-option quiz-correct">B. A cut cable silences only one console ✓</li>
+            <li class="quiz-option">C. A star uses less cable than a bus</li>
+            <li class="quiz-option">D. A bus cannot connect three consoles</li>
+        </ul>
+        <p class="quiz-explanation"><em>On a bus, one cut backbone silences everyone. In a star, a cut cable takes out just one console.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -93,6 +115,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l2.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">Which topology in the diagram has links between many devices?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Bus</li>
+            <li class="quiz-option">B. Star</li>
+            <li class="quiz-option">C. Ring</li>
+            <li class="quiz-option quiz-correct">D. Mesh ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A mesh has many links between devices. It is very reliable but expensive to build.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

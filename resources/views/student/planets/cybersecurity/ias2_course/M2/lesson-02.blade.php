@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit B.2 Defense Models (Defense in Depth). --}}
         password doesn't unravel everything at once.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What makes defense in depth work?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Many copies of the same lock</li>
+            <li class="quiz-option">B. One very strong firewall alone</li>
+            <li class="quiz-option">C. Layers that share one password</li>
+            <li class="quiz-option quiz-correct">D. Layers that are independent ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Ten copies of the same lock add no depth. Different kinds of controls mean one trick doesn't beat them all.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit B.2 Defense Models (Defense in Depth). --}}
         depth is a firewall at the edge, a locked-down account on the console, and an encrypted file even if
         someone reaches it. Three <em>different</em> kinds of walls, not one wall copied three times."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Rivet reject three identical firewalls?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Three firewalls cost far too much power</li>
+            <li class="quiz-option">B. Firewalls can't be put in a single row</li>
+            <li class="quiz-option quiz-correct">C. Get past one, and you're past all three ✓</li>
+            <li class="quiz-option">D. Only two firewalls are allowed at once</li>
+        </ul>
+        <p class="quiz-explanation"><em>That's the same door three times. Real depth is different kinds of walls.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -51,6 +73,17 @@ Syllabus: ITP1333 Unit B.2 Defense Models (Defense in Depth). --}}
             <text x="320" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">Independent layers — bypassing one still leaves the next standing</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which layer holds encryption?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Host</li>
+            <li class="quiz-option">B. Network</li>
+            <li class="quiz-option">C. Perimeter</li>
+            <li class="quiz-option quiz-correct">D. Data ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The data layer holds encryption and access control. The perimeter is the firewall at the edge.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

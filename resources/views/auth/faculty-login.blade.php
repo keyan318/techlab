@@ -26,6 +26,7 @@
   </div>
   <div class="row">
     <label><input type="checkbox" name="remember"> Remember me</label>
+    <a href="{{ route('password.request', ['for' => 'faculty']) }}">Forgot password?</a>
   </div>
   <button class="btn" type="submit">Sign in</button>
 @endsection

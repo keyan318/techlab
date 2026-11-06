@@ -153,6 +153,17 @@ class QuizSchema
         }
 
         $explanation = $this->asText($q['explanation'] ?? $q['reason'] ?? '');
+
+        // Models put the right answer in the same slot far too often (usually B), and students learn
+        // the pattern. Shuffle the choices so its letter is truly random, and fix any letter the
+        // explanation names ("answer B") to follow its choice.
+        [$choices, $correctKey, $moved] = $this->shuffleChoices($choices, $correctKey);
+        $explanation = preg_replace_callback(
+            '/\b((?i:option|choice|answer|key)(?:\s+is)?\s+\(?)([A-D])\b/',
+            fn ($m) => $m[1].$moved[$m[2]],
+            $explanation,
+        );
+
         if ($explanation === '') {
             $explanation = 'The correct answer is '.$correctKey.' based on what Astro explained in the conversation.';
         }
@@ -244,6 +255,31 @@ class QuizSchema
         }
 
         return $rekeyed;
+    }
+
+    /**
+     * The 4 choices in a random order, re-keyed A-D, with the correct key and old key => new key.
+     *
+     * @param  array<int, array{key: string, text: string}>  $choices
+     * @return array{0: array<int, array{key: string, text: string}>, 1: string, 2: array<string, string>}
+     */
+    protected function shuffleChoices(array $choices, string $correctKey): array
+    {
+        $keys = ['A', 'B', 'C', 'D'];
+        $order = range(0, count($choices) - 1);
+        for ($i = count($order) - 1; $i > 0; $i--) {
+            $j = random_int(0, $i);
+            [$order[$i], $order[$j]] = [$order[$j], $order[$i]];
+        }
+
+        $out = [];
+        $moved = [];
+        foreach ($order as $newIndex => $oldIndex) {
+            $moved[$choices[$oldIndex]['key']] = $keys[$newIndex];
+            $out[] = ['key' => $keys[$newIndex], 'text' => $choices[$oldIndex]['text']];
+        }
+
+        return [$out, $moved[$correctKey], $moved];
     }
 
     protected function choicesNeedRemap(array $raw): bool

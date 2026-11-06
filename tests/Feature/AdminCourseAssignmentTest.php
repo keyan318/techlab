@@ -40,24 +40,42 @@ class AdminCourseAssignmentTest extends TestCase
         ]);
     }
 
-    public function test_reassigning_a_live_course_hands_the_existing_crew_to_the_new_captain(): void
+    public function test_a_second_faculty_member_gets_their_own_class_and_the_first_keeps_theirs(): void
     {
         $original = User::factory()->create(['role' => 'faculty']);
         $assignment = CourseAssignment::create(['planet' => 'networking', 'course_slug' => 'networking-fundamentals', 'faculty_id' => $original->id]);
         $this->actingAs($original)->post(route('faculty.assignments.generate-code', $assignment));
         $crew = Crew::where('planet', 'networking')->where('course_slug', 'networking-fundamentals')->firstOrFail();
-        $code = $crew->code;
 
-        $replacement = User::factory()->create(['role' => 'faculty']);
+        $second = User::factory()->create(['role' => 'faculty']);
         $this->actingAs($this->admin())->post(route('admin.courses.assign'), [
-            'planet' => 'networking', 'course_slug' => 'networking-fundamentals', 'faculty_id' => $replacement->id,
+            'planet' => 'networking', 'course_slug' => 'networking-fundamentals', 'faculty_id' => $second->id,
         ]);
+        $this->assertSame(2, CourseAssignment::where('course_slug', 'networking-fundamentals')->count());
 
-        $crew->refresh();
-        $this->assertSame($replacement->id, $crew->teacher_id);
-        $this->assertSame($code, $crew->code); // students who already have the code keep working access
-        $this->actingAs($replacement)->get(route('faculty.course', $crew))->assertOk();
-        $this->actingAs($original)->get(route('faculty.course', $crew))->assertForbidden();
+        $this->actingAs($second)->post(route('faculty.assignments.generate-code', CourseAssignment::where('faculty_id', $second->id)->firstOrFail()));
+        $theirs = Crew::where('teacher_id', $second->id)->firstOrFail();
+
+        $this->assertNotSame($crew->id, $theirs->id);
+        $this->assertSame($original->id, $crew->refresh()->teacher_id);
+        $this->actingAs($original)->get(route('faculty.course', $crew))->assertOk();
+        $this->actingAs($second)->get(route('faculty.course', $crew))->assertForbidden();
+    }
+
+    public function test_a_faculty_member_with_students_cannot_be_removed_but_one_without_can(): void
+    {
+        $joy = User::factory()->create(['role' => 'faculty']);
+        $assignment = CourseAssignment::create(['planet' => 'networking', 'course_slug' => 'networking-fundamentals', 'faculty_id' => $joy->id]);
+        $crew = $assignment->openClass();
+        $crew->admit(User::factory()->create(['role' => 'student']));
+
+        $this->actingAs($this->admin())->delete(route('admin.courses.unassign', $assignment))->assertRedirect(route('admin.home'));
+        $this->assertModelExists($assignment);
+
+        $crew->roster()->wherePivot('role', 'student')->detach();
+        $this->actingAs($this->admin())->delete(route('admin.courses.unassign', $assignment));
+        $this->assertModelMissing($assignment);
+        $this->assertModelMissing($crew);
     }
 
     public function test_only_admins_reach_the_assignment_panel(): void
@@ -80,12 +98,34 @@ class AdminCourseAssignmentTest extends TestCase
             'admin_id' => $admin->id, 'action' => 'course.assign', 'subject' => 'networking.networking-fundamentals',
         ]);
 
-        // Reassigning writes a second row that remembers who it came from.
+        // Adding a second faculty member writes a second row; removing one writes another.
         $this->actingAs($admin)->post(route('admin.courses.assign'), [
             'planet' => 'networking', 'course_slug' => 'networking-fundamentals', 'faculty_id' => $kent->id,
         ]);
-        $row = AdminActionLog::where('action', 'course.reassign')->firstOrFail();
-        $this->assertSame($joy->id, $row->details['from_faculty_id']);
+        $this->assertSame(2, AdminActionLog::where('action', 'course.assign')->count());
+
+        $this->actingAs($admin)->delete(route('admin.courses.unassign', CourseAssignment::where('faculty_id', $kent->id)->firstOrFail()));
+        $row = AdminActionLog::where('action', 'course.unassign')->firstOrFail();
         $this->assertSame($kent->id, $row->details['to_faculty_id']);
+    }
+
+    public function test_classes_page_groups_every_faculty_members_class_under_one_course_card(): void
+    {
+        $student = User::factory()->create(['role' => 'student']);
+        foreach (['Ana Cruz', 'Ben Reyes', 'Carla Lim'] as $i => $name) {
+            $faculty = User::factory()->create(['role' => 'faculty', 'name' => $name]);
+            $crew = Crew::create(['name' => $name, 'code' => 'CODE0'.$i, 'teacher_id' => $faculty->id,
+                'planet' => 'networking', 'course_slug' => 'networking-fundamentals']);
+            if ($i === 0) {
+                $crew->roster()->attach($student->id, ['role' => 'student']);
+            }
+        }
+
+        $response = $this->actingAs($this->admin())->get(route('admin.classes'))->assertOk()
+            ->assertSee('Ana Cruz')->assertSee('Ben Reyes')->assertSee('Carla Lim')
+            ->assertSee('3 faculty members')->assertSee('1 astronaut in all')
+            ->assertSee('CODE00')->assertSee('CODE02');
+
+        $this->assertSame(1, substr_count($response->getContent(), 'class="class-card"'));
     }
 }

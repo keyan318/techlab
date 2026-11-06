@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What does a cipher do?",
+      "options": [
+        "Hides a watermark inside a document",
+        "Turns plaintext into ciphertext by a rule",
+        "Blocks every unused port on a firewall",
+        "Copies a file to a backup server each night"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is decrypting?",
+      "options": [
+        "Turning plaintext into ciphertext",
+        "Signing a message with a private key",
+        "Turning ciphertext into plaintext",
+        "Hashing a file to get a fingerprint"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In a Caesar cipher with a shift of 3, what does A become?",
+      "options": [
+        "B",
+        "D",
+        "C",
+        "X"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a Caesar cipher with a shift of 3, what does the ciphertext \"FDW\" decode to?",
+      "options": [
+        "BAT",
+        "IGZ",
+        "DOG",
+        "CAT"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How many possible shifts does a Caesar cipher have?",
+      "options": [
+        "25",
+        "26 squared",
+        "3",
+        "1000"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which letter is usually the most common in English text?",
+      "options": [
+        "A",
+        "S",
+        "Z",
+        "E"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why are modern ciphers so much stronger than a shift cipher?",
+      "options": [
+        "They only shift each letter by one place",
+        "They use the letter E more often than others",
+        "They are written in a secret alphabet",
+        "Their key space is too big to try every key"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is a zone of trust?",
+      "options": [
+        "A group of devices with the same level of risk",
+        "A server that strangers are never allowed to see",
+        "A firewall rule that allows every connection",
+        "A password that every device on the network shares"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What usually sits in a DMZ?",
+      "options": [
+        "Nothing, a DMZ is always kept empty",
+        "The crew's private database and all of its backups",
+        "What strangers may touch, like web servers",
+        "Every laptop used by the crew each day"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What enforces the rules between zones?",
+      "options": [
+        "A cipher",
+        "A hash",
+        "A firewall",
+        "A watermark"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the safest starting point for a firewall policy?",
+      "options": [
+        "Allow all inbound",
+        "Default allow",
+        "No rules at all",
+        "Default deny"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why does default deny limit the damage if one zone is hacked?",
+      "options": [
+        "The attacker is sent a warning email",
+        "The blast radius stops at the firewall",
+        "Every other zone switches off by itself",
+        "The hacked zone is deleted at once"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A visiting ship plugs into the public dock. Why is that acceptable?",
+      "options": [
+        "Visiting ships are never able to cause any harm",
+        "Visiting ships can only plug in for a minute",
+        "The dock is a public zone behind a firewall",
+        "The dock is the most trusted zone in the Citadel"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a port?",
+      "options": [
+        "A numbered door for a service",
+        "A copy of a watermarked file",
+        "A cable between two computers",
+        "A type of strong password for logins"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which port does remote desktop (RDP) usually use?",
+      "options": [
+        "8443",
+        "3389",
+        "80",
+        "21"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which port does file transfer (FTP) usually use?",
+      "options": [
+        "53",
+        "21",
+        "80",
+        "3389"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does an attacker usually do first?",
+      "options": [
+        "Restore a backup copy",
+        "Sign a message",
+        "Pay a ransom",
+        "Scan for open ports"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does least functionality mean?",
+      "options": [
+        "A user gets the fewest passwords possible",
+        "A machine runs every service it was sold with",
+        "A machine runs only the services it needs",
+        "A firewall allows the fewest users to log in"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is an unused open port a risk?",
+      "options": [
+        "It makes the firewall forget its rules",
+        "It is a door the attacker need not pick",
+        "It slows the network down for every user",
+        "It deletes files from the web server"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Scouts find ports 21, 80 and 3389 open, but only the web server is needed. What should stay open?",
+      "options": [
+        "80",
+        "21",
+        "All three",
+        "3389"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is Digital Rights Management (DRM) for?",
+      "options": [
+        "Controlling how a digital work is used",
+        "Encrypting every message sent over the network",
+        "Scanning a network for open ports",
+        "Stopping phishing emails at the gateway"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does a watermark prove?",
+      "options": [
+        "Where a file came from",
+        "That a file is a backup",
+        "That a file has no virus",
+        "That a file is encrypted"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A leaked spec sheet has the same hidden watermark as Rivet's original. What does that show?",
+      "options": [
+        "The leak was copied from his original",
+        "The two files are completely different",
+        "The leaked copy was made by Rivet himself",
+        "The watermark was added by the leaker"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Does a watermark change how a file works?",
+      "options": [
+        "Yes, it locks it",
+        "Only in a DMZ",
+        "Yes, it slows it",
+        "No"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does copyright give a creator?",
+      "options": [
+        "The right to read anyone else's work for free",
+        "A watermark inside every file they make",
+        "Control over how their work is copied",
+        "A password for every copy of their work"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which use is usually treated as fair use?",
+      "options": [
+        "A full design passed off as your own work",
+        "A leaked file marked restricted, reused anyway",
+        "A whole book copied and sold under a new name",
+        "A small, credited excerpt used for teaching"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which change moves a use from fair to infringement?",
+      "options": [
+        "Quoting one credited line in a review",
+        "Copying the whole work and selling it",
+        "Using a short excerpt in a class",
+        "Giving credit to the original creator"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A student uses three credited lines of Rivet's notes in a report. What is this?",
+      "options": [
+        "A ransomware attack",
+        "Usually fair use",
+        "A DRM violation",
+        "Copyright infringement"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Someone sells a full copy of a crew manual as their own. What is this?",
+      "options": [
+        "Fair use for learning",
+        "A port scan",
+        "Copyright infringement",
+        "A change management step"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why must a council not punish honest reuse or excuse real theft?",
+      "options": [
+        "Both get the line between fair use and theft wrong",
+        "Real theft is allowed if the copy is shared for free",
+        "Copyright only protects works that have a watermark",
+        "Honest reuse is always against the law in every case"
+      ],
+      "correct": "A"
+    }
+  ]
+}

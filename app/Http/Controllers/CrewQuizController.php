@@ -6,6 +6,7 @@ use App\Models\Crew;
 use App\Models\CrewQuiz;
 use App\Models\CrewQuizAttempt;
 use App\Models\CrewQuizQuestion;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,10 @@ use Illuminate\Validation\ValidationException;
  * Faculty-authored quizzes. Faculty create/delete them from their dashboard; students in the
  * crew take them from the crew page. Answers are graded here, never in the browser, and the
  * correct answers are only sent back after the student has submitted.
+ *
+ * Every quiz is timed and taken once. The questions only arrive when the student presses Start,
+ * which starts a clock that keeps running if they close the page; the page saves answers as they
+ * go, and once time is up the attempt is graded from whatever was saved.
  */
 class CrewQuizController extends Controller
 {
@@ -32,8 +37,8 @@ class CrewQuizController extends Controller
         abort_unless(Auth::check() && Auth::user()->belongsToCrew($quiz->crew_id), 403);
         // A draft does not exist yet as far as students are concerned.
         abort_unless($quiz->isPublished() || Auth::id() === $quiz->crew->teacher_id, 404);
-        // The final exam is only ever taken through its own full-screen page (FinalExamController).
-        abort_if($quiz->is_final, 404);
+        // The final exam and the mini bosses are only ever taken on the full-screen exam page.
+        abort_if($quiz->isProctored(), 404);
 
         return $quiz;
     }
@@ -82,7 +87,7 @@ class CrewQuizController extends Controller
 
         return $request->expectsJson()
             ? response()->json(['id' => $quiz->id, 'published' => $quiz->isPublished(), 'saved_at' => now()->toISOString()])
-            : redirect(route('faculty.course', $crew).($final ? '#final-exam' : '#quizzes'));
+            : redirect($final ? route('faculty.exams.index', $crew).'#final-exam' : route('faculty.course', $crew).'#quizzes');
     }
 
     /** Builder autosave / publish: replace a quiz and its questions in one go. */
@@ -96,6 +101,10 @@ class CrewQuizController extends Controller
         if ($quiz->is_final && $quiz->attempts()->exists()) {
             throw ValidationException::withMessages(['questions' => 'A student has already taken this final exam, so it can no longer be changed.']);
         }
+        // Saving replaces the questions, which would pull them out from under a student mid-exam.
+        if ($quiz->isMiniBoss() && $quiz->attempts()->where('status', CrewQuizAttempt::IN_PROGRESS)->exists()) {
+            throw ValidationException::withMessages(['questions' => 'A student is taking this mini boss right now. Save again once they hand it in.']);
+        }
 
         DB::transaction(function () use ($quiz, $data) {
             $quiz->update([
@@ -106,60 +115,122 @@ class CrewQuizController extends Controller
                 // Publishing is one-way from the builder: a live quiz is not pulled back
                 // to a draft under students who may already be taking it.
                 'published_at' => ($data['draft'] ?? false) ? $quiz->published_at : ($quiz->published_at ?? now()),
-                // A quiz stays what it was created as; only a final has a pass mark.
-                'pass_percent' => $quiz->is_final ? ($data['pass_percent'] ?? $quiz->passPercent()) : null,
+                // A quiz stays what it was created as; only a final or a mini boss has a pass mark.
+                'pass_percent' => $quiz->isProctored() ? ($data['pass_percent'] ?? $quiz->passPercent()) : null,
             ]);
             $this->writeQuestions($quiz, $data['questions']);
         });
 
         return $request->expectsJson()
             ? response()->json(['id' => $quiz->id, 'published' => $quiz->fresh()->isPublished(), 'saved_at' => now()->toISOString()])
-            : redirect(route('faculty.course', $quiz->crew_id).($quiz->is_final ? '#final-exam' : '#quizzes'));
+            : redirect($quiz->is_final ? route('faculty.exams.index', $quiz->crew_id).'#final-exam' : route('faculty.course', $quiz->crew_id).'#quizzes');
     }
 
     public function destroy(CrewQuiz $quiz): RedirectResponse
     {
         $this->ownCrew($quiz->crew);
+        // Every module has its mini boss: it can be rewritten or reset to the default, not removed.
+        abort_if($quiz->isMiniBoss(), 422, 'A mini boss can be edited or reset to the default, not deleted.');
         $crewId = $quiz->crew_id;
         $final = $quiz->is_final;
         $quiz->delete();
 
-        return redirect(route('faculty.course', $crewId).($final ? '#final-exam' : '#quizzes'));
+        return redirect($final ? route('faculty.exams.index', $crewId).'#final-exam' : route('faculty.course', $crewId).'#quizzes');
     }
 
-    /** Student: the questions (no answers), plus their result if they already took it. */
+    /**
+     * Student: what the quiz is (no questions until they press Start), plus their result if
+     * they already took it, or how much time is left if they started and left the page.
+     */
     public function show(CrewQuiz $quiz): JsonResponse
     {
-        $this->openQuiz($quiz)->load('questions');
+        $this->openQuiz($quiz)->loadCount('questions');
         $attempt = $quiz->attempts()->where('user_id', Auth::id())->first();
+
+        if ($attempt) {
+            $quiz->closeIfExpired($attempt);
+        }
 
         return response()->json([
             'id' => $quiz->id,
             'title' => $quiz->title,
             'description' => $quiz->description,
             'minutes' => $quiz->minutes,
+            'question_count' => $quiz->questions_count,
             'due_at' => $quiz->due_at?->toISOString(),
-            'questions' => $quiz->questions->map(fn ($q) => [
-                'id' => $q->id,
-                'prompt' => $q->prompt,
-                'type' => $q->type,
-                'options' => $q->options,
-                'required' => $q->required,
-            ])->values(),
-            'result' => $attempt ? $this->result($quiz, $attempt) : null,
+            'started' => (bool) $attempt?->inProgress(),
+            'seconds_left' => $attempt?->inProgress() ? $attempt->secondsLeft((int) $quiz->minutes) : null,
+            'result' => $attempt && ! $attempt->inProgress() ? $this->result($quiz, $attempt) : null,
         ]);
     }
 
+    /**
+     * Student pressed Start: open their one attempt and hand over the questions. Pressing it
+     * again (after a reload) picks up the same attempt, answers and clock; it never restarts it.
+     */
+    public function start(CrewQuiz $quiz): JsonResponse
+    {
+        $this->openQuiz($quiz)->load('questions');
+
+        try {
+            $attempt = CrewQuizAttempt::firstOrCreate(
+                ['crew_quiz_id' => $quiz->id, 'user_id' => Auth::id()],
+                ['score' => 0, 'total' => $quiz->questions->count(), 'answers' => [], 'status' => CrewQuizAttempt::IN_PROGRESS, 'started_at' => now()],
+            );
+        } catch (QueryException) {
+            // Two starts raced on the unique (quiz, user) index: the other one won.
+            $attempt = $quiz->attempts()->where('user_id', Auth::id())->firstOrFail();
+        }
+
+        $quiz->closeIfExpired($attempt);
+
+        if (! $attempt->inProgress()) {
+            return response()->json(['result' => $this->result($quiz, $attempt)]);
+        }
+
+        return response()->json([
+            'questions' => $quiz->studentQuestions(),
+            'answers' => (object) ($attempt->answers ?? []),
+            'seconds_left' => $attempt->secondsLeft((int) $quiz->minutes),
+        ]);
+    }
+
+    /** Student: the answers so far, saved as they pick them so closing the page loses nothing. */
+    public function saveAnswers(Request $request, CrewQuiz $quiz): JsonResponse
+    {
+        $this->memberQuiz($quiz);
+        $data = $request->validate(['answers' => ['nullable', 'array', 'max:100']]);
+        $attempt = $quiz->attempts()->where('user_id', Auth::id())->firstOrFail();
+
+        $quiz->closeIfExpired($attempt);
+
+        if (! $attempt->inProgress()) {
+            return response()->json(['message' => 'Time is up, so your quiz was handed in.', 'result' => $this->result($quiz, $attempt)], 409);
+        }
+
+        CrewQuizAttempt::whereKey($attempt->id)->where('status', CrewQuizAttempt::IN_PROGRESS)
+            ->update(['answers' => json_encode($data['answers'] ?? [])]);
+
+        return response()->json(['saved' => true, 'seconds_left' => $attempt->secondsLeft((int) $quiz->minutes)]);
+    }
+
+    /**
+     * Student: hand it in. In time, the answers sent are graded; too late (the page was closed
+     * or held back), the answers saved before the clock ran out are graded instead.
+     */
     public function submit(Request $request, CrewQuiz $quiz): JsonResponse
     {
         $this->openQuiz($quiz)->load('questions');
         $data = $request->validate(['answers' => ['nullable', 'array']]);
+        $attempt = $quiz->attempts()->where('user_id', Auth::id())->first();
 
-        // The unique (quiz, user) index makes a double submit harmless: the first attempt stands.
-        $attempt = CrewQuizAttempt::firstOrCreate(
-            ['crew_quiz_id' => $quiz->id, 'user_id' => Auth::id()],
-            $quiz->grade($data['answers'] ?? []),
-        );
+        if (! $attempt) {
+            return response()->json(['message' => 'Press Start to begin this quiz first.'], 422);
+        }
+
+        if ($attempt->inProgress()) {
+            $quiz->finish($attempt, $quiz->isOverTime($attempt) ? ($attempt->answers ?? []) : ($data['answers'] ?? []));
+        }
 
         return response()->json(['result' => $this->result($quiz, $attempt)]);
     }
@@ -174,13 +245,14 @@ class CrewQuizController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'minutes' => ['nullable', 'integer', 'min:1', 'max:600'],
+            'minutes' => ['required', 'integer', 'min:1', 'max:600'],
             'due_at' => ['nullable', 'date'],
             'draft' => ['nullable', 'boolean'],
             'is_final' => ['nullable', 'boolean'],
             'pass_percent' => ['nullable', 'integer', 'min:1', 'max:100'],
             'questions' => ['required', 'array', 'min:1', 'max:100'],
             'questions.*.prompt' => ['required', 'string', 'max:1000'],
+            'questions.*.source' => ['nullable', 'string', 'max:255'],
             'questions.*.type' => ['nullable', 'string', 'in:'.implode(',', CrewQuizQuestion::TYPES)],
             'questions.*.options' => ['required', 'array', 'min:2', 'max:10'],
             'questions.*.options.*' => ['required', 'string', 'max:500'],
@@ -189,6 +261,7 @@ class CrewQuizController extends Controller
             'questions.*.correct_many' => ['nullable', 'array'],
             'questions.*.correct_many.*' => ['integer', 'min:0'],
         ], [
+            'minutes.required' => 'Set a time limit so students take it seriously.',
             'questions.required' => 'Add at least one question.',
             'questions.*.options.min' => 'Each question needs at least two answer options.',
             'questions.*.options.*.required' => 'Fill in every answer option (or remove the empty ones).',
@@ -226,6 +299,7 @@ class CrewQuizController extends Controller
 
             $quiz->questions()->create([
                 'prompt' => $q['prompt'],
+                'source' => filled($q['source'] ?? null) ? trim($q['source']) : null,
                 'type' => $type,
                 'options' => array_values($q['options']),
                 'correct_index' => $multi ? 0 : (int) $q['correct'],
@@ -242,12 +316,7 @@ class CrewQuizController extends Controller
             'score' => $attempt->score,
             'total' => $attempt->total,
             'percent' => $attempt->percent(),
-            'review' => $quiz->questions->map(fn ($q) => [
-                'id' => $q->id,
-                'type' => $q->type,
-                'correct' => $q->isMultiAnswer() ? ($q->correct_indexes ?? []) : $q->correct_index,
-                'chosen' => $attempt->answers[$q->id] ?? null,
-            ])->values(),
+            'review' => $quiz->reviewFor($attempt),
         ];
     }
 }

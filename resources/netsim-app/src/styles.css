@@ -31,12 +31,24 @@ body,
 
 .app {
   display: grid;
-  grid-template-rows: 52px 1fr;
+  grid-template-rows: 52px minmax(0, 1fr);
   height: 100%;
 }
 
-.app.with-dock {
-  grid-template-rows: 52px 1fr 280px;
+.workspace {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.workspace.with-dock {
+  grid-template-rows: minmax(0, 1fr) 280px;
+}
+
+.work-top {
+  display: flex;
+  min-height: 0;
 }
 
 /* ---------- toolbar ---------- */
@@ -684,6 +696,8 @@ a.btn {
 }
 
 .lab-panel {
+  -webkit-user-select: none;
+  user-select: none;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -776,7 +790,6 @@ a.btn {
   margin-top: 8px;
   border-top: 1px solid var(--border);
   padding-top: 8px;
-  flex-shrink: 0;
 }
 
 .lab-objective {
@@ -809,7 +822,6 @@ a.btn {
 }
 
 .lab-check {
-  margin-top: 7px;
   width: 100%;
 }
 
@@ -861,10 +873,18 @@ a.btn {
 }
 
 .lab-footer {
-  margin-top: 12px;
+  margin-top: 8px;
   border-top: 1px solid var(--border);
-  padding-top: 10px;
+  padding-top: 8px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lab-export {
+  align-self: flex-start;
+  font-size: 11.5px;
 }
 
 .inspector-forwarding {

@@ -32,6 +32,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l3.json) complete
         One more piece of hardware: a <strong>hub</strong> repeats every signal to every port, while a <strong>switch</strong> learns which device is on which port and sends traffic only there.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does a switch do that a hub does not?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Repeats every signal out to every port</li>
+            <li class="quiz-option quiz-correct">B. Sends traffic only to the right port ✓</li>
+            <li class="quiz-option">C. Turns light pulses into radio waves</li>
+            <li class="quiz-option">D. Gives each device its own address</li>
+        </ul>
+        <p class="quiz-explanation"><em>A hub repeats everything to every port. A switch learns which device is on which port and sends traffic only there.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -43,6 +54,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l3.json) complete
     <p class="body-text">
         <strong>Astro</strong> reminds the crew: "A network problem is not always a software problem. Check the cable and the link first."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Rivet choose wired links over Wi-Fi on the ship?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Wi-Fi cannot carry any messages</li>
+            <li class="quiz-option">B. Cables are always faster than fiber</li>
+            <li class="quiz-option quiz-correct">C. Doom is jamming the radio waves ✓</li>
+            <li class="quiz-option">D. The consoles have no network cards</li>
+        </ul>
+        <p class="quiz-explanation"><em>Wireless uses the shared air, so it can be blocked or jammed. A cable is not affected by Doom's radio noise.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -69,6 +91,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l3.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">Which medium in the diagram is immune to electrical noise?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Twisted-pair copper</li>
+            <li class="quiz-option">B. Wireless radio</li>
+            <li class="quiz-option quiz-correct">C. Fiber-optic ✓</li>
+            <li class="quiz-option">D. Ethernet copper</li>
+        </ul>
+        <p class="quiz-explanation"><em>Fiber carries pulses of light through glass, so electrical noise does not bother it.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

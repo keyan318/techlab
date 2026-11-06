@@ -98,20 +98,24 @@
 <main class="flex min-w-0 flex-1 flex-col bg-transparent" x-data="astroChat()" x-init="init()">
   {{-- Header --}}
   <header class="flex items-center gap-2 border-b border-glassBorder px-3 py-2.5">
-    <button type="button" @click="toggleSources()" class="grid h-9 w-9 flex-none place-items-center rounded-[10px] border border-glassBorder bg-glass text-muted transition hover:border-[rgba(115,182,255,0.5)] hover:text-ink" title="Toggle sources" aria-label="Toggle sources">
+    @unless($isFacultyChat ?? false)
+    <button type="button" @click="toggleSources()" data-tour="chat-sources" class="grid h-9 w-9 flex-none place-items-center rounded-[10px] border border-glassBorder bg-glass text-muted transition hover:border-[rgba(115,182,255,0.5)] hover:text-ink" title="Toggle sources" aria-label="Toggle sources">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
     </button>
+    @endunless
     <h1 class="font-display text-sm font-semibold text-ink">Chat</h1>
 
     <div class="ml-auto flex items-center gap-1.5">
-      <button type="button" @click="newChat()" class="hidden items-center gap-1.5 rounded-full border border-glassBorder bg-glass px-3 py-1.5 text-xs font-medium text-muted transition hover:border-[rgba(115,182,255,0.5)] hover:text-ink sm:inline-flex">
+      <button type="button" @click="newChat()" data-tour="chat-new" class="hidden items-center gap-1.5 rounded-full border border-glassBorder bg-glass px-3 py-1.5 text-xs font-medium text-muted transition hover:border-[rgba(115,182,255,0.5)] hover:text-ink sm:inline-flex">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M12 5v14M5 12h14"/></svg>
         New chat
       </button>
 
+      @if($isFacultyChat ?? false)
       <button type="button" @click="toggleStudio()" class="grid h-9 w-9 flex-none place-items-center rounded-[10px] border border-glassBorder bg-glass text-muted transition hover:border-[rgba(115,182,255,0.5)] hover:text-ink" title="Toggle studio" aria-label="Toggle studio">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
       </button>
+      @endif
     </div>
   </header>
 
@@ -134,16 +138,6 @@
 
       {{-- ===== Live thread ===== --}}
       <section x-show="messages.length > 0" x-cloak class="space-y-6">
-        @unless($isFacultyChat ?? false)
-        {{-- Dismissible feature-tip banner --}}
-        <div x-show="!bannerDismissed" x-cloak class="flex items-start gap-2.5 rounded-[14px] border border-[rgba(115,182,255,0.35)] bg-[rgba(115,182,255,0.08)] px-3 py-2.5">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#5be1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-4 w-4 flex-none"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8 19 13M15 9h.01M17.8 6.2 19 5M3 21l9-9M12.2 6.2 11 5"/></svg>
-          <p class="flex-1 text-xs leading-relaxed text-ink">Tip: ask Astro to turn any answer into a <span class="font-semibold tl-cyan">Quiz</span> or <span class="font-semibold tl-cyan">Flashcards</span> from the Studio panel.</p>
-          <button type="button" @click="bannerDismissed = true" class="text-muted transition hover:text-ink" title="Dismiss" aria-label="Dismiss">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-        @endunless
 
         <template x-for="(m, i) in messages" :key="i">
           <div>
@@ -211,6 +205,8 @@
                 <div x-show="!m.pending && !m.streaming && m.sources && m.sources.length" x-cloak class="mt-2 flex flex-wrap items-center gap-1.5">
                   <span class="font-mono text-[10px] uppercase tracking-[0.18em] tl-cyan">Sources</span>
                   <template x-for="(src, si) in (m.sources || [])" :key="si">
+                    {{-- x-for needs ONE root element, so the link / plain-chip pair shares a wrapper. --}}
+                    <span style="display: contents">
                     <template x-if="src.url">
                       <a :href="src.url" target="_blank" rel="noopener noreferrer"
                          :title="src.course || src.domain || src.title"
@@ -223,29 +219,16 @@
                     <template x-if="!src.url">
                       <span class="rounded-full border border-[rgba(115,182,255,0.35)] bg-[rgba(115,182,255,0.1)] px-2.5 py-0.5 text-[11px] text-ink" x-text="src.title || src"></span>
                     </template>
+                    </span>
                   </template>
                 </div>
 
                 {{-- Action row (only once the reply is settled) --}}
                 <div
                   x-show="!m.pending && !m.streaming && m.content !== ''"
-                  x-data="{ saved: false, copied: false }"
+                  x-data="{ copied: false }"
                   class="mt-2 flex items-center gap-1 text-muted"
                 >
-                  <button
-                    type="button"
-                    @click="saved = !saved"
-                    :class="saved ? 'text-[#73b6ff]' : 'hover:text-ink'"
-                    class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs transition"
-                    :title="saved ? 'Saved to note' : 'Save to note'"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" :fill="saved ? 'currentColor' : 'none'">
-                      <path d="M12 17v5M9 10.5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6.5l2 6H7z"/>
-                    </svg>
-                    <span x-show="!saved">Save to note</span>
-                    <span x-show="saved" x-cloak>Saved</span>
-                  </button>
-
                   <button
                     type="button"
                     @click="copied = true; copy(m.content); setTimeout(() => copied = false, 1500)"
@@ -272,7 +255,7 @@
        @dragover.prevent @drop.prevent="addFiles($event.dataTransfer.files)">
     <form @submit.prevent="send()" class="mx-auto max-w-3xl">
 
-      <div class="rounded-[28px] border border-glassBorder bg-glass transition focus-within:border-[rgba(115,182,255,0.5)]"
+      <div data-tour="chat-input" class="rounded-[28px] border border-glassBorder bg-glass transition focus-within:border-[rgba(115,182,255,0.5)]"
            :class="listening ? '!border-[rgba(255,107,129,0.6)]' : ''">
 
         {{-- Attachments live inside the composer card, above the input row --}}
@@ -301,7 +284,7 @@
           <div class="relative flex-none" @click.outside="attachMenu = false" @keydown.escape.window="attachMenu = false">
             <button type="button" @click="attachMenu = !attachMenu" :aria-expanded="attachMenu.toString()" aria-haspopup="menu"
                     class="grid h-10 w-10 place-items-center rounded-full text-muted transition hover:bg-white/10 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]"
-                    aria-label="Attach files" title="Attach files or photos">
+                    aria-label="Attach files" data-tour="chat-attach" title="Attach files or photos">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-5 w-5 transition-transform" :class="attachMenu ? 'rotate-45' : ''"><path d="M12 5v14M5 12h14"/></svg>
             </button>
             <div x-show="attachMenu" x-cloak x-transition.opacity.duration.120ms role="menu"
@@ -347,7 +330,7 @@
           <button type="button" @click="toggleMic()"
                   class="relative grid h-10 w-10 flex-none place-items-center rounded-full transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]"
                   :class="listening ? 'bg-[rgba(255,107,129,0.18)] text-[#ff6b81]' : 'text-muted hover:bg-white/10 hover:text-ink'"
-                  :aria-pressed="listening.toString()" :aria-label="listening ? 'Stop recording' : 'Start voice input'" :title="listening ? 'Stop recording' : 'Dictate with your voice'">
+                  :aria-pressed="listening.toString()" data-tour="chat-voice" :aria-label="listening ? 'Stop recording' : 'Start voice input'" :title="listening ? 'Stop recording' : 'Dictate with your voice'">
             <span x-show="listening" x-cloak class="absolute inset-0 animate-ping rounded-full bg-[rgba(255,107,129,0.25)] motion-reduce:hidden"></span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="relative h-5 w-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
           </button>
@@ -363,6 +346,18 @@
         <span x-text="notice"></span>
       </div>
     </form>
+    @unless($isFacultyChat ?? false)
+    {{-- Astro's XP price: free messages left today, then the cost per message and the student's XP --}}
+    <div x-data x-show="$store.astroXp.charged" x-cloak class="mx-auto mt-2 flex max-w-3xl justify-center">
+      <span data-tour="chat-xp" class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11.5px] font-medium"
+        :class="$store.astroXp.freeChatsLeft > 0 || $store.astroXp.balance >= ($store.astroXp.costs.chat || 0)
+          ? 'border-[rgba(255,207,133,0.35)] bg-[rgba(255,207,133,0.08)] text-[#ffcf85]'
+          : 'border-[rgba(255,107,129,0.35)] bg-[rgba(255,107,129,0.10)] text-[#ffc2cc]'">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="h-3.5 w-3.5 flex-none" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
+        <span x-text="$store.astroXp.chatLabel()"></span>
+      </span>
+    </div>
+    @endunless
     <p class="mx-auto mt-2 max-w-3xl text-center text-[11px] text-muted">
       Astro can make mistakes. Double-check important info — and never share passwords or personal data.
     </p>

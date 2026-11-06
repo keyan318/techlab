@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l3.json) complete
         <em>The lab simulator has no relay agent.</em> So the lab shows the problem for real (volt gets no lease) and uses the other classic answer: a DHCP server running on the router itself, serving the far subnet.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why can't a client on another subnet reach the central DHCP server?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. DHCP only works with static IPs</li>
+            <li class="quiz-option quiz-correct">B. Routers do not forward broadcasts ✓</li>
+            <li class="quiz-option">C. The server only serves one MAC</li>
+            <li class="quiz-option">D. Clients there have no network card</li>
+        </ul>
+        <p class="quiz-explanation"><em>A Discover is a broadcast, and routers do not forward broadcasts. A relay agent fixes that.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Warning</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l3.json) complete
     <p class="body-text">
         <strong>Rivet</strong> nods. "Right, routers do not carry broadcasts. Proper fix is a relay. We have no relay gear, so the router itself will give out the shield deck's addresses."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">With no relay gear, how does the crew get volt an address?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Volt types its address in by hand each time</li>
+            <li class="quiz-option">B. The central DHCP server moves to the shield deck</li>
+            <li class="quiz-option quiz-correct">C. The router hands out the shield deck's addresses ✓</li>
+            <li class="quiz-option">D. The crew turns off the router between decks</li>
+        </ul>
+        <p class="quiz-explanation"><em>The router runs a DHCP server itself and serves the far subnet, the other classic answer.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -64,6 +86,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l3.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how does a relay agent forward the request?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. As a unicast ✓</li>
+            <li class="quiz-option">B. As a broadcast</li>
+            <li class="quiz-option">C. As a new lease</li>
+            <li class="quiz-option">D. As a ping</li>
+        </ul>
+        <p class="quiz-explanation"><em>The relay hears the broadcast and forwards it as a unicast straight to the central server.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

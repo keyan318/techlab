@@ -31,6 +31,17 @@ Syllabus: ITP1232 Unit E, Cryptanalysis & Strong Cryptography. --}}
         strength has to match what it's protecting. A puzzle for a cadet is not a wall for a Citadel.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What makes a cipher strong?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Only 25 keys that are easy to remember</li>
+            <li class="quiz-option quiz-correct">B. A huge key space and no leaking patterns ✓</li>
+            <li class="quiz-option">C. A shift that is always exactly three letters</li>
+            <li class="quiz-option">D. Letters that appear just as in English</li>
+        </ul>
+        <p class="quiz-explanation"><em>A strong cipher has too many keys to try them all, and doesn't leak patterns like letter counts.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -45,6 +56,17 @@ Syllabus: ITP1232 Unit E, Cryptanalysis & Strong Cryptography. --}}
         one — something with a key space too large to brute-force and no obvious letter patterns to count. Once
         we're on it, the same trick that broke Vex's cipher won't touch ours."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt break Doom's message first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. To send it back to Vex as a joke</li>
+            <li class="quiz-option">B. To change the shift to a brand new number</li>
+            <li class="quiz-option">C. To learn the private key it used</li>
+            <li class="quiz-option quiz-correct">D. To see how exposed their own cipher was ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Breaking their message the way they'd break ours shows exactly how exposed the crew has been.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -63,6 +85,17 @@ Syllabus: ITP1232 Unit E, Cryptanalysis & Strong Cryptography. --}}
             <text x="320" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#4a35b8">cryptanalysis: finding the weakness that skips needing the key</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how does the shift cipher fall?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Ask for the key</li>
+            <li class="quiz-option quiz-correct">B. Try all 25 keys ✓</li>
+            <li class="quiz-option">C. Wait a few years</li>
+            <li class="quiz-option">D. Use a public key</li>
+        </ul>
+        <p class="quiz-explanation"><em>With only 25 keys, an attacker just tries them all. The cipher falls in minutes.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -33,6 +33,17 @@ Syllabus: ITP1232 Unit D.1 Cryptography basics. --}}
         would take longer than the age of the universe.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why is the Caesar cipher easy to break?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It uses a very long secret key</li>
+            <li class="quiz-option">B. It changes the shift every letter</li>
+            <li class="quiz-option quiz-correct">C. It has only 25 possible shifts ✓</li>
+            <li class="quiz-option">D. It can only encode the letter E</li>
+        </ul>
+        <p class="quiz-explanation"><em>With only 25 shifts, anyone can try them all in seconds, or count the most common letter.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -49,6 +60,17 @@ Syllabus: ITP1232 Unit D.1 Cryptography basics. --}}
         <strong>Astro</strong> nods at the Cadet. "Read what Vex thinks we can't. Then answer back in something
         Vex can't undo so easily."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What kind of cipher did Vex use?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A public-key signature</li>
+            <li class="quiz-option quiz-correct">B. A letter-shift cipher ✓</li>
+            <li class="quiz-option">C. A hash of the message</li>
+            <li class="quiz-option">D. A symmetric key rotation</li>
+        </ul>
+        <p class="quiz-explanation"><em>Rivet sees it is a basic letter-shift cipher, the kind Roman generals used. Shift it back to read it.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -77,6 +99,17 @@ Syllabus: ITP1232 Unit D.1 Cryptography basics. --}}
             <text x="320" y="175" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6e4c">Decoding: shift back by the same amount to recover the plaintext</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how is the ciphertext decoded?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Shift back by the same amount ✓</li>
+            <li class="quiz-option">B. Shift forward by one more letter</li>
+            <li class="quiz-option">C. Swap each letter for its partner</li>
+            <li class="quiz-option">D. Count the letters in each word</li>
+        </ul>
+        <p class="quiz-explanation"><em>Decoding shifts each letter back by the same amount the encoding used.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

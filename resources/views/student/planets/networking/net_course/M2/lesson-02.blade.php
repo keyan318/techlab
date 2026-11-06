@@ -28,6 +28,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l2.json) complete
         <li><strong>UDP</strong> just sends. No handshake and no guarantee, but it is fast and light. Used for DNS queries, live video and voice.</li>
     </ul>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which statement about UDP is true?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It resends anything that gets lost</li>
+            <li class="quiz-option">B. It numbers the data and sets up links</li>
+            <li class="quiz-option">C. It is used for web pages and file sends</li>
+            <li class="quiz-option quiz-correct">D. It sends with no handshake or guarantee ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>UDP just sends. It is fast and light, so DNS queries, live video and voice use it. TCP is the reliable one.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l2.json) complete
     <p class="body-text">
         <strong>Volt</strong> holds up a hand. "Not Telnet on 23. It sends passwords as plain text, and Doom's scouts are listening. That port stays sealed."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt keep Telnet's port 23 sealed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. It sends passwords as plain text ✓</li>
+            <li class="quiz-option">B. It is not a well-known port number</li>
+            <li class="quiz-option">C. Earth's relay only accepts port 23</li>
+            <li class="quiz-option">D. It only works on the UDP protocol</li>
+        </ul>
+        <p class="quiz-explanation"><em>Telnet sends passwords as plain text, and Doom's scouts are listening. SSH on port 22 is the secure login.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -79,6 +101,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l2.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the table, which port does HTTPS use?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 8080</li>
+            <li class="quiz-option">B. 53</li>
+            <li class="quiz-option">C. 22</li>
+            <li class="quiz-option quiz-correct">D. 443 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>HTTPS (secure web pages) uses TCP port 443. Plain HTTP uses 80.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

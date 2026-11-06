@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "Why keep protecting information after an attack ends?",
+      "options": [
+        "It still has value worth protecting",
+        "Protection is only needed during a siege",
+        "Attacks always come back the very next day",
+        "The law forbids stopping any protection"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Money spent repairing damage is which kind of cost?",
+      "options": [
+        "Operational",
+        "Financial",
+        "Legal",
+        "Trust"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Allies stop believing you will keep their data safe. Which cost is this?",
+      "options": [
+        "Financial",
+        "Legal",
+        "Operational",
+        "Trust"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Missions are delayed while the crew cleans up after a breach. Which cost is this?",
+      "options": [
+        "Reputational loss",
+        "Operational",
+        "Financial",
+        "Trust"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Answering to regulators and contracts after a breach is which cost?",
+      "options": [
+        "Financial loss",
+        "Trust",
+        "Operational",
+        "Legal"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is due care?",
+      "options": [
+        "The reasonable level of protection a careful group sets up",
+        "Checking every week that protection still works as planned",
+        "Stopping all protection once an attack is over",
+        "Buying the most expensive security tool on the market"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is due diligence?",
+      "options": [
+        "Writing a policy and never reading it",
+        "Keeping protection working over time",
+        "Setting up a lock on the door once",
+        "Paying a ransom quickly and quietly"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "\"Due care is the promise.\" What is due diligence?",
+      "options": [
+        "Keeping the promise",
+        "Writing the promise",
+        "Breaking the promise",
+        "Forgetting the promise"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Before computers, what did security mostly mean?",
+      "options": [
+        "Checking every request",
+        "Firewalls and antivirus",
+        "Guards, locks and vaults",
+        "Encrypted radio channels"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "When machines started talking to each other, what did security also have to cover?",
+      "options": [
+        "Only one admin password",
+        "Nothing new at all",
+        "The wires between them",
+        "Only the vault doors"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "As security grew up, what happened to the older layers?",
+      "options": [
+        "They were replaced by one firewall",
+        "They stayed, with layers on top",
+        "They were moved to a backup site",
+        "They were thrown away for new ones"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why did each era add a new layer of security?",
+      "options": [
+        "Each new link made a new way to attack",
+        "Attackers asked for a new layer each time",
+        "Each era wanted to spend more money on tools",
+        "Older layers stopped working once computers came"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Today's systems talk to outside fleets. What must security now assume?",
+      "options": [
+        "Only the vault door needs a strong lock",
+        "Outside fleets can always be trusted",
+        "Any channel may already be compromised",
+        "Requests from inside need no checks"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "When is a security control probably worth buying?",
+      "options": [
+        "When it is the most expensive option on the market right now",
+        "When it costs less than the likely loss it prevents",
+        "When another crew already bought the same one last year",
+        "When it has the most features of any tool you can find"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Is the cheapest option always the right one?",
+      "options": [
+        "Yes, the cheapest control always wins out",
+        "No, compare cost to the loss prevented",
+        "No, the most expensive always wins",
+        "Yes, if it is also the newest one"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "The relay console still has its factory password, and Vex used it before. Fixing it is free. What should the crew do?",
+      "options": [
+        "Accept the risk",
+        "Buy a new console",
+        "Fix it first",
+        "Wait for a budget"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is security spending a risk decision?",
+      "options": [
+        "Every control is free once it has been installed",
+        "Each control must be justified by what it stops",
+        "The biggest budget always means the safest crew",
+        "Security spending can never be reduced at all"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a top-down program, what comes first?",
+      "options": [
+        "Policy",
+        "Procedures",
+        "Tools",
+        "Standards"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does a policy state?",
+      "options": [
+        "The what and the why",
+        "The brand of firewall",
+        "A specific password length",
+        "The exact steps to follow"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "\"Passwords must be 12 or more characters.\" What is this?",
+      "options": [
+        "A standard",
+        "A procedure",
+        "A policy",
+        "A guideline"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a procedure?",
+      "options": [
+        "A recommendation that leaves room for judgment",
+        "The exact steps someone follows to do a task",
+        "The high-level reason the program exists",
+        "A list of every threat the crew has faced"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does bottom-up security tend to fail?",
+      "options": [
+        "It always costs far more than top-down",
+        "Leadership writes too many policies for it",
+        "Technicians are not allowed to follow it",
+        "Rules are inconsistent and hard to defend"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which is NOT one of the core pieces of a security program?",
+      "options": [
+        "Someone accountable",
+        "Trained people",
+        "An unlimited budget",
+        "A written policy"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is security called \"the impossible job\"?",
+      "options": [
+        "It cannot be learned",
+        "It needs no people",
+        "It is always cheap",
+        "It is never finished"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Where do most breaches come from?",
+      "options": [
+        "A broken lock on the outside of the building",
+        "A computer that is switched off for the night",
+        "A person: a reused password, a rushed click",
+        "A firewall that is far too strong for the network"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "\"Reduce our reliance on any single relay\" is an example of what?",
+      "options": [
+        "A technical control",
+        "Tactics",
+        "Strategy",
+        "A procedure"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "\"Install a backup relay this week\" is an example of what?",
+      "options": [
+        "Tactics",
+        "A guideline",
+        "A policy",
+        "Strategy"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A firewall rule that enforces a rule is which kind of thing?",
+      "options": [
+        "A business process step",
+        "A policy statement",
+        "A strategy",
+        "A technical control"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A perfect firewall is in place, but anyone can approve their own request. What is still broken?",
+      "options": [
+        "The cable to the relay",
+        "The firewall rules",
+        "The encryption keys",
+        "The business process"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why does training matter as much as tools?",
+      "options": [
+        "Training replaces every firewall",
+        "Tools never work without a printed manual",
+        "Attackers only target the tools",
+        "People are usually the weakest link"
+      ],
+      "correct": "D"
+    }
+  ]
+}

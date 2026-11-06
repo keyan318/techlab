@@ -18,7 +18,7 @@ class PlanetSourcesTest extends TestCase
         $user = User::factory()->create();
         $catalog = collect(app(LessonSourceService::class)->catalog($user))->keyBy('slug');
 
-        $this->assertSame(['programming', 'networking', 'cybersecurity', 'information-assurance-security-2', 'computer-programming-1'], $catalog->keys()->all());
+        $this->assertSame(['programming', 'networking', 'networking-2', 'cybersecurity', 'information-assurance-security-2', 'computer-programming-1', 'computer-programming-2'], $catalog->keys()->all());
         $this->assertNotEmpty($catalog['programming']['modules']);
         $this->assertNotEmpty($catalog['networking']['modules']);
         $this->assertNotEmpty($catalog['cybersecurity']['modules']);
@@ -41,7 +41,7 @@ class PlanetSourcesTest extends TestCase
 
         $catalog = collect(app(LessonSourceService::class)->catalog($user))->keyBy('slug');
 
-        $this->assertSame(['networking', 'cybersecurity', 'information-assurance-security-2'], $catalog->keys()->all());
+        $this->assertSame(['networking', 'networking-2', 'cybersecurity', 'information-assurance-security-2'], $catalog->keys()->all());
     }
 
     public function test_faculty_see_every_planet_regardless_of_the_planets_column(): void
@@ -49,7 +49,7 @@ class PlanetSourcesTest extends TestCase
         $user = User::factory()->create(['role' => 'faculty', 'planets' => ['cybersecurity']]);
         $catalog = collect(app(LessonSourceService::class)->catalog($user))->keyBy('slug');
 
-        $this->assertSame(['programming', 'networking', 'cybersecurity', 'information-assurance-security-2', 'computer-programming-1'], $catalog->keys()->all());
+        $this->assertSame(['programming', 'networking', 'networking-2', 'cybersecurity', 'information-assurance-security-2', 'computer-programming-1', 'computer-programming-2'], $catalog->keys()->all());
     }
 
     public function test_resolve_returns_lesson_text_and_drops_invalid_refs(): void

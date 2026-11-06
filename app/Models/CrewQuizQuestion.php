@@ -12,7 +12,7 @@ class CrewQuizQuestion extends Model
     /** Types where exactly one option is right (graded against correct_index). */
     public const SINGLE_ANSWER_TYPES = ['multiple_choice', 'true_false', 'dropdown'];
 
-    protected $fillable = ['crew_quiz_id', 'prompt', 'options', 'type', 'correct_index', 'correct_indexes', 'required', 'position'];
+    protected $fillable = ['crew_quiz_id', 'prompt', 'source', 'options', 'type', 'correct_index', 'correct_indexes', 'required', 'position'];
 
     protected $casts = ['options' => 'array', 'correct_indexes' => 'array', 'required' => 'boolean'];
 

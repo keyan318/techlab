@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What does confidentiality mean?",
+      "options": [
+        "Something works whenever you need it",
+        "Nobody can change something without permission",
+        "Someone cannot deny sending a message",
+        "Only the right people can read something"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does integrity mean?",
+      "options": [
+        "Nobody changes it unnoticed without permission",
+        "It is available whenever it is needed",
+        "It is encrypted with a very long key",
+        "Only the right people can read it at all times"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why are integrity attacks sneaky?",
+      "options": [
+        "They delete every file",
+        "Nothing looks broken",
+        "They are easy to see",
+        "They always crash the system"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is a hash?",
+      "options": [
+        "A watermark that shows who made a file",
+        "A copy of a file kept on a backup server",
+        "A short fingerprint of a file's contents",
+        "A secret key used to encrypt a whole file at once"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "One character in a file changes. What happens to its hash?",
+      "options": [
+        "It changes completely",
+        "It stays the same",
+        "It becomes empty",
+        "It changes by one letter"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "You hash the same untouched file twice. What do you get?",
+      "options": [
+        "Two different hashes",
+        "A shorter hash each time",
+        "An error the second time",
+        "The same hash both times"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Does hashing keep a file secret?",
+      "options": [
+        "No, it deletes the file instead",
+        "Yes, but only for short text files",
+        "No, it only proves if it changed",
+        "Yes, nobody can read a hashed file"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is authentication?",
+      "options": [
+        "Proving who you are",
+        "Copying a file safely",
+        "Proving a file is unchanged",
+        "Hiding a file's contents"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is non-repudiation?",
+      "options": [
+        "Proof that a network has no open ports",
+        "Proof that a file has not been read by anyone",
+        "Proof someone sent a message they can't deny",
+        "Proof that a password is long enough to be safe now"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is a stolen file of weak password hashes dangerous?",
+      "options": [
+        "Stolen hashes delete the accounts they belong to",
+        "Any hash can be reversed in less than a second",
+        "Weak hashes can be cracked against common passwords",
+        "Hashes show every password as plain text right away"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which password resists cracking best?",
+      "options": [
+        "Long, unique and unpredictable",
+        "A common word with a 1",
+        "The same one used everywhere",
+        "Short and very easy to remember"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "An urgent order arrives with no valid signature. What should the crew do?",
+      "options": [
+        "Act on it fast",
+        "Forward it to Doom",
+        "Not act on it",
+        "Sign it themselves"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In symmetric-key cryptography, how many keys are used?",
+      "options": [
+        "One key per letter",
+        "No keys at all",
+        "One shared key",
+        "Two different keys"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the trade-off of symmetric-key encryption?",
+      "options": [
+        "It can only be used for files, not messages",
+        "It needs a different key for every single letter",
+        "It is much slower than any public-key method",
+        "Every reader needs a copy, and copies can leak"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "The crew's shared key has leaked. What can Doom do?",
+      "options": [
+        "Nothing, the cipher is strong enough",
+        "Only read messages sent tomorrow",
+        "Read messages but not change them",
+        "Read every message sent with the key"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the fix after a key leaks?",
+      "options": [
+        "Use a stronger cipher with the same key",
+        "Rotate to a new key",
+        "Send the key again more slowly",
+        "Keep the key but change its name"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In public-key cryptography, which key never leaves its owner?",
+      "options": [
+        "The private key",
+        "The public key",
+        "The shared key",
+        "The session key"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which key do you use to sign a message?",
+      "options": [
+        "Their private key",
+        "Your private key",
+        "A shared key",
+        "Your public key"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How does anyone check your signature?",
+      "options": [
+        "Against a shared password",
+        "Against your private key",
+        "Against the message length",
+        "Against your public key"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A message does not verify against the claimed sender's public key. What should you do?",
+      "options": [
+        "Not trust it",
+        "Hash it twice",
+        "Trust it anyway",
+        "Sign it again"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why can't Doom forge a valid signature even by copying someone's writing style?",
+      "options": [
+        "Signatures can never be checked",
+        "They do not have the private key",
+        "Writing style is part of the key",
+        "They do not know the public key"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is cryptanalysis?",
+      "options": [
+        "Hashing files to check their integrity",
+        "Breaking ciphers without knowing the key",
+        "Creating a brand new cipher from scratch",
+        "Signing messages with a private key"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How can an attacker break a shift cipher quickly?",
+      "options": [
+        "Sign the message",
+        "Hash the message",
+        "Ask the crew for the key",
+        "Try all 25 shifts"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What makes a cipher strong?",
+      "options": [
+        "Shifting each letter by exactly three",
+        "Using the letter E as often as possible",
+        "A short key that is easy to remember",
+        "A huge key space and no leaked patterns"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the lesson about a cipher's strength?",
+      "options": [
+        "It must match what it is protecting",
+        "Every cipher is equally strong in the end",
+        "A shift cipher is fine for any secret",
+        "Strength only depends on the alphabet"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which security service catches phishing before anyone clicks?",
+      "options": [
+        "Key rotation",
+        "Awareness",
+        "Non-repudiation",
+        "Integrity checking"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which security service exposes a silently tampered file?",
+      "options": [
+        "Incident response team",
+        "Awareness",
+        "Integrity checking",
+        "Authentication"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which security service exposes a forged order?",
+      "options": [
+        "Incident response",
+        "Non-repudiation",
+        "Integrity checking",
+        "Awareness"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which security service finds and stops an active intrusion?",
+      "options": [
+        "Integrity checking",
+        "Incident response",
+        "Non-repudiation",
+        "Awareness"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does the Citadel need every security service at once?",
+      "options": [
+        "None of them replaces the others",
+        "One of them is always enough alone",
+        "They all do exactly the same job",
+        "Attacks only ever come one at a time"
+      ],
+      "correct": "A"
+    }
+  ]
+}

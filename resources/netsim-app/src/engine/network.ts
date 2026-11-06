@@ -33,9 +33,19 @@ export class Network {
   // flashes the device so students see *where* traffic died.
   onFwDrop: ((deviceId: string) => void) | null = null;
 
+  // Bumped on any cabling, on/off or switch/routing config change; spanning-tree and OSPF
+  // results are cached against it.
+  topoVersion = 0;
+  // HSRP/VRRP: which interface is active for each group (see engine/fhrp.ts).
+  fhrpActive = new Map<string, NetInterface>();
+
   private macCounter = 0;
   private wireCounter = 0;
   private idCounter = 0;
+
+  touch(): void {
+    this.topoVersion++;
+  }
 
   get now(): number {
     return this.scheduler.now;
@@ -98,6 +108,7 @@ export class Network {
     if (!ia) throw new Error(`${a.name}: no free interface`);
     if (!ib) throw new Error(`${b.name}: no free interface`);
     if (ia.link || ib.link) throw new Error('interface already connected');
+    if (ia !== ia.physical || ib !== ib.physical) throw new Error('cannot cable a sub-interface');
     const link = new Link(this, opts.id ?? this.allocId('link-'), ia, ib);
     this.links.set(link.id, link);
     return link;

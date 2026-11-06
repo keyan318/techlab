@@ -1,0 +1,312 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g2-l4",
+  "title": "Lesson 2.4: BGP — eBGP vs iBGP",
+  "host": {
+    "name": "SKYPORT",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nSkyport border router, the Grid (AS 65010)"
+  },
+  "story": {
+    "alert": "SKYPORT · EARTH ASSIGNS AS 65010",
+    "victory": "Both BGP sessions are Established. Earth Relay lists AS 65010 on its map, and the Citadel can finally use what Earth sends. Astro: \"Codexia is on the internet.\""
+  },
+  "modes": {
+    "router": {
+      "prompt": "config-router"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1220 bytes\n!\nhostname SKYPORT\n!\ninterface GigabitEthernet0/0\n description to Citadel core\n ip address 10.0.0.1 255.255.255.252\n!\ninterface GigabitEthernet0/1\n description to Earth Relay\n ip address 203.0.113.2 255.255.255.252\n!\nrouter ospf 1\n network 10.0.0.0 0.0.0.3 area 0\n!\nip route 192.168.0.0 255.255.0.0 Null0\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      690   peering.txt\n    2  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:peering.txt",
+      "text": "GRID PEERING PLAN (Skyport edge; the Grid is AS 65010)\n=======================================================\nNeighbor       Who                          AS\n203.0.113.1     Earth Relay edge router      64500\n10.0.0.2        Citadel core (inside Grid)   65010\n\nAdvertise: the whole Grid, 192.168.0.0/16\n(Skyport already has: ip route 192.168.0.0 255.255.0.0 Null0)\n\nAstro's question: which neighbor is external BGP and which is internal?\n   submit EBGP=<address>\n   submit IBGP=<address>\n"
+    },
+    {
+      "cmd": "show ip bgp summary",
+      "when": [
+        "ebgp",
+        "ibgp"
+      ],
+      "sets": [
+        "seen-summary"
+      ],
+      "text": "BGP router identifier 10.0.0.1, local AS number 65010\nBGP table version is 9, main routing table version 9\n\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n10.0.0.2        4        65010      21      24        9    0    0 00:04:12        2\n203.0.113.1     4        64500      38      31        9    0    0 00:04:09        3\n"
+    },
+    {
+      "cmd": "show ip bgp summary",
+      "when": [
+        "ebgp"
+      ],
+      "text": "BGP router identifier 10.0.0.1, local AS number 65010\nBGP table version is 9, main routing table version 9\n\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n203.0.113.1     4        64500      38      31        9    0    0 00:04:09        3\n"
+    },
+    {
+      "cmd": "show ip bgp summary",
+      "when": [
+        "ibgp"
+      ],
+      "text": "BGP router identifier 10.0.0.1, local AS number 65010\nBGP table version is 9, main routing table version 9\n\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n10.0.0.2        4        65010      21      24        9    0    0 00:04:12        2\n"
+    },
+    {
+      "cmd": "show ip bgp summary",
+      "when": [
+        "bgp-on"
+      ],
+      "text": "BGP router identifier 10.0.0.1, local AS number 65010\nBGP table version is 9, main routing table version 9\n\nNeighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd\n"
+    },
+    {
+      "cmd": "show ip bgp summary",
+      "text": "% BGP not active"
+    },
+    {
+      "cmd": "show ip bgp neighbors <ip> advertised-routes",
+      "args": [
+        "10.0.0.2"
+      ],
+      "when": [
+        "ibgp",
+        "ebgp",
+        "nhs"
+      ],
+      "sets": [
+        "seen-nhs"
+      ],
+      "text": "BGP table version is 9, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  0.0.0.0          10.0.0.1                 0    100      0 64500 i\n *>  198.51.100.0/24  10.0.0.1                 0    100      0 64500 i\n *>  203.0.113.0/24   10.0.0.1                 0    100      0 64500 i\n\nTotal number of prefixes 3\n\n! Volt: next hop 10.0.0.1, which the Citadel reaches over OSPF. Usable."
+    },
+    {
+      "cmd": "show ip bgp neighbors <ip> advertised-routes",
+      "args": [
+        "10.0.0.2"
+      ],
+      "when": [
+        "ibgp",
+        "ebgp"
+      ],
+      "text": "BGP table version is 9, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  0.0.0.0          203.0.113.1              0    100      0 64500 i\n *>  198.51.100.0/24  203.0.113.1              0    100      0 64500 i\n *>  203.0.113.0/24   203.0.113.1              0    100      0 64500 i\n\nTotal number of prefixes 3\n\n! Volt: the Citadel has no route to 203.0.113.1. Every one of these is useless to it."
+    },
+    {
+      "cmd": "show ip bgp neighbors <ip> advertised-routes",
+      "text": "% No such neighbor or session not up yet"
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "ebgp",
+        "adv"
+      ],
+      "text": "BGP table version is 9, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  0.0.0.0          203.0.113.1              0             0 64500 i\n *>  198.51.100.0/24  203.0.113.1              0             0 64500 i\n *>  203.0.113.0/24   203.0.113.1              0             0 64500 i\n *>  192.168.0.0/16   0.0.0.0                  0         32768 i\n"
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "ebgp"
+      ],
+      "text": "BGP table version is 9, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  0.0.0.0          203.0.113.1              0             0 64500 i\n *>  198.51.100.0/24  203.0.113.1              0             0 64500 i\n *>  203.0.113.0/24   203.0.113.1              0             0 64500 i\n"
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "adv"
+      ],
+      "text": "BGP table version is 9, local router ID is 10.0.0.1\nStatus codes: * valid, > best, i - internal\nOrigin codes: i - IGP, e - EGP, ? - incomplete\n\n     Network          Next Hop            Metric LocPrf Weight Path\n *>  192.168.0.0/16   0.0.0.0                  0         32768 i\n"
+    },
+    {
+      "cmd": "show ip bgp",
+      "when": [
+        "bgp-on"
+      ],
+      "text": "BGP table version is 1, local router ID is 10.0.0.1\n(the table is empty: no routes learned or advertised yet)"
+    },
+    {
+      "cmd": "show ip bgp",
+      "text": "% BGP not active"
+    },
+    {
+      "cmd": "show ip route",
+      "text": "Codes: L - local, C - connected, S - static, O - OSPF, B - BGP\n\nGateway of last resort is not set\n\nS        192.168.0.0/16 is directly connected, Null0\nC        10.0.0.0/30 is directly connected, GigabitEthernet0/0\nC        203.0.113.0/30 is directly connected, GigabitEthernet0/1\nO        192.168.20.0/24 [110/2] via 10.0.0.2, 00:12:44, GigabitEthernet0/0"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "router bgp <n>",
+      "args": [
+        "65010"
+      ],
+      "enters": "router",
+      "sets": [
+        "bgp-on"
+      ]
+    },
+    {
+      "cmd": "router bgp <n>",
+      "store": false,
+      "reply": "% The Grid is AS 65010 (see flash:peering.txt). Try: router bgp 65010"
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> remote-as <n>",
+      "args": [
+        "203.0.113.1",
+        "64500"
+      ],
+      "sets": [
+        "ebgp"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> remote-as <n>",
+      "args": [
+        "10.0.0.2",
+        "65010"
+      ],
+      "sets": [
+        "ibgp"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> remote-as <n>",
+      "reply": "% Saved, but that does not match the peering plan. The session will never come up."
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> next-hop-self",
+      "args": [
+        "10.0.0.2"
+      ],
+      "sets": [
+        "nhs"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "neighbor <ip> next-hop-self"
+    },
+    {
+      "mode": "router",
+      "cmd": "network <ip> mask <ip>",
+      "args": [
+        "192.168.0.0",
+        "255.255.0.0"
+      ],
+      "sets": [
+        "adv"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "network <ip> mask <ip>",
+      "reply": "% Saved, but BGP only advertises a prefix that is exactly in the routing table. The Grid summary is 192.168.0.0/16."
+    },
+    {
+      "mode": "router",
+      "cmd": "bgp router-id <ip>"
+    },
+    {
+      "mode": "router",
+      "cmd": "no neighbor <rest>",
+      "store": false
+    }
+  ],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Sort the neighbors",
+      "body": "Type `enable`, then `more flash:peering.txt`. One neighbor is in another AS, one in ours. Answer with `submit EBGP=...` and `submit IBGP=...`.",
+      "objectives": [
+        {
+          "id": "read",
+          "label": "Read the peering plan",
+          "check": {
+            "type": "ran",
+            "pattern": "^more\\s+flash:peering"
+          }
+        },
+        {
+          "id": "ans-e",
+          "label": "eBGP neighbor named",
+          "check": {
+            "type": "answer",
+            "value": "EBGP=203.0.113.1"
+          }
+        },
+        {
+          "id": "ans-i",
+          "label": "iBGP neighbor named",
+          "check": {
+            "type": "answer",
+            "value": "IBGP=10.0.0.2"
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Bring up both sessions",
+      "body": "Go to `conf t`, then `router bgp 65010`. Add `neighbor 203.0.113.1 remote-as 64500` and `neighbor 10.0.0.2 remote-as 65010`. Advertise the Grid: `network 192.168.0.0 mask 255.255.0.0`. Then `end` and `show ip bgp summary`: both neighbors should show a prefix count, not Idle or Active.",
+      "objectives": [
+        {
+          "id": "ebgp",
+          "label": "eBGP session to Earth configured",
+          "check": {
+            "type": "fact",
+            "fact": "ebgp"
+          }
+        },
+        {
+          "id": "ibgp",
+          "label": "iBGP session to the Citadel configured",
+          "check": {
+            "type": "fact",
+            "fact": "ibgp"
+          }
+        },
+        {
+          "id": "adv",
+          "label": "The Grid 192.168.0.0/16 is advertised",
+          "check": {
+            "type": "fact",
+            "fact": "adv"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Checked both sessions with show ip bgp summary",
+          "check": {
+            "type": "fact",
+            "fact": "seen-summary"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Fix the next-hop trap",
+      "body": "Run `show ip bgp neighbors 10.0.0.2 advertised-routes`: everything Skyport passes to the Citadel says next hop 203.0.113.1. Back in `router bgp 65010`, add `neighbor 10.0.0.2 next-hop-self`, then check the same command again.",
+      "objectives": [
+        {
+          "id": "nhs",
+          "label": "next-hop-self set for the Citadel",
+          "check": {
+            "type": "fact",
+            "fact": "nhs"
+          }
+        },
+        {
+          "id": "seen-nhs",
+          "label": "Confirmed the Citadel now gets next hop 10.0.0.1",
+          "check": {
+            "type": "fact",
+            "fact": "seen-nhs"
+          }
+        }
+      ]
+    }
+  ]
+}

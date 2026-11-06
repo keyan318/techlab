@@ -458,6 +458,129 @@ return [
         ],
     ],
 
+    // Networking 2 (ITP831): "Light the Grid", Season 2 of Networking 1's "Call Earth".
+    // Earth answered; now the crew links Codexia's outposts into one planet-wide network that keeps
+    // running under Planet Doom's attacks. Second course on the Networking Nebula, keyed by its own
+    // catalog id. `sim` picks the lab: netsim = NetSim with Cisco IOS routers/switches
+    // (resources/netsim-app/public/labs/g*.json); console = Relay Console, a Cisco-style router console
+    // for what a packet simulator can't show, like BGP, QoS or VPNs (public/relay-console/labs/g*.json).
+    'networking-2' => [
+        'title' => 'Networking 2',
+        'planet' => 'networking',
+        'catalog' => 'networking-2',
+        'view_base' => 'student.planets.networking.net2_course',
+        'resources' => [
+            [
+                'title' => 'Networking 2 (ITP831) OBE Course Syllabus — Catanduanes State University',
+                'url' => '/resources/networking-2-syllabus-ITP831.pdf',
+                'type' => 'pdf',
+                'source' => 'Source: Catanduanes State University, OBE Course Syllabus (CatSU-F-ACAD-07, AY 2025–2026, 2nd Semester)',
+            ],
+            [
+                'title' => 'Fundamentals of Communications and Networking, Third Edition',
+                'type' => 'book',
+                'source' => 'Solomon M. & Kim D. (2022), Jones and Bartlett Learning',
+            ],
+            [
+                'title' => 'Networking All-in-One For Dummies, 8th Edition',
+                'type' => 'book',
+                'source' => 'Lowe D. (2021), John Wiley & Sons',
+            ],
+            [
+                'title' => 'Fundamentals of Computer Networks',
+                'type' => 'book',
+                'source' => 'Sadiku M. & Akujuobi C. (2022), Springer Nature Switzerland',
+            ],
+            [
+                'title' => 'Computer Networking Beginners Guide',
+                'type' => 'book',
+                'source' => 'Axel R. (2022)',
+            ],
+            [
+                'title' => 'OSPF Version 2 (RFC 2328)',
+                'url' => 'https://www.rfc-editor.org/rfc/rfc2328',
+                'type' => 'web',
+                'source' => 'IETF',
+            ],
+            [
+                'title' => 'A Border Gateway Protocol 4 (RFC 4271)',
+                'url' => 'https://www.rfc-editor.org/rfc/rfc4271',
+                'type' => 'web',
+                'source' => 'IETF',
+            ],
+            [
+                'title' => 'IP Version 6 Addressing Architecture (RFC 4291)',
+                'url' => 'https://www.rfc-editor.org/rfc/rfc4291',
+                'type' => 'web',
+                'source' => 'IETF',
+            ],
+        ],
+        'modules' => [
+            'M1' => [
+                'title' => 'M1 — Back Online: Networking Review',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Switches, Routers & VLANs Revisited', 'lab' => 'g1-l1', 'sim' => 'netsim'],
+                    'lesson-02' => ['title' => 'Cloud Computing in Networking', 'lab' => 'g1-l2', 'sim' => 'console'],
+                    'lesson-03' => ['title' => 'IPv6 (and the IPv5 That Never Was)', 'lab' => 'g1-l3', 'sim' => 'console'],
+                ],
+            ],
+            'M2' => [
+                'title' => 'M2 — Advanced Routing',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Link-State Routing with OSPF', 'lab' => 'g2-l1', 'sim' => 'netsim'],
+                    'lesson-02' => ['title' => 'OSPF Areas & LSA Types', 'lab' => 'g2-l2', 'sim' => 'netsim'],
+                    'lesson-03' => ['title' => 'OSPF Configuration & Optimization', 'lab' => 'g2-l3', 'sim' => 'netsim'],
+                    'lesson-04' => ['title' => 'BGP: eBGP vs iBGP', 'lab' => 'g2-l4', 'sim' => 'console'],
+                    'lesson-05' => ['title' => 'BGP Path Selection, Communities & Filtering', 'lab' => 'g2-l5', 'sim' => 'console'],
+                    'lesson-06' => ['title' => 'EIGRP: Metrics, Load Balancing & Convergence', 'lab' => 'g2-l6', 'sim' => 'console'],
+                ],
+            ],
+            'M3' => [
+                'title' => 'M3 — Network Design Patterns',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Hierarchical Design: Core, Distribution & Access', 'lab' => 'g3-l1', 'sim' => 'netsim'],
+                    'lesson-02' => ['title' => 'Scalability & Redundancy Planning', 'lab' => 'g3-l2', 'sim' => 'console'],
+                    'lesson-03' => ['title' => 'Redundant Paths & Convergence', 'lab' => 'g3-l3', 'sim' => 'netsim'],
+                    'lesson-04' => ['title' => 'First Hop Redundancy: HSRP, VRRP & GLBP', 'lab' => 'g3-l4', 'sim' => 'netsim'],
+                    'lesson-05' => ['title' => 'Midterm Mission: The Northwatch Storm', 'lab' => 'g3-l5', 'sim' => 'netsim'],
+                ],
+            ],
+            'M4' => [
+                'title' => 'M4 — Advanced Switching & VLANs',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'VLAN Trunking & 802.1Q', 'lab' => 'g4-l1', 'sim' => 'netsim'],
+                    'lesson-02' => ['title' => 'Inter-VLAN Routing: Router-on-a-Stick vs Layer 3 Switch', 'lab' => 'g4-l2', 'sim' => 'netsim'],
+                    'lesson-03' => ['title' => 'Spanning Tree: RSTP & MST', 'lab' => 'g4-l3', 'sim' => 'netsim'],
+                    'lesson-04' => ['title' => 'PortFast, BPDU Guard & Root Guard', 'lab' => 'g4-l4', 'sim' => 'netsim'],
+                    'lesson-05' => ['title' => 'Port Security & 802.1X', 'lab' => 'g4-l5', 'sim' => 'netsim'],
+                    'lesson-06' => ['title' => 'VLAN Security Best Practices', 'lab' => 'g4-l6', 'sim' => 'netsim'],
+                ],
+            ],
+            'M5' => [
+                'title' => 'M5 — Quality of Service & Traffic Management',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Classification & Marking: DSCP and CoS', 'lab' => 'g5-l1', 'sim' => 'console'],
+                    'lesson-02' => ['title' => 'Policing, Shaping & Queuing', 'lab' => 'g5-l2', 'sim' => 'console'],
+                    'lesson-03' => ['title' => 'MPLS & Traffic Engineering', 'lab' => 'g5-l3', 'sim' => 'console'],
+                    'lesson-04' => ['title' => 'Congestion Management: RED & Load Balancing', 'lab' => 'g5-l4', 'sim' => 'console'],
+                ],
+            ],
+            'M6' => [
+                'title' => 'M6 — Network Security & Advanced Protocols',
+                'lessons' => [
+                    'lesson-01' => ['title' => 'Firewalls: Stateless, Stateful & NGFW', 'lab' => 'g6-l1', 'sim' => 'netsim'],
+                    'lesson-02' => ['title' => 'DMZ Design', 'lab' => 'g6-l2', 'sim' => 'netsim'],
+                    'lesson-03' => ['title' => 'Intrusion Detection & Prevention', 'lab' => 'g6-l3', 'sim' => 'console'],
+                    'lesson-04' => ['title' => 'Site-to-Site VPN: IPsec & GRE', 'lab' => 'g6-l4', 'sim' => 'console'],
+                    'lesson-05' => ['title' => 'Remote Access VPN, TLS & PKI', 'lab' => 'g6-l5', 'sim' => 'console'],
+                    'lesson-06' => ['title' => '802.1X, RADIUS & WPA3-Enterprise', 'lab' => 'g6-l6', 'sim' => 'console'],
+                    'lesson-07' => ['title' => 'DNS Security: DNSSEC, DoH/DoT & Filtering', 'lab' => 'g6-l7', 'sim' => 'netsim'],
+                    'lesson-08' => ['title' => 'Final Mission: Hold the Grid', 'lab' => 'g6-l8', 'sim' => 'netsim'],
+                ],
+            ],
+        ],
+    ],
+
     // Information Assurance and Security 1 (ITP1232): "Siege of the Citadel".
     // Every lesson ends in a "Defend it yourself" lab; `sim` picks the simulator (citadel = Citadel Sim,
     // netsim = the network simulator). Citadel lab files: public/citadel-sim/labs/<lab>.json.
@@ -928,6 +1051,249 @@ return [
                     'lesson-05' => [
                         'title' => 'Scanning the Grid',
                         'expected' => "Grid total: 60\n",
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    // Computer Programming 2 (CC103): "Switch the City On" — Season 2 of the Wanderer's story.
+    // Picks up the morning after Programming 1's last lesson: the ship is fixed but its console
+    // forgets the crew at every power cut, and Programming City below is still dark. The crew
+    // switches the city back on street by street (functions, pointers, arrays, structures,
+    // linked lists) and ends by teaching the console to remember them with files. Vex never
+    // appears: the city was wrecked long before the crew arrived.
+    // 'c_runtime' => 'picoc': this course's editor runs PicoC instead of JSCPP, because CC103
+    // needs structs, malloc/free and FILE*, which JSCPP can't run (see public/js/picoc-worker.js).
+    // Every lesson ends in "Code it yourself"; the answer key ('expected') is checked server-side.
+    'computer-programming-2' => [
+        'title' => 'Computer Programming 2',
+        'planet' => 'programming',
+        'catalog' => 'computer-programming-2',
+        'view_base' => 'student.planets.programming.c2_course',
+        'c_runtime' => 'picoc',
+        'resources' => [
+            [
+                'title' => 'CC103 — Computer Programming 2 OBE Course Syllabus',
+                'url' => '/resources/computer-programming-2-syllabus-CC103.pdf',
+                'type' => 'pdf',
+                'source' => 'Source: College of Information and Communications Technology, OBE Course Syllabus (AY 2025–2026)',
+            ],
+            [
+                'title' => 'Learn C Programming',
+                'url' => 'https://www.programiz.com/c-programming',
+                'type' => 'web',
+                'source' => 'Programiz',
+            ],
+            [
+                'title' => 'C Tutorial',
+                'url' => 'https://www.w3schools.com/c/',
+                'type' => 'web',
+                'source' => 'W3Schools',
+            ],
+            [
+                'title' => 'C Programming Tutorial',
+                'url' => 'https://www.tutorialspoint.com/cprogramming/index.htm',
+                'type' => 'web',
+                'source' => 'Tutorialspoint',
+            ],
+            [
+                'title' => 'The C Programming Handbook for Beginners',
+                'url' => 'https://www.freecodecamp.org/news/the-c-programming-handbook-for-beginners/',
+                'type' => 'web',
+                'source' => 'Dionysia Lemonaki, freeCodeCamp',
+            ],
+            [
+                'title' => 'What is C Language: Introduction to C Programming',
+                'url' => 'https://www.simplilearn.com/tutorials/c-tutorial/use-of-c-language',
+                'type' => 'web',
+                'source' => 'Ravikiran A S, Simplilearn',
+            ],
+            [
+                'title' => 'C standard library reference',
+                'url' => 'https://en.cppreference.com/w/c',
+                'type' => 'web',
+                'source' => 'cppreference.com',
+            ],
+            [
+                'title' => 'C Programming: A Modern Approach (2nd Edition)',
+                'type' => 'book',
+                'source' => 'K. N. King, W.W. Norton & Company',
+            ],
+            [
+                'title' => 'C: A Reference Manual (5th Edition)',
+                'type' => 'book',
+                'source' => 'Samuel P. Harbison & Guy L. Steele, Pearson',
+            ],
+            [
+                'title' => 'C How to Program (8th Edition)',
+                'type' => 'book',
+                'source' => 'P. J. Deitel & H. M. Deitel (2020), Pearson',
+            ],
+            [
+                'title' => 'The C Programming Language',
+                'type' => 'book',
+                'source' => 'Brian W. Kernighan & Dennis M. Ritchie',
+            ],
+            [
+                'title' => 'Algorithmic Thinking (2nd Edition)',
+                'url' => 'https://nostarch.com/algorithmic-thinking-2nd-edition',
+                'type' => 'book',
+                'source' => 'Daniel Zingaro, No Starch Press',
+            ],
+        ],
+        'modules' => [
+            'M1' => [
+                'title' => 'M1 — Down Into the City',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'The First Street',
+                        'expected' => "Lamp 1: on\nLamp 2: on\nLamp 3: on\nStreet lit.\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Orders and Answers',
+                        'expected' => "Cable needed: 72\nLamps still: 6\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'What Stays in the Toolbox',
+                        'expected' => "Lamps lit: 3\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Crates Inside Crates',
+                        'expected' => "Crates in the pile: 10\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'The Job Board',
+                        'expected' => "Cable: 5.0 m\n",
+                    ],
+                ],
+            ],
+            'M2' => [
+                'title' => 'M2 — Street Addresses',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Every Machine Has an Address',
+                        'expected' => "Lamp reads: 7\nSame place: yes\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Reaching In from the Depot',
+                        'expected' => "Before: 0\nAfter: 2\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Swap the Tram Cars',
+                        'expected' => "Track A: 2\nTrack B: 1\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Two Answers at Once',
+                        'expected' => "Each crew: 9\nLeft over: 2\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'The Blank Tag',
+                        'expected' => "Reading: 42\nNo signal\n",
+                    ],
+                ],
+            ],
+            'M3' => [
+                'title' => 'M3 — Lamp Street',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Six Lamps, One Name',
+                        'expected' => "Lamps: 6\nFirst: 30\nLast: 45\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Walking Lamp Street',
+                        'expected' => "Dead lamps: 2\nBrightest: lamp 3\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Handing Over the Street',
+                        'expected' => "Street power: 310\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'The Address of the First Lamp',
+                        'expected' => "Lamp 0: 15\nLamp 1: 25\nLamp 2: 35\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'The Bakery Sign',
+                        'expected' => "Sign: BAKERY\nLetters: 6\nSign fixed.\n",
+                    ],
+                    'lesson-06' => [
+                        'title' => 'The Block Map',
+                        'expected' => "Main: 60\nHarbor: 15\n",
+                    ],
+                ],
+            ],
+            'M4' => [
+                'title' => 'M4 — The Machine Registry',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'One Card for One Machine',
+                        'expected' => "Machine: Fountain\nPower: 40\nWorking: no\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'Filling In the Card',
+                        'expected' => "Tram 7: 90, working\nBackup: 0, broken\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'To the Workshop and Back',
+                        'expected' => "Clock: 20\nClock: 100\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'The Registry',
+                        'expected' => "Broken: Fountain\nBroken: Clock\nWorking: 2\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Shorter Names',
+                        'expected' => "Clock Tower: 3\nHarbor Tower: 4\nMarket Tower: 5\nTotal bells: 12\n",
+                    ],
+                ],
+            ],
+            'M5' => [
+                'title' => 'M5 — The Tram Line',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Memory on Request',
+                        'expected' => "Spare part: 12\nPart returned.\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'As Many Cars as It Takes',
+                        'expected' => "Cars: 4\nSeats: 52\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Each Stop Knows the Next',
+                        'expected' => "Stop: Station\nStop: Market\nStop: Park\nEnd of the line.\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'A New Stop at the Harbor',
+                        'expected' => "Harbor -> Station -> Market -> Park\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'Closing a Stop',
+                        'expected' => "Station -> Park\nStops: 2\nLine cleared.\n",
+                    ],
+                ],
+            ],
+            'M6' => [
+                'title' => 'M6 — The City Archive',
+                'lessons' => [
+                    'lesson-01' => [
+                        'title' => 'Paper That Remembers',
+                        'expected' => "Archive open.\nArchive closed.\nNo file called missing.txt\n",
+                    ],
+                    'lesson-02' => [
+                        'title' => 'One Letter at a Time',
+                        'expected' => "Read: LAMP\nBytes: 4\n",
+                    ],
+                    'lesson-03' => [
+                        'title' => 'Lines in the Logbook',
+                        'expected' => "1: Gate Road lit\n2: Tram running\n3: Bells rung\n",
+                    ],
+                    'lesson-04' => [
+                        'title' => 'Neat Columns',
+                        'expected' => "Station 40\nPark 25\nPlant 15\nRiders: 80\n",
+                    ],
+                    'lesson-05' => [
+                        'title' => 'The Console Remembers',
+                        'expected' => "HELLO, ASTRO.\nHELLO, RIVET.\nHELLO, VOLT.\nHELLO, CADET.\n",
                     ],
                 ],
             ],

@@ -1,0 +1,794 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "citadel",
+      "kind": "router",
+      "name": "citadel",
+      "x": 320,
+      "y": 20,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.0.1/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.0.5/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.20.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": "203.0.113.1/24",
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CITADEL",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.0.7",
+            "area": 0
+          },
+          {
+            "addr": "192.168.20.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          },
+          {
+            "addr": "203.0.113.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth2",
+          "eth3"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "crew-srv",
+      "kind": "server",
+      "name": "crew-srv",
+      "x": 600,
+      "y": 0,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.22/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Citadel: the Grid holds."
+      },
+      "services": {
+        "tcp": [
+          22
+        ],
+        "udp": []
+      }
+    },
+    {
+      "id": "outside-sw",
+      "kind": "switch",
+      "name": "outside-sw",
+      "x": 600,
+      "y": 80,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "OUTSIDE-SW"
+    },
+    {
+      "id": "earth-srv",
+      "kind": "server",
+      "name": "earth-srv",
+      "x": 800,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay fleet: docking at Skyport. Well done, Codexia."
+      }
+    },
+    {
+      "id": "vex",
+      "kind": "host",
+      "name": "vex",
+      "x": 800,
+      "y": 160,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.66/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "sky-a",
+      "kind": "router",
+      "name": "sky-a",
+      "x": 120,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.0.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.50.2/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "SKY-A",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.50.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth1"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      },
+      "ifaceCfg": {
+        "eth1": {
+          "fhrp": [
+            {
+              "proto": "hsrp",
+              "group": 50,
+              "vip": 3232248321,
+              "priority": 110,
+              "preempt": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sky-b",
+      "kind": "router",
+      "name": "sky-b",
+      "x": 520,
+      "y": 220,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.0.6/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.50.3/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "SKY-B",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.0.4",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.50.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth1",
+          "eth0"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      },
+      "ifaceCfg": {
+        "eth1": {
+          "fhrp": [
+            {
+              "proto": "hsrp",
+              "group": 50,
+              "vip": 3232248321,
+              "priority": 100,
+              "preempt": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hangar-sw",
+      "kind": "switch",
+      "name": "hangar-sw",
+      "x": 320,
+      "y": 330,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "HANGAR-SW",
+      "stp": {
+        "priority": {
+          "1": 24576
+        }
+      }
+    },
+    {
+      "id": "doom-sw",
+      "kind": "switch",
+      "name": "doom-sw",
+      "x": 560,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DOOM-SW",
+      "stp": {
+        "priority": {
+          "1": 0
+        }
+      }
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 100,
+      "y": 460,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.50.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.50.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "cadet",
+      "kind": "host",
+      "name": "cadet",
+      "x": 300,
+      "y": 480,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.50.22/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.50.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "citadel.eth0-sky-a.eth0",
+      "a": [
+        "citadel",
+        "eth0"
+      ],
+      "b": [
+        "sky-a",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth1-sky-b.eth0",
+      "a": [
+        "citadel",
+        "eth1"
+      ],
+      "b": [
+        "sky-b",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth2-crew-srv.eth0",
+      "a": [
+        "citadel",
+        "eth2"
+      ],
+      "b": [
+        "crew-srv",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth3-outside-sw.eth7",
+      "a": [
+        "citadel",
+        "eth3"
+      ],
+      "b": [
+        "outside-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "earth-srv.eth0-outside-sw.eth0",
+      "a": [
+        "earth-srv",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "vex.eth0-outside-sw.eth1",
+      "a": [
+        "vex",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "sky-a.eth1-hangar-sw.eth6",
+      "a": [
+        "sky-a",
+        "eth1"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth6"
+      ]
+    },
+    {
+      "id": "sky-b.eth1-hangar-sw.eth7",
+      "a": [
+        "sky-b",
+        "eth1"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "rivet.eth0-hangar-sw.eth0",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "cadet.eth0-hangar-sw.eth1",
+      "a": [
+        "cadet",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "doom-sw.eth0-hangar-sw.eth5",
+      "a": [
+        "doom-sw",
+        "eth0"
+      ],
+      "b": [
+        "hangar-sw",
+        "eth5"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g6-l8",
+    "title": "Lesson 6.8 — Final Mission: Hold the Grid",
+    "blurb": "The raid. Four layers, four faults, one Grid to hold.",
+    "steps": [
+      {
+        "title": "Switching: stop the takeover",
+        "body": "On `hangar-sw`, `show spanning-tree`: the root bridge isn't ours. A switch on Gi0/6 claims priority 0. Protect every user port: `interface range g0/1 - 6`, `spanning-tree portfast`, `spanning-tree bpduguard enable`.",
+        "objectives": [
+          {
+            "id": "g6l8-bg",
+            "label": "hangar-sw Gi0/1 has PortFast and BPDU Guard",
+            "check": {
+              "type": "iface-config",
+              "device": "hangar-sw",
+              "iface": "eth0",
+              "is": {
+                "portfast": true,
+                "bpduguard": true
+              }
+            }
+          },
+          {
+            "id": "g6l8-err",
+            "label": "The rogue switch's port (Gi0/6) is err-disabled",
+            "check": {
+              "type": "stp-port",
+              "device": "hangar-sw",
+              "iface": "eth5",
+              "vlan": 1,
+              "state": "err-disabled"
+            }
+          },
+          {
+            "id": "g6l8-root",
+            "label": "hangar-sw is the root bridge again",
+            "check": {
+              "type": "stp-root",
+              "vlan": 1,
+              "device": "hangar-sw"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Routing: find the missing neighbor",
+        "body": "On `citadel`, `show ip ospf neighbor` lists only sky-a. On `sky-b`, `show ip protocols`: someone made its uplink passive. In `router ospf 1`: `no passive-interface g0/0`.",
+        "objectives": [
+          {
+            "id": "g6l8-nb",
+            "label": "citadel and sky-b are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "citadel",
+              "neighbor": "sky-b",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g6l8-two",
+            "label": "citadel has two paths to the hangar",
+            "check": {
+              "type": "route",
+              "device": "citadel",
+              "dest": "192.168.50.0/24",
+              "source": "ospf",
+              "expect": "present",
+              "paths": 2
+            }
+          }
+        ]
+      },
+      {
+        "title": "Gateways: fail over for real",
+        "body": "sky-a is the hangar's active gateway. If its uplink dies, it stays active and drops everything. On `sky-a` g0/1: `standby 50 track g0/0 20`. On `sky-b` g0/1: `standby 50 preempt`. The grader cuts sky-a's uplink and LAN port for a moment each.",
+        "objectives": [
+          {
+            "id": "g6l8-trk",
+            "label": "sky-a tracks its uplink",
+            "check": {
+              "type": "iface-config",
+              "device": "sky-a",
+              "iface": "eth1",
+              "is": {
+                "fhrpTrack": "eth0"
+              }
+            }
+          },
+          {
+            "id": "g6l8-s1",
+            "label": "rivet still reaches Earth if sky-a loses its uplink",
+            "check": {
+              "type": "survives",
+              "from": "rivet",
+              "toDevice": "earth-srv",
+              "cut": {
+                "device": "sky-a",
+                "iface": "eth0"
+              }
+            }
+          },
+          {
+            "id": "g6l8-s2",
+            "label": "rivet still reaches Earth if sky-a's hangar port fails",
+            "check": {
+              "type": "survives",
+              "from": "rivet",
+              "toDevice": "earth-srv",
+              "cut": {
+                "device": "sky-a",
+                "iface": "eth1"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Edge: lock Vex out",
+        "body": "Vex (203.0.113.66) is hammering SSH on the crew server. On `citadel`: `ip access-list extended EDGE-IN`, `deny ip host 203.0.113.66 any`, `permit ip any any`, `exit`, then `interface g0/3`, `ip access-group EDGE-IN in`. Last test: from rivet, `curl http://203.0.113.10/`.",
+        "objectives": [
+          {
+            "id": "g6l8-acl",
+            "label": "EDGE-IN is applied inbound on citadel Gi0/3",
+            "check": {
+              "type": "iface-config",
+              "device": "citadel",
+              "iface": "eth3",
+              "is": {
+                "aclIn": "EDGE-IN"
+              }
+            }
+          },
+          {
+            "id": "g6l8-vex",
+            "label": "Vex can no longer reach SSH on the crew server",
+            "check": {
+              "type": "tcp",
+              "from": "vex",
+              "toDevice": "crew-srv",
+              "port": 22,
+              "expect": "filtered"
+            }
+          },
+          {
+            "id": "g6l8-earth",
+            "label": "Earth still opens the Citadel crew page",
+            "check": {
+              "type": "http",
+              "from": "earth-srv",
+              "url": "http://192.168.20.22/",
+              "expect": "ok",
+              "contains": "the Grid holds"
+            }
+          },
+          {
+            "id": "g6l8-final",
+            "label": "rivet opens Earth's page from Skyport",
+            "check": {
+              "type": "http",
+              "from": "rivet",
+              "url": "http://203.0.113.10/",
+              "expect": "ok",
+              "contains": "docking at Skyport"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

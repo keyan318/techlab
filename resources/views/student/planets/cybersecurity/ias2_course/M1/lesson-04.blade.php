@@ -29,6 +29,17 @@ Syllabus: ITP1333 Unit A.4 Security Methodology & A.5 Building a Security Progra
         running. Miss any one piece and the others don't hold.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In top-down security, what does a standard give you?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The exact steps for doing one task</li>
+            <li class="quiz-option">B. The high-level what and why of the whole plan</li>
+            <li class="quiz-option">C. A technician's own idea of the rules</li>
+            <li class="quiz-option quiz-correct">D. The specific rules everyone must follow ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Policy sets the what and why. Standards are the specific rules. Procedures are the exact steps.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -39,6 +50,17 @@ Syllabus: ITP1333 Unit A.4 Security Methodology & A.5 Building a Security Progra
         into procedures — the steps a cadet follows on their first watch. Nobody improvises the rules. They follow
         what flows down from the top."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why did the Citadel get hit last time, according to Astro?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The policy was written by too many people</li>
+            <li class="quiz-option quiz-correct">B. Each station had its own idea of “careful” ✓</li>
+            <li class="quiz-option">C. Volt's procedures were followed too exactly</li>
+            <li class="quiz-option">D. Rivet's standards had too many exact rules</li>
+        </ul>
+        <p class="quiz-explanation"><em>Bottom-up rules are inconsistent. Now policy flows down: Astro's policy, Rivet's standards, Volt's procedures.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -60,6 +82,17 @@ Syllabus: ITP1333 Unit A.4 Security Methodology & A.5 Building a Security Progra
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Top-down: policy sets direction, standards make it specific, procedures make it doable</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what sits at the bottom?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Policy</li>
+            <li class="quiz-option">B. Standards</li>
+            <li class="quiz-option quiz-correct">C. Procedures ✓</li>
+            <li class="quiz-option">D. Guidelines</li>
+        </ul>
+        <p class="quiz-explanation"><em>Policy at the top, then standards, then procedures: the exact steps that make it doable.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

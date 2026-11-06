@@ -11,14 +11,25 @@ class PlanetEnrollmentTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private function signUp(array $extra = [])
     {
-        return $this->post('/register', $extra + [
-            'name' => 'Sam Student',
+        $response = $this->post('/register', $extra + [
+            'program' => 'IS',
+            'year_level' => 3,
+            'first_name' => 'Sam',
+            'last_name' => 'Student',
             'email' => 'sam@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
+        // Signed up: agree to the Terms (TermsTest covers that step) so the pages under test open.
+        if (auth()->check()) {
+            auth()->user()->forceFill(['terms_accepted_at' => now(), 'terms_version' => config('terms.version')])->save();
+        }
+
+        return $response;
     }
 
     public function test_sign_up_page_shows_the_three_planet_checkboxes(): void

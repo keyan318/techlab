@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Crew;
 use App\Models\User;
+use App\Services\CertificatePdfService;
 use App\Services\CourseProgressService;
+use App\Services\CourseStructure;
 use App\Services\FinalExamService;
-use App\Services\StudentDashboardService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * The certificate a student earns by finishing every lesson of a course and then passing the
@@ -21,8 +23,13 @@ use Illuminate\View\View;
  */
 class CourseCertificateController extends Controller
 {
-    /** GET /student/course/{slug}/{course}/certificate */
-    public function show(string $slug, string $course): View|RedirectResponse
+    /**
+     * GET /student/course/{slug}/{course}/certificate
+     *
+     * A white PDF certificate (CertificatePdfService), opened in the browser to view or save.
+     * Self-paced: issued by TechLab. Class: signed by the faculty member.
+     */
+    public function show(string $slug, string $course, CertificatePdfService $pdfs): RedirectResponse|Response
     {
         $user = Auth::user();
 
@@ -30,13 +37,13 @@ class CourseCertificateController extends Controller
             return redirect(route('login'));
         }
 
-        $meta = config("course-catalog.{$slug}.courses.{$course}");
+        $meta = CourseStructure::card($slug, $course);
 
-        abort_if(! $meta || ! empty($meta['coming_soon']), 404);
+        abort_if($meta === [] || ! empty($meta['coming_soon']), 404);
 
         $key = CourseProgressService::keyFor($slug, $course);
         $crew = request()->attributes->get('crew')
-            ?? Crew::where('planet', $slug)->where('course_slug', $course)->first();
+            ?? Crew::viewFor(Auth::user(), $slug, $course);
         $attempt = FinalExamService::for($user, $crew)['attempt'];
 
         // Lessons left, or the Final Boss not beaten yet: the hub shows what is still to do.
@@ -47,21 +54,25 @@ class CourseCertificateController extends Controller
         $issuedAt = $attempt->finished_at;
         $order = CourseProgressService::order($key);
 
-        return view('student.course.certificate', [
+        $data = [
             'studentName' => $user->name,
             'courseTitle' => $meta['title'],
             'courseCode' => $meta['code'] ?? null,
-            'tagline' => $meta['blurb'] ?? null,
             'planetTitle' => config("course-catalog.{$slug}.title"),
-            'logo' => $meta['logo'] ?? null,
-            'chapters' => count(config("course-structure.{$key}.modules", [])),
             'lessons' => count($order),
             'labs' => count(array_filter($order, fn ($item) => $item['lab'] !== null)),
-            'xp' => count($order) * StudentDashboardService::XP_PER_LESSON,
             'issuedAt' => $issuedAt,
             'certificateId' => self::certificateId($user, $key, $meta['code'] ?? $course),
-            'captain' => $crew?->faculty?->name,
-            'backUrl' => route('student.course.overview', ['slug' => $slug, 'course' => $course]),
+            // A class's certificate is signed by its faculty member; a self-paced one is issued by TechLab.
+            'selfPaced' => (bool) $crew?->isSelfPaced(),
+            'captain' => $crew?->isSelfPaced() ? null : $crew?->faculty?->name,
+            // A file path, not a URL: Dompdf reads the signature straight from disk.
+            'signature' => ! $crew?->isSelfPaced() && $crew?->faculty?->signature_path ? Storage::disk('public')->path($crew->faculty->signature_path) : null,
+        ];
+
+        return response($pdfs->render($data), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.CertificatePdfService::fileName($data).'"',
         ]);
     }
 

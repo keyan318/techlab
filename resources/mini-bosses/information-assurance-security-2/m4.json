@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "Who sets direction and owns the overall security program?",
+      "options": [
+        "The system administrator on shift",
+        "The security lead",
+        "Every crew member equally",
+        "The data owner of each dataset"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Who decides who may access a specific dataset?",
+      "options": [
+        "Every crew member who uses the data",
+        "The system administrator who runs it",
+        "The data owner",
+        "The outside security provider"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Who carries out accounts, patches and configuration?",
+      "options": [
+        "The outside insurance company",
+        "The data owner of the files",
+        "The security council members",
+        "The system administrator"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Reporting a suspicious email is whose job?",
+      "options": [
+        "Only the MSSP's",
+        "Only the data owner's",
+        "Only the security lead's",
+        "Every crew member's"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why does a task with no assigned role often not get done?",
+      "options": [
+        "Unassigned tasks are always too hard",
+        "The task deletes itself after a week",
+        "Nobody is allowed to do unassigned tasks",
+        "Everyone assumes someone else has it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Who should approve new access to the starmap files?",
+      "options": [
+        "The MSSP's night shift",
+        "The data owner",
+        "Whoever asks first",
+        "The newest crew member"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is an MSSP?",
+      "options": [
+        "A council that meets to set the security priorities",
+        "An outside specialist running some security work",
+        "A law that says who owns each dataset in a crew",
+        "A checklist used when a crew member leaves"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which function is most commonly outsourced to an MSSP?",
+      "options": [
+        "Writing the crew's policy",
+        "24/7 monitoring",
+        "Granting access to secrets",
+        "Choosing the data owners"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "An MSSP was watching when a breach happened. Who is accountable for the outcome?",
+      "options": [
+        "Still the Citadel",
+        "Nobody at all",
+        "Only the MSSP",
+        "The attacker only"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which function should stay in-house?",
+      "options": [
+        "Covering the night monitoring shift",
+        "Running specialized scanning tools",
+        "Deciding who may access the starmap",
+        "Watching alerts around the clock"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why is round-the-clock alert monitoring a good fit for outsourcing?",
+      "options": [
+        "It needs deep knowledge of the crew's own priorities",
+        "Alerts are only important during the daytime",
+        "Monitoring is not really a security function at all",
+        "A small crew cannot watch logs every hour alone"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does a security council do?",
+      "options": [
+        "Reviews risk and sets priorities for everyone",
+        "Runs the firewall and patches every server each night",
+        "Writes the exact steps for every procedure in a crew",
+        "Hires an outside provider to watch the logs at night"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A council approves a supply bay policy with nobody from Supply in the room. What is the likely result?",
+      "options": [
+        "A policy that needs no review at all",
+        "A policy that is stronger for being quick",
+        "A policy that Supply will follow perfectly",
+        "A policy that fails Supply's real work"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why can't security set priorities alone?",
+      "options": [
+        "It must hear from those affected",
+        "Security staff are not allowed to vote",
+        "Priorities are set only by the MSSP",
+        "Departments know nothing about risk"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does onboarding give a new crew member?",
+      "options": [
+        "Exactly the access their role needs",
+        "Every permission in the whole system",
+        "The same access as the security lead",
+        "No access until their first review"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When should old access be removed after someone leaves?",
+      "options": [
+        "At the next audit",
+        "Next year",
+        "Immediately",
+        "Eventually"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A crew member transferred three days ago and their account is still active. Why is that a problem?",
+      "options": [
+        "It slows down the login screen",
+        "It is a door nobody is watching",
+        "It changes the data owner",
+        "It uses up far too much disk space"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is separation of duties?",
+      "options": [
+        "Each department has its own separate firewall",
+        "Duties are split between the MSSP and the crew",
+        "Every crew member works a separate shift",
+        "No one person both requests and approves"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "The supply officer can approve their own requisitions. What is this?",
+      "options": [
+        "A normal guideline exception",
+        "A good use of least privilege rules",
+        "A standard onboarding step",
+        "A separation-of-duties violation"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why does separation of duties help?",
+      "options": [
+        "It makes every approval happen faster",
+        "A mistake or abuse needs two people",
+        "It lets one person do every task",
+        "It removes the need for any logs"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Who should start offboarding when someone leaves?",
+      "options": [
+        "Nobody, accounts expire",
+        "Someone clearly assigned to it",
+        "The person who has just left the crew",
+        "Whoever notices it first"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A person changes roles inside the crew. What should happen to their old access?",
+      "options": [
+        "Double it for the new role as well",
+        "Give it to the newest crew member",
+        "Remove what the new role doesn't need",
+        "Keep it all, in case they ever come back"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which pairing shows correct separation of duties?",
+      "options": [
+        "One person orders supplies, another approves",
+        "One person orders and approves their own supplies",
+        "Two people share one account to approve orders",
+        "Nobody approves orders, to save some time"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Who should follow policy day to day?",
+      "options": [
+        "Every crew member",
+        "Only system admins",
+        "Only the security lead",
+        "Only new crew members"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A council has security but no one from the departments. What is missing?",
+      "options": [
+        "A longer meeting to discuss more topics",
+        "A second firewall for the council room",
+        "The voices of the people affected",
+        "An MSSP to vote on every decision"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Outsourcing work to an MSSP does not outsource what?",
+      "options": [
+        "The tools",
+        "Accountability",
+        "The alerts",
+        "The monitoring"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Who maintains the systems that hold the starmap files?",
+      "options": [
+        "The system administrator",
+        "Every crew member in turn",
+        "The data owner of the starmap",
+        "The security council chair"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What should a contract with an MSSP make clear?",
+      "options": [
+        "What they watch and how they report",
+        "That the crew may stop all monitoring",
+        "That the MSSP decides who gets access",
+        "That the crew is no longer accountable"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Two people must both go wrong for an abuse to succeed. Which control gives this?",
+      "options": [
+        "A shared password",
+        "Single sign-on",
+        "Separation of duties",
+        "Least functionality rule"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which HR event most often leaves a forgotten open account?",
+      "options": [
+        "A team lunch",
+        "A pay rise",
+        "Offboarding done late",
+        "Onboarding done early"
+      ],
+      "correct": "C"
+    }
+  ]
+}

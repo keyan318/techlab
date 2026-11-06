@@ -1,0 +1,526 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "old-sw",
+      "kind": "switch",
+      "name": "old-sw",
+      "x": 60,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "OLD-SW",
+      "vlans": {
+        "eth4": 10
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ],
+        [
+          20,
+          "ARCHIVE"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "trunk"
+        },
+        "eth1": {
+          "mode": "trunk"
+        }
+      },
+      "stp": {
+        "mode": "pvst"
+      }
+    },
+    {
+      "id": "dist-sw",
+      "kind": "switch",
+      "name": "dist-sw",
+      "x": 540,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DIST-SW",
+      "vlans": {
+        "eth4": 20
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ],
+        [
+          20,
+          "ARCHIVE"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "trunk"
+        },
+        "eth1": {
+          "mode": "trunk"
+        }
+      },
+      "stp": {
+        "mode": "pvst"
+      }
+    },
+    {
+      "id": "core-sw",
+      "kind": "switch",
+      "name": "core-sw",
+      "x": 300,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CORE-SW",
+      "vlans": {
+        "eth4": 10,
+        "eth5": 20
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ],
+        [
+          20,
+          "ARCHIVE"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "trunk"
+        },
+        "eth1": {
+          "mode": "trunk"
+        }
+      },
+      "stp": {
+        "mode": "pvst"
+      }
+    },
+    {
+      "id": "pc10",
+      "kind": "host",
+      "name": "pc10",
+      "x": 60,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "pc20",
+      "kind": "host",
+      "name": "pc20",
+      "x": 540,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "srv10",
+      "kind": "server",
+      "name": "srv10",
+      "x": 160,
+      "y": 0,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.10.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "srv20",
+      "kind": "server",
+      "name": "srv20",
+      "x": 440,
+      "y": 0,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "core-sw.eth0-dist-sw.eth0",
+      "a": [
+        "core-sw",
+        "eth0"
+      ],
+      "b": [
+        "dist-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "dist-sw.eth1-old-sw.eth1",
+      "a": [
+        "dist-sw",
+        "eth1"
+      ],
+      "b": [
+        "old-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "old-sw.eth0-core-sw.eth1",
+      "a": [
+        "old-sw",
+        "eth0"
+      ],
+      "b": [
+        "core-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "pc10.eth0-old-sw.eth4",
+      "a": [
+        "pc10",
+        "eth0"
+      ],
+      "b": [
+        "old-sw",
+        "eth4"
+      ]
+    },
+    {
+      "id": "pc20.eth0-dist-sw.eth4",
+      "a": [
+        "pc20",
+        "eth0"
+      ],
+      "b": [
+        "dist-sw",
+        "eth4"
+      ]
+    },
+    {
+      "id": "srv10.eth0-core-sw.eth4",
+      "a": [
+        "srv10",
+        "eth0"
+      ],
+      "b": [
+        "core-sw",
+        "eth4"
+      ]
+    },
+    {
+      "id": "srv20.eth0-core-sw.eth5",
+      "a": [
+        "srv20",
+        "eth0"
+      ],
+      "b": [
+        "core-sw",
+        "eth5"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g4-l3",
+    "title": "Lesson 4.3 — Spanning Tree: RSTP & MST",
+    "blurb": "Three switches in a triangle and the wrong root bridge.",
+    "steps": [
+      {
+        "title": "Go rapid",
+        "body": "On each of the three switches: `enable`, `conf t`, `spanning-tree mode rapid-pvst`. `show spanning-tree` now says \"protocol rstp\".",
+        "objectives": [
+          {
+            "id": "g4l3-m1",
+            "label": "core-sw runs Rapid PVST+",
+            "check": {
+              "type": "stp-mode",
+              "device": "core-sw",
+              "mode": "rapid-pvst"
+            }
+          },
+          {
+            "id": "g4l3-m2",
+            "label": "dist-sw runs Rapid PVST+",
+            "check": {
+              "type": "stp-mode",
+              "device": "dist-sw",
+              "mode": "rapid-pvst"
+            }
+          },
+          {
+            "id": "g4l3-m3",
+            "label": "old-sw runs Rapid PVST+",
+            "check": {
+              "type": "stp-mode",
+              "device": "old-sw",
+              "mode": "rapid-pvst"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Choose the root",
+        "body": "Run `show spanning-tree vlan 10` on old-sw: \"This bridge is the root\". Fix it. On `core-sw`: `spanning-tree vlan 1,10 root primary`. On `dist-sw`: `spanning-tree vlan 1,10 root secondary`, the backup root.",
+        "objectives": [
+          {
+            "id": "g4l3-r1",
+            "label": "core-sw is root for VLAN 1",
+            "check": {
+              "type": "stp-root",
+              "vlan": 1,
+              "device": "core-sw"
+            }
+          },
+          {
+            "id": "g4l3-r10",
+            "label": "core-sw is root for VLAN 10",
+            "check": {
+              "type": "stp-root",
+              "vlan": 10,
+              "device": "core-sw"
+            }
+          },
+          {
+            "id": "g4l3-b10",
+            "label": "In VLAN 10, old-sw blocks its link to dist-sw (Gi0/2)",
+            "check": {
+              "type": "stp-port",
+              "device": "old-sw",
+              "iface": "eth1",
+              "vlan": 10,
+              "state": "blocking"
+            }
+          },
+          {
+            "id": "g4l3-p10",
+            "label": "pc10 reaches srv10",
+            "check": {
+              "type": "ping",
+              "from": "pc10",
+              "expect": "success",
+              "toDevice": "srv10"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Share the load",
+        "body": "Everything now flows through core-sw, and old-sw's link to dist-sw sits idle. Give VLAN 20 its own root: on `dist-sw`, `spanning-tree vlan 20 root primary`; on `core-sw`, `spanning-tree vlan 20 root secondary`. Compare `show spanning-tree vlan 10` and `vlan 20` on old-sw: each VLAN blocks a different uplink.",
+        "objectives": [
+          {
+            "id": "g4l3-r20",
+            "label": "dist-sw is root for VLAN 20",
+            "check": {
+              "type": "stp-root",
+              "vlan": 20,
+              "device": "dist-sw"
+            }
+          },
+          {
+            "id": "g4l3-b20",
+            "label": "In VLAN 20, old-sw blocks its link to core-sw (Gi0/1)",
+            "check": {
+              "type": "stp-port",
+              "device": "old-sw",
+              "iface": "eth0",
+              "vlan": 20,
+              "state": "blocking"
+            }
+          },
+          {
+            "id": "g4l3-p20",
+            "label": "pc20 reaches srv20",
+            "check": {
+              "type": "ping",
+              "from": "pc20",
+              "expect": "success",
+              "toDevice": "srv20"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

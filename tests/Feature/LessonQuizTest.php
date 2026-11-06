@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\CourseProgressService;
 use App\Services\StudentDashboardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class LessonQuizTest extends TestCase
@@ -77,6 +78,22 @@ class LessonQuizTest extends TestCase
             ->assertJsonPath('total', 5)->assertJsonPath('perQuestion', 10)
             ->assertJsonPath('answered.1.correct', true)->assertJsonPath('answered.1.correctChoice', 'C')
             ->assertJsonMissingPath('answered.2');
+    }
+
+    public function test_an_answer_click_stays_within_four_queries(): void
+    {
+        // The real database is ~0.25s away per query, and the student waits on this after every click.
+        $u = $this->student();
+        $this->actingAs($u);
+        $this->getJson($this->url())->assertOk();   // the lesson loading first is what caches the course's quiz
+
+        DB::enableQueryLog();
+        $this->postJson($this->url(), ['q' => 1, 'choice' => 'C'])->assertOk()->assertJson(['first' => true, 'xp' => 10]);
+        $this->assertLessThanOrEqual(4, count(DB::getQueryLog()));
+
+        // Answering the same question again changes nothing and earns nothing.
+        $this->postJson($this->url(), ['q' => 1, 'choice' => 'A'])->assertOk()->assertJson(['first' => false, 'choice' => 'C', 'xp' => 0]);
+        $this->assertDatabaseCount('quiz_answers', 1);
     }
 
     public function test_locked_lessons_and_bad_input_are_refused(): void

@@ -24,7 +24,7 @@
   </div>
   <div class="row">
     <label><input type="checkbox" name="remember"> Remember me</label>
-    <a href="#">Forgot password?</a>
+    <a href="{{ route('password.request') }}">Forgot password?</a>
   </div>
   <button class="btn" type="submit">Sign in</button>
 @endsection

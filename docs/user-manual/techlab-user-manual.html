@@ -1,0 +1,633 @@
+<title>TechLab User Manual</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: a mission logbook. Sticky part rail on the left (desktop), one column of numbered steps,
+   each step = short text beside a screenshot in a browser frame. Stacks to one column on phones. */
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --ink: #141a33;
+  --muted: #586079;
+  --line: #d6dcec;
+  --blue: #2f7fe0;
+  --blue-soft: #e4effd;
+  --gold: #b57a00;
+  --gold-soft: #fff4d6;
+  --warn: #b3261e;
+  --warn-soft: #fdeceb;
+  --frame: #1b1f3a;
+  --display: "Silkscreen", "Courier New", monospace;
+  --body: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Space Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1026; --surface: #161a38; --ink: #e9ecff; --muted: #a3a9c9; --line: #2b3160;
+    --blue: #73b6ff; --blue-soft: #1c2a55; --gold: #ffcc4d; --gold-soft: #3a3013;
+    --warn: #ff8a80; --warn-soft: #3d1c22; --frame: #070918; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1026; --surface: #161a38; --ink: #e9ecff; --muted: #a3a9c9; --line: #2b3160;
+  --blue: #73b6ff; --blue-soft: #1c2a55; --gold: #ffcc4d; --gold-soft: #3a3013;
+  --warn: #ff8a80; --warn-soft: #3d1c22; --frame: #070918; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 16px/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--blue); }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 40px 80px; }
+
+header.top { display: grid; gap: 14px; padding-bottom: 28px; border-bottom: 2px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand svg { width: 40px; height: 40px; flex: none; }
+.brand span { font: 700 15px/1 var(--display); letter-spacing: .06em; color: var(--blue); }
+h1 { font: 700 clamp(30px, 5vw, 52px)/1.05 var(--display); margin: 0; text-wrap: balance; }
+.lede { margin: 0; max-width: 62ch; color: var(--muted); font-size: 18px; }
+
+.roles { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.role { font: 700 13px/1 var(--mono); padding: 10px 14px; border-radius: 6px; border: 2px solid var(--line); color: var(--muted); background: var(--surface); }
+.role.on { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+.role small { font-weight: 400; margin-left: 6px; }
+
+.demo { display: flex; flex-wrap: wrap; gap: 8px 24px; font: 400 13px/1.5 var(--mono); color: var(--muted); }
+.demo b { color: var(--ink); font-weight: 700; }
+
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; margin-top: 36px; }
+nav.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; display: grid; gap: 4px; }
+nav.rail p { font: 700 11px/1 var(--display); letter-spacing: .1em; color: var(--muted); margin: 0 0 10px; }
+nav.rail a { display: grid; grid-template-columns: 28px 1fr; gap: 6px; text-decoration: none; color: var(--ink); padding: 7px 8px; border-radius: 6px; font-size: 14px; line-height: 1.3; }
+nav.rail a:hover { background: var(--blue-soft); }
+nav.rail a b { font: 700 12px/1.3 var(--mono); color: var(--blue); }
+
+main { min-width: 0; display: grid; gap: 64px; }
+
+section.part { display: grid; gap: 28px; scroll-margin-top: 20px; }
+.part-head { display: grid; gap: 6px; }
+.part-head .eyebrow { font: 700 12px/1 var(--display); letter-spacing: .12em; color: var(--gold); }
+h2 { font: 700 clamp(22px, 3vw, 30px)/1.15 var(--display); margin: 0; text-wrap: balance; }
+.part-head p { margin: 0; color: var(--muted); max-width: 62ch; }
+
+.step { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px; align-items: start; padding-top: 24px; border-top: 1px dashed var(--line); }
+.step:first-of-type { border-top: 0; padding-top: 0; }
+.step-text { display: grid; gap: 10px; min-width: 0; }
+.num { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 6px; background: var(--blue); color: #fff; font: 700 14px/1 var(--mono); box-shadow: 0 3px 0 color-mix(in srgb, var(--blue) 60%, #000); }
+h3 { font: 600 20px/1.25 var(--body); margin: 0; text-wrap: balance; }
+.step-text p, .step-text li { margin: 0; max-width: 60ch; }
+.step-text ul, .step-text ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.click { font: 700 13px/1.3 var(--mono); background: var(--blue-soft); color: var(--blue); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+kbd { font: 700 12px/1 var(--mono); border: 1px solid var(--line); border-bottom-width: 3px; padding: 3px 6px; border-radius: 4px; background: var(--surface); }
+
+.note { border-left: 4px solid var(--gold); background: var(--gold-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 15px; }
+.note.warn { border-color: var(--warn); background: var(--warn-soft); }
+.note b:first-child { font: 700 11px/1 var(--display); letter-spacing: .08em; display: block; margin-bottom: 4px; }
+
+figure.shot { margin: 0; min-width: 0; display: grid; gap: 8px; }
+.frame { border-radius: 10px; overflow: hidden; background: var(--frame); border: 1px solid var(--line); box-shadow: 0 10px 30px -18px rgba(10, 20, 60, .5); }
+.frame .bar { display: flex; align-items: center; gap: 6px; padding: 8px 10px; }
+.frame .bar i { width: 9px; height: 9px; border-radius: 50%; background: #3a4170; }
+.frame .bar code { margin-left: 8px; font: 400 11px/1 var(--mono); color: #9aa3d6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.frame button { all: unset; display: block; cursor: zoom-in; width: 100%; }
+.frame img { display: block; width: 100%; height: auto; }
+figcaption { font: 400 12px/1.4 var(--mono); color: var(--muted); }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.table-box { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 700 12px/1.3 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+tr:last-child td { border-bottom: 0; }
+td.n { font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap; }
+
+.next { border: 2px dashed var(--line); border-radius: 10px; padding: 24px; display: grid; gap: 8px; color: var(--muted); }
+.next h2 { color: var(--ink); }
+
+dialog { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 94vh; }
+dialog::backdrop { background: rgba(5, 8, 25, .85); }
+dialog img { display: block; max-width: 96vw; max-height: 90vh; border-radius: 8px; }
+dialog form { text-align: right; margin-bottom: 8px; }
+dialog form button { font: 700 13px/1 var(--mono); padding: 8px 12px; border-radius: 6px; border: 0; background: #fff; color: #141a33; cursor: pointer; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  nav.rail { position: static; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  nav.rail p { grid-column: 1 / -1; }
+  .step { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+@media (max-width: 520px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><g fill="#73b6ff"><rect x="6" y="1" width="2" height="6"/><rect x="8" y="1" width="2" height="4"/><rect x="1" y="6" width="6" height="2"/><rect x="1" y="8" width="4" height="2"/><rect x="9" y="6" width="6" height="2"/><rect x="11" y="8" width="4" height="2"/><rect x="6" y="9" width="2" height="6"/><rect x="8" y="9" width="2" height="4"/></g></svg>
+      <span>TechLab</span>
+    </div>
+    <h1>TechLab User Manual</h1>
+    <p class="lede">Step-by-step guides for every kind of TechLab user. Each step has a real screenshot of what you will see on screen. Start with the part for your role.</p>
+    <div class="roles" aria-label="Parts of this manual">
+      <span class="role on">Student <small>ready</small></span>
+      <span class="role">Faculty <small>coming next</small></span>
+      <span class="role">Admin <small>coming next</small></span>
+    </div>
+    <div class="demo">
+      <span>Screenshots use a demo student: <b>Maria Santos</b> · codename <b>StarMaria</b></span>
+      <span>Course shown: <b>Computer Programming 1</b> (Self-paced)</span>
+      <span>Captured <b>18 Oct 2026</b></span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="rail" aria-label="Student guide parts">
+      <p>Student guide</p>
+      <a href="#s-account"><b>1</b>Create your account</a>
+      <a href="#s-dashboard"><b>2</b>Your dashboard</a>
+      <a href="#s-join"><b>3</b>Join a course</a>
+      <a href="#s-lesson"><b>4</b>Take a lesson</a>
+      <a href="#s-bosses"><b>5</b>Mini bosses &amp; the Final Boss</a>
+      <a href="#s-astro"><b>6</b>Ask Astro</a>
+      <a href="#s-rewards"><b>7</b>Planets, XP &amp; the Shop</a>
+      <a href="#s-account-menu"><b>8</b>Settings &amp; logging out</a>
+    </nav>
+
+    <main>
+
+      <!-- PART 1 -->
+      <section class="part" id="s-account">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 1</span>
+          <h2>Create your account</h2>
+          <p>Takes about three minutes. You will sign up, agree to the rules, and build your astronaut.</p>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">1</span>
+            <h3>Open TechLab and start your mission</h3>
+            <p>Go to the TechLab home page. Click <span class="click">Start your mission</span> to make a new account.</p>
+            <p>Already have one? Click <span class="click">Log in</span> instead and skip to Part 2.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / home</code></div><button type="button" data-zoom><img src="shots/student/01-home.png" alt="TechLab home page with the Start your mission and Log in buttons" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">2</span>
+            <h3>Fill in the sign-up form</h3>
+            <ol>
+              <li>Type your <b>first name</b> and <b>last name</b>. Use your real name.</li>
+              <li>Type your <b>email</b>. This is what you log in with, and it can't be changed later.</li>
+              <li>Pick a <b>password</b> with at least 8 characters, then type it again to confirm.</li>
+              <li>Choose your <b>program</b> (IT, IS, CS, BLIS or EMC) and <b>year level</b>.</li>
+              <li>Pick the planet you want to learn first: <b>Programming</b>, <b>Networking</b> or <b>Cybersecurity</b>. You can only pick one now. The others unlock later.</li>
+            </ol>
+            <p>Click <span class="click">Create account</span>.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / register</code></div><button type="button" data-zoom><img src="shots/student/03-register-filled.png" alt="Sign-up form filled in for Maria Santos with Programming selected" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">3</span>
+            <h3>Read and agree to the rules</h3>
+            <p>TechLab has 7 short rules. Read them, tick <b>I have read and agree</b>, then click <span class="click">Agree and continue</span>.</p>
+            <div class="note warn"><b>Know this early</b>Quizzes give you one try with a timer. In the Final Boss, switching tabs, leaving full screen or taking screenshots fails the exam and gives you a strike. Two strikes and you are banned from that course.</div>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / terms</code></div><button type="button" data-zoom><img src="shots/student/04-terms.png" alt="The 7 TechLab rules with an agree checkbox" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">4</span>
+            <h3>Meet Astro</h3>
+            <p>Astro is your AI guide. Click <span class="click">Continue</span> to read each message, then <span class="click">Make my astronaut</span>.</p>
+            <p>Music plays here. Use the <b>Music on</b> button in the corner to turn it off.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / welcome</code></div><button type="button" data-zoom><img src="shots/student/05-welcome.png" alt="Astro says hello to Maria with a Continue button" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">5</span>
+            <h3>Build your astronaut</h3>
+            <p>Use the <b>Animal</b>, <b>Suit</b> and <b>Helmet</b> tabs to choose your look. The Cat is free. Other animals cost XP, so you can buy them later in the Shop.</p>
+            <p>Click <span class="click">Random</span> for a surprise, or <span class="click">Looks good!</span> when you're done.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / welcome</code></div><button type="button" data-zoom><img src="shots/student/06-avatar.png" alt="Avatar builder with a cat astronaut and animal choices" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">6</span>
+            <h3>Pick a codename</h3>
+            <p>Your classmates see your <b>codename</b>, not your real name. Keep it friendly. Stuck? Click <span class="click">Give me a codename idea</span>.</p>
+            <p>Click <span class="click">That's me!</span>, then <span class="click">Start my mission</span>.</p>
+          </div>
+          <div class="pair">
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>codename</code></div><button type="button" data-zoom><img src="shots/student/07-codename.png" alt="Codename box with StarMaria typed in" loading="lazy"></button></div></figure>
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>ready</code></div><button type="button" data-zoom><img src="shots/student/08-ready.png" alt="Ready screen with the Start my mission button" loading="lazy"></button></div></figure>
+          </div>
+        </article>
+      </section>
+
+      <!-- PART 2 -->
+      <section class="part" id="s-dashboard">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 2</span>
+          <h2>Your dashboard</h2>
+          <p>Home base. It shows your planet, your level and the leaderboard.</p>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">7</span>
+            <h3>Follow Astro's tour</h3>
+            <p>The first time you arrive, Astro gives a short tour (13 stops). Click <span class="click">Next</span> or press <kbd>→</kbd> to move on. Click <span class="click">Skip tour</span> to close it.</p>
+            <p>Want it again later? Click the <b>?</b> (Tour) button in the left sidebar.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / dashboard</code></div><button type="button" data-zoom><img src="shots/student/09-tour.png" alt="Astro's tour popup, step 1 of 13" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">8</span>
+            <h3>Find your way around</h3>
+            <p>The left sidebar is on every page:</p>
+            <ul>
+              <li><b>Home</b>: this dashboard</li>
+              <li><b>Chat</b>: talk to Astro</li>
+              <li><b>Planets</b>: all three planets and their courses</li>
+              <li><b>Shop</b>: spend XP on frames, animals and suits</li>
+              <li>At the bottom: Tour, light/dark theme, sound, and your account menu (your avatar)</li>
+            </ul>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / dashboard</code></div><button type="button" data-zoom><img src="shots/student/10-dashboard.png" alt="Dashboard with the Programming City card and the left sidebar" loading="lazy"></button></div></figure>
+        </article>
+      </section>
+
+      <!-- PART 3 -->
+      <section class="part" id="s-join">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 3</span>
+          <h2>Join a course</h2>
+          <p>There are two ways to take a course. You can be on only one of them per course.</p>
+        </div>
+
+        <div class="table-box">
+          <table>
+            <thead><tr><th>&nbsp;</th><th>Self-paced</th><th>Join Class</th></tr></thead>
+            <tbody>
+              <tr><td>Who teaches</td><td>Just you and Astro</td><td>Your instructor (the Captain)</td></tr>
+              <tr><td>How you join</td><td>Right away, one click</td><td>Send a request; your instructor accepts it</td></tr>
+              <tr><td>Lessons</td><td>The standard TechLab version</td><td>Your instructor's version, which may be edited</td></tr>
+              <tr><td>Mini boss you fail</td><td>Next module stays locked, wait 60 min, try again</td><td>One try, score is recorded, nothing locks</td></tr>
+              <tr><td>Certificate</td><td>TechLab certificate (PDF)</td><td>PDF with your instructor's digital signature</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">9</span>
+            <h3>Choose Self-paced or Join Class</h3>
+            <p>On the dashboard's planet card:</p>
+            <ul>
+              <li>Click <span class="click">Self-paced</span> to start on your own right now.</li>
+              <li>Or click <span class="click">Join Class</span>, find your instructor's name, and click <span class="click">Ask to join</span>. You will get in once they accept.</li>
+            </ul>
+            <div class="note warn"><b>Choose carefully</b>Once you pick Self-paced or a class for a course, it can't be changed later. Pick the one you want before you click.</div>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / dashboard</code></div><button type="button" data-zoom><img src="shots/student/11-join-class.png" alt="Join Class menu open showing an instructor with Ask to join" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">10</span>
+            <h3>Look at your course page</h3>
+            <p>After you join, you land on the course page. It lists every <b>chapter</b> (module) and its lessons. Lessons unlock in order.</p>
+            <p>The right side shows the syllabus PDF, your progress and the gems you can earn. The <b>Crew</b> tab shows your captain and a crew leaderboard.</p>
+            <p>Click <span class="click">Start Learning</span>.</p>
+          </div>
+          <div class="pair">
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>course home</code></div><button type="button" data-zoom><img src="shots/student/12-course-overview.png" alt="Computer Programming 1 course page with Start Learning" loading="lazy"></button></div></figure>
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>course crew</code></div><button type="button" data-zoom><img src="shots/student/13-crew.png" alt="Crew tab showing Captain and crew leaderboard" loading="lazy"></button></div></figure>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">11</span>
+            <h3>Find your courses later</h3>
+            <p>Every course you have joined is listed on <b>My Courses</b>. Open one to get back to its lessons, quizzes and crew.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / student / courses</code></div><button type="button" data-zoom><img src="shots/student/26-courses.png" alt="My Courses page listing Computer Programming 1" loading="lazy"></button></div></figure>
+        </article>
+      </section>
+
+      <!-- PART 4 -->
+      <section class="part" id="s-lesson">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 4</span>
+          <h2>Take a lesson</h2>
+          <p>Every lesson has the same 5 stages. You unlock each stage by passing a short checkpoint question.</p>
+        </div>
+
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Stage</th><th>Name</th><th>What you do</th></tr></thead>
+            <tbody>
+              <tr><td class="n">1</td><td>Mission Brief</td><td>Read the simple explanation</td></tr>
+              <tr><td class="n">2</td><td>Picture It</td><td>See the idea as an everyday example with a picture</td></tr>
+              <tr><td class="n">3</td><td>Field Diagram</td><td>Study the diagram and the code example</td></tr>
+              <tr><td class="n">4</td><td>Knowledge Check</td><td>Answer the quiz (10 XP per right answer)</td></tr>
+              <tr><td class="n">5</td><td>Coding Exercise / Lab</td><td>Write code or do a hands-on lab (100 XP)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">12</span>
+            <h3>Read the lesson screen</h3>
+            <ul>
+              <li><b>Left</b>: the Course Outline. Open a module to see its lessons. The <b>Resources</b> tab has files.</li>
+              <li><b>Top</b>: your XP, gems and day streak.</li>
+              <li><b>Right edge</b>: dots that jump to each stage.</li>
+              <li>The <b>⤢</b> button makes the lesson full screen.</li>
+            </ul>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>lesson 1.1</code></div><button type="button" data-zoom><img src="shots/student/15-lesson-start.png" alt="Lesson 1.1 start screen with the course outline on the left" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">13</span>
+            <h3>Read Stage 1 and take the checkpoint</h3>
+            <p>Read the explanation. At the bottom, click <span class="click">I've read it: start the checkpoint</span>.</p>
+            <p>Answer the one question. A right answer opens the next stage straight away.</p>
+            <div class="note warn"><b>Wrong answer?</b>You have to wait a short time before trying again. The wait gets longer each time you miss, so read carefully.</div>
+          </div>
+          <div class="pair">
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>stage 1</code></div><button type="button" data-zoom><img src="shots/student/16-stage1.png" alt="Stage 1 Simple Explanation with the checkpoint button" loading="lazy"></button></div></figure>
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>checkpoint</code></div><button type="button" data-zoom><img src="shots/student/17-checkpoint.png" alt="Checkpoint question with four answer choices" loading="lazy"></button></div></figure>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">14</span>
+            <h3>Keep going through Stages 2 and 3</h3>
+            <p>Each stage ends with its own checkpoint. A stage you haven't unlocked yet shows a 🔒 lock message.</p>
+            <p>Stage 3 often has a code example. Click <span class="click">Copy</span> to copy it.</p>
+          </div>
+          <div class="pair">
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>stage 2</code></div><button type="button" data-zoom><img src="shots/student/18-stage2.png" alt="Stage 2 Picture It with a recipe comparison picture" loading="lazy"></button></div></figure>
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>locked stage</code></div><button type="button" data-zoom><img src="shots/student/18-stage-locked.png" alt="A locked stage telling you to pass the earlier checkpoint" loading="lazy"></button></div></figure>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">15</span>
+            <h3>Answer the Knowledge Check</h3>
+            <p>Click one answer per question. You see right away if it was correct, plus a short explanation. Each right answer gives <b>+10 XP</b>.</p>
+            <div class="note"><b>Rule</b>You can miss at most 2 questions. Miss more and the coding stage stays locked until you retake the quiz.</div>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>stage 4</code></div><button type="button" data-zoom><img src="shots/student/20-quiz-result.png" alt="Knowledge Check answers marked Correct with +10 XP" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">16</span>
+            <h3>Do the coding exercise</h3>
+            <p>Click <span class="click">Code it yourself</span>. The editor opens with the instructions on the left.</p>
+            <ol>
+              <li>Type your code in the editor.</li>
+              <li>If your program asks for input, type it in <b>Program Input</b>, one value per line.</li>
+              <li>Click <span class="click">Run</span> to test. The result shows in the <b>Terminal</b>.</li>
+              <li>Click <span class="click">Submit answer</span> when it looks right.</li>
+            </ol>
+            <p>Stuck? <span class="click">Flip to get help from Astro</span> costs 50 XP.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>code editor</code></div><button type="button" data-zoom><img src="shots/student/22-code-editor.png" alt="C code editor showing the program and Console online. in the terminal" loading="lazy"></button></div><figcaption>Networking and Cybersecurity lessons open a simulator lab here instead of a code editor.</figcaption></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">17</span>
+            <h3>Finish the lesson</h3>
+            <p>If the answer is wrong, you see <b>Not quite</b>. Check the terminal output, fix your code and submit again.</p>
+            <p>When it's right, Astro cheers and you get <b>+100 XP</b>. Click <span class="click">Next lesson →</span> to keep going.</p>
+          </div>
+          <div class="pair">
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>not quite</code></div><button type="button" data-zoom><img src="shots/student/24-code-wrong.png" alt="Red Not quite message after a wrong submission" loading="lazy"></button></div></figure>
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>complete</code></div><button type="button" data-zoom><img src="shots/student/23-code-passed.png" alt="Challenge complete popup with +100 XP and Next lesson" loading="lazy"></button></div></figure>
+          </div>
+        </article>
+      </section>
+
+      <!-- PART 5 -->
+      <section class="part" id="s-bosses">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 5</span>
+          <h2>Mini bosses &amp; the Final Boss</h2>
+          <p>Big exams that open full screen. Read the rules before you start one.</p>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">18</span>
+            <h3>Beat the Mini Boss at the end of each module</h3>
+            <p>After the last lesson of a module, the <b>Mini Boss</b> unlocks. It has about 30 questions, a 45-minute timer, and you need <b>75%</b> to win. Each right answer is <b>+10 XP</b>.</p>
+            <ul>
+              <li><b>Self-paced</b>: you must win to open the next module. If you lose, you get 0 XP and wait 60 minutes to try again.</li>
+              <li><b>Class</b>: one try only. Your score is saved for your instructor and nothing locks.</li>
+            </ul>
+            <p>Finishing a module also earns you a <b>gem</b>.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>course home</code></div><button type="button" data-zoom><img src="shots/student/35-mini-boss.png" alt="Mini Boss row at the end of module 1, still locked" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">19</span>
+            <h3>Face the Final Boss to earn your certificate</h3>
+            <p>Clear every chapter and the <b>Final Exam</b> unlocks at the bottom of the course page. Pass it and your certificate appears in the <b>Certificate</b> box.</p>
+            <div class="note warn"><b>Strict rules</b>
+              Stay on the exam page the whole time. Switching tabs, leaving full screen or taking a screenshot fails the exam and adds a strike. Two strikes means you are banned from the course. Failing the final also resets your course progress, so you redo the course. You only see your score after, not which answers you missed.</div>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>course home</code></div><button type="button" data-zoom><img src="shots/student/36-final-boss.png" alt="Final Boss card and Certificate box on the course page" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">20</span>
+            <h3>Open your certificate</h3>
+            <p>After you pass the Final Boss, click <b>View certificate</b> in the <b>Certificate</b> box on the course page.</p>
+            <ul>
+              <li><b>Self-paced</b>: your certificate opens as a <b>PDF</b> with your name, the course, the date you passed and a certificate number. Save it or print it from your browser.</li>
+              <li><b>Class</b>: your certificate is a PDF too, with your instructor's <b>digital signature</b> and name.</li>
+            </ul>
+            <p>The name on the certificate comes from your profile. Check it in <b>Settings</b> before you take the Final Boss.</p>
+            <div class="note"><b>Good to know</b>
+              A TechLab certificate shows you finished the course on TechLab. It is not yet recognized by schools or the IT industry, and it does not replace school credit or an official industry certification.</div>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>certificate.pdf</code></div><button type="button" data-zoom><img src="shots/student/39-certificate.png" alt="Maria Santos's self-paced certificate for Computer Programming 1" loading="lazy"></button></div></figure>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>certificate.pdf</code></div><button type="button" data-zoom><img src="shots/student/40-class-certificate.png" alt="Leo Cruz's class certificate, signed by Carlo Reyes" loading="lazy"></button></div></figure>
+        </article>
+      </section>
+
+      <!-- PART 6 -->
+      <section class="part" id="s-astro">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 6</span>
+          <h2>Ask Astro</h2>
+          <p>Astro is an AI tutor. Ask it to explain anything you are stuck on.</p>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">21</span>
+            <h3>Start a chat</h3>
+            <p>Click <b>Chat</b> in the sidebar. Type your question in <b>Ask Astro or create something</b> and press <kbd>Enter</kbd>.</p>
+            <p>Click <span class="click">+</span> to attach a file (PDF, Word, PowerPoint, text or code) or a photo. Up to 4 files, 2 MB each.</p>
+            <p>You have a set number of free messages, shown under the box. Click <span class="click">New chat</span> to start a fresh topic.</p>
+            <div class="note"><b>Remember</b>Astro can be wrong. Don't share passwords or private info. If you see an error, wait a moment and send your message again.</div>
+          </div>
+          <div class="pair">
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / chat</code></div><button type="button" data-zoom><img src="shots/student/28-chat-answer.png" alt="Astro answering What is an algorithm" loading="lazy"></button></div></figure>
+            <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>attach</code></div><button type="button" data-zoom><img src="shots/student/29-chat-tools.png" alt="Upload a file and Upload a photo menu" loading="lazy"></button></div></figure>
+          </div>
+        </article>
+      </section>
+
+      <!-- PART 7 -->
+      <section class="part" id="s-rewards">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 7</span>
+          <h2>Planets, XP &amp; the Shop</h2>
+          <p>Learning earns XP and gems. They raise your level and unlock new planets and gear.</p>
+        </div>
+
+        <div class="table-box">
+          <table>
+            <thead><tr><th>You do this</th><th>You get</th></tr></thead>
+            <tbody>
+              <tr><td>Log in for the day</td><td class="n">+10 XP</td></tr>
+              <tr><td>Right answer in a lesson quiz or Mini Boss</td><td class="n">+10 XP</td></tr>
+              <tr><td>Pass a coding exercise or lab</td><td class="n">+100 XP</td></tr>
+              <tr><td>Finish a module</td><td class="n">1 gem</td></tr>
+              <tr><td>Trade in the Shop's Gem exchange</td><td class="n">1 gem = 50 XP</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">22</span>
+            <h3>Unlock new planets</h3>
+            <p>Click <b>Planets</b>. Your first planet is open. The others show what they need to unlock. For example, Networking Nebula needs <b>500 XP and 3 gems</b>.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / planets</code></div><button type="button" data-zoom><img src="shots/student/25-planets.png" alt="Three planet cards, two locked with their unlock needs" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">23</span>
+            <h3>Spend XP in the Shop</h3>
+            <p>Click <b>Shop</b>. Use the tabs to buy <b>Frames</b>, <b>Animals</b> and <b>Suits</b>, or trade gems in <b>Gem exchange</b>.</p>
+            <p>Spending XP does not lower your level. Your level counts all the XP you ever earned.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / shop</code></div><button type="button" data-zoom><img src="shots/student/30-shop.png" alt="Shop page with frames for sale and XP to spend" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">24</span>
+            <h3>Check your progress</h3>
+            <p>Click <span class="click">View progress</span> on the dashboard or course page. You see your total XP, day streak, gems, planet rank, active hours and the lesson to continue.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / progress</code></div><button type="button" data-zoom><img src="shots/student/31-progress.png" alt="Progress page with XP, streak, gems and rank" loading="lazy"></button></div></figure>
+        </article>
+      </section>
+
+      <!-- PART 8 -->
+      <section class="part" id="s-account-menu">
+        <div class="part-head">
+          <span class="eyebrow">Student · Part 8</span>
+          <h2>Settings &amp; logging out</h2>
+          <p>Change your details, your look and your preferences.</p>
+        </div>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">25</span>
+            <h3>Open the account menu</h3>
+            <p>Click your <b>avatar</b> at the bottom of the sidebar. Choose <span class="click">Settings</span> or <span class="click">Log out</span>.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>account menu</code></div><button type="button" data-zoom><img src="shots/student/37-account-menu.png" alt="Account menu with Settings and Log out" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">26</span>
+            <h3>Update your settings</h3>
+            <ul>
+              <li><b>Profile</b>: change your name, program or year, then click <span class="click">Save profile</span>.</li>
+              <li><b>Your astronaut</b>: click <span class="click">Change my astronaut</span> to edit your look or codename.</li>
+              <li><b>Preferences</b>: sound and light mode (saved on this browser only).</li>
+              <li>Further down: change your password, or delete your account.</li>
+            </ul>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / settings</code></div><button type="button" data-zoom><img src="shots/student/32-settings.png" alt="Settings page with profile fields and preferences" loading="lazy"></button></div></figure>
+        </article>
+
+        <article class="step">
+          <div class="step-text">
+            <span class="num">27</span>
+            <h3>Log back in next time</h3>
+            <p>Go to TechLab and click <span class="click">Log in</span>. Type your email and password, then click <span class="click">Sign in</span>.</p>
+            <p>Forgot your password? Click <span class="click">Forgot password?</span> to get a new one by email.</p>
+          </div>
+          <figure class="shot"><div class="frame"><div class="bar"><i></i><i></i><i></i><code>techlab / login</code></div><button type="button" data-zoom><img src="shots/student/38-login.png" alt="Sign in form with email and password" loading="lazy"></button></div></figure>
+        </article>
+      </section>
+
+      <section class="next" aria-label="Coming next">
+        <h2>Faculty &amp; Admin guides</h2>
+        <p>The Faculty guide (running a class, accepting students, editing lessons, quizzes and mini bosses) and the Admin guide (accounts, course assignments, self-paced monitoring) will be added here next.</p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<dialog id="zoom" aria-label="Enlarged screenshot">
+  <form method="dialog"><button id="zoom-close" type="submit">Close ✕</button></form>
+  <img id="zoom-img" alt="">
+</dialog>
+
+<script>
+(() => {
+  const dlg = document.getElementById('zoom');
+  const big = document.getElementById('zoom-img');
+  document.querySelectorAll('[data-zoom]').forEach(btn => {
+    btn.setAttribute('aria-label', 'Enlarge screenshot');
+    btn.addEventListener('click', () => {
+      const img = btn.querySelector('img');
+      big.src = img.src; big.alt = img.alt;
+      if (dlg.showModal) dlg.showModal();
+    });
+  });
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+})();
+</script>

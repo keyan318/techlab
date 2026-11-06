@@ -67,7 +67,6 @@ html[data-theme="light"] .px-feature { border-color: #c3cfe0; box-shadow: 0 5px 
 .px-btn:active { transform: translateY(2px); }
 .px-btn:focus-visible { outline: 3px solid #9ad0ff; outline-offset: 5px; }
 .px-btn-blue   { --bg: #14a0ff; --edge: #0a5fb5; --c: #fff; }
-.px-btn-yellow { --bg: #f8c81c; --edge: #a36a00; --c: #1a1200; }
 .px-btn-ghost  { --bg: rgba(255,255,255,.1); --edge: rgba(255,255,255,.4); --c: #fff; }
 .px-btn-locked { --bg: transparent; --c: rgb(var(--c-muted)); cursor: default; opacity: .75; box-shadow: 0 -3px 0 0 var(--edge), 0 3px 0 0 var(--edge), -3px 0 0 0 var(--edge), 3px 0 0 0 var(--edge); }
 .px-btn-locked:hover { filter: none; }

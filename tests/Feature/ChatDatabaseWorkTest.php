@@ -16,7 +16,9 @@ use Tests\TestCase;
  *
  * Course materials only cost a read when the student actually attached one by hand
  * (CourseMaterialSourceService::resolve, scoped to the student's own crews) — a plain
- * message with nothing attached touches the database only for conversation/message rows.
+ * message with nothing attached touches the database only for conversation/message rows,
+ * plus Astro's XP: one read before the answer (can the student afford it?) and one insert
+ * after it (paying for it — see AiXpService::quote/record).
  */
 class ChatDatabaseWorkTest extends TestCase
 {
@@ -42,7 +44,7 @@ class ChatDatabaseWorkTest extends TestCase
             ->post('/chat/message', $payload)->streamedContent();
     }
 
-    public function test_new_conversation_costs_two_queries_and_none_run_before_the_first_chunk(): void
+    public function test_new_conversation_costs_four_queries_and_only_the_xp_read_runs_before_the_first_chunk(): void
     {
         $user = User::factory()->create();
         $atFirst = null;
@@ -52,11 +54,11 @@ class ChatDatabaseWorkTest extends TestCase
         DB::flushQueryLog();
         $this->send($user, ['message' => 'hello']);
 
-        $this->assertSame(0, $atFirst, 'nothing was attached, so no lookup may run before the first chunk of a new chat');
-        $this->assertCount(2, DB::getQueryLog(), 'conversation insert + one multi-row message insert');
+        $this->assertSame(1, $atFirst, 'nothing was attached, so only the XP read may run before the first chunk of a new chat');
+        $this->assertCount(4, DB::getQueryLog(), 'XP read + conversation insert + one multi-row message insert + XP use insert');
     }
 
-    public function test_existing_conversation_costs_three_queries_and_one_before_the_first_chunk(): void
+    public function test_existing_conversation_costs_five_queries_and_two_before_the_first_chunk(): void
     {
         $user = User::factory()->create();
         $conversation = $user->conversations()->create(['title' => 'x']);
@@ -69,8 +71,8 @@ class ChatDatabaseWorkTest extends TestCase
         DB::flushQueryLog();
         $this->send($user, ['message' => 'follow up', 'conversation_id' => $conversation->id]);
 
-        $this->assertSame(1, $atFirst, 'a single ownership-and-history read');
-        $this->assertCount(3, DB::getQueryLog(), 'history read + one message insert + one timestamp update');
+        $this->assertSame(2, $atFirst, 'the XP read + a single ownership-and-history read');
+        $this->assertCount(5, DB::getQueryLog(), 'XP read + history read + one message insert + one timestamp update + XP use insert');
     }
 
     public function test_each_message_is_stored_exactly_once_with_user_before_assistant(): void

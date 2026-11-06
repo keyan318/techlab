@@ -1,0 +1,439 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g5-l2",
+  "title": "Lesson 5.2: Policing, Shaping & Queuing",
+  "host": {
+    "name": "NORTHWATCH-EDGE",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nNorthwatch edge router: Gi0/1 crew LAN, Gi0/2 10 Mbps radio to the Citadel, Gi0/3 1 Gbps to Earth (50 Mbps contract)"
+  },
+  "story": {
+    "alert": "NORTHWATCH · RADIO QUEUE FULL: 18,440 DROPS",
+    "victory": "The radio is still full, and nobody on a patrol call can tell. Rivet: \"Voice first, video its share, backups the leftovers. And Earth's link stays inside the contract.\""
+  },
+  "modes": {
+    "pmap": {
+      "prompt": "config-pmap"
+    },
+    "pmap-other": {
+      "prompt": "config-pmap"
+    },
+    "pmap-shape": {
+      "prompt": "config-pmap"
+    },
+    "c-voice": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "c-video": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "c-bulk": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "c-default": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "c-other": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap-other"
+    },
+    "c-shape": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap-shape"
+    },
+    "if-g02": {
+      "prompt": "config-if"
+    },
+    "if-g03": {
+      "prompt": "config-if"
+    },
+    "if-other": {
+      "prompt": "config-if"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1380 bytes\n!\nhostname NORTHWATCH-EDGE\n!\nclass-map match-any VOICE\n match dscp ef\nclass-map match-any VIDEO\n match dscp af41\nclass-map match-any BULK\n match dscp cs1\n!\ninterface GigabitEthernet0/2\n description 10 Mbps radio to the Citadel\n bandwidth 10000\n!\ninterface GigabitEthernet0/3\n description to Earth, 50 Mbps contract\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/2"
+      ],
+      "when": [
+        "applied",
+        "llq",
+        "cbwfq",
+        "police",
+        "fq"
+      ],
+      "sets": [
+        "seen"
+      ],
+      "text": "GigabitEthernet0/2\n\n  Service-policy output: RADIO-OUT\n\n    Class-map: VOICE (match-any)\n      Priority: 20% (2000 kbps), burst bytes 50000\n      Packets 2210, drops 0\n\n    Class-map: VIDEO (match-any)\n      Queueing: bandwidth 30% (3000 kbps)\n      Packets 10422, drops 12\n\n    Class-map: BULK (match-any)\n      police: cir 1000000 bps\n        conformed 4120 packets, action: transmit\n        exceeded 9033 packets, action: drop\n\n    Class-map: class-default (match-any)\n      Queueing: flow based fair queueing\n      Packets 7301, drops 41"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/2"
+      ],
+      "when": [
+        "applied"
+      ],
+      "text": "GigabitEthernet0/2\n\n  Service-policy output: RADIO-OUT\n\n! Rivet: the policy is attached but not finished. Check each class in show running-config."
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/2"
+      ],
+      "text": "GigabitEthernet0/2\n\n  Service-policy output: (none)\n\n  Queueing strategy: fifo\n  Output queue: 40/40 (size/max), 18440 drops\n! Volt: forty packets waiting, and voice is somewhere at the back."
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/3"
+      ],
+      "when": [
+        "shape",
+        "shape-applied"
+      ],
+      "text": "GigabitEthernet0/3\n\n  Service-policy output: SHAPE-EARTH\n\n    Class-map: class-default (match-any)\n      Queueing\n      shape (average) cir 50000000, bc 200000, be 200000\n      target shape rate 50000000"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "text": "% No service policy is attached to that interface yet."
+    },
+    {
+      "cmd": "show class-map",
+      "text": " Class Map match-any VOICE (id 1)\n   Match dscp ef (46)\n\n Class Map match-any VIDEO (id 2)\n   Match dscp af41 (34)\n\n Class Map match-any BULK (id 3)\n   Match dscp cs1 (8)\n\n Class Map match-any class-default (id 0)\n   Match any"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "policy-map <word>",
+      "args": [
+        "RADIO-OUT"
+      ],
+      "enters": "pmap"
+    },
+    {
+      "cmd": "policy-map <word>",
+      "args": [
+        "SHAPE-EARTH"
+      ],
+      "enters": "pmap-shape"
+    },
+    {
+      "cmd": "policy-map <word>",
+      "enters": "pmap-other",
+      "reply": "% Saved. The orders use RADIO-OUT (radio) and SHAPE-EARTH (Earth link)."
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "VOICE"
+      ],
+      "enters": "c-voice"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "VIDEO"
+      ],
+      "enters": "c-video"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "BULK"
+      ],
+      "enters": "c-bulk"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "class-default"
+      ],
+      "enters": "c-default"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "enters": "c-other",
+      "reply": "% There is no class-map with that name. Use VOICE, VIDEO, BULK or class-default.",
+      "store": false
+    },
+    {
+      "mode": "pmap-other",
+      "cmd": "class <word>",
+      "enters": "c-other"
+    },
+    {
+      "mode": "pmap-shape",
+      "cmd": "class <word>",
+      "args": [
+        "class-default"
+      ],
+      "enters": "c-shape"
+    },
+    {
+      "mode": "pmap-shape",
+      "cmd": "class <word>",
+      "enters": "c-other",
+      "reply": "% For a contract limit, shape everything: class class-default"
+    },
+    {
+      "mode": "c-voice",
+      "cmd": "priority percent <n>",
+      "args": [
+        "20"
+      ],
+      "sets": [
+        "llq"
+      ]
+    },
+    {
+      "mode": "c-voice",
+      "cmd": "priority percent <n>",
+      "reply": "% Saved, but the plan gives voice 20%."
+    },
+    {
+      "mode": "c-voice",
+      "cmd": "priority <n>",
+      "reply": "% Saved as kbps. The plan says priority percent 20."
+    },
+    {
+      "mode": "c-video",
+      "cmd": "bandwidth percent <n>",
+      "args": [
+        "30"
+      ],
+      "sets": [
+        "cbwfq"
+      ]
+    },
+    {
+      "mode": "c-video",
+      "cmd": "bandwidth percent <n>",
+      "reply": "% Saved, but the plan gives video 30%."
+    },
+    {
+      "mode": "c-bulk",
+      "cmd": "police <n> conform-action transmit exceed-action drop",
+      "args": [
+        "1000000"
+      ],
+      "sets": [
+        "police"
+      ]
+    },
+    {
+      "mode": "c-bulk",
+      "cmd": "police cir <n> conform-action transmit exceed-action drop",
+      "args": [
+        "1000000"
+      ],
+      "sets": [
+        "police"
+      ]
+    },
+    {
+      "mode": "c-bulk",
+      "cmd": "police <rest>",
+      "reply": "% Saved, but the plan is: police 1000000 conform-action transmit exceed-action drop"
+    },
+    {
+      "mode": "c-default",
+      "cmd": "fair-queue",
+      "sets": [
+        "fq"
+      ]
+    },
+    {
+      "mode": "c-shape",
+      "cmd": "shape average <n>",
+      "args": [
+        "50000000"
+      ],
+      "sets": [
+        "shape"
+      ]
+    },
+    {
+      "mode": "c-shape",
+      "cmd": "shape average <n>",
+      "reply": "% Saved, but the contract is 50 Mbps: shape average 50000000"
+    },
+    {
+      "mode": "c-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/2"
+      ],
+      "enters": "if-g02"
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/3"
+      ],
+      "enters": "if-g03"
+    },
+    {
+      "cmd": "interface <if>",
+      "enters": "if-other"
+    },
+    {
+      "mode": "if-g02",
+      "cmd": "service-policy output <word>",
+      "args": [
+        "RADIO-OUT"
+      ],
+      "sets": [
+        "applied"
+      ]
+    },
+    {
+      "mode": "if-g02",
+      "cmd": "service-policy input <word>",
+      "store": false,
+      "reply": "% Queues form on the way out. Use service-policy output."
+    },
+    {
+      "mode": "if-g03",
+      "cmd": "service-policy output <word>",
+      "args": [
+        "SHAPE-EARTH"
+      ],
+      "sets": [
+        "shape-applied"
+      ]
+    },
+    {
+      "mode": "if-other",
+      "cmd": "service-policy <rest>",
+      "reply": "% Saved, but the radio is Gi0/2 and the Earth link is Gi0/3."
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Build the radio policy",
+      "body": "Run `enable` and `show policy-map interface g0/2`: one FIFO queue, thousands of drops. The class-maps VOICE, VIDEO and BULK already exist. In `conf t`: `policy-map RADIO-OUT`, then `class VOICE`, `priority percent 20`; `class VIDEO`, `bandwidth percent 30`; `class BULK`, `police 1000000 conform-action transmit exceed-action drop`; `class class-default`, `fair-queue`.",
+      "objectives": [
+        {
+          "id": "llq",
+          "label": "VOICE gets a priority queue (20%)",
+          "check": {
+            "type": "fact",
+            "fact": "llq"
+          }
+        },
+        {
+          "id": "cbwfq",
+          "label": "VIDEO is guaranteed 30%",
+          "check": {
+            "type": "fact",
+            "fact": "cbwfq"
+          }
+        },
+        {
+          "id": "police",
+          "label": "BULK is policed to 1 Mbps",
+          "check": {
+            "type": "fact",
+            "fact": "police"
+          }
+        },
+        {
+          "id": "fq",
+          "label": "Everything else shares fairly",
+          "check": {
+            "type": "fact",
+            "fact": "fq"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Apply it where the queue forms",
+      "body": "The queue builds where traffic leaves onto the radio: `interface g0/2`, `service-policy output RADIO-OUT`. `end`, then `show policy-map interface g0/2`: voice has zero drops.",
+      "objectives": [
+        {
+          "id": "applied",
+          "label": "RADIO-OUT applied outbound on the radio",
+          "check": {
+            "type": "fact",
+            "fact": "applied"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Voice shows zero drops",
+          "check": {
+            "type": "fact",
+            "fact": "seen"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Shape the Earth contract",
+      "body": "Gi0/3 is a 1 Gbps port on a 50 Mbps contract. In `conf t`: `policy-map SHAPE-EARTH`, `class class-default`, `shape average 50000000`, then `interface g0/3`, `service-policy output SHAPE-EARTH`. Then answer: for the BULK limit you used one tool, for Earth's contract the other. `submit BULK=police` or `shape`, and `submit EARTH=...`.",
+      "objectives": [
+        {
+          "id": "shape",
+          "label": "Earth traffic shaped to 50 Mbps",
+          "check": {
+            "type": "fact",
+            "fact": "shape"
+          }
+        },
+        {
+          "id": "shape-applied",
+          "label": "SHAPE-EARTH applied outbound on Gi0/3",
+          "check": {
+            "type": "fact",
+            "fact": "shape-applied"
+          }
+        },
+        {
+          "id": "a-bulk",
+          "label": "Tool for the bulk limit named",
+          "check": {
+            "type": "answer",
+            "value": "BULK=police",
+            "alt": [
+              "BULK=policing"
+            ]
+          }
+        },
+        {
+          "id": "a-earth",
+          "label": "Tool for the contract named",
+          "check": {
+            "type": "answer",
+            "value": "EARTH=shape",
+            "alt": [
+              "EARTH=shaping"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

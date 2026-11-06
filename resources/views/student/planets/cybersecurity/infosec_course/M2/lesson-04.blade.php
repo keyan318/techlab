@@ -35,6 +35,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
         sometimes your data is the payment.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which command shows what is listening or connected?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. <code>netstat -an</code> ✓</li>
+            <li class="quiz-option">B. <code>tasklist</code></li>
+            <li class="quiz-option">C. <code>taskkill</code></li>
+            <li class="quiz-option">D. <code>net user guest</code></li>
+        </ul>
+        <p class="quiz-explanation"><em>netstat -an shows listening ports and connections. tasklist shows what is running.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -48,6 +59,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
         flagged as a risk. Doom's taunt confirms it: <em>"That free star-chart app you installed? We wrote it."</em>
         Volt: "Free things cost something. Find the process, kill it, and make sure its port goes down with it."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What was phoning home from the Citadel?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Volt's own sensor feed</li>
+            <li class="quiz-option">B. The crew's mail server</li>
+            <li class="quiz-option quiz-correct">C. A free star-chart app ✓</li>
+            <li class="quiz-option">D. A backup of the starmap</li>
+        </ul>
+        <p class="quiz-explanation"><em>The free star-chart app was written by Doom. Free things can cost something: your data.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -73,6 +95,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
             <text x="120" y="178" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">process killed — port 8891 closed</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what happens to port 8891 when the app is killed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It opens</li>
+            <li class="quiz-option quiz-correct">B. It closes ✓</li>
+            <li class="quiz-option">C. It moves</li>
+            <li class="quiz-option">D. It doubles</li>
+        </ul>
+        <p class="quiz-explanation"><em>Stopping the process with taskkill stops its port from listening too.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

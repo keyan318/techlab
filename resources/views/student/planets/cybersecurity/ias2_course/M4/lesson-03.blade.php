@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit D.3 Security Councils, Steering Committees, or Boards. --
         contact with how that department actually works — a policy nobody who does the daily work was consulted on.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What makes a security council valuable?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Only security people in it</li>
+            <li class="quiz-option">B. Meeting just once a year</li>
+            <li class="quiz-option">C. Letting each team choose alone</li>
+            <li class="quiz-option quiz-correct">D. The right voices in the room ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Security can't set priorities without the affected departments, and departments need a security view.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit D.3 Security Councils, Steering Committees, or Boards. --
         why it doesn't work for their shift schedule. Or we can invite them now and get it right the first time.
         A council that only hears from security isn't a council — it's just security talking to itself."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why did Astro pause the supply bay vote?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Nobody from Supply was there ✓</li>
+            <li class="quiz-option">B. The policy was too short</li>
+            <li class="quiz-option">C. Volt had not written the policy yet</li>
+            <li class="quiz-option">D. Supply had already voted no</li>
+        </ul>
+        <p class="quiz-explanation"><em>A council that only hears from security is just security talking to itself. Invite Supply first.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -54,6 +76,17 @@ Syllabus: ITP1333 Unit D.3 Security Councils, Steering Committees, or Boards. --
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">A council missing an affected department isn't hearing the whole picture</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what do department reps bring?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The risk perspective</li>
+            <li class="quiz-option">B. The final approval</li>
+            <li class="quiz-option quiz-correct">C. How the work happens ✓</li>
+            <li class="quiz-option">D. The firewall rules</li>
+        </ul>
+        <p class="quiz-explanation"><em>The security lead brings the risk perspective. Department reps bring how the work actually happens.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -30,6 +30,17 @@ Syllabus: ITP1232 Unit E, Symmetric Key Cryptography. --}}
         one that the attacker never had.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is the weak spot of symmetric keys?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Each person needs a different key</li>
+            <li class="quiz-option">B. It is much too slow for messages</li>
+            <li class="quiz-option quiz-correct">C. Everyone needs a copy of the same key ✓</li>
+            <li class="quiz-option">D. It cannot decrypt what it encrypts at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>One key does both jobs, so everyone needs a copy. The more copies, the more chances one leaks.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -44,6 +55,17 @@ Syllabus: ITP1232 Unit E, Symmetric Key Cryptography. --}}
         <strong>Volt</strong> adds: "One key for the whole crew was always a risk. A leak anywhere is a leak
         everywhere."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What does Rivet do after proving the key leaked?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Rotates to a new key ✓</li>
+            <li class="quiz-option">B. Keeps the same key</li>
+            <li class="quiz-option">C. Gives Doom a copy</li>
+            <li class="quiz-option">D. Uses a stronger cipher</li>
+        </ul>
+        <p class="quiz-explanation"><em>The fix is key rotation: retire the leaked key and switch to a new one Doom never had.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -73,6 +95,17 @@ Syllabus: ITP1232 Unit E, Symmetric Key Cryptography. --}}
             <text x="475" y="162" text-anchor="middle" font-size="14" font-weight="700" fill="#0d5c26">relay-9x — new, Doom-free</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is relay-9x?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The new key ✓</li>
+            <li class="quiz-option">B. The leaked key</li>
+            <li class="quiz-option">C. The ciphertext</li>
+            <li class="quiz-option">D. The plaintext</li>
+        </ul>
+        <p class="quiz-explanation"><em>codexia7 leaked and is retired. relay-9x is the new, Doom-free key.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

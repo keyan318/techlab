@@ -6,7 +6,7 @@
   "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
   "story": {
     "alert": "00:00 · ALL ALARMS · CITADEL CORE — THE FINAL SIEGE",
-    "vex": "Every wall, every door, every key, all at once. Let's see which one of us breaks first, Captain. (Commander Vex, Planet Doom)",
+    "vex": "Every wall, every door, every key, all at once. Let's see which one of us breaks first, astronaut. (Commander Vex, Planet Doom)",
     "victory": "DOOM ATTACK REPELLED — CODEXIA IS SAFE. Every alert answered, every door shut. Astro: \"Every lesson you've learned, Cadet, just held the line at once. That's Information Security. Rest now — Information Security 2 is a different kind of siege.\""
   },
   "files": {

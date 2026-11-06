@@ -50,7 +50,7 @@
              the server-side lesson order. --}}
         @php
             $outlineSlug = $slug ?? 'programming';
-            $outlineModules = config("course-structure.{$outlineSlug}.modules", []);
+            $outlineModules = \App\Services\CourseStructure::modules($outlineSlug);
         @endphp
 
         @foreach ($outlineModules as $moduleKey => $moduleDef)
@@ -69,13 +69,18 @@
                         {{ $moduleDef['title'] }}
                     </div>
 
+                    @php $lessonCount = count($moduleDef['lessons']); @endphp
                     <div class="module-progress" data-module-progress="{{ $mId }}">
 
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: 0%;"></div>
+                        <div class="progress-meta">
+                            <span class="progress-count">0 of {{ $lessonCount }} lessons</span>
+                            <span class="progress-pct">0%</span>
                         </div>
 
-                        <span>0%</span>
+                        {{-- One segment per lesson, so each finished lesson visibly fills a step. --}}
+                        <div class="progress-track" style="--lessons: {{ max($lessonCount, 1) }};">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
 
                     </div>
 
@@ -375,29 +380,107 @@
 
 .module-progress {
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress-meta {
+    display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.progress-count {
+    font-size: 13px;
+    color: #777777;
+}
+
+/* The percentage pill: grey before you start, blue once you're going, solid blue when done. */
+.progress-pct {
+    min-width: 44px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #f3f3f3;
+    color: #888888;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    transition: background-color .3s ease, color .3s ease;
+}
+
+.module-progress.is-started .progress-pct {
+    background: rgba(47,125,225,.12);
+    color: #2f7de1;
+}
+
+.module-progress.is-complete .progress-pct {
+    background: #2f7de1;
+    color: #ffffff;
+}
+
+.module-progress.is-complete .progress-pct::before {
+    content: '✓ ';
+}
+
+.module-progress.is-bumped .progress-pct {
+    animation: pct-pop .45s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes pct-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.18); }
+    100% { transform: scale(1); }
 }
 
 .progress-track {
-    flex: 1;
-    height: 8px;
+    position: relative;
+    height: 10px;
     background: #f3f3f3;
     border-radius: 20px;
     overflow: hidden;
 }
 
+/* White notches split the bar into one step per lesson. */
+.progress-track::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to left, #ffffff 2px, transparent 2px);
+    background-size: calc(100% / var(--lessons, 1)) 100%;
+    pointer-events: none;
+}
+
 .progress-fill {
+    position: relative;
     height: 100%;
     background: #2f7de1;
     border-radius: 20px;
-    transition: width 0.3s ease;
+    overflow: hidden;
+    transition: width .6s cubic-bezier(.32,.72,0,1);
 }
 
-.module-progress span {
-    min-width: 40px;
-    font-size: 15px;
-    color: #555555;
+/* A soft light sweeps across the filled part so progress feels alive. */
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.45) 50%, transparent 80%);
+    transform: translateX(-100%);
+    animation: progress-shine 2.8s ease-in-out infinite;
+}
+
+@keyframes progress-shine {
+    0%, 35% { transform: translateX(-100%); }
+    100%    { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress-fill { transition: none; }
+    .progress-fill::after { animation: none; display: none; }
+    .module-progress.is-bumped .progress-pct { animation: none; }
 }
 
 
@@ -898,8 +981,11 @@ function toggleModule(moduleId, button) {
 
     // A lesson is unlocked when it is the very first one, or the lesson
     // immediately before it (course-wide) has been completed.
+    // Faculty and admins have no locks (the server agrees: EnsureLessonUnlocked lets them through).
+    const ALL_OPEN = @json((auth()->user()?->role ?? 'student') !== 'student');
+
     function isUnlocked(index) {
-        if (index === 0) return true;
+        if (index === 0 || ALL_OPEN) return true;
         const prev = order[index - 1];
         return isCompleted(prev.module, prev.lesson);
     }
@@ -938,10 +1024,24 @@ function toggleModule(moduleId, button) {
             if (!progressEl) return;
 
             const fill  = progressEl.querySelector('.progress-fill');
-            const label = progressEl.querySelector('span');
+            const label = progressEl.querySelector('.progress-pct');
+            const count = progressEl.querySelector('.progress-count');
 
-            if (fill)  fill.style.width   = pct + '%';
-            if (label) label.textContent   = pct;
+            if (fill)  fill.style.width = pct + '%';
+            if (count) count.textContent = stats.done + ' of ' + stats.total + (stats.total === 1 ? ' lesson' : ' lessons');
+            if (label) {
+                // Pop the pill only when the number actually goes up (a lesson was just finished).
+                const prev = parseInt(label.textContent, 10);
+                label.textContent = pct + '%';
+                if (!isNaN(prev) && pct > prev && progressEl.dataset.rendered) {
+                    progressEl.classList.remove('is-bumped');
+                    void progressEl.offsetWidth;
+                    progressEl.classList.add('is-bumped');
+                }
+            }
+            progressEl.classList.toggle('is-started', pct > 0 && pct < 100);
+            progressEl.classList.toggle('is-complete', pct >= 100);
+            progressEl.dataset.rendered = '1';
         });
     }
 

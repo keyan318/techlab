@@ -38,6 +38,17 @@ Syllabus: ITP1232 Unit C.2 Cybercrime & the Law (incl. Philippine RA 10175). --}
         authorities — not mid-crisis, and not only after paying (which you never do).
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What should you do before restoring a ransomed file?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Pay the ransom to get it back fast</li>
+            <li class="quiz-option quiz-correct">B. Hash it to preserve the evidence ✓</li>
+            <li class="quiz-option">C. Delete it so the attack is erased</li>
+            <li class="quiz-option">D. Report it while still mid-crisis</li>
+        </ul>
+        <p class="quiz-explanation"><em>Preserve evidence first: fingerprint what the attacker touched, so there's proof of exactly what happened.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Workbench</h2>
 
     <p class="body-text">
@@ -55,6 +66,17 @@ Syllabus: ITP1232 Unit C.2 Cybercrime & the Law (incl. Philippine RA 10175). --}
         when we report to Codexia's authorities. Not while we're still mid-crisis, and not after paying. We
         never pay."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What does Rivet refuse to do with the 500 credits?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Back up the logs</li>
+            <li class="quiz-option">B. Hash the evidence</li>
+            <li class="quiz-option">C. Restore the files</li>
+            <li class="quiz-option quiz-correct">D. Pay the pirates ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Never pay or negotiate. Paying funds the next attack and rarely gets anything back.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -80,6 +102,17 @@ Syllabus: ITP1232 Unit C.2 Cybercrime & the Law (incl. Philippine RA 10175). --}
             <text x="320" y="175" text-anchor="middle" font-size="13.5" font-weight="700" fill="#b3261e">Never pay. Never negotiate. This order, every time.</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is step 3?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Restore</li>
+            <li class="quiz-option">B. Preserve</li>
+            <li class="quiz-option">C. Negotiate</li>
+            <li class="quiz-option quiz-correct">D. Report ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Preserve the evidence, restore from backup, then report to the authorities. In that order, every time.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

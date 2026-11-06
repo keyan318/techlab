@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l1.json) complete
         When you send data it moves <em>down</em> the stack. Each layer wraps the data with its own header. This wrapping is called <strong>encapsulation</strong>. The receiver unwraps it on the way <em>up</em>. The unit of data has a different name at each layer: bits, frames, packets, segments.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is encapsulation?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Each layer wraps the data with a header ✓</li>
+            <li class="quiz-option">B. Each layer removes the data's address</li>
+            <li class="quiz-option">C. The data skips layers to move faster</li>
+            <li class="quiz-option">D. The receiver adds headers on the way up</li>
+        </ul>
+        <p class="quiz-explanation"><em>As data moves down the stack, each layer wraps it with its own header. The receiver unwraps it on the way up.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Warning</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l1.json) complete
     <p class="body-text">
         <strong>Volt</strong> studies the relay's signal. "Every fault lives in exactly one layer. Find the layer and you have found the fix." <strong>Astro</strong> nods. "Then we build the ship's server from the bottom up: cable first, address second, port third, service last."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Volt say to find the layer first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Each layer must be rebuilt every single time</li>
+            <li class="quiz-option">B. Only the top layer can ever be broken</li>
+            <li class="quiz-option quiz-correct">C. Every fault lives in exactly one layer ✓</li>
+            <li class="quiz-option">D. The relay speaks one layer at a time</li>
+        </ul>
+        <p class="quiz-explanation"><em>Every fault lives in one layer. Find the layer, and you have found where to fix it.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -74,6 +96,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l1.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">Which TCP/IP layer covers OSI layers 7, 6 and 5?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Application ✓</li>
+            <li class="quiz-option">B. Transport</li>
+            <li class="quiz-option">C. Internet</li>
+            <li class="quiz-option">D. Network Access</li>
+        </ul>
+        <p class="quiz-explanation"><em>TCP/IP's Application layer squeezes OSI's Application, Presentation and Session layers into one.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

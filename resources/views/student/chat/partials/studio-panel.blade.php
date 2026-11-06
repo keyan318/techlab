@@ -97,11 +97,11 @@
 
       {{-- 2-column grid, education-flavored ordering (Quiz / Flashcards / Mind Map first) --}}
       <div class="grid grid-cols-2 gap-2">
-        @include('student.chat.partials.studio-card', ['label' => 'Quiz', 'wire' => "\$store.quiz.open()", 'iconSvg' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 2.5"/><path d="M12 17h.01"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Flashcards', 'wire' => "\$store.flashcards.open()", 'iconSvg' => '<rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h8M8 14h5"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Key terms', 'wire' => "\$store.keyterms.open()", 'iconSvg' => '<path d="M4 5h9a3 3 0 0 1 3 3v11H7a3 3 0 0 1-3-3z"/><path d="M9 10h4M9 14h3"/><path d="M18 8v11"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Infographic', 'wire' => '$store.infographic.open()', 'iconSvg' => '<path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8"/>'])
-        @include('student.chat.partials.studio-card', ['label' => 'Reports', 'wire' => '$store.reports.open()', 'iconSvg' => '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 12h6M9 16h6"/>'])
+        @include('student.chat.partials.studio-card', ['label' => 'Quiz', 'xpFeature' => 'quiz', 'wire' => "\$store.quiz.open()", 'iconSvg' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 2.5"/><path d="M12 17h.01"/>'])
+        @include('student.chat.partials.studio-card', ['label' => 'Flashcards', 'xpFeature' => 'flashcards', 'wire' => "\$store.flashcards.open()", 'iconSvg' => '<rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h8M8 14h5"/>'])
+        @include('student.chat.partials.studio-card', ['label' => 'Key terms', 'xpFeature' => 'keyterms', 'wire' => "\$store.keyterms.open()", 'iconSvg' => '<path d="M4 5h9a3 3 0 0 1 3 3v11H7a3 3 0 0 1-3-3z"/><path d="M9 10h4M9 14h3"/><path d="M18 8v11"/>'])
+        @include('student.chat.partials.studio-card', ['label' => 'Infographic', 'xpFeature' => 'infographic', 'wire' => '$store.infographic.open()', 'iconSvg' => '<path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8"/>'])
+        @include('student.chat.partials.studio-card', ['label' => 'Reports', 'xpFeature' => 'report', 'wire' => '$store.reports.open()', 'iconSvg' => '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 12h6M9 16h6"/>'])
 
       </div>
 
@@ -215,16 +215,6 @@
         </template>
       </div>
 
-      {{-- Empty state --}}
-      <div x-data x-show="!$store.studioOutputs.items.length" class="rounded-[14px] border border-dashed border-glassBorder bg-glass px-4 py-6 text-center">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-2 h-8 w-8 text-muted">
-          <path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/>
-        </svg>
-        <p class="text-sm font-medium text-ink">Studio output will be saved here</p>
-        <p class="mx-auto mt-1 max-w-[220px] text-xs leading-relaxed text-muted">
-          Generate a quiz, flashcards, key terms or report and it'll land here so you can revisit it anytime.
-        </p>
-      </div>
     </div>
 
     {{-- Add note — fixed bottom-right of the panel --}}

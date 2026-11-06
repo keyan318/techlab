@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit C.1 Security Policies. --}}
         next).
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which question does a policy's scope answer?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Why the policy exists</li>
+            <li class="quiz-option quiz-correct">B. Who and what it covers ✓</li>
+            <li class="quiz-option">C. What happens if broken</li>
+            <li class="quiz-option">D. The exact steps to take</li>
+        </ul>
+        <p class="quiz-explanation"><em>Purpose says why, scope says who and what, roles say who enforces, enforcement says what happens if broken.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit C.1 Security Policies. --}}
         four pieces: why we protect crew data, who it applies to, who enforces it, and what happens if it's
         broken. Then it's a policy the crew can actually use."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What was wrong with Rivet's policy “Protect crew data”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It covered too many people</li>
+            <li class="quiz-option">B. It was far too long to read</li>
+            <li class="quiz-option">C. It listed too many exact steps</li>
+            <li class="quiz-option quiz-correct">D. It was missing the four pieces ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>It tells nobody what to do. It needs purpose, scope, roles and enforcement.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -62,6 +84,17 @@ Syllabus: ITP1333 Unit C.1 Security Policies. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">A policy missing any one of these four tends to be ignored</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which piece says who enforces it?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Scope</li>
+            <li class="quiz-option">B. Purpose</li>
+            <li class="quiz-option quiz-correct">C. Roles ✓</li>
+            <li class="quiz-option">D. Enforcement</li>
+        </ul>
+        <p class="quiz-explanation"><em>Roles say who is responsible for following and enforcing the policy.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

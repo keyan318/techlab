@@ -30,6 +30,17 @@ Syllabus: ITP1232 Unit D.5 Copyright Infringement. --}}
         restricted, leaked and reused anyway.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which use is usually fair use?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A whole copy sold with no credit given</li>
+            <li class="quiz-option quiz-correct">B. A small, credited excerpt for learning ✓</li>
+            <li class="quiz-option">C. Leaked material marked crew use only</li>
+            <li class="quiz-option">D. A full work passed off as your own</li>
+        </ul>
+        <p class="quiz-explanation"><em>Small, credited, non-commercial excerpts for learning or teaching are usually fair use.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -43,6 +54,17 @@ Syllabus: ITP1232 Unit D.5 Copyright Infringement. --}}
         fine. A whole copy, sold or resold, with no credit? Never fine. Especially if it was marked 'crew use
         only' and someone leaked it anyway."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What does Vex want the crew to get wrong?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Punish honest reuse or excuse theft ✓</li>
+            <li class="quiz-option">B. Send the disputes back to Earth</li>
+            <li class="quiz-option">C. Ignore the High Council's request for help</li>
+            <li class="quiz-option">D. Copy the work of the allied fleet</li>
+        </ul>
+        <p class="quiz-explanation"><em>Getting it wrong either way helps Vex. The crew uses a clear rule to judge each dispute.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -61,6 +83,17 @@ Syllabus: ITP1232 Unit D.5 Copyright Infringement. --}}
             <text x="480" y="120" text-anchor="middle" font-size="12.5" fill="#7a1a14">sold, or restricted material leaked</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which side has “sold, or restricted material leaked”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Usually allowed</li>
+            <li class="quiz-option">B. Fair use only</li>
+            <li class="quiz-option">C. Learning use</li>
+            <li class="quiz-option quiz-correct">D. Not allowed ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Selling a copy, or leaking restricted material, is on the not allowed side.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

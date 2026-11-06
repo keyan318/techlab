@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l3.json) complete
         IPv4 and IPv6 live side by side today, which is called <strong>dual stack</strong>. <em>Note: the lab simulator only speaks IPv4, so this lesson practises IPv4 addresses and covers IPv6 as concepts.</em>
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How many bits long is an IPv4 address?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. 32 bits in four octets ✓</li>
+            <li class="quiz-option">B. 128 bits in eight groups</li>
+            <li class="quiz-option">C. 64 bits in four octets</li>
+            <li class="quiz-option">D. 8 bits in four groups</li>
+        </ul>
+        <p class="quiz-explanation"><em>IPv4 is 32 bits, written as four octets of 8 bits each. IPv6 is the 128-bit one.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l3.json) complete
     <p class="body-text">
         <strong>Astro</strong> sighs. "Earth gives us public addresses for the long link. Inside the ship we use private ones, and we read every octet carefully."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why can't 192.168.0.10 and 192.168.1.20 talk directly?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. One of them is a public Internet address range</li>
+            <li class="quiz-option">B. Both of them are loopback test addresses</li>
+            <li class="quiz-option quiz-correct">C. One octet differs, so they are on two networks ✓</li>
+            <li class="quiz-option">D. Private addresses can never talk at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>With a /24, the third octet is part of the network. 0 and 1 make two different networks.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -93,6 +115,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l3.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">Which private range is shown for home and small networks?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. 192.168.0.0/16 ✓</li>
+            <li class="quiz-option">B. 10.0.0.0/8</li>
+            <li class="quiz-option">C. 172.16.0.0/12</li>
+            <li class="quiz-option">D. 169.254.0.0/16</li>
+        </ul>
+        <p class="quiz-explanation"><em>192.168.0.0/16 is the private range for home and small networks. 10.0.0.0/8 is the very large one.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

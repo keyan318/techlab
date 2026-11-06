@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l1.json) complete
         A simple rule: give <strong>static</strong> addresses to things other devices must find (servers, routers, printers) and <strong>dynamic</strong> addresses to everything that just needs to get online (laptops, phones, workstations). If a device expects DHCP but finds no server, it may give itself an address that starts with <code>169.254</code>. That is a sign DHCP failed. Many networks also use a <strong>reservation</strong>: DHCP always gives the same address to one device, chosen by its MAC address.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which devices should get static addresses?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Ones others must find, like servers ✓</li>
+            <li class="quiz-option">B. Ones that just need to get online fast</li>
+            <li class="quiz-option">C. Every laptop and phone on the LAN</li>
+            <li class="quiz-option">D. Only devices that DHCP has missed</li>
+        </ul>
+        <p class="quiz-explanation"><em>Servers, routers and printers must always be found at the same address, so they get static ones.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l1.json) complete
     <p class="body-text">
         <strong>Astro</strong> makes a rule. "The server keeps a static address, because everyone must find it. Everyone else gets an address automatically. Set up DHCP."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What rule does Astro make after the raid?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Every console gets a typed static address</li>
+            <li class="quiz-option quiz-correct">B. The server stays static, the rest use DHCP ✓</li>
+            <li class="quiz-option">C. The server uses DHCP, the rest stay static</li>
+            <li class="quiz-option">D. Nobody gets an address until the raids end</li>
+        </ul>
+        <p class="quiz-explanation"><em>Everyone must find the server, so it stays static. Everything else gets an address automatically from DHCP.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -59,6 +81,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l1.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does dynamic addressing need?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. A DHCP server running ✓</li>
+            <li class="quiz-option">B. Each address typed in</li>
+            <li class="quiz-option">C. A brand new cable</li>
+            <li class="quiz-option">D. A second router</li>
+        </ul>
+        <p class="quiz-explanation"><em>Dynamic addressing is fast with fewer mistakes, but it needs a DHCP server running to hand addresses out.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

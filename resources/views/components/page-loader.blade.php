@@ -1,15 +1,18 @@
 {{--
-  TechLab launch screen: shown while the browser waits for the next page.
+  Loading while the browser waits for the next page.
 
   Pages are server-rendered and every request goes to a far-away database, so a click can
-  sit for a second with nothing happening. This covers that wait: a same-site link click or
-  form submit shows it (after a short delay, so fast pages never flash it), and arriving on
-  the next page — or coming back with the Back button — hides it.
+  sit for a second with nothing happening. A same-site link click or form submit shows a
+  loader (after a short delay, so fast pages never flash it), and arriving on the next page —
+  or coming back with the Back button — hides it.
 
-  The TechLab logo sits in the middle tile, a blue arc spins round the inner ring, a gold planet orbits
-  the outer ring, and the words fit where you're heading ("Flying to the planet...").
+  Two sizes. The full TechLab launch screen (logo tile, spinning arc, orbiting gold planet) is
+  only for going *inside*: signing in or creating an account, and a student opening a course.
+  Everything else (sending a reset password, saving a form, ordinary links) gets a thin blue
+  bar across the top of the page.
 
-  Opt out per link/form with data-no-loader; set your own words with data-loader-text="...".
+  Opt out per link/form with data-no-loader; force the launch screen with data-loader-text="..."
+  (its words).
   Included once per page (the shared side-bar, plus the lesson/lab/editor pages that have
   no side-bar); @once keeps a double include harmless.
 --}}
@@ -25,6 +28,7 @@
   <p class="tl-loader-text"><span id="tl-loader-label">Launching</span><span class="tl-loader-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></p>
   <div class="tl-loader-bar" aria-hidden="true"><span></span></div>
 </div>
+<div id="tl-topbar" class="tl-topbar" role="progressbar" aria-label="Loading" aria-hidden="true"><span></span></div>
 
 <style>
   .tl-loader {
@@ -85,6 +89,15 @@
     background: linear-gradient(90deg, transparent, var(--tl-blue), var(--tl-gold));
     animation: tl-fuel 1.6s cubic-bezier(.45,0,.55,1) infinite; }
 
+  /* The everyday loader: a thin bar sliding across the top edge. */
+  .tl-topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; height: 3px; overflow: hidden; pointer-events: none;
+    opacity: 0; transition: opacity .2s ease; }
+  .tl-topbar.on { opacity: 1; }
+  .tl-topbar span { position: absolute; top: 0; bottom: 0; width: 40%; border-radius: 0 3px 3px 0;
+    background: linear-gradient(90deg, transparent, #3aa0ff 40%, #73b6ff);
+    box-shadow: 0 0 10px rgba(58,160,255,.7);
+    animation: tl-fuel 1.1s cubic-bezier(.45,0,.55,1) infinite; }
+
   @keyframes tl-spin { to { transform: rotate(360deg); } }
   @keyframes tl-glow { 0%, 100% { filter: drop-shadow(0 0 6px rgba(115,182,255,.35)); } 50% { filter: drop-shadow(0 0 14px rgba(115,182,255,.75)); } }
   @keyframes tl-dot  { 0%, 100% { opacity: .2; } 40% { opacity: 1; } }
@@ -93,48 +106,34 @@
   /* Reduced motion: nothing spins or travels — the screen just fades in, the dots breathe. */
   @media (prefers-reduced-motion: reduce) {
     .tl-loader-orbit, .tl-loader-ring::before, .tl-loader-logo { animation: none; }
-    .tl-loader-bar span { animation: tl-dot 1.6s ease-in-out infinite; left: 30%; }
+    .tl-loader-bar span, .tl-topbar span { animation: tl-dot 1.6s ease-in-out infinite; left: 30%; }
   }
 </style>
 
 <script>
   (function () {
     var el = document.getElementById('tl-loader');
+    var bar = document.getElementById('tl-topbar');
     var label = document.getElementById('tl-loader-label');
     var showTimer = null, safetyTimer = null;
 
-    // The everyday places — Home, Chat, Planets (and the faculty/admin Home and Chat) — open
-    // without the launch screen; it's kept for logging in and heading into courses and lessons.
-    var NO_LOADER = /^\/((faculty|admin)\/dashboard|dashboard|(faculty\/)?chat|planets)\/?$/;
+    // Going inside: these get the full launch screen, with their own words. Everything else gets the top bar.
+    var SIGN_IN = /^\/((faculty|admin)\/)?(login|register)\/?$/;   // a sign-in or sign-up form being sent
+    var COURSE = /^\/student\/(course\/[^/]+\/[^/]+|planet\/[^/]+\/course\/[^/]+)\/?$/;   // a student opening a course
 
-    // Words for where you're heading. First match wins.
-    var DESTINATIONS = [
-      [/\/lab\//,                                    'Booting the simulator'],
-      [/\/editor$/,                                  'Starting the code editor'],
-      [/\/certificate$/,                             'Printing your certificate'],
-      [/\/quiz/,                                     'Loading your quiz'],
-      [/^\/student\/(course\/|planet\/[^/]+\/course\/)/, 'Docking at your course'],
-      [/^\/student\/planet\/[^/]+\/[^/]+\/[^/]+|^\/python\//, 'Opening your lesson'],
-      [/^\/(planets|student\/planet)/,               'Flying to the planet'],
-      [/^\/progress/,                                'Counting your XP'],
-      [/^\/faculty/,                                 'Opening the bridge'],
-    ];
-    function wordsFor(path) {
-      for (var i = 0; i < DESTINATIONS.length; i++) if (DESTINATIONS[i][0].test(path)) return DESTINATIONS[i][1];
-      return 'Launching';
-    }
-
+    // text = the launch screen's words, or null for the top bar.
     function show(text) {
       if (showTimer) return;
-      label.textContent = text;
-      // Fast pages arrive before this fires, so they never flash the screen.
-      showTimer = setTimeout(function () { el.classList.add('on'); el.setAttribute('aria-hidden', 'false'); }, 180);
+      var target = text ? el : bar;
+      if (text) label.textContent = text;
+      // Fast pages arrive before this fires, so they never flash anything.
+      showTimer = setTimeout(function () { target.classList.add('on'); target.setAttribute('aria-hidden', 'false'); }, 180);
       // A link that turns out to be a download never leaves the page; don't trap the student.
       safetyTimer = setTimeout(hide, 15000);
     }
     function hide() {
       clearTimeout(showTimer); clearTimeout(safetyTimer); showTimer = null;
-      el.classList.remove('on'); el.setAttribute('aria-hidden', 'true');
+      [el, bar].forEach(function (x) { x.classList.remove('on'); x.setAttribute('aria-hidden', 'true'); });
     }
 
     document.addEventListener('click', function (e) {
@@ -145,16 +144,18 @@
       var url = new URL(a.href, location.href);
       if (url.origin !== location.origin) return;
       if (url.pathname === location.pathname && url.search === location.search) return; // #anchor / same page
-      if (NO_LOADER.test(url.pathname)) return;
       if (/^\/materials\//.test(url.pathname) || /\.(pdf|zip|docx?|pptx?|xlsx?|png|jpe?g|gif|svg|mp4)$/i.test(url.pathname)) return;
-      show(a.dataset.loaderText || wordsFor(url.pathname));
+      // Already inside this course's hub (e.g. its Home tab from the Crew tab)? That's a tab switch, not docking.
+      var docking = COURSE.test(url.pathname) && !(location.pathname.replace(/\/$/, '') + '/').startsWith(url.pathname.replace(/\/$/, '') + '/');
+      show(a.dataset.loaderText || (docking ? 'Docking at your course' : null));
     });
 
     document.addEventListener('submit', function (e) {
       var f = e.target;
       if (e.defaultPrevented || f.hasAttribute('data-no-loader')) return; // JS-handled forms stay put
       if (f.target && f.target !== '_self') return;
-      show(f.dataset.loaderText || 'Launching');
+      var path = new URL(f.getAttribute('action') || location.href, location.href).pathname;
+      show(f.dataset.loaderText || (SIGN_IN.test(path) ? 'Launching' : null));
     });
 
     // Back/forward can restore this page from memory with the screen still up.

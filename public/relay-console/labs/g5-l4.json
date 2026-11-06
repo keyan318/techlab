@@ -1,0 +1,233 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g5-l4",
+  "title": "Lesson 5.4: Congestion Management — RED & Load Balancing",
+  "host": {
+    "name": "CITADEL-CORE",
+    "platform": "ISR4451",
+    "banner": "Cisco IOS Software, ISR4451 (Relay Console for TechLab)\nCitadel core router: Gi0/1 and Gi0/2 are two equal links to Earth"
+  },
+  "story": {
+    "alert": "CITADEL · EARTH LINK SAWTOOTH: 100% / 50% / 100%",
+    "victory": "The saw blade flattens into a steady line just under 100%. Volt: \"Drop a little, early, at random. Who knew.\" Rivet quietly un-plans his per-packet idea."
+  },
+  "modes": {
+    "pmap": {
+      "prompt": "config-pmap"
+    },
+    "pmap-other": {
+      "prompt": "config-pmap"
+    },
+    "c-default": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "c-other": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1210 bytes\n!\nhostname CITADEL-CORE\n!\npolicy-map EARTH-OUT\n class class-default\n  fair-queue\n!\ninterface GigabitEthernet0/1\n description to Earth Relay (link A)\n ip address 203.0.113.2 255.255.255.252\n service-policy output EARTH-OUT\n!\ninterface GigabitEthernet0/2\n description to Earth Relay (link B)\n ip address 203.0.113.6 255.255.255.252\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/1"
+      ],
+      "when": [
+        "wred"
+      ],
+      "sets": [
+        "seen"
+      ],
+      "text": "GigabitEthernet0/1\n\n  Service-policy output: EARTH-OUT\n\n    Class-map: class-default (match-any)\n      Queueing\n      queue limit 64 packets\n      (queue depth/total drops/no-buffer drops) 21/3120/0\n      Exp-weight-constant: 9 (1/512)\n      dscp     Transmitted   Random drop   Tail drop   Minimum  Maximum  Mark\n                 pkts/bytes   pkts/bytes  pkts/bytes    thresh   thresh  prob\n      cs1     40112/52M      2980/3M       0/0            22       40  1/10\n      default 210334/281M     140/0M       0/0            22       40  1/10\n      af41    88120/113M        0/0        0/0            32       40  1/10"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/1"
+      ],
+      "text": "GigabitEthernet0/1\n\n  Service-policy output: EARTH-OUT\n\n    Class-map: class-default (match-any)\n      Queueing\n      queue limit 64 packets\n      (queue depth/total drops/no-buffer drops) 64/48212/0\n      Exp-weight-constant: none, tail drop only"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "text": "% Earth traffic leaves on Gi0/1 and Gi0/2; the policy is on Gi0/1."
+    },
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      690   link-graph.txt\n    2  -rw- 33554432   isr4400-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:link-graph.txt",
+      "text": "CITADEL TO EARTH: LINK LOAD, 19:00-19:10 (one mark = 10%)\n==========================================================\n19:00 ##########  100%   tail drops: 4,812\n19:01 #####        50%\n19:02 ##########  100%   tail drops: 5,140\n19:03 #####        52%\n19:04 ##########  100%   tail drops: 4,977\n19:05 ######       55%\n   ... every TCP flow on the Grid slows down at the same moment,\n       then all of them speed up together.\n\nVolt: what is this effect called?  submit PROBLEM=<name>\n"
+    },
+    {
+      "cmd": "show ip cef exact-route <ip> <ip>",
+      "args": [
+        "192.168.10.10",
+        "198.51.100.10"
+      ],
+      "text": "192.168.10.10 -> 198.51.100.10 =>IP adj out of GigabitEthernet0/1, addr 203.0.113.1"
+    },
+    {
+      "cmd": "show ip cef exact-route <ip> <ip>",
+      "args": [
+        "192.168.30.10",
+        "198.51.100.10"
+      ],
+      "text": "192.168.30.10 -> 198.51.100.10 =>IP adj out of GigabitEthernet0/2, addr 203.0.113.5"
+    },
+    {
+      "cmd": "show ip cef exact-route <ip> <ip>",
+      "text": "(hash result) => one of GigabitEthernet0/1 or GigabitEthernet0/2, fixed for this pair of addresses"
+    },
+    {
+      "cmd": "show interfaces <if>",
+      "args": [
+        "GigabitEthernet0/1"
+      ],
+      "text": "GigabitEthernet0/1 is up, line protocol is up\n  Description: to Earth Relay (link A)\n  Internet address is 203.0.113.2/30\n  MTU 1500 bytes, BW 1000000 Kbit/sec\n  Output queue: 64/64 (size/max)\n  Total output drops: 48212"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "policy-map <word>",
+      "args": [
+        "EARTH-OUT"
+      ],
+      "enters": "pmap"
+    },
+    {
+      "cmd": "policy-map <word>",
+      "enters": "pmap-other",
+      "reply": "% Saved, but the policy already on the Earth link is EARTH-OUT."
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "class-default"
+      ],
+      "enters": "c-default"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "enters": "c-other"
+    },
+    {
+      "mode": "c-default",
+      "cmd": "random-detect dscp-based",
+      "sets": [
+        "wred"
+      ]
+    },
+    {
+      "mode": "c-default",
+      "cmd": "random-detect",
+      "reply": "% Saved: plain RED. The orders ask for DSCP-based (weighted) RED: random-detect dscp-based"
+    },
+    {
+      "mode": "c-default",
+      "cmd": "random-detect ecn"
+    },
+    {
+      "mode": "c-default",
+      "cmd": "fair-queue"
+    },
+    {
+      "mode": "c-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "mode": "pmap-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "cmd": "ip load-sharing per-packet",
+      "reply": "% Volt pulls the cable before you hit enter. Check what per-packet does to TCP first.",
+      "store": false
+    }
+  ],
+  "steps": [
+    {
+      "by": "volt",
+      "title": "Name the problem",
+      "body": "Type `enable`. Run `show policy-map interface g0/1`: tail drop only. Then `more flash:link-graph.txt`. `submit PROBLEM=<name of the effect>`.",
+      "objectives": [
+        {
+          "id": "a-prob",
+          "label": "Effect named",
+          "check": {
+            "type": "answer",
+            "value": "PROBLEM=global synchronization",
+            "alt": [
+              "PROBLEM=tcp global synchronization",
+              "PROBLEM=global synchronisation",
+              "PROBLEM=synchronization"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Drop early, at random",
+      "body": "In `conf t`: `policy-map EARTH-OUT`, `class class-default`, `random-detect dscp-based`. `end`, then `show policy-map interface g0/1`: random drops, mostly scavenger (cs1), and no tail drops.",
+      "objectives": [
+        {
+          "id": "wred",
+          "label": "WRED (DSCP-based) is on for class-default",
+          "check": {
+            "type": "fact",
+            "fact": "wred"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Saw random drops replace tail drops",
+          "check": {
+            "type": "fact",
+            "fact": "seen"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Spread without reordering",
+      "body": "Run `show ip cef exact-route 192.168.10.10 198.51.100.10` and `show ip cef exact-route 192.168.30.10 198.51.100.10`: two flows, two different links, chosen by a hash. Rivet wanted per-packet instead. What would that do to TCP? `submit PERPACKET=<one word>`. Then which unit should the Citadel spread? `submit SPREAD=per-flow` or `per-packet`.",
+      "objectives": [
+        {
+          "id": "a-pp",
+          "label": "Per-packet problem named",
+          "check": {
+            "type": "answer",
+            "value": "PERPACKET=reordering",
+            "alt": [
+              "PERPACKET=out-of-order",
+              "PERPACKET=out of order",
+              "PERPACKET=reorder"
+            ]
+          }
+        },
+        {
+          "id": "a-spread",
+          "label": "Spreading unit chosen",
+          "check": {
+            "type": "answer",
+            "value": "SPREAD=per-flow",
+            "alt": [
+              "SPREAD=per-destination",
+              "SPREAD=per flow",
+              "SPREAD=flow"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

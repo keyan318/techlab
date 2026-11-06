@@ -1,0 +1,253 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g6-l5",
+  "title": "Lesson 6.5: Remote Access VPN, TLS & PKI",
+  "host": {
+    "name": "SKYPORT-VPN",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nSkyport remote access VPN gateway, vpn.skyport.grid (TLS on port 443). Grid CA: 10.0.0.20"
+  },
+  "story": {
+    "alert": "SKYPORT-VPN · 0 OF 41 CREW LAPTOPS CONNECTED",
+    "victory": "Forty-one laptops reconnect within a minute, and the DOOM-CA laptop is refused at the door. Rivet sets a renewal reminder for next October."
+  },
+  "modes": {
+    "tp": {
+      "prompt": "ca-trustpoint"
+    },
+    "tp-other": {
+      "prompt": "ca-trustpoint"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 980 bytes\n!\nhostname SKYPORT-VPN\n!\ncrypto pki trustpoint SKYPORT-TP\n enrollment terminal\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show clock",
+      "text": "*06:12:44.118 UTC Mon Oct 12 2026"
+    },
+    {
+      "cmd": "show crypto pki certificates",
+      "when": [
+        "enrolled"
+      ],
+      "sets": [
+        "seen-new"
+      ],
+      "text": "Certificate\n  Status: Available\n  Certificate Serial Number (hex): 3C4D\n  Issuer:\n    cn=GRID-ROOT-CA\n  Subject:\n    cn=vpn.skyport.grid\n  Validity Date:\n    start date: 06:31:00 UTC Oct 12 2026\n    end   date: 06:31:00 UTC Oct 12 2027\n  Associated Trustpoints: SKYPORT-TP\n\nCA Certificate\n  Status: Available\n  Issuer:  cn=GRID-ROOT-CA\n  Subject: cn=GRID-ROOT-CA\n  Validity Date:\n    end   date: 00:00:00 UTC Oct 11 2036\n  Associated Trustpoints: SKYPORT-TP"
+    },
+    {
+      "cmd": "show crypto pki certificates",
+      "text": "Certificate\n  Status: Available\n  Certificate Serial Number (hex): 1A2B\n  Issuer:\n    cn=GRID-ROOT-CA\n  Subject:\n    cn=vpn.skyport.grid\n  Validity Date:\n    start date: 00:00:00 UTC Oct 11 2025\n    end   date: 00:00:00 UTC Oct 11 2026\n  Associated Trustpoints: SKYPORT-TP\n\nCA Certificate\n  Status: Available\n  Issuer:  cn=GRID-ROOT-CA\n  Subject: cn=GRID-ROOT-CA\n  Validity Date:\n    end   date: 00:00:00 UTC Oct 11 2036\n  Associated Trustpoints: SKYPORT-TP"
+    },
+    {
+      "cmd": "show crypto pki trustpoints",
+      "text": "Trustpoint SKYPORT-TP:\n    Subject Name: cn=GRID-ROOT-CA\n    Certificate configured."
+    },
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      612   connect-log.txt\n"
+    },
+    {
+      "cmd": "more flash:connect-log.txt",
+      "text": "VPN CONNECTION LOG (TLS, port 443)\n==================================\n05:58  crew-laptop-07  cert cn=crew07, issuer GRID-ROOT-CA        OK\n06:00  (gateway certificate expired: all new sessions fail)\n06:04  ???             cert cn=vpn.skyport.grid, issuer DOOM-CA  ???\n        the gateway is not configured to trust DOOM-CA\n"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "crypto pki trustpoint <word>",
+      "args": [
+        "SKYPORT-TP"
+      ],
+      "enters": "tp"
+    },
+    {
+      "cmd": "crypto pki trustpoint <word>",
+      "enters": "tp-other",
+      "reply": "% Saved. The gateway's trustpoint is SKYPORT-TP."
+    },
+    {
+      "mode": "tp",
+      "cmd": "enrollment url <word>",
+      "args": [
+        "http://10.0.0.20:80"
+      ],
+      "sets": [
+        "enroll-url"
+      ]
+    },
+    {
+      "mode": "tp",
+      "cmd": "enrollment url <word>",
+      "args": [
+        "http://10.0.0.20"
+      ],
+      "sets": [
+        "enroll-url"
+      ]
+    },
+    {
+      "mode": "tp",
+      "cmd": "enrollment url <word>",
+      "reply": "% Saved, but the Grid CA is at http://10.0.0.20:80"
+    },
+    {
+      "mode": "tp",
+      "cmd": "subject-name <word>",
+      "args": [
+        "CN=vpn.skyport.grid"
+      ],
+      "sets": [
+        "subj"
+      ]
+    },
+    {
+      "mode": "tp",
+      "cmd": "subject-name <rest>",
+      "reply": "% Saved, but clients connect to vpn.skyport.grid, so the name must be CN=vpn.skyport.grid"
+    },
+    {
+      "mode": "tp",
+      "cmd": "revocation-check <word>",
+      "args": [
+        "ocsp"
+      ],
+      "sets": [
+        "ocsp"
+      ]
+    },
+    {
+      "mode": "tp",
+      "cmd": "revocation-check <word>",
+      "reply": "% Saved. The orders ask for live checking: revocation-check ocsp"
+    },
+    {
+      "mode": "tp-other",
+      "cmd": "<rest>",
+      "hidden": true
+    },
+    {
+      "cmd": "crypto pki enroll <word>",
+      "args": [
+        "SKYPORT-TP"
+      ],
+      "when": [
+        "enroll-url",
+        "subj"
+      ],
+      "sets": [
+        "enrolled"
+      ],
+      "store": false,
+      "reply": "% Start certificate enrollment ..\n% The subject name in the certificate will include: CN=vpn.skyport.grid\n% Certificate request sent to Certificate Authority\n% The certificate has been granted by the CA (GRID-ROOT-CA)."
+    },
+    {
+      "cmd": "crypto pki enroll <word>",
+      "store": false,
+      "reply": "% The trustpoint is not ready: set the enrollment url and the subject-name first."
+    },
+    {
+      "cmd": "crypto pki authenticate <word>",
+      "store": false,
+      "reply": "Certificate has the following attributes:\n       Fingerprint SHA256: 4F2A 91C0 7D3B E8A5 ...\n% Certificate already authenticated (GRID-ROOT-CA)."
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Why did it break?",
+      "body": "Type `enable`. Run `show clock` and `show crypto pki certificates`. What is wrong with the gateway's certificate? `submit PROBLEM=...` (expired, revoked or wrong-name). Who issued it? `submit ISSUER=...`.",
+      "objectives": [
+        {
+          "id": "a-prob",
+          "label": "Problem named",
+          "check": {
+            "type": "answer",
+            "value": "PROBLEM=expired"
+          }
+        },
+        {
+          "id": "a-iss",
+          "label": "Issuer named",
+          "check": {
+            "type": "answer",
+            "value": "ISSUER=GRID-ROOT-CA",
+            "alt": [
+              "ISSUER=cn=GRID-ROOT-CA"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Renew it",
+      "body": "In `conf t`: `crypto pki trustpoint SKYPORT-TP`, then `enrollment url http://10.0.0.20:80`, `subject-name CN=vpn.skyport.grid`, `revocation-check ocsp`, `exit`. Then `crypto pki enroll SKYPORT-TP`. `end` and check `show crypto pki certificates` again.",
+      "objectives": [
+        {
+          "id": "url",
+          "label": "Enrollment URL points at the Grid CA",
+          "check": {
+            "type": "fact",
+            "fact": "enroll-url"
+          }
+        },
+        {
+          "id": "subj",
+          "label": "Subject is CN=vpn.skyport.grid",
+          "check": {
+            "type": "fact",
+            "fact": "subj"
+          }
+        },
+        {
+          "id": "ocsp",
+          "label": "Revocation checked with OCSP",
+          "check": {
+            "type": "fact",
+            "fact": "ocsp"
+          }
+        },
+        {
+          "id": "enrolled",
+          "label": "New certificate granted by the CA",
+          "check": {
+            "type": "fact",
+            "fact": "enrolled"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Saw the new validity dates",
+          "check": {
+            "type": "fact",
+            "fact": "seen-new"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Refuse the forgery",
+      "body": "Read `more flash:connect-log.txt`. Should the gateway trust the laptop that presented a certificate from DOOM-CA? `submit TRUST=yes` or `no`. And which port does the crew's TLS VPN use? `submit PORT=...`.",
+      "objectives": [
+        {
+          "id": "a-trust",
+          "label": "Forged certificate refused",
+          "check": {
+            "type": "answer",
+            "value": "TRUST=no"
+          }
+        },
+        {
+          "id": "a-port",
+          "label": "TLS VPN port named",
+          "check": {
+            "type": "answer",
+            "value": "PORT=443"
+          }
+        }
+      ]
+    }
+  ]
+}

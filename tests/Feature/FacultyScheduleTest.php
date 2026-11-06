@@ -376,7 +376,7 @@ class FacultyScheduleTest extends TestCase
         $crew = Crew::where('teacher_id', $t->id)->firstOrFail();
         TeacherClass::create(['user_id' => $t->id, 'subject' => 'Robotics Lab', 'day' => 2, 'starts_at' => '09:30']);
 
-        foreach ([route('faculty.dashboard'), route('faculty.classes'), route('faculty.course', $crew), route('faculty.chat')] as $url) {
+        foreach ([route('faculty.dashboard'), route('faculty.classes'), route('faculty.course', $crew)] as $url) {
             $this->actingAs($t)->get($url)->assertOk()
                 ->assertSee('aria-label="Calendar"', false)                      // the rail item
                 ->assertSee('calendarDrawer', false)                             // the drawer

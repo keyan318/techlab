@@ -21,6 +21,8 @@ class ComputerProgrammingCourseTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private function student(): User
     {
         return $this->studentIn('programming', 'computer-programming-1', ['role' => 'student']);
@@ -34,7 +36,7 @@ class ComputerProgrammingCourseTest extends TestCase
     public function test_programming_city_offers_python_and_computer_programming_1(): void
     {
         $this->assertSame(
-            ['python', 'computer-programming-1'],
+            ['python', 'computer-programming-1', 'computer-programming-2'],
             array_keys(config('course-catalog.programming.courses'))
         );
 
@@ -189,10 +191,11 @@ class ComputerProgrammingCourseTest extends TestCase
             $this->assertNotSame('', $row['explanation'], "Q{$q} needs an explanation");
         }
 
-        foreach (['Simple Explanation', 'Field Diagram', 'Code Example', 'Quiz'] as $heading) {
+        // Stage 2 is an everyday analogy with a picture, not a crew scene.
+        foreach (['Simple Explanation', 'Picture It', 'Field Diagram', 'Code Example', 'Quiz'] as $heading) {
             $this->assertStringContainsString('>'.$heading.'</h2>', $html);
         }
-        $this->assertMatchesRegularExpression('/<h2 class="section-heading">(Astro|Rivet|Volt)(\'s)? [A-Za-z]+<\/h2>/', $html);
+        $this->assertDoesNotMatchRegularExpression('/<h2 class="section-heading">(Astro|Rivet|Volt)(\'s)? [A-Za-z]+<\/h2>/', $html);
 
         $this->assertStringContainsString('Code it yourself', $html);
         $this->assertStringContainsString(

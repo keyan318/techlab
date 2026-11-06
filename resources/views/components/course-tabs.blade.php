@@ -1,24 +1,23 @@
 {{--
-  The course hub's four tabs. Route-based (not JS), so each tab is a real page with its own
+  The course hub's tabs (Home, Supplementary Materials, Crew). Route-based (not JS), so each tab is a real page with its own
   URL and the browser's back button works. Follows the sidebar's active-item convention:
   aria-current="page" plus an underline on the selected tab.
 
-  $quizBadge is the number of quizzes this student has not looked at yet; 0 hides the bubble.
   $materialsBadge is the number of materials the faculty added since this student last looked; 0 hides the bubble.
+  $showMaterials is false on a self-paced course: there's no faculty there to upload anything, so no tab.
 --}}
-@props(['slug', 'course', 'tab', 'quizBadge' => 0, 'materialsBadge' => 0])
+@props(['slug', 'course', 'tab', 'materialsBadge' => 0, 'showMaterials' => true])
 
 @php
-  $tabs = [
+  $tabs = array_values(array_filter([
     ['key' => 'home', 'label' => 'Home', 'route' => 'student.course.overview'],
-    ['key' => 'materials', 'label' => 'Materials', 'route' => 'student.course.materials'],
-    ['key' => 'quiz', 'label' => 'Quiz', 'route' => 'student.course.quiz'],
+    $showMaterials ? ['key' => 'materials', 'label' => 'Supplementary Materials', 'route' => 'student.course.materials'] : null,
     ['key' => 'crew', 'label' => 'Crew', 'route' => 'student.course.crew'],
-  ];
-  $badges = ['materials' => $materialsBadge, 'quiz' => $quizBadge];
+  ]));
+  $badges = ['materials' => $materialsBadge];
 @endphp
 
-<nav class="border-b border-glassBorder" aria-label="Course sections">
+<nav class="border-b border-glassBorder" aria-label="Course sections" data-tour="course-tabs">
   <ul class="mx-auto flex max-w-[1200px] items-center gap-1 px-4 sm:px-8">
     @foreach ($tabs as $t)
       @php $on = $tab === $t['key']; $badge = $badges[$t['key']] ?? 0; @endphp
@@ -31,7 +30,7 @@
 
           @if ($badge > 0)
             <span class="grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#e5484d] px-1 text-[11px] font-bold leading-none text-white"
-                  aria-label="{{ $badge }} new {{ \Illuminate\Support\Str::plural($t['key'] === 'quiz' ? 'quiz' : 'material', $badge) }}">{{ $badge > 9 ? '9+' : $badge }}</span>
+                  aria-label="{{ $badge }} new {{ \Illuminate\Support\Str::plural('material', $badge) }}">{{ $badge > 9 ? '9+' : $badge }}</span>
           @endif
 
           @if ($on)

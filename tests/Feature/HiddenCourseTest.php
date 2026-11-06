@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\LessonProgress;
+use App\Models\User;
 use App\Services\CourseProgressService;
+use App\Services\LessonSourceService;
 use App\Services\StudentDashboardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -43,10 +45,20 @@ class HiddenCourseTest extends TestCase
             ->assertDontSee('Zero to Automation');
     }
 
+    public function test_astros_add_from_planets_picker_leaves_a_hidden_course_out(): void
+    {
+        $sources = app(LessonSourceService::class);
+        $slugs = array_column($sources->catalog(User::factory()->create()), 'slug');
+
+        $this->assertNotContains('programming', $slugs);
+        $this->assertContains('computer-programming-1', $slugs);
+        $this->assertSame([], $sources->resolve([['planet' => 'programming', 'module' => 'M1', 'lesson' => 'lesson-01']]));
+    }
+
     public function test_a_hidden_course_does_not_count_toward_its_planet(): void
     {
         $this->assertTrue(CourseProgressService::isHidden('programming'));
-        $this->assertSame(['computer-programming-1'], CourseProgressService::keysForPlanet('programming'));
+        $this->assertSame(['computer-programming-1', 'computer-programming-2'], CourseProgressService::keysForPlanet('programming'));
         $this->assertSame('computer-programming-1', StudentDashboardService::catalogCourse('programming')['id']);
     }
 

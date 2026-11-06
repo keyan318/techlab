@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit G.5 Compliance with Regulatory Standards and Auditing DR 
         the same claim as "we tested this plan and it worked."
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">When can a DR plan be called compliant?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. When it is written in great detail</li>
+            <li class="quiz-option">B. When it is the longest plan on file in the base</li>
+            <li class="quiz-option quiz-correct">C. When it has been tested and documented ✓</li>
+            <li class="quiz-option">D. When the crew has heard of it once</li>
+        </ul>
+        <p class="quiz-explanation"><em>Most standards require documented proof of a real test. “We have a plan” is not enough.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit G.5 Compliance with Regulatory Standards and Auditing DR 
         been run as a drill. "This fails the audit," Volt says. "Not because the plan is bad. Because 'we wrote
         it' isn't the same claim as 'we tested it,' and the standard asks for the second one."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does the shield generator's plan fail the audit?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. It was never run as a drill ✓</li>
+            <li class="quiz-option">B. It was written very badly by Rivet</li>
+            <li class="quiz-option">C. It was tested last month</li>
+            <li class="quiz-option">D. It had too many details</li>
+        </ul>
+        <p class="quiz-explanation"><em>The plan is well written, but “we wrote it” isn't “we tested it”, and the standard asks for the second.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -51,6 +73,17 @@ Syllabus: ITP1333 Unit G.5 Compliance with Regulatory Standards and Auditing DR 
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">"We have a plan" and "we tested this plan" are different claims</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does the standard actually require?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Plan written down on paper</li>
+            <li class="quiz-option quiz-correct">B. Plan tested + documented ✓</li>
+            <li class="quiz-option">C. Plan kept on a shelf</li>
+            <li class="quiz-option">D. Plan that looks good</li>
+        </ul>
+        <p class="quiz-explanation"><em>The standard requires a plan that was tested and documented, not just written.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

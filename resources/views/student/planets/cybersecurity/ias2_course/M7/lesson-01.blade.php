@@ -29,6 +29,17 @@ Syllabus: ITP1333 Unit G.1 Disaster Recovery (DR) Concepts. --}}
         what the system actually needs, not the smallest number that sounds impressive.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does RPO measure?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The most time a system can stay down</li>
+            <li class="quiz-option">B. The cost of buying a new backup drive</li>
+            <li class="quiz-option">C. The number of backups in storage now</li>
+            <li class="quiz-option quiz-correct">D. The most data you can afford to lose ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>RPO is the maximum acceptable data loss, measured in time. RTO is the maximum acceptable downtime.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit G.1 Disaster Recovery (DR) Concepts. --}}
         minutes of data at risk is inside our RPO. This recovery met both targets — that's not luck, that's the plan
         working the way it was built to."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">The relay was down 3 hours with an RTO of 4 hours. Did it meet the RTO?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Yes, it was inside the RTO ✓</li>
+            <li class="quiz-option">B. No, it went past the RTO</li>
+            <li class="quiz-option">C. No, the RPO was missed</li>
+            <li class="quiz-option">D. Only if it was a real attack</li>
+        </ul>
+        <p class="quiz-explanation"><em>Three hours down is inside a four-hour RTO, and 30 minutes of data is inside a one-hour RPO.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -53,6 +75,17 @@ Syllabus: ITP1333 Unit G.1 Disaster Recovery (DR) Concepts. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Two numbers, agreed in advance, define what "recovered" actually means</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does RTO define?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Max acceptable data loss</li>
+            <li class="quiz-option quiz-correct">B. Max acceptable downtime ✓</li>
+            <li class="quiz-option">C. The backup media type</li>
+            <li class="quiz-option">D. The offsite copy place</li>
+        </ul>
+        <p class="quiz-explanation"><em>RTO is maximum acceptable downtime. RPO is maximum acceptable data loss.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

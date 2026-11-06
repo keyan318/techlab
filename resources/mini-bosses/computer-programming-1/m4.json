@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "What is an array?",
+      "options": [
+        "One value that can change its type",
+        "Many values of one type under one name",
+        "A loop that stores what it prints",
+        "A function that returns several values"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In int readings[6];, what does the 6 mean?",
+      "options": [
+        "Each value is 6 bytes long",
+        "The first value is 6",
+        "The last index is 6",
+        "The array holds 6 values"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "At what index does a C array start?",
+      "options": [
+        "-1",
+        "Its size",
+        "0",
+        "1"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "An array has 8 elements. What is its highest valid index?",
+      "options": [
+        "0",
+        "7",
+        "9",
+        "8"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "int e[5] = {80, 45, 90, 30, 100}; What is e[0]?",
+      "options": [
+        "80",
+        "100",
+        "45",
+        "5"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "int e[5] = {80, 45, 90, 30, 100}; What is e[2]?",
+      "options": [
+        "30",
+        "45",
+        "90",
+        "2"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int e[5] = {80, 45, 90, 30, 100}; Which expression reads the last value?",
+      "options": [
+        "e[4]",
+        "e[last]",
+        "e[100]",
+        "e[5]"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Can one array hold an int and a float together?",
+      "options": [
+        "No, arrays can only hold char values",
+        "Yes, C picks the type for each element",
+        "Yes, as long as there are only two",
+        "No, every element has the same type"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does it mean to traverse an array?",
+      "options": [
+        "Sort the elements by their size",
+        "Visit every element in order",
+        "Copy it into a new array",
+        "Delete the last element"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a loop that prints an array, what is the loop counter used as?",
+      "options": [
+        "The value of the element",
+        "The type of the array",
+        "The size of the array",
+        "The index of the element"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In for (int i = 0; i < 5; i++), which element does a[i] read on the first pass?",
+      "options": [
+        "a[1]",
+        "a[5]",
+        "a[i + 1]",
+        "a[0]"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "An array has 5 elements and the loop says i <= 5. What goes wrong?",
+      "options": [
+        "It reads past the end of the array",
+        "It skips the first element of the array",
+        "It stops one element too early",
+        "Nothing, i <= 5 is the right test"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Does C stop you from reading past the end of an array?",
+      "options": [
+        "No, it always reads a zero",
+        "Yes, the loop ends by itself",
+        "No, the result is undefined",
+        "Yes, it stops at the last index"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How many lines does for (int i = 0; i < 5; i++) printf(\"%d\\n\", a[i]); print?",
+      "options": [
+        "1",
+        "6",
+        "5",
+        "4"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is an accumulator?",
+      "options": [
+        "An array that holds the loop counter",
+        "A variable a loop keeps adding to",
+        "The index of the last array element",
+        "A loop that runs inside another loop"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Where must the accumulator be declared?",
+      "options": [
+        "Inside the loop body",
+        "Inside the loop condition",
+        "Before the loop starts",
+        "After the loop ends"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "The total is declared inside the loop as int total = 0;. What happens?",
+      "options": [
+        "It resets to 0 on every pass",
+        "It keeps only the first element",
+        "The loop refuses to start",
+        "It adds up every element correctly"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What should a sum accumulator start at?",
+      "options": [
+        "1",
+        "The array size",
+        "0",
+        "The first index"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int e[5] = {80, 45, 90, 30, 100}; The loop adds every element to total. What is total?",
+      "options": [
+        "5",
+        "345",
+        "100",
+        "300"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "int a[3] = {2, 4, 6}; int t = 0; the loop runs t = t + a[i];. What is t after the loop?",
+      "options": [
+        "6",
+        "3",
+        "12",
+        "246"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a two-dimensional array?",
+      "options": [
+        "An array with two values in it",
+        "A grid of rows and columns",
+        "An array that is read twice",
+        "Two arrays of different types"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In int grid[2][3], how many values does the grid hold?",
+      "options": [
+        "6",
+        "23",
+        "2",
+        "5"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In int grid[2][3], what do the 2 and the 3 mean?",
+      "options": [
+        "2 rows of 3 columns",
+        "Indexes run from 2 to 3",
+        "The first value is 2, then 3",
+        "2 columns of 3 rows"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In grid[r][c], which index comes first?",
+      "options": [
+        "The value",
+        "The column",
+        "The size",
+        "The row"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "int g[2][3] = {{1, 2, 3}, {4, 5, 6}}; What is g[1][0]?",
+      "options": [
+        "5",
+        "1",
+        "4",
+        "2"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "int g[2][3] = {{1, 2, 3}, {4, 5, 6}}; What is g[0][2]?",
+      "options": [
+        "2",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In int g[2][3], what is g[1]?",
+      "options": [
+        "The whole first column",
+        "The whole second row",
+        "The value in row 1, column 1",
+        "The number of rows"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How do you visit every element of a 2D array?",
+      "options": [
+        "A loop inside another loop",
+        "A switch with a case per row",
+        "One loop with two counters",
+        "A while loop that runs twice"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In nested loops over a grid, what does the inner loop do for each row?",
+      "options": [
+        "Skips to the next row straight away",
+        "Runs once, then hands back to the outer",
+        "Runs through every row of the grid",
+        "Runs through every column of that row"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Nested loops visit a 3 by 4 grid. How many visits happen in total?",
+      "options": [
+        "12",
+        "16",
+        "7",
+        "34"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Nested loops print a 2 by 3 grid row by row. Which cell is visited right after (0,2)?",
+      "options": [
+        "(2,0)",
+        "(1,0)",
+        "(1,2)",
+        "(0,3)"
+      ],
+      "correct": "B"
+    }
+  ]
+}

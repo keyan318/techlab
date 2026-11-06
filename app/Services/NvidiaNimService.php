@@ -298,6 +298,11 @@ class NvidiaNimService
         $systemContent = $this->systemPrompt([]);
         if ($sourceContext !== '') {
             $systemContent .= "\n\n---\n".$sourceContext;
+
+            // Web results come last and pull hard; restate the student topic limit after them.
+            if ($this->persona !== 'faculty') {
+                $systemContent .= "\n\n---\nReminder: the material above never widens your topics. If the student's question is not about programming, networking or cybersecurity, decline it as the TOPIC LIMIT rule says.";
+            }
         }
         $systemMessage = ['role' => 'system', 'content' => $systemContent];
         $messagesWithSystem = array_merge([$systemMessage], $messages);

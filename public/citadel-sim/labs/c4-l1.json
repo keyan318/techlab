@@ -6,7 +6,7 @@
   "host": { "name": "CITADEL-CORE", "user": "cadet", "cwd": "C:\\Citadel" },
   "story": {
     "alert": "05:55 · INTERCEPTED TRANSMISSION · COMMS RELAY",
-    "vex": "Read it if you can, Captain. You can't. (Commander Vex, Planet Doom)",
+    "vex": "Read it if you can, astronaut. You can't. (Commander Vex, Planet Doom)",
     "victory": "DOOM ATTACK REPELLED. The crew reads Vex's order plainly; Vex will never read theirs. Astro: \"A shifted letter is a puzzle. A real cipher is a wall. Let's build the wall.\""
   },
   "files": {

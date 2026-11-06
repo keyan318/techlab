@@ -33,6 +33,17 @@ Syllabus: ITP1333 Unit B.4 Best Practices for Network Defense. --}}
         sign nobody checked.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does least privilege mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Only the access each account needs ✓</li>
+            <li class="quiz-option">B. Every account gets admin rights</li>
+            <li class="quiz-option">C. Accounts all share the very same password</li>
+            <li class="quiz-option">D. Access is given out once a year</li>
+        </ul>
+        <p class="quiz-explanation"><em>Give each account only the access it needs, nothing more.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -45,6 +56,17 @@ Syllabus: ITP1333 Unit B.4 Best Practices for Network Defense. --}}
     <p class="body-text">
         "None of this is fancy," Astro adds. "It's just four habits, done every week, instead of once and forgotten."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Port 6060 is still listening from an old test. What should be done?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Patch it</li>
+            <li class="quiz-option">B. Monitor it</li>
+            <li class="quiz-option quiz-correct">C. Close it ✓</li>
+            <li class="quiz-option">D. Share it</li>
+        </ul>
+        <p class="quiz-explanation"><em>Anything listening that nobody uses is a door left open for no reason. Close it.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -71,6 +93,17 @@ Syllabus: ITP1333 Unit B.4 Best Practices for Network Defense. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Four unglamorous habits that catch most real breaches</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which habit means “watch for the trace”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Patch</li>
+            <li class="quiz-option">B. Close unused</li>
+            <li class="quiz-option">C. Least privilege</li>
+            <li class="quiz-option quiz-correct">D. Monitor logs ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>An attack usually leaves a trace before it succeeds. Someone has to be watching the logs.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

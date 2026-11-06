@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit H.6 Regulatory Standards Compliance. --}}
         only the second one satisfies a real compliance review.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does compliance need behind each requirement?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A spoken promise</li>
+            <li class="quiz-option quiz-correct">B. Documented evidence ✓</li>
+            <li class="quiz-option">C. A good feeling</li>
+            <li class="quiz-option">D. A longer checklist to sign</li>
+        </ul>
+        <p class="quiz-explanation"><em>A log that actually exists and footage actually retained. “It's probably fine” isn't evidence.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit H.6 Regulatory Standards Compliance. --}}
         Ninety days of camera footage retention — the system only actually keeps thirty. "Basically covered" isn't
         what the inspector will accept. Only the log and footage that actually exist count.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Which item fails Astro's evidence check?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The vault's entry log book</li>
+            <li class="quiz-option quiz-correct">B. Camera footage retention ✓</li>
+            <li class="quiz-option">C. The inspector's visit</li>
+            <li class="quiz-option">D. The annual checklist</li>
+        </ul>
+        <p class="quiz-explanation"><em>The standard wants 90 days of footage, but the system only keeps 30.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -56,6 +78,17 @@ Syllabus: ITP1333 Unit H.6 Regulatory Standards Compliance. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Only documented evidence satisfies a real compliance review</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is “probably fine”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. A claim, not evidence ✓</li>
+            <li class="quiz-option">B. Documented evidence</li>
+            <li class="quiz-option">C. What satisfies a review</li>
+            <li class="quiz-option">D. What the standard asks for</li>
+        </ul>
+        <p class="quiz-explanation"><em>“Probably fine” is just a claim. Only documented evidence satisfies a real compliance review.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

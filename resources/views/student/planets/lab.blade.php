@@ -11,6 +11,9 @@
         'labHelpUnlockUrl' => $labHelpUnlockUrl,
         'labHelpAskUrl' => $labHelpAskUrl,
         'simHint' => $sim['hint'],
+        // Citadel Sim plays its music itself; NetSim and Relay Console labs get it from this page.
+        'simMusic' => $music && $sim['source'] === 'citadel',
+        'hostMusic' => $music && $sim['source'] !== 'citadel',
     ];
 @endphp
 <!DOCTYPE html>
@@ -64,8 +67,20 @@
             white-space: nowrap;
             transition: background .2s ease, border-color .2s ease;
         }
-        .lab-back:hover { background: rgba(255, 255, 255, .14); border-color: rgba(115, 182, 255, .6); }
-        .lab-back:focus-visible, .lab-next:focus-visible { outline: 2px solid #73b6ff; outline-offset: 2px; }
+        .lab-back:hover, .lab-music:hover { background: rgba(255, 255, 255, .14); border-color: rgba(115, 182, 255, .6); }
+        .lab-music {
+            flex: none;
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(255, 255, 255, .06);
+            color: #eaf0ff;
+            font: 600 14px 'Inter', system-ui, sans-serif;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .lab-music[aria-pressed="false"] { color: #9aa6d6; }
+        .lab-back:focus-visible, .lab-next:focus-visible, .lab-music:focus-visible { outline: 2px solid #73b6ff; outline-offset: 2px; }
 
         .lab-heading { min-width: 0; }
         .lab-kicker { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #73b6ff; font-weight: 700; }
@@ -108,7 +123,8 @@
 
         @media (max-width: 720px) {
             .lab-bar { flex-wrap: wrap; }
-            .lab-status { margin-left: 0; width: 100%; }
+            .lab-status { margin-left: 0; width: 100%; order: 10; }
+            .lab-bar .tl-stats { margin-left: auto; }
         }
         @media (prefers-reduced-motion: reduce) { .lab-back { transition: none; } }
     </style>
@@ -137,12 +153,17 @@
             <span>{!! $sim['hint'] !!}</span>
         @endif
     </div>
+
+    <x-stat-chips theme="dark" />
+
+    {{-- Music on/off; public/citadel-sim/js/music.js shows and labels it. --}}
+    <button type="button" class="lab-music" id="lab-music" hidden></button>
 </header>
 
 <iframe
     class="lab-frame"
     id="lab-frame"
-    src="{{ asset($sim['path']) }}?lab={{ $lab }}&u={{ auth()->id() }}{!! $music ? '&music=1' : '' !!}"
+    src="{{ asset($sim['path']) }}?lab={{ $lab }}&u={{ auth()->id() }}{!! $labConfig['simMusic'] ? '&music=1' : '' !!}{!! ($labFile ?? null) ? '&file='.rawurlencode($labFile) : '' !!}"
     title="{{ $sim['name'] }} simulator for lesson {{ $number }}"
     allow="clipboard-read; clipboard-write; autoplay"
 ></iframe>
@@ -156,6 +177,12 @@
     let done = CFG.alreadyDone;
     let posting = false;
 
+    const sfx = function (name) { if (window.techlabSfx) window.techlabSfx.play(name); };
+    const refreshStats = function () { if (window.techlabStats) window.techlabStats.refresh(); };
+    // Objectives cleared so far. The simulators only report changes, so this starts at 0.
+    let lastPassed = 0;
+    let dingTimer = null;
+
     const sleep = function (ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); };
 
     function say(text, passed) {
@@ -163,11 +190,12 @@
         status.textContent = text;
     }
 
-    function showPassed(next) {
+    // `first` is false when the lab was already finished: passing it again earns no more XP.
+    function showPassed(next, first) {
         status.className = 'lab-status passed';
         status.innerHTML = '';
         const msg = document.createElement('span');
-        msg.innerHTML = 'Signal received. Lab complete <strong>+' + CFG.xp + ' XP</strong>';
+        msg.innerHTML = first ? 'Signal received. Lab complete <strong>+' + CFG.xp + ' XP</strong>' : 'Lab complete. You already earned its XP.';
         status.appendChild(msg);
         const target = next || CFG.nextUrl;
         if (target) {
@@ -238,7 +266,9 @@
     // Saving is idempotent on the server, so retrying is always safe.
     async function save() {
         const res = await authFetch(CFG.completeUrl, 'POST', { lab: CFG.lab });
-        return res.ok ? { ok: true, next: res.data && res.data.next } : { ok: false, reason: res.reason };
+        return res.ok
+            ? { ok: true, next: res.data && res.data.next, first: !(res.data && res.data.first === false) }
+            : { ok: false, reason: res.reason };
     }
 
     // Ask-Astro bridge: the citadel-sim iframe has the lab state (mission + transcript) but no Laravel
@@ -251,6 +281,8 @@
     async function relay(url, method, body) {
         if (!url) return { ok: false, data: null, error: 'Ask Astro is not available for this lab.' };
         const res = await authFetch(url, method, body);
+        // Unlocking help or asking Astro spends XP: the header badge shows the new total.
+        if (res.ok && method === 'POST') refreshStats();
 
         return { ok: res.ok, data: res.data, error: (res.data && res.data.error) || (!res.ok ? "Astro couldn't respond — try again." : null) };
     }
@@ -261,8 +293,41 @@
         say('Saving your progress...', false);
         const res = await save();
         posting = false;
-        if (res.ok) { done = true; showPassed(res.next); } else { showFailed(res.reason); }
+        if (res.ok) { done = true; showPassed(res.next, res.first); cheer(res.next, res.first); refreshStats(); } else { showFailed(res.reason); }
     }
+
+    // Astro jumps for joy. The music's fanfare is the win sound when it's playing; otherwise a jingle.
+    function cheer(next, first) {
+        const musicOn = CFG.simMusic || (window.labMusic && window.labMusic.playing);
+        if (!musicOn) sfx('win');
+        if (window.astroCheer) window.astroCheer.show({ kicker: 'Lab complete', xp: first ? CFG.xp : 0, nextUrl: next || CFG.nextUrl });
+    }
+
+    // A ding when an objective clears, a sad jingle when something that was done comes undone
+    // (dropping to 0 is the Restart button, so that stays quiet). NetSim's "lose" comes from its
+    // lab-failed report instead: a Check that found mistakes.
+    function progressSound(passed) {
+        if (passed > lastPassed) {
+            clearTimeout(dingTimer);
+            dingTimer = setTimeout(function () { sfx('coin'); }, 80);
+        } else if (passed < lastPassed && passed > 0 && CFG.source !== 'netsim') {
+            sfx('lose');
+        }
+        lastPassed = passed;
+    }
+
+    // Clicks and key presses inside the simulator never reach this page, but they still count as
+    // the student using it, so pass them on: that lets this page's sound and music start.
+    frame.addEventListener('load', function () {
+        try {
+            ['pointerdown', 'keydown'].forEach(function (type) {
+                frame.contentDocument.addEventListener(type, function () {
+                    if (window.techlabSfx) window.techlabSfx.unlock();
+                    document.dispatchEvent(new Event(type));
+                }, true);
+            });
+        } catch (e) { /* not same-origin: sound starts on the first click on this page instead */ }
+    });
 
     // The simulator (same origin) reports progress with postMessage.
     window.addEventListener('message', function (e) {
@@ -270,9 +335,13 @@
         const m = e.data;
         if (!m || m.source !== CFG.source || m.lab !== CFG.lab) return;
 
+        if (window.labMusic && typeof m.passed === 'number') window.labMusic.update(m.passed, m.total);
+
         if (m.type === 'lab-progress' && !done && !posting) {
-            say('Objectives passed: ' + m.passed + ' of ' + m.total + '. Keep going, Captain.', false);
+            progressSound(m.passed);
+            say('Objectives passed: ' + m.passed + ' of ' + m.total + '. Keep going, astronaut.', false);
         } else if (m.type === 'lab-failed' && !done && !posting) {
+            if (CFG.source === 'netsim') { clearTimeout(dingTimer); sfx('lose'); }
             say('Not yet: ' + m.failing.slice(0, 2).join(' \u00b7 '), false);
         } else if (m.type === 'lab-passed' && !done) {
             finish();
@@ -293,6 +362,14 @@
 })();
 </script>
 
+@if ($labConfig['hostMusic'])
+<script type="module">
+    import { createMusic } from @json(asset('citadel-sim/js/music.js').'?v='.filemtime(public_path('citadel-sim/js/music.js')));
+    window.labMusic = createMusic({ enabled: true, button: document.getElementById('lab-music') });
+</script>
+@endif
+
+<x-astro-cheer />
 <x-page-loader />
 </body>
 </html>

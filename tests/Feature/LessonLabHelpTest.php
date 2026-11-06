@@ -18,6 +18,8 @@ class LessonLabHelpTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private function url(string $action, string $slug = 'cybersecurity', string $module = 'm1', string $lesson = 'lesson01'): string
     {
         return route("student.planet.lab-help.{$action}", ['slug' => $slug, 'module' => $module, 'lesson' => $lesson]);

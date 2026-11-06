@@ -28,36 +28,43 @@ Syllabus: CC102 Unit 4 — Arrays (declaration and initialization). --}}
         index is always one less than the array's size.
     </p>
 
-    <h2 class="section-heading">Rivet Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">An array has 8 elements. What is its highest valid index?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. 7 ✓</li>
+            <li class="quiz-option">B. 8</li>
+            <li class="quiz-option">C. 9</li>
+            <li class="quiz-option">D. 0</li>
+        </ul>
+        <p class="quiz-explanation"><em>Indexes start at 0, so the highest valid index is always one less than the size.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Last dead system on the list: the hull panels. They're what keeps the weather out, and there isn't one
-        of them — there's a whole row, and the crash flattened one in the middle.
+        An <strong>array</strong> is a row of <strong>lockers</strong> in a hallway. They're all the same size, side by side, with one name on the sign above them: <code>emitters</code>. Each locker holds one value, and every locker holds the same kind of thing (here, all <code>int</code>s).
     </p>
 
     <p class="body-text">
-        <strong>Rivet</strong>: "I am not making four separate boxes with four separate names. I'd mix them up
-        by Thursday."
+        The surprise: the first locker is number <strong>0</strong>, not 1. So 5 lockers are numbered 0 to 4, and <code>emitters[4]</code> is the last one. Ask for <code>emitters[5]</code> and you're reaching past the end of the hallway, into a locker that isn't yours.
     </p>
 
-    <p class="body-text">
-        <strong>Volt</strong>: "So what, then?"
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 315" role="img" aria-label="A row of 5 lockers under the sign emitters, numbered 0 to 4, holding 80, 45, 90, 30 and 100. emitters[0] is 80 and emitters[4] is 100. A sixth spot, emitters[5], is crossed out: not yours.">
+            <rect x="170" y="18" width="300" height="38" rx="8" fill="#1b2440"/><text x="320" y="43" font-size="18" fill="#fff" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters</text><rect x="25" y="76" width="90" height="170" rx="6" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><line x1="52.0" y1="88" x2="88.0" y2="88" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="52.0" y1="95" x2="88.0" y2="95" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="52.0" y1="102" x2="88.0" y2="102" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><circle cx="70.0" cy="126" r="15" fill="#7c5cff"/><text x="70.0" y="132" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">0</text><text x="70.0" y="191.0" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">80</text><rect x="101" y="153.0" width="5" height="22" rx="2" fill="#2f6fe0"/><text x="70" y="272" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters[0]</text><rect x="125" y="76" width="90" height="170" rx="6" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><line x1="152.0" y1="88" x2="188.0" y2="88" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="152.0" y1="95" x2="188.0" y2="95" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="152.0" y1="102" x2="188.0" y2="102" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><circle cx="170.0" cy="126" r="15" fill="#7c5cff"/><text x="170.0" y="132" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">1</text><text x="170.0" y="191.0" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">45</text><rect x="201" y="153.0" width="5" height="22" rx="2" fill="#2f6fe0"/><text x="170" y="272" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters[1]</text><rect x="225" y="76" width="90" height="170" rx="6" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><line x1="252.0" y1="88" x2="288.0" y2="88" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="252.0" y1="95" x2="288.0" y2="95" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="252.0" y1="102" x2="288.0" y2="102" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><circle cx="270.0" cy="126" r="15" fill="#7c5cff"/><text x="270.0" y="132" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">2</text><text x="270.0" y="191.0" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">90</text><rect x="301" y="153.0" width="5" height="22" rx="2" fill="#2f6fe0"/><text x="270" y="272" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters[2]</text><rect x="325" y="76" width="90" height="170" rx="6" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><line x1="352.0" y1="88" x2="388.0" y2="88" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="352.0" y1="95" x2="388.0" y2="95" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="352.0" y1="102" x2="388.0" y2="102" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><circle cx="370.0" cy="126" r="15" fill="#7c5cff"/><text x="370.0" y="132" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">3</text><text x="370.0" y="191.0" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">30</text><rect x="401" y="153.0" width="5" height="22" rx="2" fill="#2f6fe0"/><text x="370" y="272" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters[3]</text><rect x="425" y="76" width="90" height="170" rx="6" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><line x1="452.0" y1="88" x2="488.0" y2="88" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="452.0" y1="95" x2="488.0" y2="95" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><line x1="452.0" y1="102" x2="488.0" y2="102" stroke="#2f6fe0" stroke-width="1.5" opacity=".5"/><circle cx="470.0" cy="126" r="15" fill="#7c5cff"/><text x="470.0" y="132" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">4</text><text x="470.0" y="191.0" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">100</text><rect x="501" y="153.0" width="5" height="22" rx="2" fill="#2f6fe0"/><text x="470" y="272" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters[4]</text><rect x="525" y="76" width="90" height="170" rx="6" fill="#fff7f7" stroke="#b3261e" stroke-width="2" stroke-dasharray="6,4"/><text x="570.0" y="126" font-size="18" fill="#b3261e" font-weight="800" text-anchor="middle">5</text><text x="570.0" y="181.0" font-size="24" fill="#b3261e" font-weight="800" text-anchor="middle">✗</text><text x="570.0" y="228" font-size="12" fill="#b3261e" font-weight="700" text-anchor="middle">not yours</text><text x="570" y="272" font-size="12" fill="#b3261e" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">emitters[5]</text><line x1="530" y1="268" x2="610" y2="268" stroke="#b3261e" stroke-width="1.5"/><text x="320" y="302" font-size="13" fill="#5b6b86" text-anchor="middle" font-style="italic">5 lockers, numbered 0 to 4. Same size, same type, one name.</text>
+        </svg>
+    </figure>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "One name. One row. Then I just point at the one I want by where it sits —
-        first, second, third." He catches himself and holds up a finger. "Ah — except counting starts at zero.
-        So the first one is number zero."
-    </p>
-
-    <p class="body-text">
-        <strong>Volt</strong>: "That's stupid."
-    </p>
-
-    <p class="body-text">
-        <strong>Rivet</strong>, delighted: "I know. Everyone hates it for about a week and then never thinks
-        about it again. Promise."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">A row has 5 lockers. What is the number of the last one?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 5, because there are five lockers</li>
+            <li class="quiz-option quiz-correct">B. 4, because counting starts at 0 ✓</li>
+            <li class="quiz-option">C. 6, one extra is kept at the end</li>
+            <li class="quiz-option">D. 1, the last is numbered first</li>
+        </ul>
+        <p class="quiz-explanation"><em>Counting starts at 0, so the highest number is always one less than the size: 0, 1, 2, 3, 4.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -84,6 +91,17 @@ int main() {
     printf("Last: %d\n", emitters[4]);
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">What does the code example print on the “Last:” line?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Last: 80</li>
+            <li class="quiz-option">B. Last: 30</li>
+            <li class="quiz-option">C. Last: 5</li>
+            <li class="quiz-option quiz-correct">D. Last: 100 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>emitters[4]</code> is the fifth and last value in the list, which is 100.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -147,10 +165,10 @@ int main() {
     <div class="quiz-block" data-q="1">
         <p class="quiz-prompt">Q1. What does an array hold?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Exactly one value, like any other variable</li>
-            <li class="quiz-option quiz-correct">B. A fixed number of values of the same type, under one name ✓</li>
-            <li class="quiz-option">C. Values of any mix of types</li>
-            <li class="quiz-option">D. Only text, never numbers</li>
+            <li class="quiz-option">A. One value, like any other variable</li>
+            <li class="quiz-option">B. Values of any mix of types together</li>
+            <li class="quiz-option quiz-correct">C. Several values of one type, one name ✓</li>
+            <li class="quiz-option">D. Only text values, never numbers</li>
         </ul>
         <p class="quiz-explanation"><em>An array groups several values of the same type together under a single name, stored one after another.</em></p>
     </div>
@@ -161,7 +179,7 @@ int main() {
             <li class="quiz-option">A. 5 — the array's size</li>
             <li class="quiz-option quiz-correct">B. 80 — the first value ✓</li>
             <li class="quiz-option">C. 100 — the last value</li>
-            <li class="quiz-option">D. It causes an error — arrays start counting at 1</li>
+            <li class="quiz-option">D. 45 — the second value</li>
         </ul>
         <p class="quiz-explanation"><em>C array indexing starts at 0, so index 0 is always the first element — here, 80.</em></p>
     </div>
@@ -170,9 +188,9 @@ int main() {
         <p class="quiz-prompt">Q3. In that same 5-element array, what is the highest valid index?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. 5</li>
-            <li class="quiz-option quiz-correct">B. 4 ✓</li>
-            <li class="quiz-option">C. 6</li>
-            <li class="quiz-option">D. 1</li>
+            <li class="quiz-option">B. 6</li>
+            <li class="quiz-option">C. 1</li>
+            <li class="quiz-option quiz-correct">D. 4 ✓</li>
         </ul>
         <p class="quiz-explanation"><em>Since indexing starts at 0, an array of 5 elements has valid indices 0, 1, 2, 3 and 4 — one less than its size.</em></p>
     </div>
@@ -180,23 +198,12 @@ int main() {
     <div class="quiz-block" data-q="4">
         <p class="quiz-prompt">Q4. What does <code>[5]</code> mean in <code>int emitters[5]</code>?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. The array's first value is 5</li>
-            <li class="quiz-option quiz-correct">B. The array holds 5 elements ✓</li>
-            <li class="quiz-option">C. The array can never change</li>
-            <li class="quiz-option">D. It's a comment and has no effect</li>
+            <li class="quiz-option quiz-correct">A. The array holds 5 elements ✓</li>
+            <li class="quiz-option">B. The array's first value is 5</li>
+            <li class="quiz-option">C. The highest index is 5</li>
+            <li class="quiz-option">D. Each value can be at most 5</li>
         </ul>
         <p class="quiz-explanation"><em>The number in square brackets when declaring an array sets how many elements it holds.</em></p>
-    </div>
-
-    <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. Why does Astro call index-0-is-first "automatic fast" but still worth mentioning up front?</p>
-        <ul class="quiz-options">
-            <li class="quiz-option">A. Because C actually starts counting arrays at 1 in some cases</li>
-            <li class="quiz-option quiz-correct">B. Because it's a common early mixup, and knowing it in advance avoids a whole class of off-by-one mistakes ✓</li>
-            <li class="quiz-option">C. Because indices don't matter at all once you're used to arrays</li>
-            <li class="quiz-option">D. Because it only applies to arrays larger than 10 elements</li>
-        </ul>
-        <p class="quiz-explanation"><em>Zero-based indexing trips up almost everyone the first time — expecting it up front is what prevents off-by-one bugs later.</em></p>
     </div>
 
 </div>

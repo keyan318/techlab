@@ -40,7 +40,7 @@
       <p class="mt-2 max-w-sm text-sm text-muted" x-text="rp.error"></p>
       <div class="mt-6 flex items-center gap-3">
         <button type="button" @click="rp.close()" class="rounded-full border border-glassBorder bg-glass px-4 py-2 text-sm text-muted transition hover:text-ink">Close</button>
-        <button type="button" x-show="rp.errorKind !== 'insufficient_content'" @click="rp.generate()" class="rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-5 py-2 text-sm font-semibold text-[#07142e]">Try again</button>
+        <button type="button" x-show="!['insufficient_content', 'xp'].includes(rp.errorKind)" @click="rp.generate()" class="rounded-full bg-[linear-gradient(100deg,#5be1ff,#73b6ff_55%,#9b6bff)] px-5 py-2 text-sm font-semibold text-[#07142e]">Try again</button>
       </div>
     </section>
 

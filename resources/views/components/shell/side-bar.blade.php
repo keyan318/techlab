@@ -24,9 +24,8 @@
       };
   }
 
-  // Faculty get Dashboard / Chat / Crew / Materials. Crew and Materials always
-  // jump to the faculty's one active course server-side (no course picker yet,
-  // even though a faculty member can be captain of several courses at once).
+  // Faculty get Dashboard / Chat / Courses / Crew / Materials. Crew opens into every
+  // crew they watch, grouped by planet; Materials jumps to their most recent class.
   // Admin gets Dashboard / Course Assignment only — no Chat, Planets or Crew,
   // none of which apply to the admin role.
   $isFaculty  = $user && $user->role === 'faculty';
@@ -34,7 +33,7 @@
   $homeRoute  = $isFaculty ? 'faculty.dashboard' : ($isAdmin ? 'admin.dashboard' : 'student.dashboard');
   // A student's start page is a greeting + "jump back in", not stats and charts, so it's "Home".
   $homeLabel  = ($isFaculty || $isAdmin) ? 'Dashboard' : 'Home';
-  $chatRoute  = $isFaculty ? 'faculty.chat' : 'student.chat';
+  $chatRoute  = 'student.chat';
 @endphp
 
 <style>
@@ -99,7 +98,7 @@
     @php $on = request()->routeIs($homeRoute); @endphp
     <a href="{{ route($homeRoute) }}"
        @if($on) aria-current="page" @endif
-       aria-label="{{ $homeLabel }}"
+       aria-label="{{ $homeLabel }}" data-tour="nav-home"
        class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
               {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
@@ -122,7 +121,7 @@
             class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">{{ $homeLabel }}</span>
     </a>
 
-    @unless($isAdmin)
+    @unless($isAdmin || $isFaculty)
     {{-- Chat --}}
     @php $on = $chatOn = request()->routeIs($chatRoute); @endphp
     <a href="{{ route($chatRoute) }}"
@@ -130,7 +129,7 @@
           {{-- On the chat page, Chat toggles the Recents list (and opens the rail if it is collapsed). --}}
           @click.prevent="if (collapsed) { collapsed = false; $store.recents.open = true } else { $store.recents.open = !$store.recents.open }"
           :aria-expanded="($store.recents.open && !collapsed).toString()" @endif
-       aria-label="Chat"
+       aria-label="Chat" data-tour="nav-chat"
        class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
               {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
@@ -224,7 +223,39 @@
     @endunless
 
     @if($isFaculty)
-    {{-- Crew: jumps straight to the faculty's active crew's roster --}}
+    <div class="flex flex-col gap-1" data-tour="nav-captain">
+    {{-- Courses: the faculty's courses as the cards students see; each opens in the course player to edit --}}
+    @php $on = request()->routeIs('faculty.courses.index'); @endphp
+    <a href="{{ route('faculty.courses.index') }}"
+       @if($on) aria-current="page" @endif
+       aria-label="Courses"
+       class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
+              {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
+      @if($on)<span class="absolute -left-2.5 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-[#73b6ff] shadow-[0_0_10px_rgba(115,182,255,0.7)]"></span>@endif
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="tl-ico h-5 w-5 flex-none" aria-hidden="true">
+        <path class="duo" d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/>
+        <path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>
+        <path d="M8.5 7.5h7M8.5 11h5"/>
+      </svg>
+      <span class="tl-label ml-3 max-w-0 overflow-hidden whitespace-nowrap text-[13.5px] font-medium leading-none tracking-[-0.006em] opacity-0"
+            :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[150px] !opacity-100'"
+            :style="collapsed ? '' : 'transition-delay:90ms'">Courses</span>
+      <span x-show="collapsed" x-cloak aria-hidden="true"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Courses</span>
+    </a>
+
+    {{-- Crew: every crew the captain watches (their classes, and the self-paced run of a course they built),
+         under its planet. The link opens the overview; with the rail open, the chevron lists each crew. --}}
+    @php
+      try { $crewNav = \App\Models\Crew::navFor($user); } catch (\Illuminate\Database\QueryException) { $crewNav = []; }
+      $crewTotal = collect($crewNav)->sum(fn ($p) => count($p['crews']));
+      $crewHere = request()->routeIs('faculty.course.roster') ? request()->route('crew')?->id : null;
+      $crewDots = ['programming' => '#73b6ff', 'networking' => '#5be1ff', 'cybersecurity' => '#b48bff'];
+    @endphp
+    <div x-data="{ crewOpen: {{ $crewHere || request()->routeIs('faculty.crew') ? 'true' : 'false' }} }">
+    <div class="relative">
     @php $on = request()->routeIs('faculty.crew') || request()->routeIs('faculty.course.roster'); @endphp
     <a href="{{ route('faculty.crew') }}"
        @if($on) aria-current="page" @endif
@@ -247,6 +278,45 @@
             class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Crew</span>
     </a>
 
+    @if($crewTotal > 1)
+      <button type="button" x-show="!collapsed" x-cloak @click="crewOpen = !crewOpen"
+              :aria-expanded="crewOpen" aria-controls="tl-crew-list" aria-label="Show each crew"
+              class="absolute right-1.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-lg text-muted
+                     hover:bg-[rgba(123,142,220,0.12)] hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             class="h-4 w-4 transition-transform duration-200" :class="crewOpen ? 'rotate-180' : ''" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    @endif
+    </div>
+    @if($crewTotal > 1)
+      <div id="tl-crew-list" x-show="crewOpen && !collapsed" x-cloak
+           x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+           class="mb-1 ml-[23px] mt-0.5 border-l border-[rgba(123,142,220,0.22)] pl-2.5">
+        @foreach($crewNav as $planet => $group)
+          <div class="mb-1 mt-2 flex items-center gap-1.5 px-2 font-['Space_Mono',monospace] text-[9.5px] font-bold uppercase tracking-[0.16em] text-muted">
+            <i class="h-1.5 w-1.5 flex-none rounded-full" style="background: {{ $crewDots[$planet] ?? '#73b6ff' }}"></i>
+            <span class="truncate">{{ $group['title'] }}</span>
+          </div>
+          @foreach($group['crews'] as $navCrew)
+            @php $here = $crewHere === $navCrew['id']; @endphp
+            <a href="{{ route('faculty.course.roster', $navCrew['id']) }}" @if($here) aria-current="page" @endif
+               title="{{ $navCrew['name'] }}{{ $navCrew['self_paced'] ? ' · Self-paced' : '' }}"
+               class="tl-item flex h-8 items-center gap-2 rounded-[9px] px-2 text-[12.5px] leading-none
+                      focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
+                      {{ $here ? 'bg-[rgba(115,182,255,0.14)] font-semibold text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
+              <span class="min-w-0 flex-1 truncate">{{ $navCrew['name'] }}</span>
+              @if($navCrew['self_paced'])
+                <span class="flex-none rounded-full bg-[rgba(155,107,255,0.16)] px-1.5 py-[3px] text-[9.5px] font-semibold text-[#9b6bff]">Self-paced</span>
+              @else
+                <span class="flex-none rounded-full bg-[rgba(115,182,255,0.16)] px-1.5 py-[3px] text-[9.5px] font-semibold text-[#3b8eea]">Class</span>
+              @endif
+            </a>
+          @endforeach
+        @endforeach
+      </div>
+    @endif
+    </div>
+
     {{-- Materials: jumps straight to modules + quizzes on the faculty's active crew --}}
     @php $on = request()->routeIs('faculty.materials') || request()->routeIs('faculty.course'); @endphp
     <a href="{{ route('faculty.materials') }}"
@@ -268,6 +338,7 @@
       <span x-show="collapsed" x-cloak aria-hidden="true"
             class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Materials</span>
     </a>
+    </div>
     @endif
 
     @if($isAdmin)
@@ -291,6 +362,48 @@
             :style="collapsed ? '' : 'transition-delay:90ms'">Course Assignment</span>
       <span x-show="collapsed" x-cloak aria-hidden="true"
             class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Course Assignment</span>
+    </a>
+    {{-- Classes: every faculty member's open class, Google Classroom style --}}
+    @php $on = request()->routeIs('admin.classes'); @endphp
+    <a href="{{ route('admin.classes') }}"
+       @if($on) aria-current="page" @endif
+       aria-label="Classes"
+       class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
+              {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
+      @if($on)<span class="absolute -left-2.5 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-[#73b6ff] shadow-[0_0_10px_rgba(115,182,255,0.7)]"></span>@endif
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="tl-ico h-5 w-5 flex-none" aria-hidden="true">
+        <path class="duo" d="M12 3.5 2.5 8l9.5 4.5L21.5 8z"/>
+        <path d="M6 10.3v4.8c0 1.6 2.8 3.2 6 3.2s6-1.6 6-3.2v-4.8"/>
+        <path d="M21.5 8v6.5"/>
+      </svg>
+      <span class="tl-label ml-3 max-w-0 overflow-hidden whitespace-nowrap text-[13.5px] font-medium leading-none tracking-[-0.006em] opacity-0"
+            :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[150px] !opacity-100'"
+            :style="collapsed ? '' : 'transition-delay:90ms'">Classes</span>
+      <span x-show="collapsed" x-cloak aria-hidden="true"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Classes</span>
+    </a>
+
+    {{-- Self-paced: every course's self-paced learners, looked after by the admin --}}
+    @php $on = request()->routeIs('admin.self-paced'); @endphp
+    <a href="{{ route('admin.self-paced') }}"
+       @if($on) aria-current="page" @endif
+       aria-label="Self-paced"
+       class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
+              {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
+      @if($on)<span class="absolute -left-2.5 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-[#73b6ff] shadow-[0_0_10px_rgba(115,182,255,0.7)]"></span>@endif
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="tl-ico h-5 w-5 flex-none" aria-hidden="true">
+        <circle class="duo" cx="12" cy="7" r="3.2"/>
+        <path d="M12 10.5v5.5l-3 5M12 16l3 5M7 13.5h10"/>
+      </svg>
+      <span class="tl-label ml-3 max-w-0 overflow-hidden whitespace-nowrap text-[13.5px] font-medium leading-none tracking-[-0.006em] opacity-0"
+            :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[150px] !opacity-100'"
+            :style="collapsed ? '' : 'transition-delay:90ms'">Self-paced</span>
+      <span x-show="collapsed" x-cloak aria-hidden="true"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Self-paced</span>
     </a>
     @endif
 
@@ -348,7 +461,7 @@
     @php $on = request()->routeIs('student.planets'); @endphp
     <a href="{{ route('student.planets') }}"
        @if($on) aria-current="page" @endif
-       aria-label="Planets"
+       aria-label="Planets" data-tour="nav-planets"
        class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
               {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
@@ -373,6 +486,28 @@
       <span x-show="collapsed" x-cloak aria-hidden="true"
             class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Planets</span>
     </a>
+
+    {{-- Shop: frames, animals and suits for XP --}}
+    @php $on = request()->routeIs('student.shop'); @endphp
+    <a href="{{ route('student.shop') }}"
+       @if($on) aria-current="page" @endif
+       aria-label="Shop" data-tour="nav-shop"
+       class="tl-item group relative flex h-10 items-center rounded-[11px] px-[14px]
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]
+              {{ $on ? 'bg-[rgba(115,182,255,0.14)] text-[#73b6ff]' : 'text-muted hover:bg-[rgba(123,142,220,0.09)] hover:text-ink' }}">
+      @if($on)<span class="absolute -left-2.5 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-r-full bg-[#73b6ff] shadow-[0_0_10px_rgba(115,182,255,0.7)]"></span>@endif
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="tl-ico h-5 w-5 flex-none" aria-hidden="true">
+        <path class="duo" d="M5 8h14l-1.1 11.2a1.8 1.8 0 0 1-1.8 1.6H7.9a1.8 1.8 0 0 1-1.8-1.6z"/>
+        <path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/>
+        <path d="M12 13.2l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2-1.45-1.4 2-.3z" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="tl-label ml-3 max-w-0 overflow-hidden whitespace-nowrap text-[13.5px] font-medium leading-none tracking-[-0.006em] opacity-0"
+            :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[150px] !opacity-100'"
+            :style="collapsed ? '' : 'transition-delay:90ms'">Shop</span>
+      <span x-show="collapsed" x-cloak aria-hidden="true"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Shop</span>
+    </a>
     @endunless
 
   </nav>
@@ -380,7 +515,28 @@
   {{-- ── Footer: controls + profile ── --}}
   <div class="border-t border-[rgba(150,170,255,0.09)] px-2.5 pb-3 pt-2.5">
 
-    <div class="space-y-1">
+    @unless($isAdmin)
+    {{-- Tour: Astro explains whatever page you're on (components/astro-tour); pages without a chapter start the Home/Dashboard one --}}
+    <button type="button" data-tour="nav-tour" aria-label="Astro's tour"
+            @click="window.astroTour ? window.astroTour.start() : (window.location.href = @js(route($homeRoute).'?tour=1'))"
+            class="tl-item group relative mb-1 flex h-10 w-full items-center rounded-[11px] px-[14px] text-[#ffd76e]
+                   hover:bg-[rgba(255,215,110,0.10)]
+                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#73b6ff]">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="tl-ico h-5 w-5 flex-none" aria-hidden="true">
+        <circle class="duo" cx="12" cy="12" r="8.5"/>
+        <path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4"/>
+        <path d="M12 16.6h.01" stroke-width="2.2"/>
+      </svg>
+      <span class="tl-label ml-3 max-w-0 overflow-hidden whitespace-nowrap text-[13.5px] font-medium leading-none tracking-[-0.006em] opacity-0"
+            :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[150px] !opacity-100'"
+            :style="collapsed ? '' : 'transition-delay:90ms'">Tour</span>
+      <span x-show="collapsed" x-cloak aria-hidden="true"
+            class="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-white/10 bg-[rgba(14,16,44,0.92)] px-2.5 py-1.5 text-[12px] font-medium text-ink opacity-0 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6)] transition-opacity duration-150 group-hover:opacity-100 group-hover:delay-500 group-focus-visible:opacity-100">Astro's tour</span>
+    </button>
+    @endunless
+
+    <div class="space-y-1" data-tour="nav-controls">
       {{-- Theme --}}
       <button type="button" @click="toggleTheme()" aria-label="Toggle theme"
               class="tl-item group relative flex h-10 w-full items-center rounded-[11px] px-[14px] text-muted
@@ -399,7 +555,7 @@
       </button>
 
       {{-- Sound: the click sounds from public/js/sfx.js and the background music, on or off (remembered per browser) --}}
-      <button type="button" x-data="{ soundOn: !(window.techlabSfx && window.techlabSfx.muted()) }"
+      <button type="button" x-data="{ soundOn: !(window.techlabSfx && window.techlabSfx.muted()) }" @techlab:sound.window="soundOn = $event.detail.on"
               @click="soundOn = window.techlabSfx ? window.techlabSfx.toggle() : soundOn" data-sfx="off"
               :aria-label="soundOn ? 'Turn sounds and music off' : 'Turn sounds and music on'" :aria-pressed="soundOn.toString()"
               class="tl-item group relative flex h-10 w-full items-center rounded-[11px] px-[14px] text-muted
@@ -441,8 +597,8 @@
 
     {{-- ── Profile ── --}}
     @auth
-    <div class="relative mt-2.5 border-t border-[rgba(150,170,255,0.07)] pt-2.5"
-         x-data="{ open: @json((bool) session('accountDeleteError')) }"
+    <div data-tour="nav-account" class="relative mt-2.5 border-t border-[rgba(150,170,255,0.07)] pt-2.5"
+         x-data="{ open: false }"
          @keydown.escape.window="if (open) { open = false; $refs.trigger.focus(); }"
          @click.outside="open = false">
 
@@ -463,20 +619,28 @@
           <p class="truncate text-[13px] font-semibold leading-tight tracking-[-0.006em] text-ink">{{ $user->name }}</p>
           <p class="mt-0.5 truncate text-[12px] leading-tight text-muted">{{ $user->email }}</p>
         </div>
-        @if (session('accountDeleteError'))
-        <p class="border-b border-white/[0.07] px-3.5 py-2.5 text-[12px] leading-snug text-[#ff6b81]">{{ session('accountDeleteError') }}</p>
-        @endif
-        @if ($user->role === 'student')
-        <a href="{{ route('student.avatar') }}" role="menuitem"
+        @if ($isAdmin)
+        <a href="{{ route('admin.avatar') }}" role="menuitem"
            class="tl-item mx-1.5 mt-1.5 flex h-10 items-center gap-3 rounded-[10px] px-2.5 text-[13.5px] font-medium tracking-[-0.006em] text-ink
                   hover:bg-[rgba(255,255,255,0.08)] focus-visible:bg-[rgba(255,255,255,0.08)] focus-visible:outline-none">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px] flex-none" aria-hidden="true">
-            <circle cx="12" cy="10" r="6.5"/><path d="M8.5 10a3.5 3.5 0 0 1 3.5-3.5M6 20h12"/>
+            <circle cx="12" cy="8.5" r="3.5"/>
+            <path d="M5 20a7 7 0 0 1 14 0"/>
           </svg>
-          Change my astronaut
+          Change avatar
         </a>
         @endif
+        <a href="{{ route('settings') }}" role="menuitem"
+           class="tl-item mx-1.5 {{ $isAdmin ? 'mt-0.5' : 'mt-1.5' }} flex h-10 items-center gap-3 rounded-[10px] px-2.5 text-[13.5px] font-medium tracking-[-0.006em] text-ink
+                  hover:bg-[rgba(255,255,255,0.08)] focus-visible:bg-[rgba(255,255,255,0.08)] focus-visible:outline-none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px] flex-none" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+          </svg>
+          Settings
+        </a>
         <form method="POST" action="{{ route('logout') }}" class="p-1.5">
           @csrf
           <button type="submit" role="menuitem" x-ref="logout"
@@ -488,20 +652,6 @@
               <path d="M10.5 12H20M16.5 8.3 20 12l-3.5 3.7"/>
             </svg>
             Log out
-          </button>
-        </form>
-        <form method="POST" action="{{ route('account.destroy') }}" class="border-t border-white/[0.07] p-1.5"
-              onsubmit="return confirm('Delete your account for good? This removes your progress, XP, chats and badges — it can\'t be undone.')">
-          @csrf
-          @method('DELETE')
-          <button type="submit" role="menuitem"
-                  class="tl-item flex h-10 w-full items-center gap-3 rounded-[10px] px-2.5 text-[13.5px] font-medium tracking-[-0.006em] text-[#ff6b81]
-                         hover:bg-[rgba(255,107,129,0.12)] focus-visible:bg-[rgba(255,107,129,0.12)] focus-visible:outline-none">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                 stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px] flex-none" aria-hidden="true">
-              <path d="M4.5 7h15M9.5 7V5h5v2M6.5 7l.8 11.5a1.5 1.5 0 0 0 1.5 1.5h6.4a1.5 1.5 0 0 0 1.5-1.5L17.5 7M10 11v6M14 11v6"/>
-            </svg>
-            Delete account
           </button>
         </form>
       </div>
@@ -517,7 +667,7 @@
               style="outline-offset:2px">
         <span class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-gradient-to-br from-[#73b6ff] to-[#9b6bff]
                      overflow-hidden text-[11.5px] font-semibold tracking-[0.02em] text-[#06061a] shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_4px_14px_-4px_rgba(115,182,255,0.55)]"
-              aria-hidden="true">@if ($user->role === 'student' && $user->avatar)<x-astronaut :look="$user->avatar" crop="bust" class="mt-1.5 h-9 w-9 flex-none" />@else{{ $initials }}@endif</span>
+              aria-hidden="true">@if ($user->avatar)<x-astronaut :look="$user->avatar" crop="bust" class="mt-1.5 h-9 w-9 flex-none" />@else{{ $initials }}@endif</span>
         <span class="tl-label ml-3 flex min-w-0 max-w-0 flex-col overflow-hidden whitespace-nowrap leading-none opacity-0"
               :class="collapsed ? 'max-w-0 opacity-0 !ml-0' : '!max-w-[130px] !opacity-100'"
               :style="collapsed ? '' : 'transition-delay:90ms'">
@@ -565,6 +715,11 @@
 
 {{-- Launch screen while the next page loads (lives here because every app page includes the side-bar) --}}
 <x-page-loader />
+
+{{-- Astro's tour: a step-by-step guide to the page, the first time a student or captain opens it (and from the Tour button) --}}
+@unless($isAdmin)
+  <x-astro-tour />
+@endunless
 
 {{-- Soft background music on a student's everyday pages: Home, Chat and Planets --}}
 @if(! $isFaculty && ! $isAdmin && request()->routeIs('student.dashboard', 'student.chat', 'student.planets', 'student.planet'))

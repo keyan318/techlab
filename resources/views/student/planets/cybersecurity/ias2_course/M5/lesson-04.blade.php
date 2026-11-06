@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit E.4 Client Application Security. --}}
         user forever.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why can't a client-side check be trusted?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The user controls their own device ✓</li>
+            <li class="quiz-option">B. The server can't read client data</li>
+            <li class="quiz-option">C. It runs slower than a server check</li>
+            <li class="quiz-option">D. Clients can't run any checks at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>Anyone who controls the client can bypass the check. Every rule that matters must be enforced on the server too.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit E.4 Client Application Security. --}}
         request after the client-side check passes, before it reaches the server. If the server doesn't check the
         total again, the client-side check was just a suggestion, not a rule."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What gap does Volt see in Rivet's supply app?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The client check takes far too long</li>
+            <li class="quiz-option quiz-correct">B. The server never checks the total again ✓</li>
+            <li class="quiz-option">C. The app gives no feedback at all</li>
+            <li class="quiz-option">D. The total is checked twice on the server</li>
+        </ul>
+        <p class="quiz-explanation"><em>Someone could edit the request after the client check. Without a server check, the client check is just a suggestion.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -57,6 +79,17 @@ Syllabus: ITP1333 Unit E.4 Client Application Security. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">A client-side check is a convenience, not a rule — the server has to check again</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which check is “the rule that actually holds”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The client check</li>
+            <li class="quiz-option">B. Both are equal</li>
+            <li class="quiz-option quiz-correct">C. The server check ✓</li>
+            <li class="quiz-option">D. Neither of them</li>
+        </ul>
+        <p class="quiz-explanation"><em>A client-side check is a convenience. The server check is the real rule.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

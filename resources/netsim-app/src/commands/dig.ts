@@ -46,6 +46,8 @@ export function runDig(
   let cancelled = false;
   device.resolveDns(name, ns, (r) => {
     if (cancelled) return;
+    // TechLab: record what this real lookup observed, so a lab objective can require it.
+    device.recordActivity('dns', name, typeof r === 'number' ? 'resolves' : r === null ? 'nxdomain' : 'blocked');
     const elapsed = Math.round(sched.now - started);
     if (typeof r === 'number') {
       if (short) {

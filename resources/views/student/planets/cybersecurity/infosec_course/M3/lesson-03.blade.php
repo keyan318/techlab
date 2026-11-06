@@ -35,6 +35,17 @@ Syllabus: ITP1232 Unit C.3 ITIL Security Management. --}}
         outages. The process exists because "I was sure it would work" is not the same as "I tested it."
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In change management, where does a change go first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. To the live system</li>
+            <li class="quiz-option">B. To every system at once</li>
+            <li class="quiz-option">C. Nowhere, just a note</li>
+            <li class="quiz-option quiz-correct">D. To a test system ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>File the request, test it on a system nobody depends on, then apply it to production.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -53,6 +64,17 @@ Syllabus: ITP1232 Unit C.3 ITIL Security Management. --}}
         <strong>Volt</strong> watches the shield readouts the whole time. "Test node holds. Patch confirmed
         good. Now production — and not a step before this."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Astro stop Rivet from patching at once?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The bug is not real at all</li>
+            <li class="quiz-option quiz-correct">B. Urgent doesn't mean unplanned ✓</li>
+            <li class="quiz-option">C. Rivet's patch was much too large to test</li>
+            <li class="quiz-option">D. Shields can never be patched</li>
+        </ul>
+        <p class="quiz-explanation"><em>Skipping straight to production because it feels urgent is how urgent fixes turn into outages.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -78,6 +100,17 @@ Syllabus: ITP1232 Unit C.3 ITIL Security Management. --}}
             <text x="320" y="175" text-anchor="middle" font-size="13.5" font-weight="700" fill="#b3261e">Production is never patched before the test node confirms it's safe.</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, when is production patched?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Before the request is filed</li>
+            <li class="quiz-option quiz-correct">B. After the test node passes ✓</li>
+            <li class="quiz-option">C. At the same time as the test</li>
+            <li class="quiz-option">D. Before the test node is set up</li>
+        </ul>
+        <p class="quiz-explanation"><em>Production is never patched before the test node confirms it's safe.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

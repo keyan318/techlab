@@ -1,5 +1,5 @@
 {{-- The course header + tab bar, shared by all three hub tabs. --}}
-<section class="relative isolate overflow-hidden" style="background: {{ $banner }}" aria-labelledby="course-h">
+<section class="relative isolate overflow-hidden" style="background: {{ $banner }}" aria-labelledby="course-h" data-tour="course-hero">
   @if ($art)
     {{-- The course's pixel art, the same picture as its card on the course list. --}}
     <img src="{{ asset($art) }}" alt="" aria-hidden="true"
@@ -18,6 +18,9 @@
         <span class="px-pill rounded-full px-4 py-1.5">{{ $courseLevel }}</span>
       @endif
       <span class="text-white/85">Course</span>
+      @if ($enroll['track'] ?? null)
+        <span class="px-pill rounded-full px-4 py-1.5">{{ $enroll['track']['type'] === 'self_paced' ? 'Self-paced' : 'Class · '.$enroll['track']['teacher'] }}</span>
+      @endif
     </div>
 
     <h1 id="course-h" class="px-font mt-5 text-[clamp(2.6rem,7vw,4.6rem)] font-bold leading-none">{{ $title }}</h1>
@@ -26,18 +29,20 @@
     <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-5">
       @php $bossReady = $finalExam['state'] === 'ready'; @endphp
       @if ($certificateUrl)
-        <a href="{{ $certificateUrl }}" class="px-btn px-btn-yellow"><x-px-icon name="medal" :size="20" /> View Certificate</a>
+        <a href="{{ $certificateUrl }}" class="px-btn px-btn-blue"><x-px-icon name="medal" :size="20" /> View Certificate</a>
       @elseif ($bossReady)
-        <a href="{{ $finalExam['url'] }}" class="px-btn px-btn-yellow">Face the Final Boss</a>
+        <a href="{{ $finalExam['url'] }}" class="px-btn px-btn-blue">Face the Final Boss</a>
       @endif
       @if ($resume)
-        <a href="{{ $resume['url'] }}" class="px-btn {{ $certificateUrl || $bossReady ? 'px-btn-ghost' : 'px-btn-yellow' }}">{{ $resume['label'] }}</a>
+        <a href="{{ $resume['url'] }}" class="px-btn {{ $certificateUrl || $bossReady ? 'px-btn-ghost' : 'px-btn-blue' }}">{{ $resume['label'] }}</a>
       @endif
       <p class="text-[15px] text-white/90">
         {{ count($chapters) }} {{ \Illuminate\Support\Str::plural('chapter', count($chapters)) }} · {{ $lessonsTotal }} {{ \Illuminate\Support\Str::plural('lesson', $lessonsTotal) }} · <b>{{ $percent }}%</b> complete
       </p>
     </div>
+
+    {{-- No "change how you learn": the track a student picks for a course (Self-paced or a class) is final. --}}
   </div>
 </section>
 
-<x-course-tabs :slug="$slug" :course="$course" :tab="$tab" :quiz-badge="$quizBadge" :materials-badge="$materialsBadge" />
+<x-course-tabs :slug="$slug" :course="$course" :tab="$tab" :materials-badge="$materialsBadge" :show-materials="$crew && ! $crew->isSelfPaced()" />

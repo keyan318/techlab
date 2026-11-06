@@ -2,7 +2,8 @@
      Icon chip uses the landing-page treatment: blue/violet gradient chip + blue outline icon.
      $label        : card label (e.g. "Quiz")
      $iconSvg      : inner SVG paths (24x24, stroke=currentColor)
-     $wire         : Alpine action string, e.g. "$store.quiz.open()" --}}
+     $wire         : Alpine action string, e.g. "$store.quiz.open()"
+     $xpFeature    : (optional) its key in StudentDashboardService::AI_COSTS, to show its XP price --}}
 <button
   type="button"
   @click="{{ $wire ?? '' }}"
@@ -13,5 +14,10 @@
       {!! $iconSvg !!}
     </svg>
   </span>
-  <span class="min-w-0 flex-1 truncate font-display text-xs font-medium text-ink">{{ $label }}</span>
+  <span class="min-w-0 flex-1">
+    <span class="block truncate font-display text-xs font-medium text-ink">{{ $label }}</span>
+    @isset($xpFeature)
+    <span x-show="$store.astroXp.charged" x-cloak class="block truncate text-[10.5px] text-[#ffcf85]" x-text="$store.astroXp.price('{{ $xpFeature }}')"></span>
+    @endisset
+  </span>
 </button>

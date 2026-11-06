@@ -60,6 +60,10 @@ class AuthController extends Controller
             return redirect(self::homeFor(Auth::user()));
         }
 
+        if ($temporary = PasswordResetController::attemptTemporary($request)) {
+            return $temporary;
+        }
+
         return back()
             ->withInput($request->only('email'))
             ->withErrors(['email' => 'These credentials do not match our records.']);
@@ -83,12 +87,19 @@ class AuthController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'planets' => ['required', 'array', 'min:1', 'max:1'],
             'planets.*' => ['string', Rule::in(User::PLANETS)],
+            'program' => ['required', Rule::in(array_keys(User::PROGRAMS))],
+            'year_level' => ['required', 'integer', Rule::in(array_keys(User::YEAR_LEVELS))],
         ], [
+            'program.required' => 'Pick your program.',
+            'program.in' => 'Pick your program.',
+            'year_level.required' => 'Pick your year level.',
+            'year_level.in' => 'Pick your year level.',
             'planets.required' => 'Pick the planet you want to start with.',
             'planets.min' => 'Pick the planet you want to start with.',
             'planets.max' => 'Pick only one planet to start — you unlock the rest by earning gems.',
@@ -97,16 +108,22 @@ class AuthController extends Controller
         // Public sign-up only ever makes students. Faculty accounts are never
         // created from this form, so nobody can pick their own role.
         $user = User::create([
-            'name' => $request->name,
+            'name' => User::joinName($request->first_name, $request->last_name),
+            'first_name' => trim($request->first_name),
+            'last_name' => trim($request->last_name),
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'student',
             'planets' => array_values(array_unique($request->input('planets'))),
+            'program' => $request->program,
+            'year_level' => (int) $request->year_level,
         ]);
 
         Auth::login($user);
         $request->session()->regenerate();
         $request->session()->put('role', $user->role);
+        // A freshly created account is the only time Astro's tour (components/astro-tour) starts by itself.
+        $request->session()->put('tour_fresh', true);
 
         // A brand-new student meets Astro and builds their astronaut before the dashboard.
         return redirect()->route('student.welcome');
@@ -183,7 +200,8 @@ class AuthController extends Controller
         $domain = strtolower((string) config('faculty.email_domain'));
 
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email', function ($attribute, $value, $fail) use ($domain) {
                 if ($domain !== '' && ! str_ends_with(strtolower($value), '@'.$domain)) {
                     $fail("Use your @{$domain} email to create a faculty account.");
@@ -193,7 +211,9 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'name' => User::joinName($request->first_name, $request->last_name),
+            'first_name' => trim($request->first_name),
+            'last_name' => trim($request->last_name),
             'email' => $request->email,
             'password' => $request->password,
             'role' => 'faculty',
@@ -202,8 +222,10 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
         $request->session()->put('role', 'faculty');
+        $request->session()->put('tour_fresh', true);
 
-        return redirect(self::homeFor($user));
+        // Straight into onboarding: Astro says hello and they build their captain.
+        return redirect()->route('faculty.welcome');
     }
 
     public function showAdminLogin(): View|RedirectResponse
@@ -233,6 +255,10 @@ class AuthController extends Controller
             $request->session()->put('role', $role);
 
             return redirect(self::homeFor(Auth::user()));
+        }
+
+        if ($role !== 'admin' && $temporary = PasswordResetController::attemptTemporary($request, $role)) {
+            return $temporary;
         }
 
         if ($role === 'admin') {

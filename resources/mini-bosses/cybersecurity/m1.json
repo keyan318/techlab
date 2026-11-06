@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What does information security protect?",
+      "options": [
+        "Only the computers that are switched on",
+        "Information and the systems that hold it",
+        "Only the cables and routers of a network",
+        "Only the passwords that users type in"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How does information assurance go further than information security?",
+      "options": [
+        "It means the data can never be changed by anyone",
+        "You can trust it is protected, correct and there",
+        "It removes the need for passwords on every system",
+        "It protects only the data that is stored on paper"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In security, what is an asset?",
+      "options": [
+        "The chance that harm will happen",
+        "Someone who could cause harm to data",
+        "Anything valuable you must protect",
+        "A weakness that an attacker can use"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A hacker, a virus and a flood are all examples of what?",
+      "options": [
+        "Policies",
+        "Threats",
+        "Controls",
+        "Assets"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A default password that was never changed is an example of what?",
+      "options": [
+        "An asset",
+        "A compensating control",
+        "A threat",
+        "A vulnerability"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is risk?",
+      "options": [
+        "A person who tries to break into a system from outside",
+        "Any device on the network that holds important data at all",
+        "A rule that says how people may use the systems",
+        "The chance a threat uses a weakness, and how bad"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which part of the CIA triad means only the right people can see the data?",
+      "options": [
+        "Non-repudiation",
+        "Availability",
+        "Confidentiality",
+        "Integrity"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Someone secretly changes a grade in a school database. Which part of the CIA triad is broken?",
+      "options": [
+        "Availability",
+        "Integrity",
+        "Confidentiality",
+        "Accountability"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A flood of traffic takes a website offline. Which part of the CIA triad is broken?",
+      "options": [
+        "Integrity",
+        "Availability",
+        "Confidentiality",
+        "Non-repudiation"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How many parts of the CIA triad does every attack break?",
+      "options": [
+        "All three",
+        "Exactly two",
+        "At least one",
+        "None of them"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the difference between a vulnerability and an attack?",
+      "options": [
+        "An attack is someone using a weakness",
+        "A vulnerability is someone using an attack",
+        "An attack is a weakness that nobody has found",
+        "They mean exactly the same thing in security"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What are default credentials?",
+      "options": [
+        "The username and password a device ships with",
+        "A login that only an administrator can use",
+        "The last password a user typed by mistake",
+        "A password that the user picked for themselves"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why do attackers try default passwords first?",
+      "options": [
+        "They only work after midnight",
+        "Many systems never change them",
+        "They are written on every login page",
+        "They are always very long and strong"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What makes ethical hacking different from a crime?",
+      "options": [
+        "Permission from the system's owner",
+        "Working only during the day",
+        "Using only free hacking tools online",
+        "Testing only very old systems"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the first stage of a typical attack?",
+      "options": [
+        "Hideout",
+        "Recon",
+        "Data-grab",
+        "Entry"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In the hideout stage, what does an attacker usually set up?",
+      "options": [
+        "A patch for the bug they used",
+        "A firewall to keep defenders out",
+        "A backup of the victim's data",
+        "A way back in, like an account"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "You find one stage of an attack in a log. Why look for the others?",
+      "options": [
+        "The first stage deletes all the others",
+        "Attacks only ever have a single stage",
+        "The other stages are probably nearby",
+        "Logs always show every stage in order"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which part of an attack is most worth finding after the break-in?",
+      "options": [
+        "The entry, because it cannot be closed",
+        "The hideout, because it stays open",
+        "The data-grab, because it is already over",
+        "The recon, because it was the first step"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is phishing?",
+      "options": [
+        "A cable tap that copies network data",
+        "A program that floods a server with traffic",
+        "A weak password that is easy to guess",
+        "A fake trusted message meant to trick you"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "An email comes from \"astro@c0dexia.lan\" instead of \"astro@codexia.lan\". Which tell is this?",
+      "options": [
+        "A spoofed sender",
+        "A strong password",
+        "Urgency",
+        "A firewall rule"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "\"Reset your password right now or lose access!\" Which phishing tell is this?",
+      "options": [
+        "Urgency",
+        "A signed email",
+        "A spoofed sender",
+        "A safe link"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why does phishing get past strong technical defenses?",
+      "options": [
+        "It turns off every antivirus program it finds",
+        "It uses a faster cable than the firewall checks",
+        "Firewalls only block messages sent on weekends",
+        "It targets a person's judgment, not the network"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why is security awareness training management's job too?",
+      "options": [
+        "Training makes the firewall run faster every day",
+        "Managers are the only ones who receive any email",
+        "People who spot phishing stop what tech can't",
+        "Training replaces the need for any passwords"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is an Acceptable Use Policy (AUP)?",
+      "options": [
+        "Written rules for how people use the systems",
+        "A list of every device on the network",
+        "A firewall rule that blocks games",
+        "A program that scans every single file for viruses"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "The AUP says \"no shared logins\", but three people share one. What is true?",
+      "options": [
+        "The rule protects nobody until it is enforced",
+        "The AUP must be deleted and written from scratch",
+        "Shared logins are safe if all three are on the crew",
+        "The rule protects them because it is written down"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which behavior breaks a typical AUP?",
+      "options": [
+        "Changing a default password",
+        "Logging in with your own crew account",
+        "Running a game on a shield console",
+        "Locking a confidential file"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A CONFIDENTIAL file is readable by anyone logged in. What is the fix?",
+      "options": [
+        "Rename the file so nobody finds it",
+        "Print it out and delete the copy",
+        "Move it to a bigger hard drive",
+        "Limit it to the people who need it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the hard part of a security policy?",
+      "options": [
+        "Printing it and putting it on the wall",
+        "Writing the first draft of the rules",
+        "Making it true everywhere it is broken",
+        "Choosing a title for the document"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which of these is an asset for the crew?",
+      "options": [
+        "A weak password",
+        "A power cut at night",
+        "A Doom hacker",
+        "The starmap data"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A stolen laptop exposes customer records. Which part of the CIA triad is broken?",
+      "options": [
+        "Confidentiality",
+        "Non-repudiation",
+        "Availability",
+        "Integrity"
+      ],
+      "correct": "A"
+    }
+  ]
+}

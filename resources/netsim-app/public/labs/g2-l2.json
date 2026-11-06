@@ -1,0 +1,465 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 20,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.50.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.50.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "skyport",
+      "kind": "router",
+      "name": "skyport",
+      "x": 20,
+      "y": 60,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.50.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.0.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "SKYPORT",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "192.168.50.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          },
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth0"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "citadel",
+      "kind": "router",
+      "name": "citadel",
+      "x": 220,
+      "y": 60,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.0.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.23.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.20.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CITADEL",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.0.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.20.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          },
+          {
+            "addr": "10.0.23.0",
+            "wildcard": "0.0.0.3",
+            "area": 1
+          }
+        ],
+        "passive": [
+          "eth2"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "citadel-srv",
+      "kind": "server",
+      "name": "citadel-srv",
+      "x": 220,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "northwatch",
+      "kind": "router",
+      "name": "northwatch",
+      "x": 420,
+      "y": 60,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.23.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.34.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.30.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "NORTHWATCH",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.23.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.30.0",
+            "wildcard": "0.0.0.255",
+            "area": 1
+          },
+          {
+            "addr": "10.0.34.0",
+            "wildcard": "0.0.0.3",
+            "area": 1
+          }
+        ],
+        "passive": [
+          "eth2"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 420,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.30.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.30.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "deepwell",
+      "kind": "router",
+      "name": "deepwell",
+      "x": 620,
+      "y": 60,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.34.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.40.1/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "DEEPWELL"
+    },
+    {
+      "id": "cadet",
+      "kind": "host",
+      "name": "cadet",
+      "x": 620,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.40.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.40.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "rivet.eth0-skyport.eth0",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "skyport",
+        "eth0"
+      ]
+    },
+    {
+      "id": "skyport.eth1-citadel.eth0",
+      "a": [
+        "skyport",
+        "eth1"
+      ],
+      "b": [
+        "citadel",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth2-citadel-srv.eth0",
+      "a": [
+        "citadel",
+        "eth2"
+      ],
+      "b": [
+        "citadel-srv",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth1-northwatch.eth0",
+      "a": [
+        "citadel",
+        "eth1"
+      ],
+      "b": [
+        "northwatch",
+        "eth0"
+      ]
+    },
+    {
+      "id": "northwatch.eth2-volt.eth0",
+      "a": [
+        "northwatch",
+        "eth2"
+      ],
+      "b": [
+        "volt",
+        "eth0"
+      ]
+    },
+    {
+      "id": "northwatch.eth1-deepwell.eth0",
+      "a": [
+        "northwatch",
+        "eth1"
+      ],
+      "b": [
+        "deepwell",
+        "eth0"
+      ]
+    },
+    {
+      "id": "deepwell.eth1-cadet.eth0",
+      "a": [
+        "deepwell",
+        "eth1"
+      ],
+      "b": [
+        "cadet",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g2-l2",
+    "title": "Lesson 2.2 — OSPF Areas & LSA Types",
+    "blurb": "Two areas, one border router, one argument to settle, one blank router to join.",
+    "steps": [
+      {
+        "title": "Settle the area argument",
+        "body": "Run `show ip ospf neighbor` on `citadel`: no Northwatch. Compare `show ip ospf interface brief` on both routers: the 10.0.23.0/30 link is area 1 on the Citadel but area 0 on Northwatch. Area 1 is right. On `northwatch`: `router ospf 1`, `no network 10.0.23.0 0.0.0.3 area 0`, then `network 10.0.23.0 0.0.0.3 area 1`.",
+        "objectives": [
+          {
+            "id": "g2l2-n1",
+            "label": "citadel and northwatch are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "citadel",
+              "neighbor": "northwatch",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g2l2-r1",
+            "label": "skyport learned 192.168.30.0/24 (inter-area)",
+            "check": {
+              "type": "route",
+              "device": "skyport",
+              "dest": "192.168.30.0/24",
+              "source": "ospf",
+              "expect": "present"
+            }
+          },
+          {
+            "id": "g2l2-p1",
+            "label": "rivet reaches volt",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "volt"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Join Deep Well to area 1",
+        "body": "Deep Well's router is addressed but has no OSPF. On `deepwell`: `router ospf 1`, `network 10.0.34.0 0.0.0.3 area 1`, `network 192.168.40.0 0.0.0.255 area 1`. Then on `skyport`, `show ip route ospf` shows Deep Well's network as `O IA`, and `show ip ospf database` shows the Citadel's Type 3 summaries.",
+        "objectives": [
+          {
+            "id": "g2l2-n2",
+            "label": "northwatch and deepwell are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "northwatch",
+              "neighbor": "deepwell",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g2l2-r2",
+            "label": "skyport learned 192.168.40.0/24 (inter-area)",
+            "check": {
+              "type": "route",
+              "device": "skyport",
+              "dest": "192.168.40.0/24",
+              "source": "ospf",
+              "expect": "present"
+            }
+          },
+          {
+            "id": "g2l2-p2",
+            "label": "rivet reaches cadet at Deep Well",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "cadet"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

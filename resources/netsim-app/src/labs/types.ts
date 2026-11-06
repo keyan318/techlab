@@ -8,7 +8,7 @@ export type Check =
   | { type: 'default-route'; device: string; via?: string }
   | { type: 'forwarding'; device: string; expect: boolean }
   | { type: 'fw-policy'; device: string; hook: 'input' | 'forward' | 'output'; policy: 'accept' | 'drop' }
-  | { type: 'ping'; from: string; toDevice?: string; toAddr?: string; expect: 'success' | 'fail' }
+  | { type: 'ping'; from: string; toDevice?: string; toAddr?: string; expect: 'success' | 'fail'; requireOwnCommand?: boolean }
   | {
       type: 'tcp';
       from: string;
@@ -16,9 +16,47 @@ export type Check =
       toAddr?: string;
       port: number;
       expect: 'open' | 'refused' | 'filtered';
+      requireOwnCommand?: boolean;
     }
-  | { type: 'dns'; from: string; name: string; expect: 'resolves' | 'nxdomain'; addr?: string }
-  | { type: 'http'; from: string; url: string; expect: 'ok' | 'fail'; contains?: string };
+  | { type: 'dns'; from: string; name: string; expect: 'resolves' | 'nxdomain' | 'blocked'; addr?: string; requireOwnCommand?: boolean }
+  | { type: 'http'; from: string; url: string; expect: 'ok' | 'fail'; contains?: string; requireOwnCommand?: boolean }
+  // TechLab (Networking 2)
+  | { type: 'ospf-neighbor'; device: string; neighbor: string; expect: 'full' | 'none' }
+  | { type: 'route'; device: string; dest: string; source?: 'ospf' | 'static' | 'connected'; expect: 'present' | 'absent'; paths?: number }
+  // "What if": cut one interface for a moment, follow the routing, put it back. Nothing stays changed.
+  | { type: 'survives'; from: string; toDevice?: string; toAddr?: string; cut: { device: string; iface: string } }
+  | { type: 'path'; from: string; toDevice?: string; toAddr?: string; through: string; expect: 'through' | 'avoids' }
+  | { type: 'stp-root'; vlan: number; device: string }
+  | { type: 'stp-mode'; device: string; mode: 'pvst' | 'rapid-pvst' | 'mst' }
+  | { type: 'stp-port'; device: string; iface: string; vlan: number; state: 'forwarding' | 'blocking' | 'err-disabled' | 'root-inconsistent' }
+  | { type: 'iface-config'; device: string; iface: string; is: IfaceExpect }
+  | { type: 'fhrp-active'; device: string; group: number; proto?: 'hsrp' | 'vrrp' }
+  | { type: 'fw-rule'; device: string; name: string }
+  | { type: 'acl'; device: string; name: string; has: string };
+
+// Every listed property must hold for an iface-config check to pass.
+export interface IfaceExpect {
+  mode?: 'access' | 'trunk';
+  accessVlan?: number;
+  native?: number;
+  allowed?: number[];
+  nonegotiate?: boolean;
+  portfast?: boolean;
+  bpduguard?: boolean;
+  rootguard?: boolean;
+  portSecurity?: boolean;
+  psMax?: number;
+  psViolation?: 'shutdown' | 'restrict' | 'protect';
+  psSticky?: boolean;
+  ospfCost?: number;
+  ospfPassive?: boolean;
+  shutdown?: boolean;
+  dot1q?: number;
+  fhrpPreempt?: boolean;
+  fhrpTrack?: string; // engine name of a tracked interface
+  aclIn?: string;
+  aclOut?: string;
+}
 
 export interface Objective {
   id: string;

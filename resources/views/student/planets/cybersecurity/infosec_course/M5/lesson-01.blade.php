@@ -36,6 +36,17 @@ Syllabus: ITP1232 Unit E, Confidentiality & Data Integrity. --}}
         and the Citadel needs both.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does a hash prove?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Who is allowed to read it or not</li>
+            <li class="quiz-option quiz-correct">B. Whether a file has changed ✓</li>
+            <li class="quiz-option">C. That the file is a secret</li>
+            <li class="quiz-option">D. Where the file was stored</li>
+        </ul>
+        <p class="quiz-explanation"><em>A hash is a fingerprint. A mismatch proves something changed. It doesn't keep anything secret.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -49,6 +60,17 @@ Syllabus: ITP1232 Unit E, Confidentiality & Data Integrity. --}}
         they don't match, we know exactly where to look — and Rivet can put the clean copy back before it costs us
         anything."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why doesn't Volt trust shield control that “looks normal”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. A quiet change trips no alarm ✓</li>
+            <li class="quiz-option">B. The power is reading only 50%</li>
+            <li class="quiz-option">C. The backup was just deleted</li>
+            <li class="quiz-option">D. The arc is flashing red again</li>
+        </ul>
+        <p class="quiz-explanation"><em>Integrity attacks are sneaky: nothing looks broken. Only comparing fingerprints catches them.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -76,6 +98,17 @@ Syllabus: ITP1232 Unit E, Confidentiality & Data Integrity. --}}
             <text x="320" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#b3261e">different hashes = something changed</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what do the different hashes mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Both are clean</li>
+            <li class="quiz-option quiz-correct">B. Something changed ✓</li>
+            <li class="quiz-option">C. The hash tool broke</li>
+            <li class="quiz-option">D. Nothing at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>The live file and the clean backup hash differently, so the live file was changed.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

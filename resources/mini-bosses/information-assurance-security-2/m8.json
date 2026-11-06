@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "Why classify assets into tiers?",
+      "options": [
+        "So protection matches each asset's real value",
+        "So nobody needs to protect public assets",
+        "So assets can be sold off by their tier",
+        "So every asset gets exactly the same protection"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which tier means no harm if anyone sees it?",
+      "options": [
+        "Public",
+        "Restricted",
+        "Internal",
+        "Confidential"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which tier means severe harm if exposed or lost?",
+      "options": [
+        "Confidential",
+        "Restricted",
+        "Internal",
+        "Public"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A crew-only memo that would cause mild harm if leaked is which tier?",
+      "options": [
+        "Public",
+        "Confidential",
+        "Internal",
+        "Restricted"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A public recruiting flyer is locked in the starmap vault \"to be safe\". What is wrong?",
+      "options": [
+        "Effort is wasted on what needs none",
+        "The vault is too small to hold the flyer",
+        "The flyer is not protected well enough there",
+        "Public assets must always be destroyed"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "An internal document starts containing sensitive data. What should happen?",
+      "options": [
+        "Review its tier; it may become confidential",
+        "Move it to the public tier straight away",
+        "Delete it so nobody can read it at all",
+        "Nothing, a tier is set once and kept forever"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does a physical vulnerability assessment do?",
+      "options": [
+        "Scans the network for open ports and services",
+        "Restores the site from a recent backup",
+        "Checks every password against a standard",
+        "Walks the site like an intruder would"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A propped-open emergency exit falls under which area?",
+      "options": [
+        "Access control",
+        "Site location choice",
+        "Structure",
+        "Surveillance"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A two-meter blind spot no camera covers falls under which area?",
+      "options": [
+        "Structure",
+        "Access control",
+        "Surveillance",
+        "Utilities"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A window that does not lock falls under which area?",
+      "options": [
+        "Surveillance",
+        "Structure",
+        "Access control",
+        "Approach visibility"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which findings should be fixed first?",
+      "options": [
+        "All at once, equally",
+        "The cheapest ones",
+        "The critical ones",
+        "The newest ones"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What sets a finding's severity?",
+      "options": [
+        "How easily it could be used and the damage it would do",
+        "How many people walk past it during a normal day",
+        "How much the fix would cost the crew to put in place",
+        "How long it took the assessor to notice it on the walk"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which is one of the four site selection factors?",
+      "options": [
+        "Utility redundancy",
+        "Parking cost per day",
+        "Paint colour scheme",
+        "Number of desks inside"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A site has great sightlines but sits in a flood basin with one supply line. Is it a good choice?",
+      "options": [
+        "Yes, floods are not a security concern",
+        "No, sightlines are the only factor",
+        "Yes, good sightlines make up for the rest",
+        "No, one bad factor can rule a site out"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does approach visibility ask?",
+      "options": [
+        "Can cameras record in colour at night?",
+        "Can guards see someone before they arrive?",
+        "Can visitors see the site from very far away?",
+        "Can staff see their screens in bright light?"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why is one power line into a site a risk?",
+      "options": [
+        "It uses too much energy",
+        "It attracts natural hazards",
+        "It makes the site too bright",
+        "Cutting it cuts the site off"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why use biometrics for the most sensitive spaces?",
+      "options": [
+        "They let many people share one entry",
+        "They work without any power at all",
+        "They are cheaper than any badge system",
+        "They can't be lost, lent or stolen"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why is a badge system better than a shared key for staff areas?",
+      "options": [
+        "Badges open every door in the site",
+        "Each card ties entry to one person",
+        "Keys cannot be copied by anyone",
+        "Badges never need to be revoked"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A crew member reports their access card missing. When should it be revoked?",
+      "options": [
+        "End of shift",
+        "Right away",
+        "Next month",
+        "Next audit"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A lost credential was a shared door code. What else must happen?",
+      "options": [
+        "Print a new card",
+        "Add a camera",
+        "Change the code",
+        "Nothing more"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is physical intrusion detection for?",
+      "options": [
+        "Choosing where to build a new site",
+        "Noticing a breach when locks fail",
+        "Stopping every intruder at the door",
+        "Replacing locks on every single door"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A camera records, but nobody ever watches it or responds. What is the problem?",
+      "options": [
+        "Cameras are a form of prevention",
+        "The camera's picture quality is far too low",
+        "The camera should face the other way",
+        "Detection with no response is near useless"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A door has a strong lock but no camera and no alarm. What does it lack?",
+      "options": [
+        "Prevention",
+        "A badge",
+        "Detection",
+        "A lock"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which pair are different jobs a facility needs both of?",
+      "options": [
+        "Badges and access cards",
+        "Locks and their keys",
+        "Cameras and their footage",
+        "Prevention and detection"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does compliance with a physical security checklist require?",
+      "options": [
+        "A claim that each item is handled",
+        "Evidence behind each requirement",
+        "A guard who says it is fine",
+        "A promise to fix it next year"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A manager says the camera footage item is \"basically covered\". What should an auditor ask for?",
+      "options": [
+        "Nothing, just trust the manager",
+        "A second verbal promise",
+        "A newer camera model",
+        "The retained footage itself"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which is a typical physical security requirement on a checklist?",
+      "options": [
+        "Cameras keep footage for a set minimum",
+        "Every door is painted the same colour",
+        "Every guard works exactly eight hours",
+        "Every visitor gets a free badge to keep"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "\"It's probably fine\" and \"here is the documented evidence\" — which satisfies an audit?",
+      "options": [
+        "Neither of them, in any audit",
+        "Both equally",
+        "The documented evidence",
+        "It's probably fine"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Restricted areas on a checklist often require what?",
+      "options": [
+        "An unlocked emergency door",
+        "A single shared door code for all",
+        "Multi-factor physical access",
+        "No logging of who enters"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which tier fits the crew's starmap?",
+      "options": [
+        "Public",
+        "Restricted",
+        "Internal",
+        "Confidential"
+      ],
+      "correct": "B"
+    }
+  ]
+}

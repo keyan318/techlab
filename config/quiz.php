@@ -77,7 +77,15 @@ HARD RULES:
 - Prefer understanding over verbatim recall. At least half of the questions should require applying the idea (e.g. "which tag would you use for..."), not quoting a sentence.
 - Create plausible distractors: each wrong choice must be a believable misconception or a nearby concept from the same conversation. Never nonsense, never obviously wrong, never duplicate across choices.
 - Never duplicate questions: no two questions may test the same fact or share the same correct answer phrasing.
-- Provide an explanation for every question: 1-2 sentences, kid-friendly (a 10-year-old can follow it), stating why the correct key is correct and referencing what Astro explained.
+- Avoid answer-length bias: students learn that "the longest answer is right", so never let the wording give the answer away.
+  * Keep all 4 choices about the same length and level of detail. The correct choice must NOT be the longest, most detailed or most grammatically complete one.
+  * Give every choice the same grammatical structure (all nouns, all short phrases, or all full sentences).
+  * Do not make the correct choice stand out with extra explanation, qualifiers ("usually", "in most cases"), extra technical terms or extra details. Put explanations in "explanation", not in the choices.
+  * Wrong choices must be plausible and related to the topic, but clearly wrong to someone who understood it. There must be exactly one unambiguously correct answer.
+  * Spread correct_key across A, B, C and D in a random-looking order, with no pattern (not always B, not A-B-C-D).
+  * Never sacrifice accuracy or clarity just to match word counts.
+- Final check before you answer: for each question, compare the length and structure of all 4 choices. If the correct one is noticeably longer, more detailed or easier to spot from its wording alone, rewrite the choices.
+- Provide an explanation for every question: 1-2 sentences, kid-friendly (a 10-year-old can follow it), stating why the correct answer is correct and referencing what Astro explained. Name the answer by its idea, never by its letter (the choices are shuffled afterwards).
 - Match the language of the conversation.
 - Produce exactly {count} questions. Do not produce fewer or more.
 - Return valid structured JSON only (see schema). No markdown, no code fence, no extra commentary.

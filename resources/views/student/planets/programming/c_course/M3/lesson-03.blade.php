@@ -36,32 +36,47 @@ Syllabus: CC102 Unit 3 — Functions (return values). --}}
         never runs.
     </p>
 
-    <h2 class="section-heading">Astro Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What happens to code written after <code>return</code> in the same block?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It runs afterwards</li>
+            <li class="quiz-option">B. It runs first</li>
+            <li class="quiz-option">C. The compiler moves it above <code>return</code></li>
+            <li class="quiz-option quiz-correct">D. It never runs ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>return</code> exits the function immediately, so nothing after it in that block runs.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        The shell is charging again, and Astro wants to know how far off full it is — not printed on a screen
-        he has to stand and read, but as a number the rest of the program can actually use.
+        Picture a <strong>calculator machine</strong>. You drop in two numbers, 3 and 4, and it hands back <strong>one slip of paper</strong> with the answer: 7. Handing back that slip is <code>return</code>.
     </p>
 
     <p class="body-text">
-        <strong>Astro</strong>: "Printing it isn't the same as knowing it. It flashes up, it's gone, and the
-        program is no wiser than before. I want the answer <em>handed back</em>, so the next job can use it."
+        You can keep the slip in a labelled jar (<code>int total = add(3, 4);</code>) or read it out loud straight away (<code>printf</code>). The <code>int</code> in front of the function's name is a promise about what kind of answer will be on the slip.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Then the job has to give something back instead of just doing something." He
-        taps the word on the board: <code>return</code>. "It works it out, hands you the number, and it's
-        finished. You catch it in a box and it's yours."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 355" role="img" aria-label="A calculator machine called add with inputs a = 3 and b = 4. It runs return a + b and hands back a slip that says 7. You can keep it in a jar called total, with total = add(3, 4), or show it on the screen right away.">
+            <circle cx="270" cy="34" r="17" fill="#fff3c4" stroke="#c99a00" stroke-width="2"/><text x="270" y="41" font-size="18" fill="#7a5a00" font-weight="800" text-anchor="middle">3</text><text x="296" y="40" font-size="13" fill="#5b6b86" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">a</text><polygon points="244,60 296,60 280,100 260,100" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><circle cx="370" cy="34" r="17" fill="#fff3c4" stroke="#c99a00" stroke-width="2"/><text x="370" y="41" font-size="18" fill="#7a5a00" font-weight="800" text-anchor="middle">4</text><text x="396" y="40" font-size="13" fill="#5b6b86" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">b</text><polygon points="344,60 396,60 380,100 360,100" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="190" y="100" width="260" height="130" rx="16" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><text x="320" y="152" font-size="20" fill="#14306b" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">add(a, b)</text><text x="320" y="178" font-size="12" fill="#5b6b86" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">int add(int a, int b)</text><circle cx="214" cy="124" r="6" fill="#86e0b0"/><rect x="300" y="230" width="40" height="18" rx="3" fill="#2f6fe0"/><text x="352" y="246" font-size="12" fill="#9c1f4c" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">return a + b;</text><rect x="288" y="252" width="64" height="46" rx="6" fill="#fff" stroke="#e8457c" stroke-width="2"/><text x="320" y="284" font-size="24" fill="#9c1f4c" font-weight="800" text-anchor="middle">7</text><line x1="284" y1="276" x2="191.0" y2="276.0" stroke="#e8457c" stroke-width="3"/><polygon points="180,276 191.0,282.0 191.0,270.0" fill="#e8457c"/><line x1="356" y1="276" x2="447.0" y2="276.0" stroke="#e8457c" stroke-width="3"/><polygon points="458,276 447.0,270.0 447.0,282.0" fill="#e8457c"/><rect x="66" y="252" width="104" height="72" rx="14" fill="#fff8ee" stroke="#8a4b00" stroke-width="2"/><rect x="74" y="240" width="88" height="14" rx="4" fill="#f08c1a" stroke="#8a4b00" stroke-width="2"/><rect x="84" y="262" width="68" height="22" rx="4" fill="#fff" stroke="#8a4b00" stroke-width="1.5"/><text x="118" y="278" font-size="13" fill="#8a4b00" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">total</text><text x="118" y="312" font-size="18" fill="#8a4b00" font-weight="800" text-anchor="middle">7</text><rect x="462" y="252" width="158" height="64" rx="10" fill="#1b2440"/><text x="476" y="290" font-size="18" fill="#86e0b0" font-weight="800" font-family="ui-monospace, Menlo, Consolas, monospace">&gt; 7</text><text x="118" y="346" font-size="11" fill="#8a4b00" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">keep it: total = add(3, 4);</text><text x="541" y="346" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle">or show it right away</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Volt</strong>: "And if it works it out backwards?"
+        Once the slip comes out, the machine is finished. Any code written after <code>return</code> in the same function never runs. A <code>void</code> function from Lesson 3.1 is like a doorbell: it does something, but hands nothing back.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Then it hands you a wrong number, very confidently, and nothing complains.
-        Which is why you check it."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What happens to code written after <code>return</code> inside the same function?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It runs after the value is sent back</li>
+            <li class="quiz-option">B. It runs first, then the value is sent</li>
+            <li class="quiz-option">C. It runs only if the value is zero</li>
+            <li class="quiz-option quiz-correct">D. It never runs, the machine is done ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>return</code> sends the value back and ends the function right away. Nothing after it in that block gets a turn.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -98,6 +113,17 @@ int main() {
     printf("Total: %d\n", total);
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">Which line in the code example catches the returned value in a box?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. <code>return a + b;</code></li>
+            <li class="quiz-option">B. <code>printf("Total: %d\n", total);</code></li>
+            <li class="quiz-option quiz-correct">C. <code>int total = addParts(12, 30);</code> ✓</li>
+            <li class="quiz-option">D. <code>int addParts(int a, int b) {</code></li>
+        </ul>
+        <p class="quiz-explanation"><em>The call stands in for its returned value, and <code>int total = ...</code> stores it.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -159,9 +185,9 @@ int main() {
         <p class="quiz-prompt">Q1. What does the return statement do inside a function?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. It prints a value to the screen</li>
-            <li class="quiz-option quiz-correct">B. It sends a value back to whoever called the function, and exits it ✓</li>
-            <li class="quiz-option">C. It declares a new variable</li>
-            <li class="quiz-option">D. It restarts the function from the top</li>
+            <li class="quiz-option">B. It declares a new variable</li>
+            <li class="quiz-option">C. It restarts the function from the top</li>
+            <li class="quiz-option quiz-correct">D. It sends a value back to the caller ✓</li>
         </ul>
         <p class="quiz-explanation"><em>return hands a value back to the caller and immediately ends the function — nothing after it in the same block runs.</em></p>
     </div>
@@ -189,12 +215,12 @@ int main() {
     </div>
 
     <div class="quiz-block" data-q="4">
-        <p class="quiz-prompt">Q4. Why couldn't Astro's earlier void functions (Lessons 3.1-3.2) hand a computed value back to main to store and reuse?</p>
+        <p class="quiz-prompt">Q4. Why couldn't the void functions from Lessons 3.1-3.2 hand a computed value back to main to store and reuse?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. void functions cannot take parameters</li>
-            <li class="quiz-option quiz-correct">B. void means no return value is sent back — the function can only act (like printing), not report a result ✓</li>
-            <li class="quiz-option">C. void functions cannot be called more than once</li>
-            <li class="quiz-option">D. There is no real difference between void and int functions</li>
+            <li class="quiz-option quiz-correct">A. void means no value is sent back ✓</li>
+            <li class="quiz-option">B. void functions cannot take parameters</li>
+            <li class="quiz-option">C. void functions can only be called once</li>
+            <li class="quiz-option">D. void functions cannot use printf</li>
         </ul>
         <p class="quiz-explanation"><em>void functions perform an action but never send anything back — only a function with a real return type (like int) can hand a computed value to its caller.</em></p>
     </div>
@@ -202,10 +228,10 @@ int main() {
     <div class="quiz-block" data-q="5">
         <p class="quiz-prompt">Q5. If a function is declared to return int, but its return statement tries to send back a value of the wrong kind of meaning (like returning cur - tgt instead of tgt - cur), what actually goes wrong?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. The program refuses to compile — C checks the logic automatically</li>
-            <li class="quiz-option quiz-correct">B. It compiles and runs fine, but computes the wrong answer — C only checks the type, not whether the logic is correct ✓</li>
-            <li class="quiz-option">C. Nothing — return always produces the correct result regardless of the expression</li>
-            <li class="quiz-option">D. The function silently returns 0 instead</li>
+            <li class="quiz-option">A. It fails to compile, since C checks the logic</li>
+            <li class="quiz-option">B. It runs, but C flips the result to positive</li>
+            <li class="quiz-option quiz-correct">C. It runs fine but gives the wrong answer ✓</li>
+            <li class="quiz-option">D. It runs, but the function returns 0 instead</li>
         </ul>
         <p class="quiz-explanation"><em>C checks that a returned value matches the declared type, but it has no idea what the function is supposed to mean — swapping cur - tgt for tgt - cur would compile fine and just give a wrong (negative) gap.</em></p>
     </div>

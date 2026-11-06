@@ -35,6 +35,17 @@ Syllabus: ITP1232 Unit A.2 Attacks & Vulnerabilities. --}}
         permission, the exact same actions are a crime. Permission is the entire difference.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What makes ethical hacking different from a real attack?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Permission from the owner ✓</li>
+            <li class="quiz-option">B. Using only very old tools</li>
+            <li class="quiz-option">C. Attacking only late at night</li>
+            <li class="quiz-option">D. Never finding any real holes</li>
+        </ul>
+        <p class="quiz-explanation"><em>The actions can be exactly the same. Clear permission from the system's owner is the entire difference.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -53,6 +64,17 @@ Syllabus: ITP1232 Unit A.2 Attacks & Vulnerabilities. --}}
         <strong>Volt</strong> nods. "That's the job. Test it, prove it, then Rivet closes it. We never touch a
         system without the order to — but this one, Astro just gave it."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why is Volt allowed to attack the relay console?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Volt built the console</li>
+            <li class="quiz-option">B. Doom already broke in</li>
+            <li class="quiz-option quiz-correct">C. Astro gave the order ✓</li>
+            <li class="quiz-option">D. It is just a test node</li>
+        </ul>
+        <p class="quiz-explanation"><em>Astro authorized it. The crew never touches a system without the order to.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -87,6 +109,17 @@ Syllabus: ITP1232 Unit A.2 Attacks & Vulnerabilities. --}}
             <text x="538" y="157" text-anchor="middle" font-size="12" fill="#7a1a14">too late to patch</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what happens if Doom uses the hole first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The door gets welded shut</li>
+            <li class="quiz-option quiz-correct">B. A breach, too late to patch ✓</li>
+            <li class="quiz-option">C. Volt's drill passes the test</li>
+            <li class="quiz-option">D. The password changes itself</li>
+        </ul>
+        <p class="quiz-explanation"><em>Testing first lets the crew patch it. If Doom uses it first, it's a breach and too late to patch.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

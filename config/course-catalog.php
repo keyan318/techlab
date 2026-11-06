@@ -21,6 +21,10 @@
 | `hidden` => true switches a course off without deleting it: its lessons, blueprint and
 | progress stay on disk, but no student, admin or landing-page list offers it, and its
 | lessons don't count toward the planet. Remove the flag to bring it back.
+|
+| `requires` names another course on the same planet that a student must finish first
+| (every lesson done and its final exam passed, i.e. its certificate earned) before they
+| can ask to join this one. See App\Services\CoursePrerequisiteService.
 */
 
 return [
@@ -49,6 +53,18 @@ return [
                 'level' => 'Beginner',
                 'description' => 'Astro\'s ship came down hard on the edge of Programming City, and its computer woke up blank. Learn C from zero — variables, decisions, functions and arrays — and bring the Wanderer back to life one program at a time.',
             ],
+            // Season 2 of the Wanderer's story: picks up the morning after Programming 1 ends.
+            'computer-programming-2' => [
+                'requires' => 'computer-programming-1',
+                'title' => 'Computer Programming 2',
+                'code' => 'CC103',
+                'blurb' => 'Switch the City On: Season 2 of the Wanderer, in C',
+                'banner' => 'linear-gradient(180deg,#0d1b3e 0%,#4338ca 45%,#f5c04a 100%)',
+                'art' => 'images/courses/computer-programming-2.png',
+                'logo' => 'c-logo',
+                'level' => 'Intermediate',
+                'description' => 'The Wanderer is fixed, but its console forgets the crew every time the power drops, and the city below is still dark. Go down into Programming City with Astro\'s crew and switch it back on, street by street, with C functions, pointers, arrays, structures, linked lists and files.',
+            ],
         ],
     ],
     'networking' => [
@@ -66,14 +82,17 @@ return [
                 'level' => 'Beginner',
                 'description' => 'Learn how machines talk to each other, from cables and packets to addresses, DHCP and DNS, with hands-on simulator labs.',
             ],
+            // Season 2 of Networking 1's story: picks up right after "Call Earth".
             'networking-2' => [
+                'requires' => 'networking-fundamentals',
                 'title' => 'Networking 2',
-                'blurb' => 'Beyond the basics: routing, security and design',
+                'code' => 'ITP831',
+                'blurb' => 'Light the Grid: Season 2 of Call Earth',
                 'banner' => 'linear-gradient(180deg,#0b1f4d 0%,#2a3fb8 45%,#8a6bff 100%)',
                 'art' => 'images/courses/networking-2.png',
                 'logo' => 'networking-logo',
                 'level' => 'Intermediate',
-                'description' => 'Content is being built by its faculty captain — enroll now with a code to be first in when it lands.',
+                'description' => 'Earth answered, and now Codexia needs a real network. Link the crew\'s scattered outposts into one Grid with OSPF and BGP, build it to survive failures, lock down its switches, keep the important traffic moving with QoS, and shield it from Planet Doom with firewalls and VPNs, on Cisco-style routers and switches.',
             ],
         ],
     ],
@@ -93,6 +112,7 @@ return [
                 'description' => 'Planet Doom sends hackers against the crew\'s base. Learn information assurance and security, then defend the Citadel in hands-on attack-and-defend labs.',
             ],
             'information-assurance-security-2' => [
+                'requires' => 'information-security-1',
                 'title' => 'Information Assurance and Security 2',
                 'code' => 'ITP1333',
                 'blurb' => 'Rebuilding the Citadel: govern, design, defend',

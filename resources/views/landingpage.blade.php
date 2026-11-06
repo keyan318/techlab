@@ -209,6 +209,18 @@
         .astro-note p { font-size: 15px; line-height: 1.5; }
         .astro-note b { font-family: var(--display); color: var(--ink); font-weight: 600; }
 
+        /* "Meet your tutor": the landing page's closing section, so it gets room to breathe. */
+        .tutor { padding: 72px 0 88px; }
+        .tutor h2 { font-size: clamp(2rem, 4.5vw, 2.8rem); }
+        .tutor .astro-note { max-width: 980px; margin-top: 36px; gap: 36px; padding: 40px 48px; border-radius: 24px; }
+        .tutor .astro-note svg { width: 128px; height: 120px; }
+        .tutor .astro-note p { font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.55; }
+        @media (max-width: 640px) {
+            .tutor { padding: 48px 0 56px; }
+            .tutor .astro-note { flex-direction: column; text-align: center; gap: 20px; padding: 28px 22px; }
+            .tutor .astro-note svg { width: 96px; height: 90px; }
+        }
+
         /* Footer */
         footer { background: transparent; }
         .foot-in { padding: 24px var(--edge); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; font-size: 14px; }
@@ -433,9 +445,9 @@
                 </div>
             </section>
 
-            <section class="section reveal">
+            <section class="section tutor reveal">
                 <h2>Meet your tutor</h2>
-                <div class="astro-note" style="margin-top:28px">
+                <div class="astro-note">
                     <x-astro-mascot />
                     <p><b>Astro</b> is your tutor. Ask a question mid-lesson and get an answer that fits what you're reading.</p>
                 </div>
@@ -446,7 +458,7 @@
     <footer>
         <div class="foot-in">
             <a href="{{ url('/') }}" class="brand"><img src="/apple-touch-icon.png" alt="" width="26" height="26">TechLab</a>
-            <span><a href="{{ url('/faculty') }}">Faculty? Sign in here</a> &nbsp;·&nbsp; &copy; {{ date('Y') }} TechLab</span>
+            <span><a href="{{ url('/faculty') }}">Faculty? Sign in here</a> &nbsp;·&nbsp; <a href="{{ route('terms') }}">Terms</a> &nbsp;·&nbsp; &copy; {{ date('Y') }} TechLab</span>
         </div>
     </footer>
     <script src="{{ asset('js/game-sound.js') }}?v={{ filemtime(public_path('js/game-sound.js')) }}"></script>

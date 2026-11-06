@@ -1,0 +1,393 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "edge-sw",
+      "kind": "switch",
+      "name": "edge-sw",
+      "x": 200,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "EDGE-SW",
+      "vlans": {
+        "eth0": 10,
+        "eth1": 10
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth7": {
+          "mode": "trunk"
+        }
+      }
+    },
+    {
+      "id": "core-sw",
+      "kind": "switch",
+      "name": "core-sw",
+      "x": 500,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CORE-SW",
+      "vlans": {
+        "eth0": 10
+      },
+      "vlanDb": [
+        [
+          10,
+          "CREW"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth7": {
+          "mode": "trunk"
+        },
+        "eth0": {
+          "mode": "access"
+        }
+      }
+    },
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 60,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.21/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "rivet",
+      "kind": "host",
+      "name": "rivet",
+      "x": 20,
+      "y": 300,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.22/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "crew-srv",
+      "kind": "server",
+      "name": "crew-srv",
+      "x": 700,
+      "y": 180,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.10.10/24",
+          "up": true
+        }
+      ],
+      "routes": []
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-edge-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "edge-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "rivet.eth0-edge-sw.eth1",
+      "a": [
+        "rivet",
+        "eth0"
+      ],
+      "b": [
+        "edge-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "edge-sw.eth7-core-sw.eth7",
+      "a": [
+        "edge-sw",
+        "eth7"
+      ],
+      "b": [
+        "core-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "crew-srv.eth0-core-sw.eth0",
+      "a": [
+        "crew-srv",
+        "eth0"
+      ],
+      "b": [
+        "core-sw",
+        "eth0"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g4-l6",
+    "title": "Lesson 4.6 — VLAN Security Best Practices",
+    "blurb": "Factory settings are an invitation. Harden the edge.",
+    "steps": [
+      {
+        "title": "No more switch spoofing",
+        "body": "On `edge-sw`, `show interfaces g0/1 switchport` says \"dynamic auto\". Fix the user ports: `interface range g0/1 - 2`, `switchport mode access`, `switchport nonegotiate`. Turn DTP off on the trunk too, on both switches: `interface g0/8`, `switchport nonegotiate`.",
+        "objectives": [
+          {
+            "id": "g4l6-a1",
+            "label": "edge-sw Gi0/1: static access, no DTP",
+            "check": {
+              "type": "iface-config",
+              "device": "edge-sw",
+              "iface": "eth0",
+              "is": {
+                "mode": "access",
+                "nonegotiate": true
+              }
+            }
+          },
+          {
+            "id": "g4l6-a2",
+            "label": "edge-sw Gi0/2: static access, no DTP",
+            "check": {
+              "type": "iface-config",
+              "device": "edge-sw",
+              "iface": "eth1",
+              "is": {
+                "mode": "access",
+                "nonegotiate": true
+              }
+            }
+          },
+          {
+            "id": "g4l6-t1",
+            "label": "edge-sw trunk: no DTP",
+            "check": {
+              "type": "iface-config",
+              "device": "edge-sw",
+              "iface": "eth7",
+              "is": {
+                "mode": "trunk",
+                "nonegotiate": true
+              }
+            }
+          },
+          {
+            "id": "g4l6-t2",
+            "label": "core-sw trunk: no DTP",
+            "check": {
+              "type": "iface-config",
+              "device": "core-sw",
+              "iface": "eth7",
+              "is": {
+                "mode": "trunk",
+                "nonegotiate": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "No more double tagging",
+        "body": "Create an unused native VLAN on both switches: `vlan 999`, `name NATIVE-UNUSED`. Then on both trunks (`interface g0/8`): `switchport trunk native vlan 999` and `switchport trunk allowed vlan 10`.",
+        "objectives": [
+          {
+            "id": "g4l6-n1",
+            "label": "edge-sw trunk: native 999, only VLAN 10 allowed",
+            "check": {
+              "type": "iface-config",
+              "device": "edge-sw",
+              "iface": "eth7",
+              "is": {
+                "native": 999,
+                "allowed": [
+                  10
+                ]
+              }
+            }
+          },
+          {
+            "id": "g4l6-n2",
+            "label": "core-sw trunk: native 999, only VLAN 10 allowed",
+            "check": {
+              "type": "iface-config",
+              "device": "core-sw",
+              "iface": "eth7",
+              "is": {
+                "native": 999,
+                "allowed": [
+                  10
+                ]
+              }
+            }
+          },
+          {
+            "id": "g4l6-p",
+            "label": "astro still reaches the crew server",
+            "check": {
+              "type": "ping",
+              "from": "astro",
+              "expect": "success",
+              "toDevice": "crew-srv"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Park the unused ports",
+        "body": "On `edge-sw`: `vlan 666`, `name PARKING`, then `interface range g0/3 - 7`, `switchport mode access`, `switchport access vlan 666`, `shutdown`.",
+        "objectives": [
+          {
+            "id": "g4l6-k3",
+            "label": "Gi0/3 is parked in VLAN 666 and shut down",
+            "check": {
+              "type": "iface-config",
+              "device": "edge-sw",
+              "iface": "eth2",
+              "is": {
+                "mode": "access",
+                "accessVlan": 666,
+                "shutdown": true
+              }
+            }
+          },
+          {
+            "id": "g4l6-k7",
+            "label": "Gi0/7 is parked in VLAN 666 and shut down",
+            "check": {
+              "type": "iface-config",
+              "device": "edge-sw",
+              "iface": "eth6",
+              "is": {
+                "mode": "access",
+                "accessVlan": 666,
+                "shutdown": true
+              }
+            }
+          },
+          {
+            "id": "g4l6-p2",
+            "label": "rivet still reaches the crew server",
+            "check": {
+              "type": "ping",
+              "from": "rivet",
+              "expect": "success",
+              "toDevice": "crew-srv"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

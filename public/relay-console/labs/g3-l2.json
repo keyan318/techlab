@@ -1,0 +1,173 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g3-l2",
+  "title": "Lesson 3.2: Scalability & Redundancy Planning",
+  "host": {
+    "name": "CITADEL-ABR",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nCitadel area border router: area 0 (backbone) and area 1 (Northwatch)"
+  },
+  "story": {
+    "alert": "CITADEL · EARTH DESIGN REVIEW: 3 FINDINGS",
+    "victory": "One clean route for Northwatch, the weak spot named, and the numbers to justify a second radio. Astro signs the review: \"Approved for growth.\""
+  },
+  "modes": {
+    "router": {
+      "prompt": "config-router"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1010 bytes\n!\nhostname CITADEL-ABR\n!\nrouter ospf 1\n network 10.0.0.0 0.0.0.3 area 0\n network 10.0.0.4 0.0.0.3 area 1\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show ip route ospf",
+      "when": [
+        "range"
+      ],
+      "sets": [
+        "seen-sum"
+      ],
+      "text": "Codes: C - connected, O - OSPF, IA - OSPF inter area\n\nO IA     10.30.0.0/22 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO        192.168.20.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0"
+    },
+    {
+      "cmd": "show ip route ospf",
+      "text": "Codes: C - connected, O - OSPF, IA - OSPF inter area\n\nO IA     10.30.0.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO IA     10.30.1.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO IA     10.30.2.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO IA     10.30.3.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO        192.168.20.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0"
+    },
+    {
+      "cmd": "show ip route",
+      "when": [
+        "range"
+      ],
+      "sets": [
+        "seen-sum"
+      ],
+      "text": "Codes: C - connected, O - OSPF, IA - OSPF inter area\n\nO IA     10.30.0.0/22 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO        192.168.20.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0"
+    },
+    {
+      "cmd": "show ip route",
+      "text": "Codes: C - connected, O - OSPF, IA - OSPF inter area\n\nO IA     10.30.0.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO IA     10.30.1.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO IA     10.30.2.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO IA     10.30.3.0/24 [110/3] via 10.0.0.6, GigabitEthernet0/1\nO        192.168.20.0/24 [110/2] via 10.0.0.2, GigabitEthernet0/0"
+    },
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      840   design-review.txt\n    2  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:design-review.txt",
+      "text": "GRID DESIGN REVIEW (from Earth's engineers)\n===========================================\nLinks into the Grid core today:\n\n  Outpost        Link to          Backup link?\n  Landing Site   citadel          yes (northwatch)\n  Northwatch     citadel          yes (landing)\n  Skyport        citadel          NO\n  Deep Well      northwatch       NO\n  Earth Relay    citadel          NO\n\nEvery outpost's traffic to Earth passes through ONE device.\n  submit SPOF=<that device>\n\nThe Northwatch radio links are each up 99% of the time.\nWith two independent radio links in parallel, how available\nis Northwatch? (percent, two decimals)\n  submit AVAIL=<number>\n"
+    },
+    {
+      "cmd": "show ip ospf border-routers",
+      "text": "OSPF Router with ID (10.0.0.5) (Process ID 1)\n\nBase Topology (MTID 0)\n\nInternal Router Routing Table\ni 10.0.0.6 [1] via 10.0.0.6, GigabitEthernet0/1, ABR, Area 1"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "router ospf <n>",
+      "args": [
+        "1"
+      ],
+      "enters": "router"
+    },
+    {
+      "cmd": "router ospf <n>",
+      "store": false,
+      "reply": "% This router runs OSPF process 1. Try: router ospf 1"
+    },
+    {
+      "mode": "router",
+      "cmd": "area <n> range <ip> <ip>",
+      "args": [
+        "1",
+        "10.30.0.0",
+        "255.255.252.0"
+      ],
+      "sets": [
+        "range"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "area <n> range <ip> <ip>",
+      "reply": "% Saved, but that range does not cover exactly 10.30.0.0 to 10.30.3.255 in area 1."
+    },
+    {
+      "mode": "router",
+      "cmd": "no area <n> range <rest>",
+      "clears": [
+        "range"
+      ],
+      "store": false
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Summarize Northwatch",
+      "body": "Type `enable` and `show ip route ospf`: four Northwatch routes, 10.30.0.0/24 to 10.30.3.0/24. Work out the one summary that covers exactly those four and `submit SUMMARY=<network>/<prefix>`. Then summarize area 1 on this ABR: `conf t`, `router ospf 1`, `area 1 range 10.30.0.0 255.255.252.0`, `end`, and check `show ip route ospf` again.",
+      "objectives": [
+        {
+          "id": "ans-sum",
+          "label": "Summary worked out",
+          "check": {
+            "type": "answer",
+            "value": "SUMMARY=10.30.0.0/22"
+          }
+        },
+        {
+          "id": "range",
+          "label": "Area 1 summarized on the ABR",
+          "check": {
+            "type": "fact",
+            "fact": "range"
+          }
+        },
+        {
+          "id": "seen-sum",
+          "label": "Saw one route instead of four",
+          "check": {
+            "type": "fact",
+            "fact": "seen-sum"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Find the single point of failure",
+      "body": "Read `more flash:design-review.txt`. Name the one device every outpost depends on: `submit SPOF=<device>`.",
+      "objectives": [
+        {
+          "id": "ans-spof",
+          "label": "Single point of failure named",
+          "check": {
+            "type": "answer",
+            "value": "SPOF=citadel",
+            "alt": [
+              "SPOF=CITADEL",
+              "SPOF=citadel-abr",
+              "SPOF=citadel router"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Price the second radio",
+      "body": "From the same file: each radio link is up 99% of the time. Two independent links fail together only 1% × 1% of the time. `submit AVAIL=<percent>` with two decimals.",
+      "objectives": [
+        {
+          "id": "ans-avail",
+          "label": "Availability calculated",
+          "check": {
+            "type": "answer",
+            "value": "AVAIL=99.99",
+            "alt": [
+              "AVAIL=99.99%"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

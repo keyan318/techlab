@@ -35,6 +35,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l5.json) complete
         If a name does not exist the server answers <strong>NXDOMAIN</strong>. <em>The simulator supports A records only.</em>
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which DNS record turns a name into an IPv4 address?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. An MX record</li>
+            <li class="quiz-option">B. A PTR record</li>
+            <li class="quiz-option">C. A CNAME record</li>
+            <li class="quiz-option quiz-correct">D. An A record ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>An A record maps a name to an IPv4 address. AAAA is for IPv6, and PTR goes from address back to name.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -43,6 +54,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l5.json) complete
     <p class="body-text">
         <strong>Rivet</strong> switches the name service on. <strong>Volt</strong> adds one rule. "And a name that does not exist must fail cleanly, so nobody can be tricked into trusting a wrong answer."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What rule does Volt add for names that don't exist?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. They must point to portal</li>
+            <li class="quiz-option quiz-correct">B. They must fail cleanly ✓</li>
+            <li class="quiz-option">C. They must be cached forever</li>
+            <li class="quiz-option">D. They must use port 23 instead</li>
+        </ul>
+        <p class="quiz-explanation"><em>A missing name should fail cleanly (NXDOMAIN), so nobody can be tricked into trusting a wrong answer.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -75,6 +97,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l5.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, who does the client ask first?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The root servers</li>
+            <li class="quiz-option quiz-correct">B. The DNS resolver ✓</li>
+            <li class="quiz-option">C. The TLD server</li>
+            <li class="quiz-option">D. The web portal</li>
+        </ul>
+        <p class="quiz-explanation"><em>The client asks its resolver. The resolver then goes to root, TLD and authoritative servers for it.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

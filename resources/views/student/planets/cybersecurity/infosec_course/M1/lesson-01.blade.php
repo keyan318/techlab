@@ -39,6 +39,17 @@ Syllabus: ITP1232 Unit A.1 Key Terms (information assurance and security). --}}
         Every attack breaks at least one of the three.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is a vulnerability?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Anything valuable you must protect</li>
+            <li class="quiz-option quiz-correct">B. A weakness a threat can use ✓</li>
+            <li class="quiz-option">C. Someone who could cause some harm</li>
+            <li class="quiz-option">D. The chance that harm will happen</li>
+        </ul>
+        <p class="quiz-explanation"><em>A vulnerability is a weakness, like a default password. A threat is who could cause harm, and the asset is what you protect.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -57,6 +68,17 @@ Syllabus: ITP1232 Unit A.1 Key Terms (information assurance and security). --}}
         <strong>Volt</strong> adds: "Last night they read our crew records, changed the shield settings, and knocked
         the comms relay offline. Three attacks, three broken promises: confidentiality, integrity and availability."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Doom changed the shield settings. Which part of the CIA triad broke?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Confidentiality</li>
+            <li class="quiz-option">B. Availability</li>
+            <li class="quiz-option quiz-correct">C. Integrity ✓</li>
+            <li class="quiz-option">D. Authentication</li>
+        </ul>
+        <p class="quiz-explanation"><em>Integrity means nobody changes it without permission. Changing the shield settings broke that promise.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -93,6 +115,17 @@ Syllabus: ITP1232 Unit A.1 Key Terms (information assurance and security). --}}
             <text x="525" y="197" text-anchor="middle" font-size="12.5" fill="#4a35b8">comms relay went down</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which item is the asset?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Vex's hackers</li>
+            <li class="quiz-option quiz-correct">B. The starmap ✓</li>
+            <li class="quiz-option">C. The factory password</li>
+            <li class="quiz-option">D. The comms relay outage</li>
+        </ul>
+        <p class="quiz-explanation"><em>The starmap is what the crew must protect. Vex's hackers are the threat, and the factory password is the vulnerability.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

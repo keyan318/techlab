@@ -19,9 +19,13 @@ export function runPing(
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '-c') {
-      count = Number(args[++i]);
+      const raw = args[++i];
+      count = Number(raw);
       if (!Number.isInteger(count) || count <= 0) {
         write('ping: invalid count\n');
+        // TechLab: a mistyped `-c` swallows the host into the count slot — never pings, but a stale
+        // pass from an earlier real ping to this same target must not keep crediting the student.
+        if (raw) device.recordActivity('ping', raw.toLowerCase(), 'fail');
         done();
         return null;
       }
@@ -98,6 +102,8 @@ export function pingTarget(
       if (finished) return;
       finished = true;
       device.offIcmp(id);
+      // TechLab: record what this real attempt observed, so a lab objective can require it.
+      if (sent > 0) device.recordActivity('ping', addr, received > 0 ? 'success' : 'fail');
       const loss = sent ? Math.round(((sent - received) / sent) * 100) : 0;
       if (win) {
         write(`\nPing statistics for ${addr}:\n`);

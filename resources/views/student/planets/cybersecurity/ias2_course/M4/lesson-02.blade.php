@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit D.2 Managed Security Services. --}}
         whether to grant access to the starmap. Those stay in-house.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does outsourcing security work never outsource?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The monitoring</li>
+            <li class="quiz-option">B. The alert tools</li>
+            <li class="quiz-option quiz-correct">C. The accountability ✓</li>
+            <li class="quiz-option">D. The night shifts to cover</li>
+        </ul>
+        <p class="quiz-explanation"><em>If something goes wrong, the Citadel is still responsible, even if an MSSP was watching.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit D.2 Managed Security Services. --}}
         outside crew also decide who gets starmap access, Astro stops it cold. "Watching alerts, yes. Deciding who
         touches our most sensitive data — that judgment call stays with us."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Which part of Rivet's proposal did Astro stop?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Letting outsiders decide starmap access ✓</li>
+            <li class="quiz-option">B. Watching the alerts all through the night shift</li>
+            <li class="quiz-option">C. Saying who gets alerted and how fast</li>
+            <li class="quiz-option">D. Hiring any outside crew to help them</li>
+        </ul>
+        <p class="quiz-explanation"><em>Watching alerts can be outsourced. Judging who touches the most sensitive data stays in-house.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -53,6 +75,17 @@ Syllabus: ITP1333 Unit D.2 Managed Security Services. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Outsourcing the work never outsources the accountability</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is a good outsourcing candidate?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Access decisions</li>
+            <li class="quiz-option">B. Data ownership</li>
+            <li class="quiz-option quiz-correct">C. 24/7 monitoring ✓</li>
+            <li class="quiz-option">D. Starmap approvals</li>
+        </ul>
+        <p class="quiz-explanation"><em>Round-the-clock monitoring needs constant coverage, so it's a good fit. Access decisions stay in-house.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

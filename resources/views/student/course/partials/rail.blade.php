@@ -4,7 +4,7 @@
   $initials = mb_strtoupper(count($parts) >= 2 ? mb_substr($parts[0], 0, 1).mb_substr(end($parts), 0, 1) : mb_substr($user->name, 0, 2));
 @endphp
 
-<aside class="flex min-w-0 flex-col gap-8 xl:sticky xl:top-6" aria-label="Your course progress">
+<aside class="flex min-w-0 flex-col gap-8 xl:sticky xl:top-6" aria-label="Your course progress" data-tour="course-rail">
   <section class="px-card p-6" aria-label="Profile">
     <div class="flex items-center gap-4">
       @if ($user->avatar)
@@ -72,16 +72,16 @@
 
   <section class="px-card p-6" aria-labelledby="cb-h">
     <div class="flex items-baseline justify-between">
-      <h2 id="cb-h" class="text-[1.35rem] font-semibold">Course Badges</h2>
+      <h2 id="cb-h" class="text-[1.35rem] font-semibold">Course Gems</h2>
       <span class="text-[15px] text-muted">{{ $badgesEarned }} / {{ count($chapters) }}</span>
     </div>
-    <p class="mt-2 text-[15px] leading-snug text-muted">Complete a chapter to earn a badge. Collect 'em all!</p>
+    <p class="mt-2 text-[15px] leading-snug text-muted">Complete a chapter to earn a gem. Collect 'em all!</p>
     <ul class="mt-5 flex flex-wrap gap-4">
       @foreach ($chapters as $c)
         <li title="Chapter {{ $c['number'] }}: {{ $c['title'] }}{{ $c['complete'] ? ' (earned)' : ' (locked)' }}"
             class="relative {{ $c['complete'] ? '' : 'opacity-40 grayscale' }}">
           <x-px-icon name="gem" :size="44" />
-          <span class="sr-only">Chapter {{ $c['number'] }} badge, {{ $c['complete'] ? 'earned' : 'locked' }}</span>
+          <span class="sr-only">Chapter {{ $c['number'] }} gem, {{ $c['complete'] ? 'earned' : 'locked' }}</span>
           <span class="px-font pointer-events-none absolute inset-0 grid place-items-center pt-1 text-[13px] font-bold text-[#06284a]" aria-hidden="true">{{ $c['number'] }}</span>
         </li>
       @endforeach
@@ -106,9 +106,9 @@
         </div>
       </div>
       @if ($certificateUrl)
-        <a href="{{ $certificateUrl }}" class="px-btn px-btn-yellow mt-6 w-[calc(100%-6px)]">View certificate</a>
+        <a href="{{ $certificateUrl }}" class="px-btn px-btn-blue mt-6 w-[calc(100%-6px)]">View certificate</a>
       @elseif ($finalExam['state'] === 'ready')
-        <a href="{{ $finalExam['url'] }}" class="px-btn px-btn-yellow mt-6 w-[calc(100%-6px)]">Take the final exam</a>
+        <a href="{{ $finalExam['url'] }}" class="px-btn px-btn-blue mt-6 w-[calc(100%-6px)]">Take the final exam</a>
       @endif
     </section>
   @endif

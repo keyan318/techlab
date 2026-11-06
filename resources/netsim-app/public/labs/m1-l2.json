@@ -121,7 +121,7 @@
       },
       {
         "title": "Check every path",
-        "body": "In a star, every conversation passes through the center. From astro, ping rivet and volt. From rivet, ping volt. Watch the packets go into the relay switch and back out. Then press Check objectives.",
+        "body": "In a star, every conversation passes through the center. From astro, run `ping` to rivet's address, then `ping` to volt's address. From rivet, run `ping` to volt's address. Watch the packets go into the relay switch and back out. Then press Check objectives.",
         "objectives": [
           {
             "id": "m1l2-ping-ar",

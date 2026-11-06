@@ -18,6 +18,8 @@ class CybersecurityCourseTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private function student(): User
     {
         return $this->studentIn('cybersecurity', 'information-security-1', ['role' => 'student', 'planets' => ['cybersecurity']]);

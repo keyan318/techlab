@@ -146,7 +146,7 @@
             display: flex;
             align-items: center;
 
-            gap: 6px;
+            gap: 10px;
 
             margin-left: 20px;
         }
@@ -638,6 +638,7 @@
         }
 
         .quest-card[data-kind="astro"]     { --q-accent: #7c5cff; --q-accent-2: #b6a3ff; }
+        .quest-card[data-kind="analogy"]   { --q-accent: #e8457c; --q-accent-2: #ff9cbf; }
         .quest-card[data-kind="code"]      { --q-accent: #0fa3b1; --q-accent-2: #6fe0e8; }
         .quest-card[data-kind="practice"]  { --q-accent: #f08c1a; --q-accent-2: #ffc46b; }
         .quest-card[data-kind="quiz"]      { --q-accent: #2fa56b; --q-accent-2: #86e0b0; }
@@ -650,7 +651,9 @@
         .body-list { margin: 0 0 1rem 1.25rem; line-height: 1.7; }
         .body-list li { margin-bottom: 4px; }
         .net-diagram { margin: 1rem 0; }
-        .net-diagram svg { width: 100%; height: auto; display: block; font-family: inherit; }
+        /* Tall diagrams (e.g. a 300x400 flowchart) would grow huge at full width: cap the height and
+           let the SVG scale down inside, centred. Wide diagrams never reach the cap, so they're unchanged. */
+        .net-diagram svg { width: 100%; height: auto; max-height: min(440px, 65vh); display: block; font-family: inherit; }
 
 
         .quest-head {
@@ -821,6 +824,153 @@
             .quiz-option { transition: none; }
         }
 
+        /* ── Snap trial (Programming 1 only, see SNAP_TRIAL): every stage is one full-height panel ── */
+        .content.snap-mode { scroll-snap-type: y mandatory; scroll-padding-top: 24px; }
+        .snap-mode .lesson-fragment { gap: 24px; }
+        .snap-mode .quest-hero,
+        .snap-mode .quest-card {
+            min-height: var(--snap-h, 80vh);
+            scroll-snap-align: start;
+            scroll-snap-stop: always;      /* a fast flick still stops at the next stage */
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .snap-mode .nav-arrows { scroll-snap-align: end; }
+        .snap-mode .quest-card::after {    /* big stage numeral, one idea per panel */
+            content: attr(data-snap-num);
+            position: absolute; right: 30px; top: 8px;
+            font: 800 120px/1 'Space Grotesk', 'Inter', sans-serif;
+            color: var(--q-accent); opacity: .08; pointer-events: none;
+        }
+        .snap-dots {
+            position: fixed; right: 14px; top: 50%; transform: translateY(-50%); z-index: 60;
+            display: flex; flex-direction: column; gap: 16px; padding: 10px 6px;
+            border-radius: 999px; background: rgba(255,255,255,.75); backdrop-filter: blur(6px);
+            box-shadow: 0 6px 18px -10px rgba(11,18,48,.35);
+        }
+        .snap-dots button {
+            width: 10px; height: 10px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+            background: rgba(11,18,48,.22);
+            transition: transform .3s cubic-bezier(.22,1,.36,1), background-color .3s ease;
+        }
+        .snap-dots button:hover { background: rgba(11,18,48,.4); }
+        .snap-dots button.is-locked { background: rgba(11,18,48,.1); }
+        .snap-dots button[aria-current="true"] { background: var(--dot, #2f7de1); transform: scaleY(2.4); }
+        .snap-dots button:focus-visible { outline: 2px solid var(--dot, #2f7de1); outline-offset: 3px; }
+        @media (max-width: 720px) { .snap-dots { right: 6px; gap: 12px; } }
+        @media (prefers-reduced-motion: reduce) { .snap-dots button { transition: none; } }
+
+        /* Presentation: snap mode + full screen = edge-to-edge slides a teacher can project like a PPT. */
+        body.is-fullscreen .content.snap-mode { padding: 0; scroll-padding-top: 0; }
+        body.is-fullscreen .snap-mode .lesson-content { max-width: none; }
+        body.is-fullscreen .snap-mode .lesson-fragment { gap: 0; padding-bottom: 0; }
+        body.is-fullscreen .snap-mode .quest-hero,
+        body.is-fullscreen .snap-mode .quest-card,
+        body.is-fullscreen .snap-mode .quest-card:hover {
+            border-radius: 0; border: 0; box-shadow: none; animation: none; transform: none;
+        }
+        body.is-fullscreen .snap-mode .quest-hero { padding: 6vh 6vw; }
+        body.is-fullscreen .snap-mode .quest-card { padding: 5vh 0; }
+        body.is-fullscreen .snap-mode .quest-card + .quest-card { border-top: 1px solid rgba(11,18,48,.06); }
+        body.is-fullscreen .snap-mode .quest-card::before { width: 8px; }
+        body.is-fullscreen .snap-mode .quest-card::after { font-size: 200px; right: 5vw; top: 4vh; }
+        body.is-fullscreen .snap-mode .quest-hero > *,
+        body.is-fullscreen .snap-mode .quest-head,
+        body.is-fullscreen .snap-mode .quest-body {
+            width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto; box-sizing: border-box;
+        }
+        body.is-fullscreen .snap-mode .quest-head,
+        body.is-fullscreen .snap-mode .quest-body { padding-left: 4vw; padding-right: 4vw; }
+        body.is-fullscreen .snap-mode .nav-arrows { display: none; }
+        /* Bigger everything (text, code, diagrams) so the back row can read it. */
+        @media (min-width: 1200px) {
+            body.is-fullscreen .snap-mode .quest-hero > *,
+            body.is-fullscreen .snap-mode .quest-head,
+            body.is-fullscreen .snap-mode .quest-body { zoom: 1.2; }
+        }
+        @media (min-width: 1700px) {
+            body.is-fullscreen .snap-mode .quest-hero > *,
+            body.is-fullscreen .snap-mode .quest-head,
+            body.is-fullscreen .snap-mode .quest-body { zoom: 1.4; }
+        }
+
+        /* ── Knowledge Check gate: the hands-on button waits for a passed quiz ── */
+        .quiz-gate {
+            margin-top: 12px; padding: 18px 20px; border-radius: 16px;
+            background: #fff8ec; border: 1px solid #f3d29a; color: #5c3b00;
+            animation: qo-in .3s ease both;
+        }
+        .quiz-gate h3 { font: 700 17px 'Space Grotesk', sans-serif; color: #4a2f00; margin: 0 0 6px; }
+        .quiz-gate p { margin: 0 0 14px; font-size: 15px; line-height: 1.55; }
+        .quiz-gate .qg-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .qg-btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 12px;
+            font: 600 15px 'Space Grotesk', sans-serif; cursor: pointer; border: 1px solid transparent;
+            transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+        }
+        .qg-btn:active { transform: scale(.97); }
+        .qg-btn.primary { background: #2f7de1; color: #fff; box-shadow: 0 4px 0 #1f5fb4; }
+        .qg-btn.primary:hover { background: #2a70cb; }
+        .qg-btn.ghost { background: #fff; color: #16306b; border-color: rgba(47,125,225,.35); }
+        .qg-btn.ghost:hover { background: #f3f8ff; }
+        .qg-btn[disabled] { opacity: .7; cursor: progress; }
+        .qg-btn .qg-astro { width: 30px; height: 30px; flex: none; margin: -6px 0 -6px -4px; }
+        .qg-err { margin-top: 10px; color: #b42318; font-size: 14px; }
+        .cta-wrap.cta-locked .code-btn { filter: grayscale(1); opacity: .55; cursor: not-allowed; pointer-events: none; }
+        .cta-wrap.cta-locked .relay-lab-note { display: none; }
+        .cta-lock-note {
+            display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 10px 14px; border-radius: 12px;
+            background: #f3f7ff; border: 1px dashed rgba(47,125,225,.35); color: #16306b; font-size: 14px;
+        }
+        .cta-wrap:not(.cta-locked) .cta-lock-note { display: none; }
+        @media (prefers-reduced-motion: reduce) { .quiz-gate { animation: none; } }
+
+        /* ── Checkpoints: one question ends a stage; the stages after it stay locked until it is passed ── */
+        .checkpoint-block {
+            position: relative; margin-top: 26px; padding: 22px 22px 18px; border-radius: 18px;
+            background: #fffaf0; border: 2px dashed #f0b44c;
+        }
+        .checkpoint-block[data-passed] { background: #f2f8ff; border: 2px solid rgba(47,125,225,.35); }
+        .cp-tag {
+            display: inline-flex; align-items: center; gap: 6px; margin: 0 0 10px; padding: 4px 12px; border-radius: 999px;
+            background: #f0b44c; color: #4a2f00; font: 700 12px 'Space Grotesk', sans-serif; letter-spacing: .08em; text-transform: uppercase;
+        }
+        .checkpoint-block[data-passed] .cp-tag { background: #2f7de1; color: #fff; }
+        .checkpoint-block[data-passed] .quiz-option,
+        .checkpoint-block[data-wait] .quiz-option { cursor: default; transform: none; }
+        .checkpoint-block[data-passed] .quiz-option:not(.is-correct) { opacity: .5; }
+        .checkpoint-block[data-wait] .quiz-option { opacity: .55; pointer-events: none; }
+        .checkpoint-block[data-busy] .quiz-option { pointer-events: none; opacity: .7; }
+        .checkpoint-block.cp-closed > :not(.cp-tag):not(.cp-start-wrap) { display: none; }
+        .checkpoint-block:not(.cp-closed) .cp-start-wrap { display: none; }
+        .cp-start {
+            display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; border: 0; cursor: pointer;
+            background: #2f7de1; color: #fff; font: 700 16px 'Space Grotesk', sans-serif; box-shadow: 0 4px 0 #1f5fb4;
+            transition: transform .15s ease, background .15s ease;
+        }
+        .cp-start:hover { background: #2a70cb; }
+        .cp-start:active { transform: translateY(2px); box-shadow: 0 2px 0 #1f5fb4; }
+        .cp-start:focus-visible { outline: 2px solid #2f7de1; outline-offset: 3px; }
+        .cp-hint { margin: 0 0 12px; font-size: 15px; color: #6a5420; }
+        .cp-msg { margin: 4px 0 0; font-size: 15px; line-height: 1.55; }
+        .cp-msg.bad { color: #9c2b2f; }
+        .cp-msg.ok { color: #16306b; }
+        .cp-reread {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 8px 14px; border-radius: 10px;
+            border: 1px solid rgba(47,125,225,.35); background: #fff; color: #16306b; font: 600 14px 'Space Grotesk', sans-serif; cursor: pointer;
+        }
+        .cp-reread:hover { background: #f3f8ff; }
+        .quest-card.quest-locked .quest-body { display: none; }
+        .quest-card.quest-locked { opacity: .75; }
+        .quest-card.quest-locked:hover { transform: none; }
+        .quest-lock-note {
+            display: none; margin: 14px 30px 24px 34px; padding: 12px 16px; border-radius: 12px;
+            background: #f5f6fa; border: 1px dashed rgba(11,18,48,.18); color: #454c60; font-size: 15px;
+        }
+        .quest-card.quest-locked .quest-lock-note { display: block; }
+        .quest-card.cp-reread-flash .quest-body { animation: cp-flash 1.4s ease; }
+        @keyframes cp-flash { 0%, 100% { background: transparent; } 30% { background: #fff6d6; } }
+        @media (max-width: 720px) { .quest-lock-note { margin: 12px 20px 20px 24px; } }
+        @media (prefers-reduced-motion: reduce) { .quest-card.cp-reread-flash .quest-body { animation: none; } }
         /* ── "Code it yourself" button ── */
         .code-btn {
             position: relative;
@@ -931,6 +1081,11 @@
     // lessonView may be explicitly null (controller couldn't find a
     // matching file under either naming style) — leave it null rather
     // than guessing a string, so the check below shows the fallback.
+    // XP, gems and streaks are the student's: faculty and admins never see them. The course's assigned
+    // faculty member gets the editing tools instead (see faculty/partials/course-editor).
+    $isStudent = (auth()->user()?->role ?? 'student') === 'student';
+    $canEdit = \App\Models\CourseAssignment::canEdit(auth()->user(), $slug);
+
     $lessonView = $lessonView ?? (\App\Services\CourseProgressService::viewBase($slug)
         ? \App\Services\CourseProgressService::viewBase($slug) . '.' . strtoupper($module) . ".{$lesson}"
         : null);
@@ -991,6 +1146,15 @@
 
             <div class="header-right">
 
+                @if ($isStudent)
+                <x-stat-chips theme="light" />
+                @endif
+                @if (in_array(auth()->user()?->role, ['student', 'faculty'], true))
+                <button type="button" class="icon fs-btn tour-btn" title="Astro's tour" aria-label="Astro's tour" onclick="window.astroTour && window.astroTour.start()">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4"/><path d="M12 16.6h.01" stroke-width="2.6"/></svg>
+                </button>
+                @endif
+
                 <button type="button" class="icon fs-btn" title="Full screen" aria-label="Full screen" onclick="toggleFullscreen()">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>
                 </button>
@@ -1010,9 +1174,10 @@
             --}}
             <div class="lesson-content" id="lesson-stage">
 
-                @if($lessonView && view()->exists($lessonView)){!! \App\Services\LessonQuizService::strip(view($lessonView)->render()) !!}@endif
+                @php $lessonHtml = \App\Services\LessonQuizService::render($slug, $module, $lesson); @endphp
+                @if($lessonHtml !== null){!! $lessonHtml !!}@endif
 
-                @unless(view()->exists($lessonView))
+                @if($lessonHtml === null)
                     <div class="empty-lesson">
                         <div>
                             <h1>Lesson not found</h1>
@@ -1021,7 +1186,7 @@
                             </p>
                         </div>
                     </div>
-                @endunless
+                @endif
 
                 <div class="nav-arrows">
 
@@ -1051,13 +1216,15 @@
 
 </div>
 
+{{-- Astro's face for the quiz-review button (the gate is built in JS, so it copies this one). --}}
+<div id="qg-astro-src" hidden><x-astro-mascot class="qg-astro" /></div>
 
 <script>
 (function () {
 
     const slug  = @json($slug);
     // Networking and security lessons show console commands, not Python/C.
-    const CODE_LANG = slug === 'programming' ? 'python' : (slug === 'computer-programming-1' ? 'c' : 'bash');
+    const CODE_LANG = slug === 'programming' ? 'python' : (slug === 'computer-programming-1' || slug === 'computer-programming-2' ? 'c' : 'bash');
     let current = { module: @json($module), lesson: @json($lesson) };
 
     const stage    = document.getElementById('lesson-stage');
@@ -1096,6 +1263,7 @@
         lab:       '<circle cx="6" cy="7" r="2.2"/><circle cx="18" cy="7" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8 8l3 8M16 8l-3 8M8.2 7h7.6"/>',
         diagram:   '<rect x="3" y="4" width="7" height="6" rx="1.5"/><rect x="14" y="14" width="7" height="6" rx="1.5"/><path d="M10 7h4a3 3 0 0 1 3 3v4"/>',
         quiz:      '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/>',
+        bulb:      '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
         star:      '<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>'
     };
 
@@ -1108,6 +1276,8 @@
         if (t.indexOf('relay lab') !== -1)    return { rank: 5, kind: 'lab', icon: 'lab', tag: 'Relay Lab' };
         // Security: "Defend it yourself" runs the Citadel Sim, also the last stage.
         if (t.indexOf('defense lab') !== -1)  return { rank: 5, kind: 'lab', icon: 'lab', tag: 'Defense Lab' };
+        // Analogy stage: an everyday picture of the idea (replaces the crew story, one course at a time).
+        if (t.indexOf('picture it') !== -1)   return { rank: 2, kind: 'analogy', icon: 'bulb', tag: 'Picture It' };
         // Networking: the crew speaks (Astro is the captain, Rivet the engineer, Volt the shield tech).
         if (t.indexOf('rivet') !== -1)        return { rank: 2, kind: 'astro', icon: 'astro', tag: 'Rivet Says' };
         if (t.indexOf('volt') !== -1)         return { rank: 2, kind: 'astro', icon: 'astro', tag: 'Volt Says' };
@@ -1121,10 +1291,21 @@
         return { rank: 5, kind: 'practice', icon: 'practice', tag: 'Coding Exercise' };
     }
 
+    // The lesson's number as the sidebar shows it (its place in the module, which the faculty may have
+    // reordered), falling back to the numbers in the lesson's own file.
+    function levelOf(mod, les) {
+        const item = document.querySelector('.lesson-item[data-module="' + current.module + '"][data-lesson="' + current.lesson + '"] .lesson-number');
+        return item ? item.textContent.trim() : (mod || '?') + '.' + (les || '?');
+    }
+
     function upgradeSections() {
         const frag = stage.querySelector('.lesson-fragment');
         if (!frag || frag.dataset.quest === '1') return;
         frag.dataset.quest = '1';
+
+        // Number the sections in file order before they are regrouped into stage cards (the course editor
+        // finds a section by it).
+        frag.querySelectorAll(':scope > h2.section-heading').forEach(function (h, i) { h.dataset.sec = i; });
 
         const nodes     = Array.from(frag.children);
         const heading   = nodes.find(function (n) { return n.classList.contains('lesson-heading'); });
@@ -1174,9 +1355,9 @@
         const top = document.createElement('div');
         top.className = 'quest-hero-top';
         top.innerHTML =
-            '<span class="quest-chip">Level ' + (mod || '?') + '.' + (les || '?') + '</span>' +
+            '<span class="quest-chip">Level ' + levelOf(mod, les) + '</span>' +
             '<span class="quest-chip">' + ranks.length + ' Stages</span>' +
-            '<span class="quest-chip xp">+' + LESSON_XP + ' XP</span>';
+            (IS_STUDENT ? '<span class="quest-chip xp">+' + LESSON_XP + ' XP</span>' : '');
         hero.appendChild(top);
         if (heading)   hero.appendChild(heading);
         if (objective) hero.appendChild(objective);
@@ -1231,12 +1412,14 @@
     // Options become buttons. The first answer to a question is checked (and scored) on the server;
     // the right answer + explanation only come back after answering, and a reload restores the results.
     const QUIZ_CSRF = @json(csrf_token());
+    const IS_STUDENT = @json($isStudent);
     const LESSON_XP = {{ \App\Services\StudentDashboardService::XP_PER_LESSON }};
     const QUIZ_XP   = {{ \App\Services\StudentDashboardService::XP_PER_QUIZ_QUESTION }};
     const QO_OK  = '<svg class="qo-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>';
     const QO_BAD = '<svg class="qo-mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
     function xpToast(xp) {
+        if (window.techlabStats) window.techlabStats.refresh();
         const t = document.createElement('div');
         t.className = 'xp-toast';
         t.setAttribute('role', 'status');
@@ -1245,13 +1428,15 @@
         setTimeout(function () { t.remove(); }, 1700);
     }
 
+    let quizScrollPending = false;   // set when "Retry the ones I missed" reloads the lesson
+
     function upgradeQuiz(moduleId, lessonId) {
         const blocks = Array.from(stage.querySelectorAll('.quiz-block'));
         if (!blocks.length) return;
 
         const base = '/student/planet/' + slug + '/quiz/' + moduleId + '/' + lessonId;
         const last = blocks[blocks.length - 1];
-        let perQ = 10, earned = 0, done = 0;
+        let perQ = 10, earned = 0, done = 0, right = 0, gate = null;
 
         const summary = document.createElement('div');
         summary.className = 'quiz-summary';
@@ -1261,7 +1446,7 @@
 
         function paintSummary() {
             summary.querySelector('.qs-text').innerHTML = done === blocks.length
-                ? 'Quiz complete: <b>' + Math.round(earned / perQ) + '/' + blocks.length + '</b> correct · <b>+' + earned + ' XP</b>'
+                ? 'Quiz complete: <b>' + right + '/' + blocks.length + '</b> correct · <b>+' + earned + ' XP</b>'
                 : 'Answer each question to earn <b>' + perQ + ' XP</b> for every correct one · <b>' + done + '/' + blocks.length + '</b> answered';
             summary.querySelector('.qs-bar i').style.width = (done / blocks.length * 100) + '%';
             summary.classList.toggle('complete', done === blocks.length);
@@ -1287,9 +1472,91 @@
             block.appendChild(res);
             if (r.explanation) block.appendChild(exp);
             if (animate && r.correct && r.xp) xpToast(r.xp);
-            done++; earned += (r.correct ? (r.xp || perQ) : 0);
+            done++;
+            if (r.correct) { right++; earned += (r.xp || 0); }   // a retried question earns no XP
             paintSummary();
         }
+
+        // ── The hands-on button ("Code it yourself" / "Configure it yourself" / "Defend it yourself")
+        //    stays locked until the quiz is passed: every question answered, at most 2 mistakes.
+        //    The server enforces this too; this only shows it.
+        const ctas = Array.from(stage.querySelectorAll('.cta-wrap'));
+        const ctaLabel = ctas[0] && ctas[0].querySelector('.code-btn span:not(.code-btn-arrow)');
+        const ctaName = ctaLabel ? ctaLabel.textContent.trim() : 'the hands-on lab';
+        const esc = function (t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; };
+
+        function lockCtas(g) {
+            const locked = !g || (g.required && !g.allowed);
+            ctas.forEach(function (w) {
+                w.classList.toggle('cta-locked', locked);
+                let note = w.querySelector('.cta-lock-note');
+                if (!note) { note = document.createElement('p'); note.className = 'cta-lock-note'; w.appendChild(note); }
+                note.textContent = !g ? '🔒 Answer the Knowledge Check above to unlock this.'
+                    : g.failed ? '🔒 Locked: you missed ' + g.mistakes + ' of ' + g.total + ' questions (you can miss at most ' + g.maxMistakes + '). Review them with Astro, then retry.'
+                    : '🔒 Answer the Knowledge Check above to unlock this. You can miss at most ' + g.maxMistakes + ' questions.';
+                const btn = w.querySelector('.code-btn');
+                if (btn) {
+                    btn.setAttribute('aria-disabled', locked ? 'true' : 'false');
+                    if (btn.tagName === 'BUTTON') btn.disabled = locked; else btn.tabIndex = locked ? -1 : 0;
+                }
+            });
+        }
+
+        // Failed (more than 2 mistakes): Astro explains the mistakes, then the student retries the ones missed.
+        const gateBox = document.createElement('div');
+        gateBox.className = 'quiz-gate';
+        gateBox.hidden = true;
+        gateBox.setAttribute('aria-live', 'polite');
+        summary.after(gateBox);
+        const astroSrc = document.querySelector('#qg-astro-src svg');
+        const ASTRO_ICON = astroSrc ? astroSrc.outerHTML : '';
+
+        function applyGate(g) {
+            if (!g) return;
+            gate = g;
+            lockCtas(g);
+            if (!(g.required && g.failed)) { gateBox.hidden = true; gateBox.innerHTML = ''; return; }
+            gateBox.hidden = false;
+            gateBox.innerHTML =
+                '<h3>Not quite there yet: you missed ' + g.mistakes + ' of ' + g.total + '</h3>' +
+                '<p>To unlock <b>' + esc(ctaName) + '</b> you can miss at most ' + g.maxMistakes + '. ' +
+                (g.reviewed ? 'Read Astro\'s review, then retry the ones you missed.' : 'Astro already looked at your answers and wrote you an explanation.') + '</p>' +
+                '<div class="qg-actions">' +
+                '<button type="button" class="qg-btn primary" data-act="review">' + ASTRO_ICON + '<span>' + (g.reviewed ? 'Open my review with Astro' : 'Ask Astro about my mistakes') + '</span></button>' +
+                (g.reviewed ? '<button type="button" class="qg-btn ghost" data-act="retake">Retry the ' + g.mistakes + ' I missed</button>' : '') +
+                '</div>';
+        }
+
+        gateBox.addEventListener('click', async function (e) {
+            const b = e.target.closest('[data-act]');
+            if (!b || b.disabled || !gate) return;
+            const act = b.dataset.act;
+            gateBox.querySelectorAll('.qg-btn').forEach(function (x) { x.disabled = true; });
+            const label = b.querySelector('span') || b;
+            label.textContent = act === 'retake' ? 'Reopening…' : (gate.reviewed ? 'Opening…' : 'Astro is reading your answers…');
+            if (act === 'review') b.classList.add('astro-talking');
+            // The review is written instantly; a short pause lets Astro "read" the answers first.
+            const thinking = act === 'review' && !gate.reviewed ? new Promise(function (ok) { setTimeout(ok, 1400); }) : null;
+            try {
+                const res = await fetch(act === 'retake' ? gate.retakeUrl : gate.reviewUrl, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': QUIZ_CSRF, 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const r = await res.json().catch(function () { return {}; });
+                if (!res.ok || !r.ok) throw new Error(r.error || 'Something went wrong. Try again.');
+                if (act === 'review') { await thinking; window.location.href = r.url; return; }
+                quizScrollPending = true;
+                loadLesson(moduleId, lessonId, { pushState: false });
+            } catch (err) {
+                applyGate(gate);
+                const p = document.createElement('p');
+                p.className = 'qg-err';
+                p.textContent = err instanceof TypeError ? 'Could not reach TechLab. Check your connection and try again.' : err.message;
+                gateBox.appendChild(p);
+            }
+        });
+
+        lockCtas(null);
 
         blocks.forEach(function (block) {
             const q = block.dataset.q;
@@ -1313,6 +1580,7 @@
                         if (!res.ok || !r.ok) throw new Error('bad');
                         if (!block.isConnected) return;
                         show(block, r, r.first !== false);
+                        applyGate(r.gate);
                     } catch (e) {
                         block.removeAttribute('data-busy');
                         if (!block.querySelector('.quiz-result')) {
@@ -1342,8 +1610,198 @@
                     if (a && !block.dataset.done) show(block, { choice: a.choice, correct: a.correct, correctChoice: a.correctChoice, explanation: a.explanation, xp: a.xp }, false);
                 });
                 paintSummary();
+                applyGate(st.gate);
+                // Just reopened the missed questions: take the student straight to the first one.
+                if (quizScrollPending) {
+                    quizScrollPending = false;
+                    const open = blocks.find(function (b) { return !b.dataset.done; });
+                    if (open) open.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             })
             .catch(function () {});
+    }
+
+    // ── Checkpoints ────────────────────────────────────────────────────
+    // A `.checkpoint-block` ends a stage card. Every card after the first unpassed checkpoint is locked
+    // (its content hidden), so the student can't scroll past the reading to the Knowledge Check.
+    // Answers are checked on the server; a miss never shows the right answer, it sends the student
+    // back to re-read the stage and makes them wait a few seconds before trying again.
+    function upgradeCheckpoints(moduleId, lessonId) {
+        const cards = Array.from(stage.querySelectorAll('.quest-card'));
+        const cps = Array.from(stage.querySelectorAll('.checkpoint-block'));
+        if (!cps.length || !cards.length) return;
+
+        const base = '/student/planet/' + slug + '/checkpoint/' + moduleId + '/' + lessonId;
+        const stageOf = function (el) { return cards.indexOf(el.closest('.quest-card')) + 1; };
+
+        cards.forEach(function (card) {
+            const note = document.createElement('p');
+            note.className = 'quest-lock-note';
+            card.appendChild(note);
+        });
+
+        function paint() {
+            let blocker = 0;
+            cards.forEach(function (card, i) {
+                const locked = blocker > 0;
+                card.classList.toggle('quest-locked', locked);
+                card.querySelector('.quest-body').inert = locked;
+                if (locked) card.querySelector('.quest-lock-note').textContent = '🔒 Pass the checkpoint at the end of Stage ' + blocker + ' to unlock this stage.';
+                if (!locked && card.querySelector('.checkpoint-block:not([data-passed])')) blocker = i + 1;
+            });
+        }
+
+        function msg(cp, cls, html) {
+            let p = cp.querySelector('.cp-msg');
+            if (!p) { p = document.createElement('p'); cp.appendChild(p); }
+            p.className = 'cp-msg ' + cls;
+            p.innerHTML = html;
+            return p;
+        }
+
+        function markPassed(cp, r, fresh) {
+            cp.classList.remove('cp-closed');
+            cp.dataset.passed = '1';
+            cp.removeAttribute('data-wait');
+            cp.querySelector('.cp-tag').textContent = '✓ Checkpoint passed';
+            cp.querySelectorAll('.quiz-option').forEach(function (li) {
+                li.classList.remove('is-wrong');
+                li.setAttribute('aria-disabled', 'true');
+                li.tabIndex = -1;
+                if (li.dataset.letter === r.correctChoice && !li.classList.contains('is-correct')) { li.classList.add('is-correct'); li.insertAdjacentHTML('beforeend', QO_OK); }
+            });
+            const n = stageOf(cp);
+            msg(cp, 'ok', (fresh && n < cards.length ? '<b>Stage ' + (n + 1) + ' unlocked!</b> ' : '') + (r.explanation || ''));
+            paint();
+            if (fresh && cards[n]) setTimeout(function () { cards[n].scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 700);
+        }
+
+        // Wait out the cooldown, then reshuffle the options so the retry isn't just "the next letter down".
+        function cooldown(cp, secs) {
+            cp.classList.remove('cp-closed');
+            cp.dataset.wait = '1';
+            const n = stageOf(cp);
+            const p = msg(cp, 'bad', '');
+            const tick = function () {
+                if (!cp.isConnected) return;
+                if (secs <= 0) {
+                    cp.removeAttribute('data-wait');
+                    cp.querySelectorAll('.quiz-option').forEach(function (li) { li.classList.remove('is-wrong'); const m = li.querySelector('.qo-mark'); if (m) m.remove(); });
+                    const ul = cp.querySelector('.quiz-options');
+                    Array.from(ul.children).sort(function () { return Math.random() - .5; }).forEach(function (li) { ul.appendChild(li); });
+                    p.innerHTML = 'Ready? Try again.';
+                    return;
+                }
+                p.innerHTML = 'Not quite. Re-read Stage ' + n + ', then try again in <b>' + secs + 's</b>.' +
+                    '<br><button type="button" class="cp-reread">↑ Re-read Stage ' + n + '</button>';
+                secs--;
+                setTimeout(tick, 1000);
+            };
+            tick();
+        }
+
+        cps.forEach(function (cp) {
+            const tag = document.createElement('p');
+            tag.className = 'cp-tag';
+            tag.textContent = '🔒 Checkpoint';
+            cp.prepend(tag);
+
+            // The question stays hidden until the student says they have read the stage.
+            cp.classList.add('cp-closed');
+            const start = document.createElement('div');
+            start.innerHTML = '<p class="cp-hint">Finished reading this stage? Take the checkpoint to unlock the next one.</p>' +
+                '<button type="button" class="cp-start">I\'ve read it: start the checkpoint</button>';
+            start.className = 'cp-start-wrap';
+            tag.after(start);
+            start.addEventListener('click', function (e) {
+                if (!e.target.closest('.cp-start')) return;
+                cp.classList.remove('cp-closed');
+                const first = cp.querySelector('.quiz-option');
+                if (first) first.focus({ preventScroll: true });
+                cp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            cp.addEventListener('click', function (e) {
+                if (!e.target.closest('.cp-reread')) return;
+                const card = cp.closest('.quest-card');
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                card.classList.remove('cp-reread-flash'); void card.offsetWidth; card.classList.add('cp-reread-flash');
+            });
+
+            cp.querySelectorAll('.quiz-option').forEach(function (li) {
+                const m = li.textContent.trim().match(/^([A-D])\.\s*/);
+                if (!m) return;
+                li.dataset.letter = m[1];
+                // The letters would give the order away once the options are shuffled, so they are dropped.
+                const first = li.firstChild;
+                if (first && first.nodeType === 3) first.textContent = first.textContent.replace(/^\s*[A-D]\.\s*/, '');
+                li.setAttribute('role', 'button');
+                li.tabIndex = 0;
+
+                async function pick() {
+                    if (cp.dataset.passed || cp.dataset.wait || cp.dataset.busy) return;
+                    cp.dataset.busy = '1';
+                    try {
+                        const res = await fetch(base, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': QUIZ_CSRF, 'X-Requested-With': 'XMLHttpRequest' },
+                            body: JSON.stringify({ cp: Number(cp.dataset.cp), choice: li.dataset.letter })
+                        });
+                        const r = await res.json().catch(function () { return {}; });
+                        if (!cp.isConnected) return;
+                        if (res.status === 429 && r.wait) { cooldown(cp, r.wait); return; }
+                        if (!res.ok || !r.ok) throw new Error('bad');
+                        if (r.correct) { markPassed(cp, r, true); return; }
+                        li.classList.add('is-wrong');
+                        li.insertAdjacentHTML('beforeend', QO_BAD);
+                        cooldown(cp, r.wait || 5);
+                    } catch (e) {
+                        msg(cp, 'bad', 'Could not check that answer. Try again.');
+                    } finally {
+                        cp.removeAttribute('data-busy');
+                    }
+                }
+                li.addEventListener('click', pick);
+                li.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+            });
+        });
+
+        paint();
+
+        // Restore what this student already passed (a finished lesson comes back fully open).
+        fetch(base, { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (st) {
+                if (!st || !stage.contains(cps[0])) return;
+                cps.forEach(function (cp) {
+                    const p = st.passed && st.passed[cp.dataset.cp];
+                    const w = st.waits && st.waits[cp.dataset.cp];
+                    if (p) markPassed(cp, p, false); else if (w) cooldown(cp, w);
+                });
+                paint();
+            })
+            .catch(function () {});
+    }
+
+    // Lesson HTML → stage cards. Checkpoints and the quiz are the student's (they record answers and XP);
+    // faculty see them as plain content, and the course editor adds its tools.
+    function renderLesson() {
+        upgradeCodeBlocks();
+        upgradeSections();
+        if (IS_STUDENT) {
+            upgradeCheckpoints(current.module, current.lesson);
+            upgradeQuiz(current.module, current.lesson);
+        }
+        snap.refresh();
+        document.dispatchEvent(new CustomEvent('techlab:lesson-rendered', { detail: { module: current.module, lesson: current.lesson } }));
+    }
+
+    // A lesson always opens on its first card (the title + objective), never wherever the last
+    // lesson was scrolled to, e.g. down by the ▶ arrow.
+    function toTop() {
+        const scroller = document.querySelector('.content');
+        if (scroller) scroller.scrollTop = 0;
+        window.scrollTo(0, 0);
     }
 
     function syncTitleAndSidebar(moduleId, lessonId) {
@@ -1380,7 +1838,7 @@
                 // Server says this lesson is still locked (the sidebar is display only).
                 stage.innerHTML =
                     '<div class="empty-lesson"><div><h1>Lesson locked 🔒</h1>' +
-                    '<p style="margin-top:10px;">' + (slug === 'networking' ? 'Pass the previous lesson\'s Relay Lab to unlock this one.' : (slug === 'cybersecurity' || slug === 'information-assurance-security-2') ? 'Clear the previous lesson\'s Defense Lab to unlock this one.' : 'Complete the previous lesson\'s coding challenge to unlock this one.') + '</p></div></div>';
+                    '<p style="margin-top:10px;">' + ((slug === 'networking' || slug === 'networking-2') ? 'Pass the previous lesson\'s Relay Lab to unlock this one.' : (slug === 'cybersecurity' || slug === 'information-assurance-security-2') ? 'Clear the previous lesson\'s Defense Lab to unlock this one.' : 'Complete the previous lesson\'s coding challenge to unlock this one.') + '</p></div></div>';
                 return;
             }
 
@@ -1389,10 +1847,9 @@
             const html = await res.text();
 
             stage.innerHTML = html;
-            upgradeCodeBlocks();
-            upgradeSections();
-            upgradeQuiz(moduleId, lessonId);
             current = { module: moduleId, lesson: lessonId };
+            renderLesson();
+            toTop();
 
             // ── Keep CURRENT_LESSON in sync so the Python editor always
             //    knows which lesson it is displaying, even after a
@@ -1468,6 +1925,7 @@
     // The sidebar knows NOTHING else about how this panel works.
     window.TechLab = window.TechLab || {};
     window.TechLab.loadLesson = loadLesson;
+    window.TechLab.currentLesson = function () { return current; };
 
     window.goToPreviousLesson = goToPreviousLesson;
     window.goToNextLesson = goToNextLesson;
@@ -1475,6 +1933,7 @@
     window.toggleFullscreen = function () {
         var on = !document.body.classList.contains('is-fullscreen');
         document.body.classList.toggle('is-fullscreen', on);
+        if (window.snapRelayout) window.snapRelayout();
         try {
             if (on && !document.fullscreenElement && document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen();
@@ -1489,15 +1948,108 @@
         if (!document.fullscreenElement) {
             document.body.classList.remove('is-fullscreen');
         }
+        if (window.snapRelayout) window.snapRelayout();
     });
+
+
+    // ── Snap trial: full-height stage panels + a dot indicator on the right edge ─────────────
+    // Trial on Programming 1 only. ?snap=off shows the old free scroll, ?snap=on tries it on any course.
+    const SNAP_TRIAL = new URLSearchParams(location.search).get('snap') === 'on'
+        || (slug === 'computer-programming-1' && new URLSearchParams(location.search).get('snap') !== 'off');
+    const snap = (function () {
+        const scroller = document.querySelector('.content');
+        if (!SNAP_TRIAL || !scroller) return { refresh: function () {}, relayout: function () {} };
+        scroller.classList.add('snap-mode');
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const nav = document.createElement('nav');
+        nav.className = 'snap-dots';
+        nav.setAttribute('aria-label', 'Lesson stages');
+        document.body.appendChild(nav);
+        let panels = [], dots = [], io = null, active = 0;
+        const seen = new Map();
+
+        function pad() { return parseFloat(getComputedStyle(scroller).scrollPaddingTop) || 0; }
+        function size() { scroller.style.setProperty('--snap-h', (scroller.clientHeight - pad() * 2) + 'px'); }
+
+        function go(i, instant) {
+            i = Math.max(0, Math.min(panels.length - 1, i));
+            const top = panels[i].getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - pad();
+            scroller.scrollTo({ top: top, behavior: instant || reduce.matches ? 'auto' : 'smooth' });
+        }
+
+        // Entering/leaving full screen changes every panel's size: stay on the same stage.
+        function relayout() {
+            const keep = active;
+            size();
+            if (panels.length) requestAnimationFrame(function () { go(keep, true); });
+        }
+
+        function setActive(i) {
+            active = i;
+            dots.forEach(function (d, k) { d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+        }
+
+        function refresh() {
+            size();
+            if (io) io.disconnect();
+            seen.clear();
+            panels = Array.from(stage.querySelectorAll('.quest-hero, .quest-card'));
+            nav.innerHTML = '';
+            nav.hidden = panels.length < 2;
+            dots = panels.map(function (p, i) {
+                if (p.classList.contains('quest-card')) p.dataset.snapNum = i;
+                const b = document.createElement('button');
+                b.type = 'button';
+                const label = i === 0 ? 'Lesson start' : 'Stage ' + i;
+                b.setAttribute('aria-label', label);
+                b.title = label;
+                b.style.setProperty('--dot', getComputedStyle(p).getPropertyValue('--q-accent').trim() || '#2f7de1');
+                b.classList.toggle('is-locked', p.classList.contains('quest-locked'));
+                b.addEventListener('click', function () { go(i); });
+                nav.appendChild(b);
+                return b;
+            });
+            // The spec's 0.6 threshold alone never fires for a stage taller than the screen, so the
+            // active stage is whichever panel fills the most of the visible area.
+            io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) { seen.set(e.target, e.isIntersecting ? e.intersectionRect.height : 0); });
+                let best = active, bestH = -1;
+                panels.forEach(function (p, i) { const h = seen.get(p) || 0; if (h > bestH) { bestH = h; best = i; } });
+                setActive(best);
+                dots.forEach(function (d, k) { d.classList.toggle('is-locked', panels[k].classList.contains('quest-locked')); });
+            }, { root: scroller, threshold: [0, 0.25, 0.5, 0.6, 0.75, 1] });
+            panels.forEach(function (p) { io.observe(p); });
+            setActive(0);
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (!panels.length || e.altKey || e.ctrlKey || e.metaKey) return;
+            const down = e.key === 'ArrowDown' || e.key === 'PageDown';
+            const up = e.key === 'ArrowUp' || e.key === 'PageUp';
+            if (!down && !up) return;
+            if (e.target.closest('input, textarea, select, [contenteditable], .quiz-option, [role="button"]')) return;
+            e.preventDefault();
+            // A stage taller than the screen is read in steps (never past its edge) before moving on.
+            const r = panels[active].getBoundingClientRect(), box = scroller.getBoundingClientRect();
+            const step = e.key.indexOf('Page') === 0 ? scroller.clientHeight * 0.85 : 120;
+            const behavior = reduce.matches ? 'auto' : 'smooth';
+            const below = r.bottom - box.bottom, above = box.top + pad() - r.top;
+            if (down && below > 4) return scroller.scrollBy({ top: Math.min(step, below), behavior: behavior });
+            if (up && above > 4) return scroller.scrollBy({ top: -Math.min(step, above), behavior: behavior });
+            go(active + (down ? 1 : -1));
+        });
+        window.addEventListener('resize', relayout);
+        return { refresh: refresh, relayout: relayout };
+    })();
+    window.snapRelayout = snap.relayout;
 
     // Sync the header title + sidebar highlight for whatever lesson
     // was rendered server-side on first page load.
     document.addEventListener('DOMContentLoaded', function () {
         if (window.CodeHighlight) CodeHighlight.wire();
-        upgradeCodeBlocks();
-        upgradeSections();
-        upgradeQuiz(current.module, current.lesson);
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        renderLesson();
+        toTop();
         syncTitleAndSidebar(current.module, current.lesson);
 
         // Tell the sidebar script (which may have already run) about
@@ -1516,6 +2068,11 @@
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
 </button>
 
+@if ($canEdit)
+    @include('faculty.partials.course-editor', ['slug' => $slug])
+@endif
+
 <x-page-loader />
+<x-astro-tour />
 </body>
 </html>

@@ -46,10 +46,9 @@
     .stage { position: relative; width: 96px; height: 92px; margin: 0 auto 10px; }
     .mascot { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transform: translateY(14px) scale(.7); transition: opacity .3s ease, transform .55s cubic-bezier(.3,1.35,.5,1); pointer-events: none; }
     .mascot.on { opacity: 1; transform: none; }
+    .mascot.on svg { pointer-events: auto; } /* hover and click make the mascot react */
     .mascot svg { width: 88px; height: auto; animation: bob 3.6s ease-in-out infinite; filter: drop-shadow(0 8px 6px rgba(13,13,13,.14)); }
     @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
-    .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.2s infinite; }
-    @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
     .twinkle { position: absolute; width: 8px; height: 8px; background: #f5c04a; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: twinkle 3s ease-in-out infinite; opacity: 0; }
     .twinkle.a { top: 6px; right: 4px; } .twinkle.b { bottom: 14px; left: 2px; animation-delay: 1.4s; width: 6px; height: 6px; }
     @keyframes twinkle { 0%, 55%, 100% { transform: scale(0); opacity: 0; } 72% { transform: scale(1); opacity: 1; } 88% { transform: scale(0); opacity: 0; } }
@@ -67,9 +66,23 @@
     .field label { display: block; margin-bottom: 5px; font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .01em; color: var(--ink); }
     .field input { width: 100%; height: 46px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }
     .field input::placeholder { color: #a3a3a3; }
+    /* Dropdowns (program, year level) look like the text boxes, with a chevron drawn in */
+    .field select { width: 100%; height: 46px; padding: 0 40px 0 14px; border: 1.5px solid var(--line); border-radius: 12px; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a3a3c8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center / 18px; outline: none; appearance: none; -webkit-appearance: none; text-overflow: ellipsis; cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease; }
+    .field select:invalid { color: #a3a3a3; }
+    .field select option { color: var(--ink); background: var(--surface); }
+    .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-tint); }
+    /* Password boxes get an eye button to show or hide what you typed */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 50px; }
+    .pw-wrap input::-ms-reveal { display: none; }
+    .pw-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; transition: color .15s ease, background .15s ease; }
+    .pw-eye:hover { color: var(--ink); background: var(--blue-wash); }
+    .pw-eye svg { width: 20px; height: 20px; }
+    .pw-eye .eye-off, .pw-eye[aria-pressed="true"] .eye-on { display: none; }
+    .pw-eye[aria-pressed="true"] .eye-off { display: block; }
     .field input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-tint); }
     .planet-pick { border: 0; padding: 0; margin: 0 0 16px; min-width: 0; }
-    .planet-pick legend { padding: 0; margin-bottom: 4px; font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--ink); }
+    .planet-pick legend { padding: 0; margin-bottom: 8px; font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--ink); }
     .planet-pick .hint { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
     .planet-pick .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
     /* Planet tiles: each one rises in after the card lands, presses down on touch, and its planet pops + gets an orbit when picked.
@@ -116,6 +129,7 @@
     .foot { text-align: center; margin-top: 14px; font-size: 14px; color: var(--muted); }
     .foot a { color: var(--blue); font-weight: 600; }
     .err { background: #fff1f0; border: 1px solid #f5c2bd; color: #b42318; padding: 10px 14px; border-radius: 12px; font-size: 14px; margin-bottom: 14px; }
+    .ok { background: #ecfdf3; border: 1px solid #abefc6; color: #067647; padding: 10px 14px; border-radius: 12px; font-size: 14px; margin-bottom: 14px; }
 
     @media (prefers-reduced-transparency: reduce) { .card { background: #0c0a2a; -webkit-backdrop-filter: none; backdrop-filter: none; } }
     @media (max-width: 800px) {
@@ -143,11 +157,7 @@
         <x-brand href="/" />
         <div class="side-body">
           <div class="stage" aria-hidden="true">
-            @if (trim($__env->yieldContent('audience', 'student')) !== 'student')
-              <div class="mascot on"><x-captain-mascot /><i class="twinkle a"></i><i class="twinkle b"></i></div>
-            @else
-              <div class="mascot on"><x-astro-mascot class="astro" /><i class="twinkle a"></i><i class="twinkle b"></i></div>
-            @endif
+            <div class="mascot on"><x-astro-mascot class="astro" /><i class="twinkle a"></i><i class="twinkle b"></i></div>
           </div>
           @yield('heading')
         </div>
@@ -183,6 +193,51 @@
           if (++n > steps) { clearInterval(timer); word.textContent = target; }
         }, 38);
       }
+
+      // Eye button on every password box. While a password is being typed (hidden or
+      // shown) the mascot keeps its eyes shut (astro-shy).
+      var EYE = '<svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+        + '<svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.6 3.5M6.6 6.6C3.9 8.3 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M2 2l20 20"/></svg>';
+
+      function mood() {
+        var wrap = document.activeElement && document.activeElement.closest && document.activeElement.closest('.pw-wrap');
+        document.body.classList.toggle('astro-shy', !!wrap);
+      }
+
+      document.querySelectorAll('.field input[type="password"]').forEach(function (input) {
+        var wrap = document.createElement('div');
+        wrap.className = 'pw-wrap';
+        input.parentNode.insertBefore(wrap, input);
+        wrap.appendChild(input);
+
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pw-eye';
+        btn.setAttribute('aria-label', 'Show password');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.innerHTML = EYE;
+        wrap.appendChild(btn);
+
+        // Keep the cursor in the box when the eye is clicked, so typing just carries on.
+        btn.addEventListener('pointerdown', function (e) { if (document.activeElement === input) e.preventDefault(); });
+        btn.addEventListener('click', function () {
+          var show = input.type === 'password';
+          input.type = show ? 'text' : 'password';
+          btn.setAttribute('aria-pressed', String(show));
+          btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+      });
+
+      // Hide every password again before the form is sent, so the browser saves it as a password.
+      document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function () {
+          form.querySelectorAll('.pw-wrap input').forEach(function (i) { i.type = 'password'; });
+        });
+      });
+
+      document.addEventListener('focusin', mood);
+      document.addEventListener('focusout', function () { setTimeout(mood, 0); });
+      mood();
 
       if (word) { var first = word.textContent; word.textContent = ''; setTimeout(function () { decode(first); }, 350); }
     })();

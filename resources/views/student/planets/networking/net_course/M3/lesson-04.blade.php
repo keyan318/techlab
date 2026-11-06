@@ -29,6 +29,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l4.json) complete
         <strong>Size the pool</strong> for the devices that will ask, with room to grow. If the pool is <strong>exhausted</strong>, the next client gets no offer at all and stays without an address, which is easy to mistake for a broken cable. Keep static devices <em>outside</em> the pool (or excluded) so DHCP never hands out an address a server already uses.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What happens when a DHCP pool is exhausted?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The next client gets no offer at all ✓</li>
+            <li class="quiz-option">B. The server hands out a used address</li>
+            <li class="quiz-option">C. The lease time doubles for everyone</li>
+            <li class="quiz-option">D. The client takes the gateway address</li>
+        </ul>
+        <p class="quiz-explanation"><em>With no addresses left, the next client gets no offer and stays without an address. It can look like a broken cable.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l4.json) complete
     <p class="body-text">
         <strong>Astro</strong> summarizes. "A lease is more than an address. It is the address, the gateway and the resolver, all together."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Besides pool size, what did Rivet find missing?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The cable to the third console</li>
+            <li class="quiz-option quiz-correct">B. The gateway and DNS server options ✓</li>
+            <li class="quiz-option">C. A second DHCP server for the shield deck</li>
+            <li class="quiz-option">D. The MAC address of the server</li>
+        </ul>
+        <p class="quiz-explanation"><em>The clients had addresses but no way out and no name server. A lease is the address, gateway and resolver together.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -58,6 +80,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m3-l4.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how many addresses are in the pool .100 to .150?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 50</li>
+            <li class="quiz-option">B. 49</li>
+            <li class="quiz-option quiz-correct">C. 51 ✓</li>
+            <li class="quiz-option">D. 100</li>
+        </ul>
+        <p class="quiz-explanation"><em>Counting both ends, .100 to .150 is 51 addresses.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

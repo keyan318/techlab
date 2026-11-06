@@ -26,6 +26,17 @@ Syllabus: ITP1333 Unit C.5 Ongoing Maintenance. --}}
         or a rule that's quietly been ignored for months because it no longer fits how the crew actually works.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does every document need to stay up to date?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. An owner and a review date ✓</li>
+            <li class="quiz-option">B. A longer list of rules</li>
+            <li class="quiz-option">C. A brand new title every year</li>
+            <li class="quiz-option">D. A copy in every room</li>
+        </ul>
+        <p class="quiz-explanation"><em>With an owner and a review date, a document gets checked against reality on a schedule.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -34,6 +45,17 @@ Syllabus: ITP1333 Unit C.5 Ongoing Maintenance. --}}
         replaced that too. Nobody updated it because nobody was ever assigned to review it. That's the real gap:
         not a bad procedure, a procedure with no owner and no review date."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What was the real gap in the shield-duty procedure?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Nobody owned it or reviewed it ✓</li>
+            <li class="quiz-option">B. It named the right officer role</li>
+            <li class="quiz-option">C. It was reviewed every single week</li>
+            <li class="quiz-option">D. It was too short to be useful</li>
+        </ul>
+        <p class="quiz-explanation"><em>Not a bad procedure, but one with no owner and no review date, so it named a retired role and old console.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -55,6 +77,17 @@ Syllabus: ITP1333 Unit C.5 Ongoing Maintenance. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Without an owner and a review date, every document eventually goes stale</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what comes after “time passes”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Stale ✓</li>
+            <li class="quiz-option">B. Written</li>
+            <li class="quiz-option">C. Reviewed</li>
+            <li class="quiz-option">D. Approved</li>
+        </ul>
+        <p class="quiz-explanation"><em>Written, time passes, stale. Without an owner and a review date, every document goes stale.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

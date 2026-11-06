@@ -36,6 +36,17 @@ Syllabus: ITP1232 Unit E, Authentication & Non-Repudiation. --}}
         no matter how urgent the message claims to be.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does non-repudiation prove?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Who you claim to be at this very moment in time</li>
+            <li class="quiz-option">B. That a password is strong and very long</li>
+            <li class="quiz-option">C. That the message was sent very quickly</li>
+            <li class="quiz-option quiz-correct">D. Who sent a message, so they can't deny it ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A password proves who you claim to be now. A signature proves who sent something, after the fact.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -49,6 +60,17 @@ Syllabus: ITP1232 Unit E, Authentication & Non-Repudiation. --}}
         <strong>Volt</strong> pulls up the two orders side by side. "One's unsigned, sent from a relay we don't
         recognize. The other matches your key on file. We only obey the second one."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">How did Vex fake Astro's order?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. He cracked a stolen password hash ✓</li>
+            <li class="quiz-option">B. He stole Astro's private key</li>
+            <li class="quiz-option">C. He hacked into the shield console itself</li>
+            <li class="quiz-option">D. He bribed a crew member</li>
+        </ul>
+        <p class="quiz-explanation"><em>Vex stole training hashes and cracked a weak one. But he had no signature, so the order fails.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -71,6 +93,17 @@ Syllabus: ITP1232 Unit E, Authentication & Non-Repudiation. --}}
             <text x="490" y="170" text-anchor="middle" font-size="12.5" fill="#0d5c26">verified — OBEYED</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which order is obeyed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The unsigned one</li>
+            <li class="quiz-option">B. Both of them</li>
+            <li class="quiz-option quiz-correct">C. The signed one ✓</li>
+            <li class="quiz-option">D. Neither one</li>
+        </ul>
+        <p class="quiz-explanation"><em>ORDER-2 is signed by Astro and verified, so it is obeyed. ORDER-1 is unsigned and rejected.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

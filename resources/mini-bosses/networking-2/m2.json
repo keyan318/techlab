@@ -1,0 +1,314 @@
+{
+  "questions": [
+    {
+      "prompt": "Why do large networks use dynamic routing instead of static routes?",
+      "options": [
+        "Routers share routes and recover by themselves",
+        "Static routes only work across the Internet",
+        "Dynamic routing needs no IP addresses on interfaces",
+        "Static routes cannot be used on Cisco routers at all"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What kind of protocol is OSPF?",
+      "options": [
+        "Path-vector",
+        "Distance-vector",
+        "Link-state",
+        "Hybrid-vector"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does OSPF send to meet its neighbors?",
+      "options": [
+        "DHCP offers",
+        "Hello messages",
+        "BGP updates",
+        "Ping echo requests"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Two OSPF routers have become neighbors and synced. What state are they in?",
+      "options": [
+        "FULL",
+        "DOWN",
+        "INIT",
+        "2-WAY"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What do OSPF routers flood to build the shared map?",
+      "options": [
+        "ARPs",
+        "MACs",
+        "ACLs",
+        "LSAs"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which algorithm does OSPF run on its map to find the best paths?",
+      "options": [
+        "Spanning tree algorithm",
+        "SPF (Dijkstra)",
+        "Round robin",
+        "Bellman-Ford"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which wildcard mask matches a /24?",
+      "options": [
+        "0.0.0.3",
+        "255.255.255.0",
+        "255.0.0.0",
+        "0.0.0.255"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which wildcard mask matches a /30?",
+      "options": [
+        "255.255.255.252",
+        "0.0.0.255",
+        "0.0.0.3",
+        "0.0.0.30"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does a passive interface do in OSPF?",
+      "options": [
+        "Blocks every packet on the interface",
+        "Makes the interface the backbone area",
+        "Sends hellos but hides its own network away",
+        "Advertises its network, sends no hellos"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How does show ip route mark a route learned by OSPF?",
+      "options": [
+        "S",
+        "O",
+        "B",
+        "C"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does OSPF use areas?",
+      "options": [
+        "So routers can skip the hello messages",
+        "So that every router reruns SPF more often",
+        "So BGP can run inside the backbone",
+        "So each router keeps a smaller map"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which OSPF area is the backbone?",
+      "options": [
+        "Area 255",
+        "Area 10",
+        "Area 1",
+        "Area 0"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is an ABR?",
+      "options": [
+        "The router elected to cut flooding on a segment",
+        "A router that only has passive interfaces",
+        "A router that brings in routes from outside OSPF",
+        "A router in area 0 and another area too"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Inter-area routes from Type 3 LSAs show in the routing table as what?",
+      "options": [
+        "D EX",
+        "O E2",
+        "O IA",
+        "O*E2"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Two ends of a link are in different OSPF areas. What happens?",
+      "options": [
+        "They never become neighbors",
+        "They pick the lower area number",
+        "They become neighbors in area 0",
+        "They share routes but not hellos"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "With the default reference bandwidth of 100 Mbps, what is the cost of both a 100 Mbps and a 10 Gbps link?",
+      "options": [
+        "1",
+        "10",
+        "100",
+        "0"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which command helps OSPF tell fast links apart?",
+      "options": [
+        "default-information originate 10000",
+        "auto-cost reference-bandwidth 10000",
+        "passive-interface default 10000",
+        "ip ospf priority 10000 on every port"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why set ip ospf cost on both ends of a link?",
+      "options": [
+        "The cost only works when both ends match it",
+        "The DR needs the cost from both routers",
+        "Each router counts its own outgoing side",
+        "OSPF ignores costs that are set on one end"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does ip ospf priority 0 do?",
+      "options": [
+        "Turns OSPF off on the interface",
+        "Keeps it out of the DR election",
+        "Sets the link cost to zero",
+        "Makes the router the DR every time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which command shares a router's default route with the rest of OSPF?",
+      "options": [
+        "default-information originate",
+        "network 0.0.0.0 255.255.255.255",
+        "ip route default share",
+        "passive-interface default"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which protocol runs routing between organizations on the internet?",
+      "options": [
+        "OSPF",
+        "EIGRP",
+        "RIP",
+        "BGP"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is an autonomous system (AS)?",
+      "options": [
+        "One organization's network, with a number",
+        "A backup path for OSPF routes",
+        "A group of VLANs on a single switch",
+        "A router that needs no configuration at all"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How does BGP stop routing loops?",
+      "options": [
+        "It only allows one neighbor per router",
+        "It runs SPF on a full map of the internet",
+        "It drops routes already carrying its AS",
+        "It sets every route's cost to one"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "When is a BGP session eBGP?",
+      "options": [
+        "When the neighbor is on the same switch",
+        "When the neighbor is in a different AS",
+        "When the neighbor runs OSPF as well",
+        "When the neighbor is in the same AS"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "An iBGP router cannot reach the next hop of a route from Earth. What is the usual fix on the border router?",
+      "options": [
+        "neighbor 10.0.0.2 remote-as 64500",
+        "clear ip bgp * soft on every router",
+        "neighbor 10.0.0.2 next-hop-self",
+        "network 10.0.0.2 mask 255.255.255.255"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "When does a BGP network command actually advertise a prefix?",
+      "options": [
+        "As soon as the command is typed, with no checks",
+        "Only if that exact prefix is already routed",
+        "Only after the neighbor asks for that prefix",
+        "Only if the prefix is a /24 or shorter"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which BGP attribute is shared across your AS and decides which exit to use (highest wins)?",
+      "options": [
+        "Local preference",
+        "MED",
+        "AS path length (shortest)",
+        "Weight"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why is filtering BGP routes with a prefix list so important?",
+      "options": [
+        "To turn eBGP sessions into iBGP sessions",
+        "To refuse anyone announcing your networks",
+        "To share local preference with neighbors",
+        "To make every BGP session start up faster"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In EIGRP, what is the successor?",
+      "options": [
+        "The slowest link on a path",
+        "A backup path to a network",
+        "The best path to a network",
+        "The neighbor's own metric"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "When is a backup path a feasible successor in EIGRP?",
+      "options": [
+        "When its feasible distance is lower than the reported distance",
+        "When its neighbor has the highest router ID",
+        "When its reported distance is lower than the feasible distance",
+        "When it has the same metric as the current successor"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does variance 2 do in EIGRP?",
+      "options": [
+        "Uses backups with metrics under 2 × FD",
+        "Allows only two neighbors on each interface",
+        "Doubles the metric of every route it knows",
+        "Sends updates every two seconds instead of five"
+      ],
+      "correct": "A"
+    }
+  ]
+}

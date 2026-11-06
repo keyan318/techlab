@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit F.4 Administrative Security Controls. --}}
         specific file," which is exactly the kind of question an administrative review answers.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which of these is an administrative control?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A firewall rule on a port</li>
+            <li class="quiz-option">B. An access-control list</li>
+            <li class="quiz-option">C. A password length check</li>
+            <li class="quiz-option quiz-correct">D. A periodic access review ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Administrative controls are carried out by people: background checks, access reviews, sign-offs.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit F.4 Administrative Security Controls. --}}
         documented sign-off. We need both: your technical control, and an administrative review neither of us can
         automate away."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What can't Rivet's firewall rule decide?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Whether a person should be trusted ✓</li>
+            <li class="quiz-option">B. Which ports should be left open</li>
+            <li class="quiz-option">C. Which traffic should be blocked</li>
+            <li class="quiz-option">D. Which address the server should use</li>
+        </ul>
+        <p class="quiz-explanation"><em>A firewall can enforce which port is open. Trusting the new supply officer is a judgment call by a person.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -55,6 +77,17 @@ Syllabus: ITP1333 Unit F.4 Administrative Security Controls. --}}
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">A technical control can't judge trust; an administrative control can't enforce it automatically</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does a technical control do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Enforces automatically ✓</li>
+            <li class="quiz-option">B. Judges who is to be trusted</li>
+            <li class="quiz-option">C. Signs off by hand</li>
+            <li class="quiz-option">D. Hires the new staff</li>
+        </ul>
+        <p class="quiz-explanation"><em>Technical controls are tools that enforce automatically. They can't judge trust.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

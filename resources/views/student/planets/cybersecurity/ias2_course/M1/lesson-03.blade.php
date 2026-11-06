@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit A.3 Justifying Security Investment. --}}
         an investment means comparing cost to the loss it actually prevents — not just picking the fanciest tool.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">When is a security control probably worth buying?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. When it is the most expensive tool available</li>
+            <li class="quiz-option">B. When it is the cheapest option on the list</li>
+            <li class="quiz-option">C. When it prevents a rare and minor loss only</li>
+            <li class="quiz-option quiz-correct">D. When it costs less than the loss it prevents ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Compare the control's cost to the loss it prevents (likelihood × impact). The fanciest tool isn't always the answer.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -41,6 +52,17 @@ Syllabus: ITP1333 Unit A.3 Justifying Security Investment. --}}
         the one thing Vex has already used against us. Security spending isn't about the biggest tool. It's about
         the biggest gap."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Astro fix the password instead of buying the diagnostic system?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The diagnostic system is broken</li>
+            <li class="quiz-option quiz-correct">B. It's free and Vex already used it ✓</li>
+            <li class="quiz-option">C. Rivet asked for the password fix</li>
+            <li class="quiz-option">D. Passwords cost 8,000 credits each</li>
+        </ul>
+        <p class="quiz-explanation"><em>Security spending is about the biggest gap, not the biggest tool. The password is free and already exploited.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -61,6 +83,17 @@ Syllabus: ITP1333 Unit A.3 Justifying Security Investment. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Worth it only when the loss prevented outweighs the cost</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is the loss prevented made of?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Cost × the tool size</li>
+            <li class="quiz-option">B. Budget ÷ crew size</li>
+            <li class="quiz-option">C. Price of the control</li>
+            <li class="quiz-option quiz-correct">D. Likelihood × impact ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The loss prevented is likelihood times impact. It's worth it only when that outweighs the control's cost.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

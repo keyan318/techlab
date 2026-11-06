@@ -30,7 +30,20 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'terms_accepted_at' => now(),
+            'terms_version' => config('terms.version'),
         ];
+    }
+
+    /**
+     * Hasn't agreed to the Terms yet (a brand-new sign-up).
+     */
+    public function withoutTerms(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'terms_accepted_at' => null,
+            'terms_version' => null,
+        ]);
     }
 
     /**

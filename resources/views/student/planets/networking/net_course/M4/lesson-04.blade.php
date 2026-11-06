@@ -27,6 +27,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l4.json) complete
         A quick test: if the client <strong>cannot even join</strong> the network, suspect the radio side. If it <strong>joins but cannot get an address or reach anything</strong>, suspect the wired side. <em>The lab simulator models the wired side of a Wi-Fi network (the access point behaves as a bridge), not signal strength or interference, so the lab practises the wired-side faults.</em>
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">On 2.4 GHz, which channels do not overlap?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 1, 2 and 3</li>
+            <li class="quiz-option">B. 2, 7 and 12</li>
+            <li class="quiz-option quiz-correct">C. 1, 6 and 11 ✓</li>
+            <li class="quiz-option">D. 5, 10 and 14</li>
+        </ul>
+        <p class="quiz-explanation"><em>Only channels 1, 6 and 11 don't overlap on 2.4 GHz. Neighbors on overlapping channels slow each other down.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l4.json) complete
     <p class="body-text">
         <strong>Rivet</strong> follows the cable instead. "Then the fault is behind the access point. Is its uplink on the right VLAN, and does the DHCP server have addresses left?"
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">The radio side is clean. Where does Rivet look next?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. At the Wi-Fi password on the laptop</li>
+            <li class="quiz-option">B. At the channel and the signal strength in the air</li>
+            <li class="quiz-option quiz-correct">C. Behind the access point, on the wired side ✓</li>
+            <li class="quiz-option">D. At the distance from the access point</li>
+        </ul>
+        <p class="quiz-explanation"><em>With a strong signal and no jamming, the fault is behind the access point: its uplink VLAN or the DHCP pool.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -63,6 +85,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l4.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is the access point?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A DHCP server</li>
+            <li class="quiz-option">B. A DNS resolver</li>
+            <li class="quiz-option">C. A router of its own</li>
+            <li class="quiz-option quiz-correct">D. A wireless bridge ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The access point is only a bridge to the wired network, so wired faults behind it still break Wi-Fi.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

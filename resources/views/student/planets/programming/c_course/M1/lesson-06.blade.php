@@ -29,27 +29,47 @@ scanf("%d", &amp;n);</code></pre>
         value itself. Forget the <code>&amp;</code> and <code>scanf</code> has nowhere to put what it reads.
     </p>
 
-    <h2 class="section-heading">Volt Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which line correctly reads a whole number into <code>age</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. <code>scanf("%d", age);</code></li>
+            <li class="quiz-option">B. <code>scanf("%f", &amp;age);</code></li>
+            <li class="quiz-option quiz-correct">C. <code>scanf("%d", &amp;age);</code> ✓</li>
+            <li class="quiz-option">D. <code>printf("%d", &amp;age);</code></li>
+        </ul>
+        <p class="quiz-explanation"><em><code>%d</code> matches an <code>int</code>, and <code>&amp;age</code> tells <code>scanf</code> where in memory to put the number.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        The console can talk. It can count. But it has never once asked the crew a question — it only ever says
-        back what it was already told.
+        <code>scanf</code> is a <strong>delivery driver</strong>. Someone types a number on the keyboard, and the driver has to bring that number to the right house in memory.
     </p>
 
     <p class="body-text">
-        <strong>Volt</strong> folds his arms. "Fuel changes every day. If I have to open the code and retype the
-        number every time it changes, it isn't helping me. It's homework."
+        A driver needs an <strong>address</strong>, not a description of what's inside the house. <code>&amp;n</code> means <strong>“the address of n”</strong>. Give the driver <code>&amp;n</code> and the number lands in <code>n</code>. Give it plain <code>n</code> and the driver has a package but nowhere to take it.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "So we give it ears." He taps two keys. "Print the question. Then
-        <code>scanf</code> — that's the one that waits, and catches whatever you type."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 325" role="img" aria-label="You type 42 on the keyboard. scanf, the delivery driver, carries 42 to a house with the address and n, and n gets 42. If you write n without the and sign, the driver has the package but no address.">
+            <text x="320" y="34" font-size="14" fill="#1d6b43" text-anchor="middle"><tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">scanf("%d", &amp;n);</tspan>  the driver knows where to go</text><text x="95" y="100" font-size="14" fill="#1b2440" font-weight="700" text-anchor="middle">You type: 42</text><rect x="20" y="115" width="150" height="70" rx="10" fill="#eef1f5" stroke="#5b6b86" stroke-width="2"/><rect x="30.0" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="49.5" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="69.0" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="88.5" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="108.0" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="127.5" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="147.0" y="124" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="30.0" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="49.5" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="69.0" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="88.5" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="108.0" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="127.5" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="147.0" y="142" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="30.0" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="49.5" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="69.0" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="88.5" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="108.0" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="127.5" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><rect x="147.0" y="160" width="15" height="13" rx="3" fill="#fff" stroke="#9aa5b8" stroke-width="1"/><line x1="176" y1="150" x2="211.0" y2="150.0" stroke="#e8457c" stroke-width="3"/><polygon points="222,150 211.0,144.0 211.0,156.0" fill="#e8457c"/><text x="310" y="92" font-size="12" fill="#9c1f4c" font-weight="700" text-anchor="middle">scanf, the delivery driver</text><rect x="230" y="108" width="110" height="62" rx="8" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><text x="285" y="148" font-size="24" fill="#9c1f4c" font-weight="800" text-anchor="middle">42</text><rect x="340" y="126" width="50" height="44" rx="8" fill="#ffb3cb" stroke="#e8457c" stroke-width="2"/><rect x="352" y="133" width="26" height="16" rx="3" fill="#fff" stroke="#e8457c" stroke-width="1.5"/><circle cx="262" cy="174" r="11" fill="#1b2440"/><circle cx="364" cy="174" r="11" fill="#1b2440"/><line x1="398" y1="150" x2="445.0" y2="150.0" stroke="#e8457c" stroke-width="3"/><polygon points="456,150 445.0,144.0 445.0,156.0" fill="#e8457c"/><polygon points="462,128 538,72 614,128" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="474" y="128" width="128" height="94" rx="4" fill="#f5f9ff" stroke="#2f6fe0" stroke-width="2"/><rect x="483" y="136" width="110" height="24" rx="5" fill="#fff" stroke="#2f6fe0" stroke-width="1.5"/><text x="538" y="153" font-size="12" fill="#14306b" font-weight="700" text-anchor="middle">&amp;n = the address</text><rect x="518" y="168" width="40" height="54" rx="4" fill="#ffc94d" stroke="#c99a00" stroke-width="2"/><text x="538" y="202" font-size="20" fill="#7a5a00" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">n</text><text x="538" y="242" font-size="13" fill="#14306b" font-weight="700" text-anchor="middle">n gets 42</text><rect x="20" y="262" width="600" height="52" rx="12" fill="#fff7f7" stroke="#b3261e" stroke-width="2" stroke-dasharray="6,4"/><text x="40" y="285" font-size="14" fill="#b3261e"><tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">scanf("%d", n);</tspan>  ✗ forgot the &amp;</text><text x="40" y="304" font-size="13" fill="#7a1a14">The driver has the package but no address. Nowhere to deliver it.</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Astro</strong>, quietly, watching the screen: "Ask, listen, answer. That's a conversation. That's
-        the first thing this ship has done that feels alive."
+        The <code>%d</code> on the package matters too: it tells the driver it's carrying a whole number, the same rule as <code>printf</code>.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does <code>scanf</code> need <code>&amp;n</code> instead of just <code>n</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The &amp; makes the number print faster</li>
+            <li class="quiz-option">B. The &amp; turns the number into a letter</li>
+            <li class="quiz-option">C. The &amp; is just style and can be skipped</li>
+            <li class="quiz-option quiz-correct">D. It needs to know where to deliver it ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>&amp;n</code> is the address of <code>n</code>. <code>scanf</code> needs that address so it knows where to put the value it reads.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -87,6 +107,17 @@ int main() {
     printf("You are %d.\n", n);
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the code example, which line waits for the user to type something?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. <code>scanf("%d", &amp;n);</code> ✓</li>
+            <li class="quiz-option">B. <code>int n;</code></li>
+            <li class="quiz-option">C. <code>printf("Enter your age: ");</code></li>
+            <li class="quiz-option">D. <code>printf("You are %d.\n", n);</code></li>
+        </ul>
+        <p class="quiz-explanation"><em><code>scanf</code> is the one that waits and catches what you type. The <code>printf</code> before it only asks the question.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -149,21 +180,21 @@ int main() {
     <div class="quiz-block" data-q="1">
         <p class="quiz-prompt">Q1. What does scanf do?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Prints text to the screen</li>
-            <li class="quiz-option quiz-correct">B. Reads a value the crew types in, while the program runs ✓</li>
-            <li class="quiz-option">C. Compiles the program</li>
-            <li class="quiz-option">D. Declares a new variable</li>
+            <li class="quiz-option">A. Prints text out to the screen</li>
+            <li class="quiz-option">B. Declares a brand-new variable</li>
+            <li class="quiz-option">C. Compiles the program to run</li>
+            <li class="quiz-option quiz-correct">D. Reads a value the user types ✓</li>
         </ul>
-        <p class="quiz-explanation"><em>scanf reads input from the crew during the program's run, unlike printf which sends output out.</em></p>
+        <p class="quiz-explanation"><em>scanf reads input from the user during the program's run, unlike printf which sends output out.</em></p>
     </div>
 
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. In <code>scanf("%d", &amp;n);</code>, what does <code>&amp;n</code> mean?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. The value currently stored in n</li>
-            <li class="quiz-option quiz-correct">B. The address in memory where n lives, so scanf knows where to write the value it reads ✓</li>
-            <li class="quiz-option">C. A comment</li>
-            <li class="quiz-option">D. It means the same thing as just n</li>
+            <li class="quiz-option quiz-correct">A. The address in memory where n lives ✓</li>
+            <li class="quiz-option">B. The value currently stored in n</li>
+            <li class="quiz-option">C. A note to the reader, like a comment</li>
+            <li class="quiz-option">D. The same thing as writing just n</li>
         </ul>
         <p class="quiz-explanation"><em>& gives scanf n's address, not its value — scanf needs to know where to write to, not what's already there.</em></p>
     </div>
@@ -171,10 +202,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. What happens if you forget the & before a variable in scanf?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. Nothing — & is always optional</li>
-            <li class="quiz-option quiz-correct">B. scanf has no address to write the value into, so the read fails to update the variable correctly ✓</li>
-            <li class="quiz-option">C. The program prints faster</li>
-            <li class="quiz-option">D. printf stops working too</li>
+            <li class="quiz-option">A. Nothing, because & is always optional</li>
+            <li class="quiz-option">B. The program prints its output faster</li>
+            <li class="quiz-option quiz-correct">C. scanf has no address to write into ✓</li>
+            <li class="quiz-option">D. Every printf in the program stops too</li>
         </ul>
         <p class="quiz-explanation"><em>Without &, scanf is not told where in memory to store what it reads, and the variable is not reliably updated.</em></p>
     </div>
@@ -182,16 +213,16 @@ int main() {
     <div class="quiz-block" data-q="4">
         <p class="quiz-prompt">Q4. Why does the prompt <code>printf("Enter fuel: ");</code> have no <code>\n</code>?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. It is a typo</li>
-            <li class="quiz-option quiz-correct">B. So the crew's typed answer appears on the same line as the prompt ✓</li>
+            <li class="quiz-option">A. It is just a typo in the code</li>
+            <li class="quiz-option quiz-correct">B. So the answer stays on that line ✓</li>
             <li class="quiz-option">C. \n is not allowed before scanf</li>
-            <li class="quiz-option">D. It makes scanf run faster</li>
+            <li class="quiz-option">D. It makes the scanf call faster</li>
         </ul>
-        <p class="quiz-explanation"><em>Leaving off \n keeps the cursor on the same line as the prompt, so the crew's answer reads naturally right after it.</em></p>
+        <p class="quiz-explanation"><em>Leaving off \n keeps the cursor on the same line as the prompt, so the user's answer reads naturally right after it.</em></p>
     </div>
 
     <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. If the crew types 40 for fuel and the program computes n - 15, what should print?</p>
+        <p class="quiz-prompt">Q5. If the user types 40 for fuel and the program computes n - 15, what should print?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. Left: 40</li>
             <li class="quiz-option">B. Left: 15</li>

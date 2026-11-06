@@ -1,0 +1,189 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g2-l6",
+  "title": "Lesson 2.6: EIGRP — Metrics, Load Balancing & Convergence",
+  "host": {
+    "name": "DEEPWELL-R1",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nDeep Well mine router, EIGRP AS 100"
+  },
+  "story": {
+    "alert": "DEEP WELL · TWO OF THREE MINE CABLES IDLE",
+    "victory": "The mine network rides two cables now, with EIGRP's math keeping the third safely out. Rivet: \"Old protocol, new tricks.\""
+  },
+  "modes": {
+    "router": {
+      "prompt": "config-router"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 990 bytes\n!\nhostname DEEPWELL-R1\n!\nrouter eigrp 100\n network 10.1.0.0 0.0.255.255\n network 192.168.60.0\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "show ip eigrp topology",
+      "text": "EIGRP-IPv4 Topology Table for AS(100)/ID(10.1.0.1)\nCodes: P - Passive, A - Active, U - Update, Q - Query, R - Reply,\n       r - reply Status, s - sia Status\n\nP 192.168.60.0/24, 1 successors, FD is 3072\n        via 10.1.1.2 (3072/2816), GigabitEthernet0/1\n        via 10.1.2.2 (5120/2816), GigabitEthernet0/2\n        via 10.1.3.2 (6656/3328), GigabitEthernet0/3\nP 10.1.1.0/30, 1 successors, FD is 2816\n        via Connected, GigabitEthernet0/1"
+    },
+    {
+      "cmd": "show ip eigrp neighbors",
+      "text": "EIGRP-IPv4 Neighbors for AS(100)\nH   Address         Interface    Hold Uptime   SRTT   RTO  Q  Seq\n0   10.1.1.2        Gi0/1          13 2d03h       1   100  0  311\n1   10.1.2.2        Gi0/2          12 2d03h       2   100  0  287\n2   10.1.3.2        Gi0/3          14 2d03h       1   100  0  264"
+    },
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      720   link-survey.txt\n    2  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:link-survey.txt",
+      "text": "DEEP WELL LINK SURVEY: path to the pump house (192.168.70.0/24)\n================================================================\n  Hop   Link                     Bandwidth        Delay\n  1     R1 to shaft switch       1,000,000 kbps     10 us\n  2     shaft to pump house        100,000 kbps    100 us\n  3     pump house LAN           1,000,000 kbps  1,890 us  (long copper run)\n\n  Rivet's notes: slowest bandwidth on the path = 100,000 kbps\n                 total delay on the path        = 2,000 us\n\n  metric = 256 x (10,000,000 / slowest bandwidth + total delay / 10)\n  submit METRIC=<number, no commas>\n"
+    },
+    {
+      "cmd": "show ip route <ip>",
+      "args": [
+        "192.168.60.0"
+      ],
+      "when": [
+        "var2"
+      ],
+      "sets": [
+        "seen-lb"
+      ],
+      "text": "Routing entry for 192.168.60.0/24\n  Known via \"eigrp 100\", distance 90, metric 3072, type internal\n  Routing Descriptor Blocks:\n  * 10.1.1.2, from 10.1.1.2, via GigabitEthernet0/1\n      Route metric is 3072, traffic share count is 1\n    10.1.2.2, from 10.1.2.2, via GigabitEthernet0/2\n      Route metric is 5120, traffic share count is 1\n! Rivet: two cables working. The third (10.1.3.2) stays out: not loop-safe."
+    },
+    {
+      "cmd": "show ip route <ip>",
+      "args": [
+        "192.168.60.0"
+      ],
+      "text": "Routing entry for 192.168.60.0/24\n  Known via \"eigrp 100\", distance 90, metric 3072, type internal\n  Routing Descriptor Blocks:\n  * 10.1.1.2, from 10.1.1.2, via GigabitEthernet0/1\n      Route metric is 3072, traffic share count is 1"
+    },
+    {
+      "cmd": "show ip route",
+      "when": [
+        "var2"
+      ],
+      "sets": [
+        "seen-lb"
+      ],
+      "text": "Codes: C - connected, D - EIGRP\n\nD        192.168.60.0/24 [90/3072] via 10.1.1.2, GigabitEthernet0/1\n                         [90/5120] via 10.1.2.2, GigabitEthernet0/2"
+    },
+    {
+      "cmd": "show ip route",
+      "text": "Codes: C - connected, D - EIGRP\n\nD        192.168.60.0/24 [90/3072] via 10.1.1.2, GigabitEthernet0/1"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "router eigrp <n>",
+      "args": [
+        "100"
+      ],
+      "enters": "router"
+    },
+    {
+      "cmd": "router eigrp <n>",
+      "store": false,
+      "reply": "% Deep Well runs EIGRP AS 100. Try: router eigrp 100"
+    },
+    {
+      "mode": "router",
+      "cmd": "variance <n>",
+      "args": [
+        "2"
+      ],
+      "sets": [
+        "var2"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "variance <n>",
+      "args": [
+        "1"
+      ],
+      "clears": [
+        "var2"
+      ]
+    },
+    {
+      "mode": "router",
+      "cmd": "variance <n>",
+      "sets": [
+        "var2"
+      ],
+      "reply": "% Saved. Any variance of 2 or more brings in the 5120 path; 2 is the smallest that does."
+    },
+    {
+      "mode": "router",
+      "cmd": "maximum-paths <n>"
+    },
+    {
+      "mode": "router",
+      "cmd": "network <ip> <ip>"
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Read the topology table",
+      "body": "Type `enable`, then `show ip eigrp topology`. For 192.168.60.0/24, find the successor and the one feasible successor (its reported distance, the second number, must be below the FD). `submit SUCCESSOR=<next hop>` and `submit FS=<next hop>`.",
+      "objectives": [
+        {
+          "id": "ans-succ",
+          "label": "Successor named",
+          "check": {
+            "type": "answer",
+            "value": "SUCCESSOR=10.1.1.2"
+          }
+        },
+        {
+          "id": "ans-fs",
+          "label": "Feasible successor named",
+          "check": {
+            "type": "answer",
+            "value": "FS=10.1.2.2"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Work out a metric by hand",
+      "body": "Read `more flash:link-survey.txt` and calculate the metric for the pump house path with the EIGRP formula. `submit METRIC=<number>`.",
+      "objectives": [
+        {
+          "id": "ans-metric",
+          "label": "Metric calculated",
+          "check": {
+            "type": "answer",
+            "value": "METRIC=76800",
+            "alt": [
+              "METRIC=76,800"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Put the spare to work",
+      "body": "In `conf t`: `router eigrp 100`, then `variance 2`. `end`, then `show ip route 192.168.60.0`: two paths, sharing traffic.",
+      "objectives": [
+        {
+          "id": "var",
+          "label": "variance 2 is set",
+          "check": {
+            "type": "fact",
+            "fact": "var2"
+          }
+        },
+        {
+          "id": "seen-lb",
+          "label": "Saw both paths in the routing table",
+          "check": {
+            "type": "fact",
+            "fact": "seen-lb"
+          }
+        }
+      ]
+    }
+  ]
+}

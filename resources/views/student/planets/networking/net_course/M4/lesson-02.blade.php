@@ -33,6 +33,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l2.json) complete
         On Windows, <code>netsh interface show interface</code> shows whether each adapter is <code>Enabled</code> or <code>Disabled</code>, and <code>netsh interface set interface "Ethernet" admin=enabled</code> turns it back on.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">One device can't connect but many others can. Where do you look?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. At the shared switch uplink</li>
+            <li class="quiz-option quiz-correct">B. At that device or its own cable ✓</li>
+            <li class="quiz-option">C. At the DNS server settings</li>
+            <li class="quiz-option">D. At the router's routing table entries</li>
+        </ul>
+        <p class="quiz-explanation"><em>One device affected points at that device or its cable. Many devices affected point at a shared part.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -41,6 +52,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l2.json) complete
     <p class="body-text">
         <strong>Rivet</strong> tests the obvious first. "Astro and Volt can still see each other, so the switch and their own cables are fine. That means the fault is at the far end. Check the links on the devices nobody can reach."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Astro and Volt still see each other. What does Rivet conclude?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The switch itself is broken</li>
+            <li class="quiz-option quiz-correct">B. The fault is at the far end ✓</li>
+            <li class="quiz-option">C. Their own cables are broken</li>
+            <li class="quiz-option">D. The whole network is down</li>
+        </ul>
+        <p class="quiz-explanation"><em>If they can reach each other, the switch and their cables work, so the problem is on the unreachable devices.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -67,6 +89,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m4-l2.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the table, what can cause “fine nearby, bad far away”?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A dead network card</li>
+            <li class="quiz-option">B. No power at the adapter</li>
+            <li class="quiz-option quiz-correct">C. A copper run over 100 m ✓</li>
+            <li class="quiz-option">D. A cable that's unplugged</li>
+        </ul>
+        <p class="quiz-explanation"><em>Copper reaches about 100 meters a run. Past that the signal gets weak.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

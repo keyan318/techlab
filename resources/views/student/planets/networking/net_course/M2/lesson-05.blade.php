@@ -30,6 +30,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l5.json) complete
         A shortcut: the <strong>block size</strong> is 256 minus the last mask octet value. For <code>/25</code> the mask is 255.255.255.128, so the block size is 128 and the subnets start at .0 and .128. Devices in different subnets can only talk through a router.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Splitting a /24 into /26 subnets gives how many?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 2 subnets of 126 hosts</li>
+            <li class="quiz-option quiz-correct">B. 4 subnets of 62 hosts ✓</li>
+            <li class="quiz-option">C. 8 subnets of 30 hosts</li>
+            <li class="quiz-option">D. 16 subnets of 14 hosts</li>
+        </ul>
+        <p class="quiz-explanation"><em>Borrowing 2 bits gives 2² = 4 subnets. Each has 6 host bits left: 2⁶ − 2 = 62 hosts.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet's Briefing</h2>
 
     <p class="body-text">
@@ -38,6 +49,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l5.json) complete
     <p class="body-text">
         <strong>Volt</strong> approves. "Separate blocks mean a jammer in one deck cannot flood the other."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Rivet split Earth's block between the two decks?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. A jammer in one deck can't flood the other ✓</li>
+            <li class="quiz-option">B. Earth gave the crew two different address blocks</li>
+            <li class="quiz-option">C. A /25 has more addresses than a /24</li>
+            <li class="quiz-option">D. The router can only use one subnet</li>
+        </ul>
+        <p class="quiz-explanation"><em>Separate subnets keep broadcast noise inside one deck, so a jammer in one deck cannot flood the other.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -59,6 +81,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m2-l5.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, where does the second /25 subnet start?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 192.168.10.127</li>
+            <li class="quiz-option quiz-correct">B. 192.168.10.128 ✓</li>
+            <li class="quiz-option">C. 192.168.10.126</li>
+            <li class="quiz-option">D. 192.168.10.255</li>
+        </ul>
+        <p class="quiz-explanation"><em>For /25 the block size is 256 − 128 = 128, so the subnets start at .0 and .128.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

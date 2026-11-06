@@ -24,21 +24,34 @@ class CourseHubTest extends TestCase
             ->assertDontSee(route('student.planet.play', ['slug' => 'programming', 'course' => 'python']), false);
     }
 
-    public function test_the_hub_has_four_tabs_and_the_lessons_are_one_click_further_in(): void
+    public function test_the_hub_has_home_materials_and_crew_tabs_and_the_lessons_are_one_click_further_in(): void
     {
         $student = $this->studentIn('programming', 'python');
 
         $this->actingAs($student)->get(route('student.course.overview', ['slug' => 'programming', 'course' => 'python']))
             ->assertOk()
             ->assertSee('Home')
-            ->assertSee('Materials')
-            ->assertSee('Quiz')
+            ->assertSee('Supplementary Materials')
             ->assertSee('Crew')
             ->assertSee(route('student.course.materials', ['slug' => 'programming', 'course' => 'python']), false)
-            ->assertSee(route('student.course.quiz', ['slug' => 'programming', 'course' => 'python']), false)
+            ->assertDontSee(route('student.course.quiz', ['slug' => 'programming', 'course' => 'python']), false)
             ->assertSee(route('student.course.crew', ['slug' => 'programming', 'course' => 'python']), false)
             // The hub still leads into the lessons, it just doesn't skip straight there.
             ->assertSee(route('student.planet.module.lesson', ['slug' => 'programming', 'module' => 'm1', 'lesson' => 'lesson01']), false);
+    }
+
+    public function test_a_self_paced_course_has_no_supplementary_materials_tab(): void
+    {
+        $student = User::factory()->create(['role' => 'student', 'planets' => ['programming']]);
+        Crew::selfPaced('programming', 'python')->admit($student);
+        $args = ['slug' => 'programming', 'course' => 'python'];
+
+        $this->actingAs($student)->get(route('student.course.overview', $args))
+            ->assertOk()
+            ->assertDontSee('Supplementary Materials')
+            ->assertDontSee(route('student.course.materials', $args), false);
+        $this->actingAs($student)->get(route('student.course.materials', $args))
+            ->assertRedirect(route('student.course.overview', $args));
     }
 
     public function test_the_crew_tab_names_the_captain_and_the_roster(): void

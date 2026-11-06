@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What is a secure SDLC?",
+      "options": [
+        "A tool that scans a finished program for viruses",
+        "Security built into every phase of making software",
+        "Security added at the very end, just before launch",
+        "A law about who owns the code a crew writes"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In which SDLC phase do you decide what security properties the software must have?",
+      "options": [
+        "Build",
+        "Requirements",
+        "Test",
+        "Maintenance phase"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In which SDLC phase do you model threats before any code is written?",
+      "options": [
+        "Design",
+        "Maintain",
+        "Build",
+        "Test"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Patching software after release belongs to which phase?",
+      "options": [
+        "Design",
+        "Build",
+        "Requirements",
+        "Maintain"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Actively trying to break the software before release belongs to which phase?",
+      "options": [
+        "Test",
+        "Maintain",
+        "Requirements",
+        "Design"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why is a flaw caught in design cheaper to fix?",
+      "options": [
+        "It is still just a decision on paper",
+        "Design flaws never need to be fixed at all",
+        "Code cannot have any security flaws",
+        "Designers are paid less than coders"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A flaw is found after release. What can that cost?",
+      "options": [
+        "A small change to the requirements document",
+        "Nothing, flaws after release are always harmless",
+        "Rewriting code, telling users, fixing damage",
+        "Only a quick note added to the next version"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is threat modeling?",
+      "options": [
+        "Hiring an outside crew to watch the logs at night",
+        "Writing the code first and testing it later on",
+        "Making a 3D model of the server room for planning",
+        "Asking how it could be attacked, before coding"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In STRIDE, what does the S stand for?",
+      "options": [
+        "Scanning",
+        "Sniffing",
+        "Spoofing",
+        "Stealing"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Changing data without permission is which STRIDE category?",
+      "options": [
+        "Spoofing",
+        "Tampering",
+        "Disclosure",
+        "Repudiation"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Someone denies placing an order and there is no proof either way. Which STRIDE category is this?",
+      "options": [
+        "Repudiation",
+        "Tampering",
+        "Elevation of privilege",
+        "Spoofing"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Making a system unavailable is which STRIDE category?",
+      "options": [
+        "Information disclosure",
+        "Tampering",
+        "Denial of service",
+        "Elevation of privilege"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A normal user gains admin access. Which STRIDE category is this?",
+      "options": [
+        "Denial of service",
+        "Spoofing",
+        "Information disclosure",
+        "Elevation of privilege"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Someone sends a requisition pretending to be Command. Which STRIDE category is this?",
+      "options": [
+        "Spoofing",
+        "Denial of service",
+        "Tampering",
+        "Repudiation"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why go through each STRIDE category instead of asking \"is this secure?\"",
+      "options": [
+        "It forces a specific answer for each kind of misuse",
+        "STRIDE only has one category to think about",
+        "It replaces the need to test the software at all",
+        "It is quicker than asking just one general question"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the OWASP Top 10?",
+      "options": [
+        "A list of the most common web app weaknesses",
+        "A list of the ten best firewalls on the market",
+        "A list of the ten strongest passwords to use",
+        "A list of the ten largest data breaches ever"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A user reaches data their role should never allow. Which OWASP issue is this?",
+      "options": [
+        "Weak encryption keys",
+        "Hardcoded credentials",
+        "Broken access control",
+        "Denial of service"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a hardcoded credential?",
+      "options": [
+        "A password that unlocks only one account",
+        "A password stored only in one person's memory",
+        "A password that is changed every single hour",
+        "A password written into code or a config file"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why is a hardcoded credential so dangerous?",
+      "options": [
+        "It makes the application crash at every startup",
+        "Anyone who reads the file has the password",
+        "It slows down every page of the website",
+        "It stops users from logging in at all"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is the fix for a hardcoded credential found in a config file?",
+      "options": [
+        "Remove it and change that password",
+        "Leave it, the app works fine",
+        "Rename the config file to hide it away",
+        "Add a second password next to it"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why can't a client application be fully trusted?",
+      "options": [
+        "Client apps are always written in old languages",
+        "The user controls everything on their device",
+        "Servers always trust the client by design",
+        "Clients cannot run any checks on their own"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A rule is checked only in the client app. What can an attacker do?",
+      "options": [
+        "Patch it",
+        "Sign it off",
+        "Bypass it",
+        "Nothing"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Where must every important rule be enforced?",
+      "options": [
+        "Only in the client",
+        "In a local file",
+        "In the user's browser",
+        "On the server"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What can client-side checks still be good for?",
+      "options": [
+        "Enforcing every one of the important rules",
+        "Storing passwords in plain text",
+        "Instant feedback and convenience",
+        "Replacing all server checks"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which client practice is risky?",
+      "options": [
+        "A token stored securely",
+        "A session that never expires",
+        "A session that times out",
+        "A check repeated on the server"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why is remote administration dangerous?",
+      "options": [
+        "Remote tools never work over very long distances",
+        "Admins cannot type commands from far away",
+        "Remote channels are always slower to use",
+        "Who controls the channel controls the system"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which channel should be used for remote administration?",
+      "options": [
+        "A shared guest login",
+        "An encrypted one",
+        "Any open port at all",
+        "An old cleartext one"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why close a legacy unencrypted admin port?",
+      "options": [
+        "It uses up too much of the network's bandwidth",
+        "Legacy ports cannot be monitored by anyone",
+        "Commands and passwords travel in the clear",
+        "Closing it makes the admin password stronger"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why must admin accounts meet the strong-password standard too?",
+      "options": [
+        "Admin accounts are never targeted by attackers",
+        "The standard only applies to admin accounts",
+        "Admins can choose any password they like",
+        "A weak admin password undoes all the rest"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "An admin port nobody has used in two years is \"left open just in case\". What should you do?",
+      "options": [
+        "Rename it",
+        "Close it",
+        "Document it",
+        "Keep it open"
+      ],
+      "correct": "B"
+    }
+  ]
+}

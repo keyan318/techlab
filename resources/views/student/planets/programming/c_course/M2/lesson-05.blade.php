@@ -33,30 +33,43 @@ Syllabus: CC102 Unit 2 — Looping Statements (for). --}}
         which is exactly why it's the natural choice whenever you already know how many times to repeat.
     </p>
 
-    <h2 class="section-heading">Astro Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">A <code>for</code> loop is really which other loop, with its bookkeeping gathered in one line?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A <code>do-while</code> loop</li>
+            <li class="quiz-option">B. A <code>switch</code></li>
+            <li class="quiz-option quiz-correct">C. A <code>while</code> loop ✓</li>
+            <li class="quiz-option">D. An <code>if</code> statement</li>
+        </ul>
+        <p class="quiz-explanation"><em>Start, condition and step are the same parts a <code>while</code> loop needs, just written together.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Morning. The cells are full, the shell is holding, and Rivet has dragged the ship's old distress beacon
-        out of storage. It needs a proper countdown before it fires — not one tick more, not one less.
+        A <code>for</code> loop is <strong>running laps on a track</strong> with a lap counter in your hand. Before you start, the counter is set to lap 1. Before each lap you check: have I done all 4 yet? After each lap, you click the counter <strong>+1</strong>.
     </p>
 
     <p class="body-text">
-        <strong>Astro</strong>: "Three. Two. One. Contact. Every time, exactly the same."
+        Those are the three parts of a <code>for</code> loop, all in one line: the <strong>start</strong> (<code>int lap = 1</code>), the <strong>keep going?</strong> check (<code>lap &lt;= 4</code>), and the <strong>step</strong> after every lap (<code>lap++</code>). Counting down works the same way, just clicking −1 instead.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Then this is the easy kind. Last night we didn't know how many rounds it'd take,
-        so we just watched and waited. This time I know the number before I start — so I say it once, up front:
-        start at three, stop at one, take one off each go."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 335" role="img" aria-label="A running track with a start line, a runner and a lap counter showing lap 2. Start line: int lap = 1, once, before the first lap. Keep running: lap less than or equal to 4, checked before every lap. Click plus 1: lap plus plus, after every lap. Together: for, int lap = 1, lap less than or equal to 4, lap plus plus.">
+            <ellipse cx="175" cy="150" rx="150" ry="105" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><ellipse cx="175" cy="150" rx="105" ry="62" fill="#fff" stroke="#e8457c" stroke-width="2"/><ellipse cx="175" cy="150" rx="128" ry="84" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="10,8"/><rect x="168" y="212.0" width="7" height="5.4" fill="#fff"/><rect x="175" y="212.0" width="7" height="5.4" fill="#1b2440"/><rect x="168" y="217.4" width="7" height="5.4" fill="#1b2440"/><rect x="175" y="217.4" width="7" height="5.4" fill="#fff"/><rect x="168" y="222.8" width="7" height="5.4" fill="#fff"/><rect x="175" y="222.8" width="7" height="5.4" fill="#1b2440"/><rect x="168" y="228.2" width="7" height="5.4" fill="#1b2440"/><rect x="175" y="228.2" width="7" height="5.4" fill="#fff"/><rect x="168" y="233.6" width="7" height="5.4" fill="#fff"/><rect x="175" y="233.6" width="7" height="5.4" fill="#1b2440"/><rect x="168" y="239.0" width="7" height="5.4" fill="#1b2440"/><rect x="175" y="239.0" width="7" height="5.4" fill="#fff"/><rect x="168" y="244.4" width="7" height="5.4" fill="#fff"/><rect x="175" y="244.4" width="7" height="5.4" fill="#1b2440"/><rect x="168" y="249.8" width="7" height="5.4" fill="#1b2440"/><rect x="175" y="249.8" width="7" height="5.4" fill="#fff"/><text x="175" y="278" font-size="11" fill="#9c1f4c" font-weight="800" text-anchor="middle" letter-spacing="1">START / FINISH</text><circle cx="47" cy="150" r="10" fill="#2f6fe0" stroke="#fff" stroke-width="2"/><path d="M40 178 Q30 150 40 122" fill="none" stroke="#2f6fe0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="40,120 31.3,126.4 42.6,130.5" fill="#2f6fe0"/><rect x="125" y="118" width="100" height="62" rx="12" fill="#14306b"/><circle cx="175" cy="112" r="7" fill="#e8457c"/><rect x="137" y="130" width="76" height="38" rx="6" fill="#0b1a3d"/><text x="175" y="156" font-size="16" fill="#86e0b0" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">LAP 2</text><rect x="352" y="40" width="268" height="66" rx="12" fill="#f8f6ff" stroke="#7c5cff" stroke-width="2"/><text x="368" y="66" font-size="15" fill="#4a35b8" font-weight="800">Start line</text><text x="368" y="88" font-size="12" fill="#5b6b86">once, before the first lap</text><text x="604" y="67" font-size="14" fill="#4a35b8" font-weight="800" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">int lap = 1</text><rect x="352" y="118" width="268" height="66" rx="12" fill="#f2fbfc" stroke="#0fa3b1" stroke-width="2"/><text x="368" y="144" font-size="15" fill="#0b6670" font-weight="800">Keep running?</text><text x="368" y="166" font-size="12" fill="#5b6b86">checked before every lap</text><text x="604" y="145" font-size="14" fill="#0b6670" font-weight="800" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">lap &lt;= 4</text><rect x="352" y="196" width="268" height="66" rx="12" fill="#f3fbf6" stroke="#2fa56b" stroke-width="2"/><text x="368" y="222" font-size="15" fill="#1d6b43" font-weight="800">Click +1</text><text x="368" y="244" font-size="12" fill="#5b6b86">after every lap</text><text x="604" y="223" font-size="14" fill="#1d6b43" font-weight="800" text-anchor="end" font-family="ui-monospace, Menlo, Consolas, monospace">lap++</text><text x="320" y="318" font-size="16" fill="#1b2440" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">for (<tspan fill="#4a35b8">int lap = 1</tspan>; <tspan fill="#0b6670">lap &lt;= 4</tspan>; <tspan fill="#1d6b43">lap++</tspan>)</text>
+        </svg>
+    </figure>
 
-    <p class="body-text">
-        <strong>Volt</strong>: "And it counts backwards?"
-    </p>
-
-    <p class="body-text">
-        <strong>Rivet</strong>: "Down, up, sideways — it doesn't care. You just tell it which way to step."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">In <code>for (int lap = 1; lap &lt;= 4; lap++)</code>, when does <code>lap++</code> happen?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Once, before the very first lap starts</li>
+            <li class="quiz-option">B. Only when lap finally reaches 4</li>
+            <li class="quiz-option">C. Before the condition is ever checked</li>
+            <li class="quiz-option quiz-correct">D. After each lap, like clicking +1 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The step runs at the end of every pass through the loop body, then the condition is checked again.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -92,6 +105,17 @@ int main() {
     printf("Contact\n");
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">What is the first line the code example prints?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. T-minus 5 ✓</li>
+            <li class="quiz-option">B. T-minus 1</li>
+            <li class="quiz-option">C. T-minus 0</li>
+            <li class="quiz-option">D. Contact</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>t</code> starts at 5, so the first pass prints “T-minus 5”, then counts down.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -157,7 +181,7 @@ int main() {
             <li class="quiz-option quiz-correct">A. int t = 5 ✓</li>
             <li class="quiz-option">B. t &gt;= 1</li>
             <li class="quiz-option">C. t--</li>
-            <li class="quiz-option">D. None of them — all three run every time</li>
+            <li class="quiz-option">D. printf(...)</li>
         </ul>
         <p class="quiz-explanation"><em>The start part (int t = 5) runs exactly once, before the first check of the condition — it sets up the counter.</em></p>
     </div>
@@ -185,23 +209,12 @@ int main() {
     </div>
 
     <div class="quiz-block" data-q="4">
-        <p class="quiz-prompt">Q4. Why is a for loop a good fit for this lesson's countdown, according to Astro?</p>
+        <p class="quiz-prompt">Q4. What change turns a counting-down for loop into a counting-up one?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. for loops are the only kind of loop that can count down</li>
-            <li class="quiz-option quiz-correct">B. The exact number of repeats is already known in advance ✓</li>
-            <li class="quiz-option">C. for loops never need a condition</li>
-            <li class="quiz-option">D. It is not a good fit — a while loop would be simpler here</li>
-        </ul>
-        <p class="quiz-explanation"><em>A for loop groups the start, condition and step together, which is most natural exactly when you already know the number of repeats — like a five-count countdown.</em></p>
-    </div>
-
-    <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. What change turns a counting-down for loop into a counting-up one?</p>
-        <ul class="quiz-options">
-            <li class="quiz-option">A. It cannot be done — for loops can only count down</li>
-            <li class="quiz-option quiz-correct">B. Start at the low number, use &lt;= for the condition, and ++ instead of -- for the step ✓</li>
-            <li class="quiz-option">C. Remove the condition entirely</li>
-            <li class="quiz-option">D. Replace for with while — for cannot count up</li>
+            <li class="quiz-option">A. Start high, check with &gt;=, and step with ++</li>
+            <li class="quiz-option">B. Start low, check with &gt;=, and step with --</li>
+            <li class="quiz-option">C. Keep the start, drop the condition, step with ++</li>
+            <li class="quiz-option quiz-correct">D. Start low, check with &lt;=, and step with ++ ✓</li>
         </ul>
         <p class="quiz-explanation"><em>The same three-part structure works for counting up: just start low, check with &lt;=, and increment instead of decrement.</em></p>
     </div>

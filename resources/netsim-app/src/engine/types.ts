@@ -136,4 +136,8 @@ export interface EthernetFrame {
   srcMac: string;
   dstMac: string;
   payload: FramePayload;
+  // TechLab: 802.1Q tag (absent = untagged) and a switch-hop counter that stops a frame
+  // circling forever if a student builds a loop with spanning tree off.
+  vlan?: number;
+  hops?: number;
 }

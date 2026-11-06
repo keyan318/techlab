@@ -29,6 +29,17 @@ Syllabus: ITP1333 Unit E.2 Application Security Practices (Threat Modeling). --}
         miss — it forces a specific answer for each kind of misuse, not just a general feeling of confidence.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In STRIDE, what does the R stand for?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Repudiation ✓</li>
+            <li class="quiz-option">B. Ransomware</li>
+            <li class="quiz-option">C. Replication</li>
+            <li class="quiz-option">D. Recovery</li>
+        </ul>
+        <p class="quiz-explanation"><em>Repudiation is denying you did something, with no way to prove otherwise.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -39,6 +50,17 @@ Syllabus: ITP1333 Unit E.2 Application Security Practices (Threat Modeling). --}
         service</em>? Could a regular cadet <em>elevate</em> to approver access?" Six questions, six specific
         answers — not one vague "seems fine."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">“Could a regular cadet get approver access?” Which STRIDE threat is that?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Spoofing</li>
+            <li class="quiz-option quiz-correct">B. Elevation of privilege ✓</li>
+            <li class="quiz-option">C. Tampering</li>
+            <li class="quiz-option">D. Denial of service attack</li>
+        </ul>
+        <p class="quiz-explanation"><em>Gaining more access than intended is elevation of privilege.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -59,6 +81,17 @@ Syllabus: ITP1333 Unit E.2 Application Security Practices (Threat Modeling). --}
             <text x="320" y="320" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">STRIDE: six specific questions, not one vague feeling of confidence</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is tampering?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Pretending to be someone else</li>
+            <li class="quiz-option quiz-correct">B. Changing data without permission ✓</li>
+            <li class="quiz-option">C. Exposing data to the wrong people</li>
+            <li class="quiz-option">D. Making a system unavailable</li>
+        </ul>
+        <p class="quiz-explanation"><em>Tampering is changing data without permission. Spoofing is pretending to be someone else.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

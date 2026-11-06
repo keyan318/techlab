@@ -31,6 +31,17 @@ Syllabus: ITP1232 Unit D.3 Network Security. --}}
         is one more door an attacker didn't have to pick a lock for — it was just standing open.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does least functionality mean?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Open every port the firewall has</li>
+            <li class="quiz-option quiz-correct">B. Run only the services you need ✓</li>
+            <li class="quiz-option">C. Scan the network once a year only</li>
+            <li class="quiz-option">D. Use the weakest password allowed</li>
+        </ul>
+        <p class="quiz-explanation"><em>A machine should run only the services it needs, and allow only their ports. Every extra port is an open door.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Drill</h2>
 
     <p class="body-text">
@@ -44,6 +55,17 @@ Syllabus: ITP1232 Unit D.3 Network Security. --}}
         to find." <strong>Rivet</strong> adds: "The web door stays open, the crew needs it. Everything else that
         answered a knock — weld it shut."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Which door does Rivet keep open?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The FTP door</li>
+            <li class="quiz-option quiz-correct">B. The web door ✓</li>
+            <li class="quiz-option">C. The RDP door</li>
+            <li class="quiz-option">D. Every door</li>
+        </ul>
+        <p class="quiz-explanation"><em>The crew needs the web door (port 80). Everything else that answered gets welded shut.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -70,6 +92,17 @@ Syllabus: ITP1232 Unit D.3 Network Security. --}}
             <line x1="200" y1="50" x2="326" y2="152" stroke="#7c5cff" stroke-width="3"/>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which port stays open?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 21</li>
+            <li class="quiz-option quiz-correct">B. 80 ✓</li>
+            <li class="quiz-option">C. 3389</li>
+            <li class="quiz-option">D. None</li>
+        </ul>
+        <p class="quiz-explanation"><em>After hardening, only port 80 (web) stays open. 21 and 3389 are blocked.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

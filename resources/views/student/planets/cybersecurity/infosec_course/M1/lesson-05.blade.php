@@ -29,6 +29,17 @@ Syllabus: ITP1232 Unit A.5 Security Policy (Acceptable Use Policy). --}}
         easy part; finding and fixing every place it's already being broken is the part that actually matters.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">When does a policy actually do its job?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. When it is written down</li>
+            <li class="quiz-option">B. When it is filed away</li>
+            <li class="quiz-option quiz-correct">C. When it is enforced ✓</li>
+            <li class="quiz-option">D. When it is very long</li>
+        </ul>
+        <p class="quiz-explanation"><em>A rule that says “no shared logins” while people share a login isn't protecting anyone. It has to be enforced.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -42,6 +53,17 @@ Syllabus: ITP1232 Unit A.5 Security Policy (Acceptable Use Policy). --}}
         consoles run shield software only. Confidential files stay with their owner. None of that is new. What's new
         is that today, we actually make it true." <strong>Volt</strong>: "A rule nobody follows isn't a rule. Let's fix that."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Which problem did Astro's review find?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The AUP had never been written down at all</li>
+            <li class="quiz-option">B. The shield consoles had no software</li>
+            <li class="quiz-option">C. Every file was locked to its owner</li>
+            <li class="quiz-option quiz-correct">D. One login used by three crew members ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The AUP says one account per person, but a shift login was shared by three. The rules existed; nobody followed them.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -66,6 +88,17 @@ Syllabus: ITP1232 Unit A.5 Security Policy (Acceptable Use Policy). --}}
             <text x="530" y="128" text-anchor="middle" font-size="11.5" font-weight="700" fill="#14306b">Fix: lock the file</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how is Rule 2 fixed?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Stop the process ✓</li>
+            <li class="quiz-option">B. Disable the login</li>
+            <li class="quiz-option">C. Lock the file</li>
+            <li class="quiz-option">D. Write a new rule</li>
+        </ul>
+        <p class="quiz-explanation"><em>Rule 2 is shield software only. The game running on the console is fixed by stopping its process.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

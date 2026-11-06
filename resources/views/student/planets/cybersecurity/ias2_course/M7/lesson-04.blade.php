@@ -29,6 +29,17 @@ Syllabus: ITP1333 Unit G.4 High Availability (HA) Architectures & Load Balancing
         takes the whole system down at all.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How is HA different from a backup?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. HA recovers data after a failure</li>
+            <li class="quiz-option quiz-correct">B. HA tries to prevent the downtime ✓</li>
+            <li class="quiz-option">C. HA is one copy kept offsite only</li>
+            <li class="quiz-option">D. HA needs no redundant parts at all</li>
+        </ul>
+        <p class="quiz-explanation"><em>A backup recovers data after a failure, with downtime. HA keeps the system running when one part fails.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -37,6 +48,17 @@ Syllabus: ITP1333 Unit G.4 High Availability (HA) Architectures & Load Balancing
         second relay and a second power feed, load-balanced so both run all the time, and losing one doesn't lose
         the connection — it just runs a little leaner until we fix it."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">How many single points of failure did Rivet find in the relay?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. One</li>
+            <li class="quiz-option">B. Two</li>
+            <li class="quiz-option">C. None at all</li>
+            <li class="quiz-option quiz-correct">D. Three ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>One relay, one power feed, one antenna: three single points of failure in one system.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -53,6 +75,17 @@ Syllabus: ITP1333 Unit G.4 High Availability (HA) Architectures & Load Balancing
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Removing the single point of failure — one failure no longer means total loss</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how do the redundant relays run?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Load-balanced, both active ✓</li>
+            <li class="quiz-option">B. One active, one switched off</li>
+            <li class="quiz-option">C. Both off until someone acts</li>
+            <li class="quiz-option">D. Only one relay, kept spare</li>
+        </ul>
+        <p class="quiz-explanation"><em>Load-balanced relays both run all the time, so failover is instant.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

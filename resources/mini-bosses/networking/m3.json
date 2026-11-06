@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What is static addressing?",
+      "options": [
+        "Letting a server hand out an address each time",
+        "Typing the address into the device by hand",
+        "Using only the device's MAC address to talk",
+        "Giving every device the same address at once"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which device should get a static address?",
+      "options": [
+        "A tablet used for a day",
+        "A visitor's phone on Wi-Fi",
+        "A laptop that comes and goes",
+        "A printer others must find"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is a risk of typing addresses by hand?",
+      "options": [
+        "The device loses its MAC address",
+        "The device can never reach a router",
+        "A typo can cause an address conflict",
+        "The address changes every single day"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does DHCP stand for?",
+      "options": [
+        "Dynamic Host Configuration Protocol",
+        "Direct Hardware Connection Port",
+        "Domain Host Control Program for IPv4",
+        "Dynamic Hub Channel Process"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Besides an address, what else can DHCP hand out?",
+      "options": [
+        "The cable and the switch port",
+        "The gateway and DNS server",
+        "The password for the Wi-Fi",
+        "The MAC address of the NIC"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is a DHCP reservation?",
+      "options": [
+        "A spare DHCP server kept for emergencies",
+        "The same address always given to one device",
+        "An address that nobody is allowed to use",
+        "A lease that never needs to be renewed at all"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What are the four DHCP steps, in order?",
+      "options": [
+        "Request, Offer, Discover, Acknowledge",
+        "Discover, Offer, Request, Acknowledge",
+        "Discover, Request, Offer, Acknowledge",
+        "Offer, Discover, Acknowledge, Request"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why is the DHCP Discover a broadcast?",
+      "options": [
+        "The client has no address and knows no server",
+        "Broadcasts are faster than any other message",
+        "The server only listens to broadcasts on port 80",
+        "The client wants every device to get its address"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In DORA, what does the server send in the Offer?",
+      "options": [
+        "A copy of every lease it has given out",
+        "An address it will lend, plus settings",
+        "A request for the client's MAC address",
+        "The client's old address from last time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why is the Request step also broadcast?",
+      "options": [
+        "So other servers know their offer lost",
+        "So the router can copy the lease for itself",
+        "So the DNS server can learn the client's name",
+        "So the client can ask for two addresses at once"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which UDP ports does DHCP use?",
+      "options": [
+        "80 and 443",
+        "20 and 21",
+        "53 and 54",
+        "67 and 68"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "When does a client first try to renew its lease?",
+      "options": [
+        "Only after the lease expires",
+        "Halfway through the lease",
+        "Only when the user asks it to",
+        "Every time it sends a packet"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is centralized DHCP?",
+      "options": [
+        "One server managing many subnets' pools",
+        "One DHCP server inside every single subnet",
+        "A DHCP server built into each network card",
+        "Every client handing out its own address"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why can't a client on another subnet reach a central DHCP server on its own?",
+      "options": [
+        "The server only serves one MAC address",
+        "The cable is longer than 100 meters",
+        "Clients cannot send UDP at all",
+        "Routers do not forward broadcasts"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does a DHCP relay agent do?",
+      "options": [
+        "Forwards the broadcast on as a unicast",
+        "Blocks every DHCP message on the router",
+        "Hands out addresses without any server at all",
+        "Turns IP addresses into names for clients"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "On a Cisco router, which command sets up a DHCP relay?",
+      "options": [
+        "ipconfig /renew",
+        "ip dhcp relay-on",
+        "ip helper-address",
+        "route add dhcp-relay"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a DHCP scope?",
+      "options": [
+        "The address rules for one subnet",
+        "The time a client waits before asking again",
+        "The cable range that DHCP messages can reach",
+        "The list of every device's MAC address"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A DHCP scope has no default gateway option. What can its clients do?",
+      "options": [
+        "Nothing at all, not even locally",
+        "Reach the Internet but not the LAN",
+        "Everything, the gateway is optional",
+        "Only talk on their own network"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A pool runs from .100 to .150. How many addresses can it hand out?",
+      "options": [
+        "49",
+        "50",
+        "150",
+        "51"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "The pool is exhausted. What happens to the next client?",
+      "options": [
+        "It is given the router's address instead",
+        "It takes the address of the oldest client",
+        "It gets no offer and has no address",
+        "The server makes the pool bigger on its own"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why keep static devices outside the DHCP pool?",
+      "options": [
+        "So the pool can be made as small as possible",
+        "So static devices can reach the Internet",
+        "So DHCP never hands out an address in use",
+        "So the server does not need a subnet mask"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does DNS do?",
+      "options": [
+        "Hands out IP addresses to hosts",
+        "Turns names into IP addresses",
+        "Splits a network into subnets",
+        "Sends mail between two servers"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which port does DNS use?",
+      "options": [
+        "80",
+        "53",
+        "67",
+        "22"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In portal.codexia.lan, which part is the host?",
+      "options": [
+        "codexia",
+        "lan",
+        "codexia.lan",
+        "portal"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why are repeat DNS lookups fast?",
+      "options": [
+        "Names are stored inside each NIC",
+        "DNS servers sit on every single LAN",
+        "Resolvers cache answers for the TTL",
+        "The router remembers every page"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which DNS record maps a name to an IPv4 address?",
+      "options": [
+        "A",
+        "MX",
+        "AAAA",
+        "PTR"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which DNS record says which server handles a domain's mail?",
+      "options": [
+        "CNAME",
+        "A",
+        "NS",
+        "MX"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is a CNAME record?",
+      "options": [
+        "An alias that points to another name",
+        "A reverse lookup from address to name",
+        "A name that points to an IPv6 address",
+        "The list of servers in charge of a domain"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A DNS server answers NXDOMAIN. What does that mean?",
+      "options": [
+        "The server is too busy",
+        "The answer was cached earlier",
+        "The name does not exist",
+        "The name is an alias"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which record does a reverse lookup, address to name?",
+      "options": [
+        "MX",
+        "A",
+        "PTR",
+        "AAAA"
+      ],
+      "correct": "C"
+    }
+  ]
+}

@@ -1,30 +1,60 @@
-{{-- The Captain (faculty): pixel face under a peaked cap, on a 16x15 grid. Decorative; eyes blink via .eye. --}}
+{{-- The Captain (faculty): a pixel face under a peaked cap, with ears and a tie.
+     The art lives here; <x-pixel-mascot> draws it and does the blinking, looking,
+     eyebrows, talking and click reactions (same living face as Astro). Decorative. --}}
 @php
     $rows = [
-        '....########....',
-        '...#bbbbbbbb#...',
-        '..#bbbbyybbbb#..',
-        '..#bbbbbbbbbb#..',
-        '.#dddddddddddd#.',
-        '#dddddddddddddd#',
-        '.##############.',
-        '..#ssssssssss#..',
-        '..#ssessssess#..',
-        '..#ssssssssss#..',
-        '..#ssssmmssss#..',
-        '...#ssssssss#...',
-        '..#wwwwwwwwww#..',
-        '.#wwwwwwwwwwww#.',
-        '....########....',
+        '......########......',
+        '.....#bbbbbbbb#.....',
+        '....#bbbbyybbbb#....',
+        '...#bbbbbyybbbbb#...',
+        '...#bbbbbbbbbbbb#...',
+        '..#dddddddddddddd#..',
+        '.#dddddddddddddddd#.',
+        '..################..',
+        '..#SSSSSSSSSSSSSS#..',
+        '..#ssssssssssssss#..',
+        '..#ssssssssssssss#..',
+        '.#ssssssssssssssss#.',
+        '.#ssssssssssssssss#.',
+        '..#ssssssssssssss#..',
+        '..#ssssssssssssss#..',
+        '...#ssssssssssss#...',
+        '....#ssssssssss#....',
+        '..##wwwwwttwwwww##..',
+        '.#wwwwwwwttwwwwwww#.',
+        '..################..',
     ];
-    $colors = ['#' => '#1b1750', 'b' => '#2f7de1', 'd' => '#1f5fb4', 'y' => '#f5c04a', 's' => '#f2c9a0', 'e' => '#1b1750', 'm' => '#c0705a', 'w' => '#eef1ff'];
+    $colors = ['#' => '#1b1750', 'b' => '#2f7de1', 'd' => '#1f5fb4', 'y' => '#f5c04a', 's' => '#f2c9a0', 'S' => '#e0ae84', 'w' => '#eef1ff', 't' => '#1f5fb4'];
+
+    // Face layers: colour => [x, y] pixels. k = eyes, s = eye shine, h = brows, m = mouth,
+    // w = teeth, p = pink (tongue, hearts), b = blush.
+    $ink = ['k' => '#14112e', 's' => '#ffffff', 'h' => '#5a3a2a', 'm' => '#7a2e2e', 'w' => '#ffffff', 'p' => '#ff5c8a', 'b' => '#f59aa8'];
+    $eyes = [
+        'brow-flat'  => ['h' => [[5,9],[6,9],[7,9], [12,9],[13,9],[14,9]]],
+        'brow-up'    => ['h' => [[5,8],[6,8],[7,8], [12,8],[13,8],[14,8]]],
+        'brow-think' => ['h' => [[5,8],[6,8],[7,8], [12,9],[13,9],[14,9]]],
+        'eye-open'   => ['k' => [[6,10],[6,11],[7,11],[6,12],[7,12], [12,10],[12,11],[13,11],[12,12],[13,12]], 's' => [[7,10],[13,10]]],
+        'eye-shut'   => ['k' => [[6,12],[7,12], [12,12],[13,12]]],
+        'eye-happy'  => ['k' => [[6,10],[7,10],[5,11],[8,11], [12,10],[13,10],[11,11],[14,11]]],
+        'eye-wink'   => ['k' => [[6,10],[6,11],[7,11],[6,12],[7,12], [12,11],[13,11],[11,10],[14,10]], 's' => [[7,10]]],
+        'eye-big'    => ['k' => [[5,9],[6,9],[5,10],[6,10],[7,10],[5,11],[6,11],[7,11],[6,12],[7,12],
+                                 [12,9],[13,9],[12,10],[13,10],[14,10],[12,11],[13,11],[14,11],[13,12],[14,12]],
+                         's' => [[7,9],[5,12],[14,9],[12,12]]],
+        'eye-heart'  => ['p' => [[5,10],[7,10],[5,11],[6,11],[7,11],[6,12], [12,10],[14,10],[12,11],[13,11],[14,11],[13,12]]],
+        'eye-x'      => ['k' => [[5,10],[7,10],[6,11],[5,12],[7,12], [12,10],[14,10],[13,11],[12,12],[14,12]]],
+    ];
+    $mouths = [
+        'm-smile' => ['m' => [[7,14],[12,14],[8,15],[9,15],[10,15],[11,15]]],
+        'm-grin'  => ['m' => [[7,14],[12,14],[8,15],[11,15],[9,16],[10,16]], 'w' => [[8,14],[9,14],[10,14],[11,14]], 'p' => [[9,15],[10,15]]],
+        'm-hmm'   => ['m' => [[8,15],[9,15],[10,15],[11,14]]],
+        'm-wavy'  => ['m' => [[8,14],[9,14],[12,14],[7,15],[10,15],[11,15]]],
+        'm-ooh'   => ['m' => [[9,14],[10,14],[8,15],[11,15],[9,16],[10,16]], 'p' => [[9,15],[10,15]]],
+        // Talking frames: wide, half, shut, small "o"
+        'm-wide'  => ['m' => [[8,14],[9,14],[10,14],[11,14],[8,15],[11,15],[9,16],[10,16]], 'p' => [[9,15],[10,15]]],
+        'm-half'  => ['m' => [[8,14],[9,14],[10,14],[11,14],[9,15],[10,15]]],
+        'm-shut'  => ['m' => [[8,15],[9,15],[10,15],[11,15]]],
+        'm-o'     => ['m' => [[9,14],[10,14],[9,15],[10,15]]],
+    ];
+    $blush = ['b' => [[4,13],[5,13],[14,13],[15,13]]];
 @endphp
-<svg viewBox="0 0 16 15" shape-rendering="crispEdges" aria-hidden="true" focusable="false" {{ $attributes }}>
-  @foreach ($rows as $y => $row)
-    @foreach (str_split($row) as $x => $ch)
-      @if ($ch !== '.')
-        <rect @if ($ch === 'e') class="eye" @endif x="{{ $x }}" y="{{ $y }}" width="1" height="1" fill="{{ $colors[$ch] }}"/>
-      @endif
-    @endforeach
-  @endforeach
-</svg>
+<x-pixel-mascot :rows="$rows" :colors="$colors" :ink="$ink" :eyes="$eyes" :mouths="$mouths" :blush="$blush" gaze-y="up" {{ $attributes->class('captain-mascot') }} />

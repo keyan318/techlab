@@ -1,0 +1,324 @@
+{
+  "questions": [
+    {
+      "prompt": "What is an algorithm?",
+      "options": [
+        "A language that computers understand",
+        "A program that has been compiled",
+        "A set of steps that solves a problem",
+        "A chip that runs instructions"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What makes a program different from an algorithm?",
+      "options": [
+        "It is allowed to leave some steps vague",
+        "It always has many more steps than an algorithm",
+        "It is written in a language a computer runs",
+        "It can only be written on paper first"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A good algorithm has a clear end and does not run forever. Which property is that?",
+      "options": [
+        "Finite",
+        "Ordered",
+        "Compiled",
+        "Precise"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "\"Mix the paint, then paint the wall.\" Swapping these two steps breaks which property?",
+      "options": [
+        "Ordered",
+        "Portable",
+        "Finite",
+        "Precise"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does a computer do when a program's steps are unclear?",
+      "options": [
+        "Exactly what was written, nothing more",
+        "It guesses what you most likely meant to say",
+        "It skips the unclear step and goes on",
+        "It asks the user to explain the step"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which instruction is precise enough for a computer?",
+      "options": [
+        "Wait for a good moment",
+        "Wait 10 seconds",
+        "Wait until it feels right",
+        "Wait a little while"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a flowchart, what shape marks the start and the end?",
+      "options": [
+        "An arrow",
+        "A rectangle",
+        "A diamond",
+        "An oval"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In a flowchart, what do the arrows show?",
+      "options": [
+        "The order of the steps",
+        "The errors in the plan",
+        "The end of the program",
+        "The values being stored"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is pseudocode?",
+      "options": [
+        "A diagram made of boxes and arrows",
+        "Machine code the chip runs directly",
+        "A plan in plain, structured sentences",
+        "C code that is missing its semicolons"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why plan a program with a flowchart or pseudocode before coding?",
+      "options": [
+        "C programs cannot run without a plan file",
+        "The compiler needs a flowchart to work",
+        "Missing steps are cheaper to fix on paper",
+        "Pseudocode makes the program run faster"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A plan has three PRINT lines. Turned into C, what do you write?",
+      "options": [
+        "One printf that holds all three lines",
+        "Three printf calls in the same order",
+        "Three printf calls in any order",
+        "Three variables, one for each line"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does #include <stdio.h> give your program?",
+      "options": [
+        "The space to store every variable",
+        "Ready-made tools such as printf and scanf",
+        "The place where the program starts to run",
+        "A message that the program ended well"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Where does a C program start running?",
+      "options": [
+        "At return 0;",
+        "At int main()",
+        "At #include <stdio.h>",
+        "At the first printf"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does return 0; at the end of main report?",
+      "options": [
+        "The program should start again from the top",
+        "The program finished without errors",
+        "The program had zero variables in it",
+        "The program printed zero lines of output"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does a compiler do with your .c file?",
+      "options": [
+        "Quietly fixes your mistakes without telling you",
+        "Prints the source code to the screen to be read",
+        "Checks it, then turns it into a runnable program",
+        "Runs each line one at a time as you are typing it"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A semicolon is missing at the end of a statement. What happens?",
+      "options": [
+        "The compiler refuses and reports where",
+        "The program runs but skips that line",
+        "The computer adds the semicolon for you",
+        "The program prints the line twice"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In C, what does \\n inside printf do?",
+      "options": [
+        "Prints the letter n on the screen",
+        "Adds a space before the text",
+        "Ends the program right away",
+        "Moves the output to a new line"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does printf(\"Hull: OK\\n\"); print?",
+      "options": [
+        "Hull: OK and then a new line",
+        "\"Hull: OK\\n\" with the quotes",
+        "Hull: OK\\n exactly as typed",
+        "Nothing, it only stores the text"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which part of a C program holds the statements that actually run?",
+      "options": [
+        "The #include line at the very top",
+        "The name main and its brackets",
+        "The body between { and } of main",
+        "The comment lines that start with //"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which type stores a whole number like 4?",
+      "options": [
+        "float",
+        "char",
+        "int",
+        "text"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which type stores 76.5?",
+      "options": [
+        "int",
+        "float",
+        "whole",
+        "char"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which value fits a char variable?",
+      "options": [
+        "'A'",
+        "\"Bay\"",
+        "7.5",
+        "1200"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which format specifier prints an int?",
+      "options": [
+        "%f",
+        "%c",
+        "%s",
+        "%d"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does printf(\"%.1f\", 76.5); print?",
+      "options": [
+        "77",
+        "76.5",
+        "76.500000",
+        "76"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In C, what is 19 / 4 when both are int?",
+      "options": [
+        "5",
+        "3",
+        "4.75",
+        "4"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In C, what is 19 % 4?",
+      "options": [
+        "4",
+        "76",
+        "4.75",
+        "3"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "47 crates are shared between 5 crews. Which expression gives the crates left over?",
+      "options": [
+        "47 - 5",
+        "47 % 5",
+        "47 / 5",
+        "47 * 5"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "An int variable holds 9. What does 9 % 2 tell you?",
+      "options": [
+        "2 goes into 9 exactly 4.5 times",
+        "9 is split into 4.5 and 4.5",
+        "9 is two percent of something",
+        "1 is left over after halving it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which line correctly reads a whole number into fuel?",
+      "options": [
+        "scanf(\"%f\", &fuel);",
+        "scanf(\"%d\", fuel);",
+        "scanf(\"%d\", &fuel);",
+        "printf(\"%d\", &fuel);"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In scanf(\"%d\", &n);, what does &n mean?",
+      "options": [
+        "The address of n in memory",
+        "The value that is stored in n",
+        "The type of the variable n",
+        "A second copy of n to read into"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A program asks \"Enter fuel: \" and then reads a number. Which line prints the question?",
+      "options": [
+        "scanf(\"%d\", &fuel);",
+        "int fuel = 0;",
+        "printf(\"Left: %d\\n\", fuel);",
+        "printf(\"Enter fuel: \");"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A user types 40 for n. What does printf(\"Left: %d\\n\", n - 15); print?",
+      "options": [
+        "Left: 55",
+        "Left: n - 15",
+        "Left: 40",
+        "Left: 25"
+      ],
+      "correct": "D"
+    }
+  ]
+}

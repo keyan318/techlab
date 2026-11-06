@@ -32,33 +32,47 @@ Syllabus: CC102 Unit 2 — Operators Control Structures (relational & logical op
         <li><strong><code>!</code></strong> (NOT) — flips true to false and false to true</li>
     </ul>
 
-    <h2 class="section-heading">Volt Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does <code>!1</code> evaluate to in C?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. 1</li>
+            <li class="quiz-option">B. -1</li>
+            <li class="quiz-option">C. It is an error</li>
+            <li class="quiz-option quiz-correct">D. 0 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>!</code> flips true to false. In C true is 1 and false is 0, so <code>!1</code> is 0.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Volt comes down from the Lookout shaking rain off his coat. There's weather coming in off the ruins —
-        the kind that pushes through a cracked hull.
+        Think of the rules on a sign at a theme-park ride. Each rule is a yes-or-no question: <em>“Are you at least 120 cm?”</em> C answers every question like that with <strong>1 for yes</strong> and <strong>0 for no</strong>.
     </p>
 
     <p class="body-text">
-        <strong>Volt</strong>: "The console shows me numbers all night. Hull pressure. Shell strength. Numbers
-        are useless to me at three in the morning. I need it to tell me one thing: <em>is this bad yet?</em>"
+        Rules can be combined. <code>&amp;&amp;</code> (AND) is “ticket <em>and</em> tall enough”: both must be yes. <code>||</code> (OR) is “cash <em>or</em> card”: one yes is enough. <code>!</code> (NOT) flips the answer, so yes becomes no.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong> lights up. "Oh, it can do that. Look —" he draws a line on the board. "You pick
-        the line. Below fifty is trouble. Then you just ask: is this number under the line? It answers one or
-        zero. Yes or no. That's it, that's the whole trick."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 330" role="img" aria-label="Three ride gates. AND: has a ticket yes, tall enough no, so the gate stays shut: ticket and tall is 0. OR: paid with cash no, paid with card yes, so the gate opens: cash or card is 1. NOT: it is raining is yes, not raining is 0. One equals sign puts a value in; two equals signs ask if two values are equal.">
+            <rect x="20" y="30" width="190" height="228" rx="14" fill="#f8f6ff" stroke="#7c5cff" stroke-width="2"/><text x="115" y="58" font-size="15" fill="#4a35b8" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">AND · &amp;&amp;</text><text x="115" y="78" font-size="12" fill="#5b6b86" text-anchor="middle">both must be yes</text><text x="36" y="116" font-size="14" fill="#1b2440">Has a ticket</text><circle cx="188" cy="111" r="11" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><path d="M183 111 L186.5 115 L193 107" fill="none" stroke="#2fa56b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><text x="36" y="152" font-size="14" fill="#1b2440">Tall enough</text><circle cx="188" cy="147" r="11" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="188" y="152" font-size="13" fill="#b3261e" font-weight="800" text-anchor="middle">✗</text><rect x="34" y="178" width="162" height="36" rx="10" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="115" y="201" font-size="14" fill="#7a1a14" font-weight="700" text-anchor="middle">Gate stays shut → <tspan font-weight="800">0</tspan></text><text x="115" y="240" font-size="14" fill="#4a35b8" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">ticket &amp;&amp; tall</text><rect x="225" y="30" width="190" height="228" rx="14" fill="#f2fbfc" stroke="#0fa3b1" stroke-width="2"/><text x="320" y="58" font-size="15" fill="#0b6670" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">OR · ||</text><text x="320" y="78" font-size="12" fill="#5b6b86" text-anchor="middle">one yes is enough</text><text x="241" y="116" font-size="14" fill="#1b2440">Paid with cash</text><circle cx="393" cy="111" r="11" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="393" y="116" font-size="13" fill="#b3261e" font-weight="800" text-anchor="middle">✗</text><text x="241" y="152" font-size="14" fill="#1b2440">Paid with card</text><circle cx="393" cy="147" r="11" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><path d="M388 147 L391.5 151 L398 143" fill="none" stroke="#2fa56b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><rect x="239" y="178" width="162" height="36" rx="10" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><text x="320" y="201" font-size="14" fill="#1d6b43" font-weight="700" text-anchor="middle">Gate opens → <tspan font-weight="800">1</tspan></text><text x="320" y="240" font-size="14" fill="#0b6670" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">cash || card</text><rect x="430" y="30" width="190" height="228" rx="14" fill="#fffaf2" stroke="#f08c1a" stroke-width="2"/><text x="525" y="58" font-size="15" fill="#8a4b00" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">NOT · !</text><text x="525" y="78" font-size="12" fill="#5b6b86" text-anchor="middle">flips the answer</text><text x="446" y="116" font-size="14" fill="#1b2440">It's raining</text><circle cx="598" cy="111" r="11" fill="#e9f7ef" stroke="#2fa56b" stroke-width="1.8"/><path d="M593 111 L596.5 115 L603 107" fill="none" stroke="#2fa56b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><text x="446" y="152" font-size="14" fill="#8a4b00" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">!raining</text><circle cx="598" cy="147" r="11" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="598" y="152" font-size="13" fill="#b3261e" font-weight="800" text-anchor="middle">✗</text><rect x="444" y="178" width="162" height="36" rx="10" fill="#fdeaea" stroke="#b3261e" stroke-width="1.8"/><text x="525" y="201" font-size="14" fill="#7a1a14" font-weight="700" text-anchor="middle">Go outside? No → <tspan font-weight="800">0</tspan></text><text x="525" y="240" font-size="14" fill="#8a4b00" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">!raining</text><rect x="20" y="276" width="600" height="40" rx="20" fill="#eef1f5" stroke="#9aa5b8" stroke-width="1.8"/><text x="320" y="301" font-size="13" fill="#5b6b86" text-anchor="middle"><tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">=</tspan> puts a value in   ·   <tspan font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="800">==</tspan> asks “are these equal?” and answers 1 or 0</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Volt</strong>: "And if I need both the hull and the shell holding at once?"
+        <strong>Careful:</strong> <code>=</code> is not a question. <code>height = 120</code> <em>puts</em> 120 into height. <code>height == 120</code> <em>asks</em> “is it 120?”
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>: "Then you want <code>&amp;&amp;</code> — that's 'and', and it only says yes when
-        <em>everything</em> is true. If you want to know whether <em>either</em> one is in trouble, that's
-        <code>||</code> — 'or'. It says yes the moment any one of them is."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">The sign says: ticket AND tall enough. You have a ticket but you're too short. What is the result?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. 0, because both rules must be yes ✓</li>
+            <li class="quiz-option">B. 1, because one of the rules is yes</li>
+            <li class="quiz-option">C. 1, because the ticket rule comes first</li>
+            <li class="quiz-option">D. 0, because tickets don't count in C</li>
+        </ul>
+        <p class="quiz-explanation"><em><code>&amp;&amp;</code> is only 1 when <em>both</em> sides are 1. One “no” is enough to make the whole thing 0.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -107,6 +121,17 @@ int main() {
         Each comparison prints as <code>1</code> or <code>0</code> because C has no separate boolean type —
         <code>%d</code> works fine for a relational result.
     </p>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt"><code>shield</code> is 40. What does <code>printf("Shield low: %d\n", shield &lt; 50);</code> print?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Shield low: 0</li>
+            <li class="quiz-option">B. Shield low: 40</li>
+            <li class="quiz-option">C. Shield low: true</li>
+            <li class="quiz-option quiz-correct">D. Shield low: 1 ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>40 is less than 50, so the comparison is true, and true prints as 1 with <code>%d</code>.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -174,8 +199,8 @@ int main() {
         <p class="quiz-prompt">Q1. What does the comparison <code>5 == 5</code> evaluate to in C?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. true</li>
-            <li class="quiz-option quiz-correct">B. 1 ✓</li>
-            <li class="quiz-option">C. "yes"</li>
+            <li class="quiz-option">B. "yes"</li>
+            <li class="quiz-option quiz-correct">C. 1 ✓</li>
             <li class="quiz-option">D. 5</li>
         </ul>
         <p class="quiz-explanation"><em>C has no separate boolean type — a true comparison evaluates to the int 1, and a false one to 0.</em></p>
@@ -217,10 +242,10 @@ int main() {
     <div class="quiz-block" data-q="5">
         <p class="quiz-prompt">Q5. What does <code>!(shield &lt; 50)</code> mean?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. shield is definitely less than 50</li>
+            <li class="quiz-option">A. True when shield is less than 50</li>
             <li class="quiz-option">B. It causes a compiler error</li>
-            <li class="quiz-option quiz-correct">C. NOT shield less than 50 — true exactly when shield is 50 or more ✓</li>
-            <li class="quiz-option">D. The same thing as shield &gt; 50</li>
+            <li class="quiz-option quiz-correct">C. True when shield is 50 or more ✓</li>
+            <li class="quiz-option">D. True only when shield is above 50</li>
         </ul>
         <p class="quiz-explanation"><em>! flips a condition's result: it turns a true (shield is low) into false, and false into true.</em></p>
     </div>

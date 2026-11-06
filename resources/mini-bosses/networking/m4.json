@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "In FCAPS, what does the F stand for?",
+      "options": [
+        "Fault management",
+        "Frame management",
+        "File management",
+        "Firewall management"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which FCAPS area watches speed, delay and load?",
+      "options": [
+        "Performance management",
+        "Fault management",
+        "Configuration management",
+        "Accounting management"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is SNMP used for?",
+      "options": [
+        "Encrypting traffic between two routers",
+        "Handing out addresses to new devices",
+        "A manager polling devices for status",
+        "Turning names into addresses for clients"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is syslog?",
+      "options": [
+        "A way to give a device a fixed address",
+        "A cable tester for copper Ethernet links",
+        "Devices sending events to one place",
+        "A list of every IP address in the network"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why record a baseline?",
+      "options": [
+        "To stop users changing settings",
+        "To give every device an address",
+        "To know what normal looks like",
+        "To make the network run faster"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which is part of good change control?",
+      "options": [
+        "Changing many things at the same time",
+        "Keeping a way to undo the change",
+        "Making changes without telling anyone",
+        "Skipping the test to save some time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which layer do physical issues live at?",
+      "options": [
+        "Layer 3",
+        "Layer 1",
+        "Layer 7",
+        "Layer 4"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why are physical issues checked first?",
+      "options": [
+        "They only happen on wireless networks",
+        "They are the easiest to type commands for",
+        "Routers cannot see any physical fault",
+        "Nothing above them can work without them"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A port's link light is off. What does that usually mean?",
+      "options": [
+        "There is no link",
+        "The lease expired",
+        "DNS has failed",
+        "The link is too fast"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a swap test?",
+      "options": [
+        "Swapping two devices' IP addresses to compare them",
+        "Replacing every cable in the room at the same time",
+        "Moving the DHCP server to another subnet",
+        "Changing one part at a time to see if it moves"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Many devices lose the network at once. Where should you look first?",
+      "options": [
+        "The password on each device",
+        "Each device's own cable, one by one",
+        "The DNS records for every device",
+        "A shared part, such as a switch"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which command turns a disabled Windows adapter back on?",
+      "options": [
+        "ipconfig /renew \"Ethernet\" admin=enabled /all /force",
+        "ping -enable \"Ethernet\" interface admin=enabled -t",
+        "netsh interface set interface \"Ethernet\" admin=enabled",
+        "route add \"Ethernet\" mask 255.255.255.0 admin=enabled -p"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A copper Ethernet run is 150 meters long. What is the likely problem?",
+      "options": [
+        "It is longer than copper should run",
+        "It needs a DNS record of its own",
+        "It uses the wrong VLAN for its port",
+        "It is too short for the signal to settle"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a logical issue?",
+      "options": [
+        "A wrong setting on working hardware",
+        "A port with its link light switched off",
+        "A network card with no power",
+        "A cable that is cut or unplugged"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Two devices share one IP address. What do users usually see?",
+      "options": [
+        "A new address from DHCP each second",
+        "Faster speeds on both devices",
+        "Names that turn into the wrong address",
+        "Random drops on both devices"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A host reaches 8.8.8.8 by number, but not google.com by name. What should you suspect?",
+      "options": [
+        "The cable",
+        "DNS",
+        "The NIC",
+        "The gateway"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A host reaches its gateway but nothing on other networks. What should you suspect?",
+      "options": [
+        "The web service",
+        "Routing",
+        "The cable",
+        "DNS names"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A host can ping a server but the web page will not load. What should you suspect?",
+      "options": [
+        "The service or a firewall",
+        "The host's default gateway",
+        "The cable to the server",
+        "The subnet mask of the host"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the right order for the test ladder?",
+      "options": [
+        "Only the far end",
+        "From far to near",
+        "From near to far",
+        "In any order"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "On 2.4 GHz Wi-Fi, which channels do not overlap?",
+      "options": [
+        "5, 10 and 15",
+        "1, 6 and 11",
+        "1, 2 and 3",
+        "2, 7 and 12"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How does 5 GHz Wi-Fi compare to 2.4 GHz?",
+      "options": [
+        "Slower, and reaches less far",
+        "Faster, but reaches less far",
+        "Slower, but reaches farther",
+        "Faster, and reaches farther"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A laptop cannot even join the Wi-Fi network. Which side should you suspect?",
+      "options": [
+        "The radio side",
+        "The wired side",
+        "The web server",
+        "The DNS server"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A laptop shows \"connected\" to Wi-Fi but gets no address. Which side should you suspect?",
+      "options": [
+        "The wired side behind the access point",
+        "The laptop's screen and its brightness",
+        "The radio side, such as the signal strength",
+        "The Wi-Fi password the laptop typed"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the first step of the troubleshooting method?",
+      "options": [
+        "Document the outcome",
+        "Test a theory",
+        "Identify the problem",
+        "Implement a fix"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the last step of the troubleshooting method?",
+      "options": [
+        "Identify the problem",
+        "Test the theory",
+        "Make a plan of action",
+        "Document the findings"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why change one thing at a time?",
+      "options": [
+        "So the fix happens faster",
+        "So the logs stay shorter",
+        "So the users do not notice",
+        "So you know what fixed it"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which search strategy tests the middle of the path first?",
+      "options": [
+        "Bottom-up",
+        "Top-down",
+        "Follow the path hop by hop",
+        "Divide and conquer"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which search strategy starts at the cables and climbs the layers?",
+      "options": [
+        "Top-down",
+        "Bottom-up",
+        "Random spot checks",
+        "Divide and conquer"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In a tracert, where are the packets stopping?",
+      "options": [
+        "At the host that sent the trace",
+        "At the DNS server for the name",
+        "At the last router that answers",
+        "At the first router on the list"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "You fixed one fault but it still fails. Why re-test after every fix?",
+      "options": [
+        "Tests reset the router each time",
+        "One fault can hide another",
+        "Re-testing clears the DNS cache",
+        "The fix may undo itself later"
+      ],
+      "correct": "B"
+    }
+  ]
+}

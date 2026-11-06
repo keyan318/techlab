@@ -1,0 +1,201 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g1-l3",
+  "title": "Lesson 1.3: IPv6 (and the IPv5 That Never Was)",
+  "host": {
+    "name": "SKYPORT-EDGE",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nSkyport edge router: g0/0 faces the landing pads"
+  },
+  "story": {
+    "alert": "SKYPORT · RELAY FLEET SPEAKS IPv6",
+    "victory": "The fleet's beacons light up on the Skyport console. Rivet: \"128 bits, and we only had to write about twelve of them.\" Volt flags SHIP-3 for a closer look."
+  },
+  "modes": {
+    "if": {
+      "prompt": "config-if"
+    },
+    "if-other": {
+      "prompt": "config-if"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 960 bytes\n!\nhostname SKYPORT-EDGE\n!\ninterface GigabitEthernet0/0\n ip address 192.168.50.1 255.255.255.0\n!\ninterface GigabitEthernet0/1\n no ip address\n shutdown\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-      512   fleet-addresses.txt\n    2  -rw-      420   visitors.txt\n    3  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:fleet-addresses.txt",
+      "text": "EARTH RELAY FLEET: ADDRESSES TO ADD TO THE GRID\n===============================================\n  A. 2001:0db8:00c0:0000:0000:0000:0000:0010\n  B. 2001:0db8:0000:00a1:0000:0000:0000:0001\n\nRivet: shorten each one with both rules, then\n  submit A=<short form>\n  submit B=<short form>\n(Careful with B: only ONE run of zero groups can become ::)\n"
+    },
+    {
+      "cmd": "more flash:visitors.txt",
+      "text": "SKYPORT VISITOR LOG (IPv6)\n==========================\n  SHIP-1   fe80::a8bb:ccff:fe00:100\n  SHIP-2   2001:db8:c0de:10::77\n  SHIP-3   fd00:dead:beef::66\n  SHIP-4   ff02::1\n\nVolt: which ship is using a unique local (private) address?\n  submit ULA=<ship>\nWhich one is only a link-local address?\n  submit LINK=<ship>\n"
+    },
+    {
+      "cmd": "show ipv6 interface brief",
+      "when": [
+        "v6-addr"
+      ],
+      "sets": [
+        "v6-seen"
+      ],
+      "text": "GigabitEthernet0/0     [up/up]\n    FE80::1\n    2001:DB8:C0DE:10::1\nGigabitEthernet0/1     [administratively down/down]\n    unassigned"
+    },
+    {
+      "cmd": "show ipv6 interface brief",
+      "text": "GigabitEthernet0/0     [up/up]\n    unassigned\nGigabitEthernet0/1     [administratively down/down]\n    unassigned"
+    },
+    {
+      "cmd": "show ip interface brief",
+      "text": "Interface              IP-Address      OK? Method Status                Protocol\nGigabitEthernet0/0     192.168.50.1    YES manual up                    up\nGigabitEthernet0/1     unassigned      YES unset  administratively down down"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "ipv6 unicast-routing",
+      "sets": [
+        "v6-routing"
+      ]
+    },
+    {
+      "cmd": "no ipv6 unicast-routing",
+      "clears": [
+        "v6-routing"
+      ],
+      "store": false
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/0"
+      ],
+      "enters": "if"
+    },
+    {
+      "cmd": "interface <if>",
+      "enters": "if-other"
+    },
+    {
+      "mode": "if",
+      "cmd": "ipv6 address <ipv6>",
+      "args": [
+        "2001:db8:c0de:10::1/64"
+      ],
+      "sets": [
+        "v6-addr"
+      ]
+    },
+    {
+      "mode": "if",
+      "cmd": "ipv6 address <ipv6>",
+      "reply": ""
+    },
+    {
+      "mode": "if",
+      "cmd": "no ipv6 address <rest>",
+      "clears": [
+        "v6-addr"
+      ],
+      "store": false
+    },
+    {
+      "mode": "if",
+      "cmd": "no shutdown"
+    },
+    {
+      "mode": "if",
+      "cmd": "ipv6 enable"
+    },
+    {
+      "mode": "if-other",
+      "cmd": "ipv6 address <ipv6>",
+      "reply": "% Saved, but this is not the port facing the landing pads (that one is g0/0)."
+    },
+    {
+      "mode": "if-other",
+      "cmd": "no shutdown"
+    }
+  ],
+  "steps": [
+    {
+      "by": "rivet",
+      "title": "Shorten Earth's addresses",
+      "body": "Type `enable`, then `more flash:fleet-addresses.txt`. Shorten both addresses with the two rules and hand them in: `submit A=...` and `submit B=...`.",
+      "objectives": [
+        {
+          "id": "ans-a",
+          "label": "Address A shortened correctly",
+          "check": {
+            "type": "answer",
+            "value": "A=2001:db8:c0::10"
+          }
+        },
+        {
+          "id": "ans-b",
+          "label": "Address B shortened correctly",
+          "check": {
+            "type": "answer",
+            "value": "B=2001:db8:0:a1::1"
+          }
+        }
+      ]
+    },
+    {
+      "by": "astro",
+      "title": "Give Skyport an IPv6 address",
+      "body": "Go to `configure terminal`. Turn on IPv6 routing with `ipv6 unicast-routing`. Then `interface g0/0` and `ipv6 address 2001:db8:c0de:10::1/64`. Type `end` and check with `show ipv6 interface brief`: you get a global address and a link-local one for free.",
+      "objectives": [
+        {
+          "id": "v6-routing",
+          "label": "IPv6 routing is on",
+          "check": {
+            "type": "fact",
+            "fact": "v6-routing"
+          }
+        },
+        {
+          "id": "v6-addr",
+          "label": "g0/0 has 2001:db8:c0de:10::1/64",
+          "check": {
+            "type": "fact",
+            "fact": "v6-addr"
+          }
+        },
+        {
+          "id": "v6-show",
+          "label": "Checked the result with show ipv6 interface brief",
+          "check": {
+            "type": "fact",
+            "fact": "v6-seen"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Read the visitor log",
+      "body": "Read `more flash:visitors.txt`. Name the ship with a unique local address (`submit ULA=SHIP-n`) and the one showing only a link-local address (`submit LINK=SHIP-n`).",
+      "objectives": [
+        {
+          "id": "ans-ula",
+          "label": "Unique local address spotted",
+          "check": {
+            "type": "answer",
+            "value": "ULA=SHIP-3"
+          }
+        },
+        {
+          "id": "ans-link",
+          "label": "Link-local address spotted",
+          "check": {
+            "type": "answer",
+            "value": "LINK=SHIP-1"
+          }
+        }
+      ]
+    }
+  ]
+}

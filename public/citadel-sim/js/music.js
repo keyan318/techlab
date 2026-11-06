@@ -9,6 +9,9 @@
 //
 // Browsers only allow sound after the student interacts with the page, so the music starts on the first
 // key press or click.
+//
+// Networking labs and the Programming code editor use this file too, from the TechLab page around their
+// simulator or editor (resources/views/student/planets/lab.blade.php and code-editor.blade.php).
 
 const MUTE_KEY = 'techlab_sfx';   // shared with public/js/sfx.js: "off" = muted
 const VOLUME = 0.2;
@@ -65,7 +68,7 @@ function writeMuted(muted) {
 
 export function createMusic({ enabled, button }) {
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!enabled || !button || !AudioCtx) return { update() {} };
+  if (!enabled || !button || !AudioCtx) return { playing: false, update() {} };
 
   let muted = readMuted();
   let ctx = null;
@@ -364,6 +367,10 @@ export function createMusic({ enabled, button }) {
   });
 
   return {
+    // True once the music has started and isn't muted; then the success fanfare is the "you passed" sound.
+    get playing() {
+      return !!ctx && !muted;
+    },
     // Call after every command: switches mood when the lab is solved (or restarted) and sets the intensity.
     update(passed, total) {
       intensity = total ? passed / total : 0;

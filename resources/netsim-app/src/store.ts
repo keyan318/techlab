@@ -10,10 +10,11 @@ import { restoreNetwork, serializeNetwork, type SaveFile } from './engine/serial
 import { listRuleset } from './engine/firewall-fmt';
 import { cidrToString, parseCidr, parseIp } from './engine/ip';
 import { ApDevice, SwitchDevice } from './engine/switch';
-import { disposeAllSessions, disposeSession } from './terminals';
+import { disposeAllSessions, disposeSession, hasConsole } from './terminals';
 import { sim } from './sim';
 import type { LabDef } from './labs/types';
-import { checkLabStep, earnedCount, labEarned, startingPasses } from './labs/grading';
+import { checkLabStep, earnedCount, isEarned, labEarned, startingPasses } from './labs/grading';
+import { attachRequireOwnCommand } from './labs/student-ran';
 import { LABS } from './labs/library';
 import { EXAMPLES } from './labs/examples';
 import { zipSync, strToU8 } from 'fflate';
@@ -22,7 +23,7 @@ import { containerlabYaml } from './export/containerlab';
 import { composeYaml } from './export/compose';
 import { svgToPngBlob, topologySvg } from './export/diagram';
 import { networkReport } from './export/report';
-import { autosaveKeyFor, embedLab, postToHost } from './embed';
+import { autosaveKeyFor, embedFile, embedLab, postToHost } from './embed';
 
 export interface DevNodeData extends Record<string, unknown> {
   kind: DeviceKind;
@@ -210,6 +211,8 @@ export const useStore = create<NetsimState>()((set, get) => {
   };
 
   const adoptSave = (data: SaveFile) => {
+    // TechLab: refreshes which checks require the student's own typed command — see labs/student-ran.ts.
+    if (data.lab) attachRequireOwnCommand(data.lab);
     disposeAllSessions();
     sim.net = restoreNetwork(data);
     wireNet(sim.net);
@@ -532,6 +535,9 @@ export const useStore = create<NetsimState>()((set, get) => {
       if (!Number.isInteger(vlan) || vlan < 1 || vlan > 4094) return 'VLAN must be 1–4094';
       if (vlan === 1) d.vlans.delete(port);
       else d.vlans.set(port, vlan);
+      // Like IOS `switchport access vlan`: the VLAN is created if it doesn't exist (so trunks carry it).
+      if (!d.vlanDb.has(vlan)) d.vlanDb.set(vlan, `VLAN${String(vlan).padStart(4, '0')}`);
+      sim.net.touch();
       get().refresh();
       saveSoon();
       return null;
@@ -549,7 +555,7 @@ export const useStore = create<NetsimState>()((set, get) => {
 
     openTerminal(id) {
       const d = sim.net.devices.get(id);
-      if (!d || !(d instanceof IpDevice)) return;
+      if (!d || !hasConsole(d)) return;
       const terminals = get().terminals.includes(id) ? get().terminals : [...get().terminals, id];
       set({ terminals, activeTerminal: id });
     },
@@ -766,13 +772,17 @@ export const useStore = create<NetsimState>()((set, get) => {
         try {
           const data = JSON.parse(saved) as SaveFile;
           adoptSave(data);
-          // Autosaves from before labs/grading.ts carry no baseline: work it out from the lab's own file.
-          if (embedLab && data.lab?.id === embedLab && !data.labProgress?.baseline) {
-            fetch(`./labs/${embedLab}.json`)
+          // The student's network comes from the autosave, but the lab itself (instructions, objectives, checks)
+          // always comes from the lab's file: the course's faculty member may have rewritten or reset it since.
+          // The baseline is worked out again from that file too (old autosaves carry none).
+          if (embedLab && data.lab?.id === embedLab) {
+            fetch(embedFile ?? `./labs/${embedLab}.json`, { cache: 'no-cache', credentials: 'same-origin' })
               .then((r) => (r.ok ? (r.json() as Promise<SaveFile>) : null))
               .then((file) => {
-                if (file && get().lab?.id === embedLab) {
-                  set({ labBaseline: startingPasses(file) });
+                if (file?.lab?.id === embedLab && get().lab?.id === embedLab) {
+                  attachRequireOwnCommand(file.lab);
+                  const step = Math.min(get().labStep, file.lab.steps.length - 1);
+                  set({ lab: file.lab, labStep: Math.max(0, step), labBaseline: startingPasses(file) });
                   saveSoon();
                 }
               })
@@ -785,7 +795,7 @@ export const useStore = create<NetsimState>()((set, get) => {
       }
       if (embedLab) {
         // Embedded in a TechLab lesson: load that lesson's lab file.
-        fetch(`./labs/${embedLab}.json`)
+        fetch(embedFile ?? `./labs/${embedLab}.json`, { cache: 'no-cache', credentials: 'same-origin' })
           .then((r) => {
             if (!r.ok) throw new Error(String(r.status));
             return r.json() as Promise<SaveFile>;
@@ -850,6 +860,16 @@ export const useStore = create<NetsimState>()((set, get) => {
           get().refresh();
           saveSoon();
           reportLabToHost(lab);
+          // TechLab: once every objective in this step is earned, move on to the next step by itself
+          // (after a beat, so the student sees the ✓ marks) instead of waiting for the › button.
+          const stepIdx = lab.steps.indexOf(step);
+          const s = get();
+          const done = step.objectives.every((o) => isEarned(lab, s.labResults, s.labBaseline, o.id));
+          if (!done || stepIdx >= lab.steps.length - 1) return;
+          s.setNotice(`Step ${stepIdx + 1} complete — on to step ${stepIdx + 2}!`);
+          setTimeout(() => {
+            if (get().lab === lab && get().labStep === stepIdx) get().setLabStep(stepIdx + 1);
+          }, 1200);
         },
       );
     },

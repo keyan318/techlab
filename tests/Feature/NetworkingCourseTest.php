@@ -14,6 +14,8 @@ class NetworkingCourseTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private function labUrl(string $module, string $lesson): string
     {
         return route('student.planet.lab.complete', ['slug' => 'networking', 'module' => $module, 'lesson' => $lesson]);

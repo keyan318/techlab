@@ -1,0 +1,344 @@
+{
+  "questions": [
+    {
+      "prompt": "Why is networking split into layers?",
+      "options": [
+        "So that switches and routers never have to talk",
+        "Because cables can only carry one layer at once",
+        "Each layer has one job, so the problem is smaller",
+        "So that every device can skip the layers it dislikes"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How many layers does the OSI model have?",
+      "options": [
+        "5",
+        "7",
+        "4",
+        "9"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which OSI layer uses IP addresses and routers?",
+      "options": [
+        "Network (layer 3)",
+        "Physical (layer 1)",
+        "Data Link (layer 2)",
+        "Transport (layer 4)"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which OSI layer works with MAC addresses, frames and switches?",
+      "options": [
+        "Session (layer 5)",
+        "Presentation (layer 6)",
+        "Data Link (layer 2)",
+        "Network (layer 3)"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which OSI layer do TCP, UDP and ports belong to?",
+      "options": [
+        "Network (layer 3)",
+        "Transport (layer 4)",
+        "Data Link (layer 2)",
+        "Application (layer 7)"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "HTTP and DNS belong to which OSI layer?",
+      "options": [
+        "Application (layer 7)",
+        "Presentation (layer 6)",
+        "Network (layer 3)",
+        "Transport (layer 4)"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How many layers does the TCP/IP model have?",
+      "options": [
+        "4",
+        "5",
+        "3",
+        "7"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Each layer wraps the data in its own header on the way down. What is that called?",
+      "options": [
+        "Subnetting",
+        "Encapsulation",
+        "Routing",
+        "Fragmentation"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why do standards like IEEE 802.3 matter?",
+      "options": [
+        "Devices from different makers work together",
+        "They hide a network from the rest of the world",
+        "They give each device a private IP address",
+        "They make every cable carry data much faster"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which standard is Wi-Fi?",
+      "options": [
+        "IEEE 802.3",
+        "IEEE 802.1Q",
+        "RFC 1918",
+        "IEEE 802.11"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does a port number tell a device?",
+      "options": [
+        "How long the data took to arrive",
+        "Which cable the data travelled on",
+        "Which network the data came from",
+        "Which program should get the data"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which port does plain web traffic (HTTP) use?",
+      "options": [
+        "25",
+        "80",
+        "53",
+        "22"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which port does secure remote login (SSH) use?",
+      "options": [
+        "22",
+        "80",
+        "443",
+        "21"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does TCP do that UDP does not?",
+      "options": [
+        "Works only for live video and voice calls",
+        "Uses IP addresses instead of ports",
+        "Sends data with no handshake at all first",
+        "Sets up a connection, resends lost data"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which is a typical use of UDP?",
+      "options": [
+        "Copying files",
+        "Loading web pages",
+        "Live voice calls",
+        "Sending email"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "How many bits are in an IPv4 address?",
+      "options": [
+        "32",
+        "64",
+        "8",
+        "128"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the largest number one IPv4 octet can hold?",
+      "options": [
+        "999",
+        "256",
+        "255",
+        "128"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which of these is a private IPv4 address?",
+      "options": [
+        "200.10.4.1",
+        "172.32.100.5",
+        "192.168.4.20",
+        "8.8.8.8"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does 127.0.0.1 always point at?",
+      "options": [
+        "The DNS server",
+        "The default gateway",
+        "The device itself",
+        "The whole network"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A device shows 169.254.10.7. What does that tell you?",
+      "options": [
+        "It is the router for the local network",
+        "It could not get an address by itself",
+        "It is running IPv6 instead of IPv4",
+        "It has a public address on the Internet"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How is 2001:0db8:0000:0000:0000:0000:0000:0001 written short?",
+      "options": [
+        "21:db8::1",
+        "2001:db8::1",
+        "2001::db8::1",
+        "2001:db8:1"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does IPv6 exist?",
+      "options": [
+        "IPv4 does not have enough addresses",
+        "IPv4 only works on wireless networks",
+        "IPv4 has no subnet mask to split it",
+        "IPv4 packets cannot cross a router"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does the subnet mask decide?",
+      "options": [
+        "Where the network part ends and the host part starts",
+        "How fast the network can carry data in each second",
+        "Which port number a service listens on",
+        "Which MAC address belongs to which of the IP addresses"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is the network address of 192.168.1.10/24?",
+      "options": [
+        "192.168.0.0",
+        "192.168.1.255",
+        "192.168.1.1",
+        "192.168.1.0"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the broadcast address of 192.168.1.10/24?",
+      "options": [
+        "255.255.255.0",
+        "192.168.1.254",
+        "192.168.1.0",
+        "192.168.1.255"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How many usable hosts does a /24 network have?",
+      "options": [
+        "255",
+        "254",
+        "256",
+        "126"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A host wants to reach a device on a different network. Where does it send the packet?",
+      "options": [
+        "To its own loopback",
+        "Straight to that device",
+        "To its default gateway",
+        "To the broadcast address"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "You subnet a /24 into /26. How many subnets do you get?",
+      "options": [
+        "2",
+        "8",
+        "26",
+        "4"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How many usable hosts does each /27 subnet have?",
+      "options": [
+        "14",
+        "32",
+        "62",
+        "30"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "192.168.10.0/24 is split into two /25 subnets. Where does the second one start?",
+      "options": [
+        "192.168.10.100",
+        "192.168.10.128",
+        "192.168.10.255",
+        "192.168.10.126"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A router has routes for 10.0.0.0/8 and 10.1.1.0/24. Which one does a packet for 10.1.1.5 use?",
+      "options": [
+        "10.0.0.0/8",
+        "0.0.0.0/0",
+        "Both, one after the other",
+        "10.1.1.0/24"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "When is the default route 0.0.0.0/0 used?",
+      "options": [
+        "For every packet, before anything else",
+        "Only when the router has just started",
+        "When no more specific route matches",
+        "Only for packets to the local network"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the weakness of static routes?",
+      "options": [
+        "They don't adapt when a link fails",
+        "They cannot be typed in by hand at all",
+        "They only work for IPv6 addresses",
+        "They are added automatically"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which routing protocol builds a map of the network (link-state)?",
+      "options": [
+        "RIP",
+        "OSPF",
+        "BGP",
+        "HTTP"
+      ],
+      "correct": "B"
+    }
+  ]
+}

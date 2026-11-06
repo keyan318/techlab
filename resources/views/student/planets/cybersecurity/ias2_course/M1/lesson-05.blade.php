@@ -35,6 +35,17 @@ Syllabus: ITP1333 Units A.6-A.9 The Impossible Job, The Weakest Link, Strategy &
         approve their own request.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What is usually the weakest link in security?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Firewalls</li>
+            <li class="quiz-option">B. Locks</li>
+            <li class="quiz-option">C. Cables</li>
+            <li class="quiz-option quiz-correct">D. People ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Most breaches come from a person: a reused password, a rushed click, a skipped step.</em></p>
+    </div>
+
     <h2 class="section-heading">Rivet Says</h2>
 
     <p class="body-text">
@@ -48,6 +59,17 @@ Syllabus: ITP1333 Units A.6-A.9 The Impossible Job, The Weakest Link, Strategy &
         Volt adds the process problem: "And a firewall doesn't fix this — right now, the same cadet who requests
         supplies can also approve their own request. No technical control catches that. That's a process fix."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What problem did Volt point out that no firewall fixes?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The firewall's rules are out of date</li>
+            <li class="quiz-option">B. The relay has no backup power source</li>
+            <li class="quiz-option">C. Doom found a new port in the firewall</li>
+            <li class="quiz-option quiz-correct">D. A cadet can approve their own request ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>That is a business process problem. A technical control can't catch someone approving their own supplies.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -71,6 +93,17 @@ Syllabus: ITP1333 Units A.6-A.9 The Impossible Job, The Weakest Link, Strategy &
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">A plan, its actions, and the people who carry them out — none of it ever finishes</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what are tactics?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The long-term plan</li>
+            <li class="quiz-option">B. The weakest link</li>
+            <li class="quiz-option quiz-correct">C. This week's actions ✓</li>
+            <li class="quiz-option">D. The finished program</li>
+        </ul>
+        <p class="quiz-explanation"><em>Strategy is the long-term plan. Tactics are the specific actions that carry it out, like this week's tasks.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

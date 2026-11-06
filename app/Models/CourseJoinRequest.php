@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * A student asking to join a code-gated course (a Crew). The course's faculty member
- * accepts or declines it; only an accepted student can redeem the course code, which
- * is emailed to them on acceptance — see CourseJoinRequestController.
+ * accepts or declines it; accepting puts the student on the course's roster right
+ * away — see CourseJoinRequestController.
  */
 class CourseJoinRequest extends Model
 {

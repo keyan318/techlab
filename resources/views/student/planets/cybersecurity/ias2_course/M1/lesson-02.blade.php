@@ -29,6 +29,17 @@ Syllabus: ITP1333 Unit A.2 Evolution of Info Security. --}}
         of connecting created a new way to attack.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What happened to the old security layers as new eras came?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. They stayed, and new ones were added ✓</li>
+            <li class="quiz-option">B. They were removed to save money and time</li>
+            <li class="quiz-option">C. They were replaced by a single firewall</li>
+            <li class="quiz-option">D. They moved to the allied fleets instead</li>
+        </ul>
+        <p class="quiz-explanation"><em>Nothing got thrown away. Each era added a layer on top, because each new connection made a new way to attack.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt's Archive</h2>
 
     <p class="body-text">
@@ -42,6 +53,17 @@ Syllabus: ITP1333 Unit A.2 Evolution of Info Security. --}}
     <p class="body-text">
         "None of the old layers came down," Volt adds. "We just kept building higher."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why isn't a firewall enough for the Citadel today?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The firewall was removed two years ago</li>
+            <li class="quiz-option">B. Passwords have replaced all firewalls now</li>
+            <li class="quiz-option">C. Doom has no way to reach the Citadel at all</li>
+            <li class="quiz-option quiz-correct">D. It talks to allied fleets over open space ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>With channels to three fleets, even a firewall assumes too much. The crew verifies every request, inside or out.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -58,6 +80,17 @@ Syllabus: ITP1333 Unit A.2 Evolution of Info Security. --}}
             <text x="320" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">Each era adds a layer — none of the old ones come down</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is Era 4?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Zero Trust ✓</li>
+            <li class="quiz-option">B. Physical guards</li>
+            <li class="quiz-option">C. Single machine</li>
+            <li class="quiz-option">D. Networked firewalls</li>
+        </ul>
+        <p class="quiz-explanation"><em>Era 4, Zero Trust, means verifying every request, always.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

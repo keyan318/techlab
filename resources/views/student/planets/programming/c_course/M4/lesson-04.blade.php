@@ -35,31 +35,43 @@ Syllabus: CC102 Unit 4 — Arrays (introduction to multidimensional arrays). --}
         and adding a second index picks one value out of that row.
     </p>
 
-    <h2 class="section-heading">Astro Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In <code>int grid[2][3]</code>, what is <code>grid[0]</code>?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The first value: just 1</li>
+            <li class="quiz-option quiz-correct">B. The first row: 1, 2, 3 ✓</li>
+            <li class="quiz-option">C. The first column: 1, 4</li>
+            <li class="quiz-option">D. The number of rows: 2</li>
+        </ul>
+        <p class="quiz-explanation"><em>A 2D array is an array of arrays: one index picks a row, a second index picks a value in it.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Astro comes back from walking the outside of the ship with rain in his hair and a correction.
+        Seats in a cinema form a <strong>grid</strong>: rows going back, and seats along each row. Your ticket names both, <strong>row first, then seat</strong>.
     </p>
 
     <p class="body-text">
-        <strong>Astro</strong>: "It isn't a row. I've just walked it. The panels go across <em>and</em> down —
-        two rows of three, all over the hull. Your one-line list can't say where anything actually is."
+        A 2D array works the same way. <code>grid[1][2]</code> means row 1, seat 2. The locker rule still applies: rows <em>and</em> seats both start counting at 0. And <code>grid[0]</code> on its own means the whole first row, like saying “row 0” without picking a seat.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong> stares at the ceiling for a second. "…Two numbers. I need two numbers. Which row
-        down, then which one across." He starts drawing a grid on the board, fast. "Like seats. Row two, seat
-        three. You can't find a seat with one number."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 300" role="img" aria-label="Cinema seats in front of a screen: row 0 holds 1, 2, 3 and row 1 holds 4, 5, 6, with seats numbered 0, 1, 2. grid[0] is all of row 0. A ticket for grid[1][2], row 1 seat 2, points to the seat holding 6.">
+            <path d="M150 46 Q320 18 490 46" fill="none" stroke="#9aa5b8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><text x="320" y="66" font-size="11" fill="#9aa5b8" font-weight="800" text-anchor="middle" letter-spacing="3">SCREEN</text><rect x="150" y="88" width="362" height="90" rx="18" fill="none" stroke="#7c5cff" stroke-width="2" stroke-dasharray="6,5"/><text x="132" y="140" font-size="14" fill="#14306b" font-weight="800" text-anchor="end">row 0</text><rect x="160" y="98" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="168" y="104" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="210" y="153" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">1</text><rect x="280" y="98" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="288" y="104" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="330" y="153" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">2</text><rect x="400" y="98" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="408" y="104" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="450" y="153" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">3</text><text x="132" y="230" font-size="14" fill="#14306b" font-weight="800" text-anchor="end">row 1</text><rect x="160" y="188" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="168" y="194" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="210" y="243" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">4</text><rect x="280" y="188" width="100" height="70" rx="14" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/><rect x="288" y="194" width="84" height="14" rx="6" fill="#2f6fe0"/><text x="330" y="243" font-size="22" fill="#14306b" font-weight="800" text-anchor="middle">5</text><rect x="400" y="188" width="100" height="70" rx="14" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><rect x="408" y="194" width="84" height="14" rx="6" fill="#e8457c"/><text x="450" y="243" font-size="22" fill="#9c1f4c" font-weight="800" text-anchor="middle">6</text><text x="210" y="282" font-size="13" fill="#14306b" font-weight="700" text-anchor="middle">seat 0</text><text x="330" y="282" font-size="13" fill="#14306b" font-weight="700" text-anchor="middle">seat 1</text><text x="450" y="282" font-size="13" fill="#14306b" font-weight="700" text-anchor="middle">seat 2</text><text x="530" y="126" font-size="14" fill="#4a35b8" font-weight="800" font-family="ui-monospace, Menlo, Consolas, monospace">grid[0]</text><text x="530" y="146" font-size="12" fill="#4a35b8">= all of row 0</text><path d="M530 200 h90 v22 a8 8 0 0 0 0 16 v22 h-90 v-22 a8 8 0 0 0 0 -16 z" fill="#fff3c4" stroke="#c99a00" stroke-width="2"/><text x="575" y="218" font-size="10" fill="#7a5a00" font-weight="800" text-anchor="middle" letter-spacing="2">TICKET</text><text x="575" y="238" font-size="12" fill="#9c1f4c" font-weight="800" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace">grid[1][2]</text><text x="575" y="254" font-size="10" fill="#7a5a00" text-anchor="middle">row 1 · seat 2</text><line x1="528" y1="230" x2="521.7" y2="228.2" stroke="#e8457c" stroke-width="2.5"/><polygon points="514,226 520.0,234.0 523.3,222.4" fill="#e8457c"/>
+        </svg>
+    </figure>
 
-    <p class="body-text">
-        <strong>Volt</strong>: "Row first, then across. Every time, same order."
-    </p>
-
-    <p class="body-text">
-        <strong>Rivet</strong>: "Row first, then across. Swap them and you'll be staring at the wrong panel in
-        the rain wondering why it looks fine."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Your ticket says <code>grid[0][2]</code>. Where do you sit?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Row 2, seat 0</li>
+            <li class="quiz-option">B. Row 1, seat 3</li>
+            <li class="quiz-option quiz-correct">C. Row 0, seat 2 ✓</li>
+            <li class="quiz-option">D. Row 0, seat 0</li>
+        </ul>
+        <p class="quiz-explanation"><em>Row comes first, then seat. <code>[0][2]</code> is row 0, seat 2: the last seat of the front row, holding 3.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -92,6 +104,17 @@ int main() {
     printf("Row1Col2: %d\n", grid[1][2]);
     return 0;
 }</code></pre>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">What does the code example print on its first line?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Row0Col1: 1</li>
+            <li class="quiz-option quiz-correct">B. Row0Col1: 2 ✓</li>
+            <li class="quiz-option">C. Row0Col1: 4</li>
+            <li class="quiz-option">D. Row0Col1: 5</li>
+        </ul>
+        <p class="quiz-explanation"><em>Row 0 is 1, 2, 3, and column 1 of it is 2.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -154,10 +177,10 @@ int main() {
     <div class="quiz-block" data-q="1">
         <p class="quiz-prompt">Q1. What does <code>int grid[2][3]</code> declare?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. A single array of 6 values</li>
-            <li class="quiz-option quiz-correct">B. A grid with 2 rows and 3 columns each ✓</li>
-            <li class="quiz-option">C. 2 separate arrays of unrelated sizes</li>
-            <li class="quiz-option">D. An array that can hold either 2 or 3 values</li>
+            <li class="quiz-option">A. A grid with 3 rows of 2 columns</li>
+            <li class="quiz-option">B. A flat array holding 6 values</li>
+            <li class="quiz-option">C. An array that holds 2 or 3 values</li>
+            <li class="quiz-option quiz-correct">D. A grid with 2 rows of 3 columns ✓</li>
         </ul>
         <p class="quiz-explanation"><em>Two sizes in brackets declare a two-dimensional array: the first is the number of rows, the second the number of columns in each row.</em></p>
     </div>
@@ -167,8 +190,8 @@ int main() {
         <ul class="quiz-options">
             <li class="quiz-option">A. Column, then row</li>
             <li class="quiz-option quiz-correct">B. Row, then column ✓</li>
-            <li class="quiz-option">C. It doesn't matter, they're interchangeable</li>
-            <li class="quiz-option">D. Neither — the two brackets mean the same thing</li>
+            <li class="quiz-option">C. Whichever is smaller</li>
+            <li class="quiz-option">D. Whichever is larger</li>
         </ul>
         <p class="quiz-explanation"><em>By convention (and how it's declared), the first index selects the row and the second selects the column within that row.</em></p>
     </div>
@@ -187,23 +210,12 @@ int main() {
     <div class="quiz-block" data-q="4">
         <p class="quiz-prompt">Q4. How is a 2D array's initializer written?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. As one flat list of all the values with no inner braces</li>
-            <li class="quiz-option quiz-correct">B. As a list of rows, each row itself a list of values in braces ✓</li>
-            <li class="quiz-option">C. As a single number representing the total count</li>
-            <li class="quiz-option">D. 2D arrays cannot be initialized at declaration</li>
+            <li class="quiz-option quiz-correct">A. As a list of rows, each in its own braces ✓</li>
+            <li class="quiz-option">B. As a list of columns, each in its own braces</li>
+            <li class="quiz-option">C. As one flat list with no inner braces at all</li>
+            <li class="quiz-option">D. As one number giving the total value count</li>
         </ul>
         <p class="quiz-explanation"><em>Each inner {} groups one row's values, and the outer {} groups the rows themselves — matching the grid's shape.</em></p>
-    </div>
-
-    <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. Why did Astro need a 2D array instead of the 1D arrays from earlier lessons for the ship's real hull panel layout?</p>
-        <ul class="quiz-options">
-            <li class="quiz-option">A. 1D arrays cannot hold more than 3 values</li>
-            <li class="quiz-option quiz-correct">B. The real grid is arranged in rows and columns, and a 2D array can represent that shape directly ✓</li>
-            <li class="quiz-option">C. 2D arrays are always faster to search than 1D arrays</li>
-            <li class="quiz-option">D. There's no real difference — 1D would have worked identically</li>
-        </ul>
-        <p class="quiz-explanation"><em>A 2D array's row/column structure matches how the emitters are actually laid out — a 1D array would lose that shape entirely.</em></p>
     </div>
 
 </div>

@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What can QoS do on a busy link?",
+      "options": [
+        "Make every packet arrive at once",
+        "Turn a 1 Gbps link into 10 Gbps",
+        "Decide which traffic waits",
+        "Create extra bandwidth on the link"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "About how much one-way delay can a voice call take before it suffers?",
+      "options": [
+        "150 ms",
+        "15 seconds",
+        "1,500 ms",
+        "1 ms"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is jitter?",
+      "options": [
+        "Changes in delay from packet to packet",
+        "The total bandwidth of a busy link",
+        "Packets that arrive with the wrong VLAN",
+        "The number of hops along a path"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Where does the CoS field live?",
+      "options": [
+        "In the DNS record",
+        "In the 802.1Q tag",
+        "In the IP header",
+        "In the TCP header"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does a CoS mark disappear at the first router?",
+      "options": [
+        "It is a Layer 2 field in the VLAN tag",
+        "The router copies it into the MAC address",
+        "Routers delete every mark they see on purpose",
+        "CoS only exists on wireless networks"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How many bits is the DSCP field?",
+      "options": [
+        "12",
+        "6",
+        "8",
+        "3"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which DSCP value is usually used for voice?",
+      "options": [
+        "CS1 (8)",
+        "0 (best effort)",
+        "EF (46)",
+        "AF41 (34)"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is CS1 (DSCP 8) used for?",
+      "options": [
+        "Voice calls that cannot wait",
+        "Network control messages",
+        "Live video conferences",
+        "Bulk traffic that can wait"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is the trust boundary?",
+      "options": [
+        "The first router that a voice packet reaches on its path",
+        "Where the network stops believing marks set by end devices",
+        "The link where traffic leaves the company for the internet",
+        "The last switch that can still read the 802.1Q tag"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In Cisco's MQC, which piece says what traffic belongs to a class?",
+      "options": [
+        "policy-map",
+        "access-group",
+        "service-policy",
+        "class-map"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which piece of MQC attaches a policy to an interface?",
+      "options": [
+        "class-map",
+        "policy-map",
+        "service-policy",
+        "route-map apply"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does policing do to traffic above the rate?",
+      "options": [
+        "Sends it on a different link instead",
+        "Holds it in a buffer to send later",
+        "Drops or re-marks it at once",
+        "Gives it top priority in the queue"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does shaping do to traffic above the rate?",
+      "options": [
+        "Moves it into the priority queue",
+        "Re-marks it as best effort at once",
+        "Drops it straight away with no delay",
+        "Buffers it and sends it a bit later"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A 1 Gbps port connects to a 50 Mbps service. Which tool fits outbound?",
+      "options": [
+        "WRED",
+        "FIFO",
+        "Shaping",
+        "Policing"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is FIFO queuing?",
+      "options": [
+        "Each class gets a guaranteed share of the link",
+        "Bandwidth is shared fairly between all flows",
+        "First in, first out, with no priorities",
+        "The highest priority queue always goes first"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is the danger of plain priority queuing?",
+      "options": [
+        "It drops all marked packets",
+        "Lower queues can starve",
+        "Every queue is the same size",
+        "Voice is sent last of all"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does CBWFQ give each class?",
+      "options": [
+        "A strict priority over all voice",
+        "Its own physical interface",
+        "A separate routing table",
+        "A guaranteed share of the link"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does LLQ add to CBWFQ?",
+      "options": [
+        "A second link to share all the traffic",
+        "A capped priority queue for voice",
+        "A label on every packet in the core",
+        "Random drops before the queue fills"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "In MPLS, what do core routers look at to forward a packet?",
+      "options": [
+        "The DNS name",
+        "The label",
+        "The MAC address",
+        "The full IP address"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which router pushes the MPLS label onto a packet entering the network?",
+      "options": [
+        "The P (provider core)",
+        "The DNS resolver router",
+        "The CE (customer edge)",
+        "The PE (provider edge)"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which protocol do MPLS routers use to agree on labels?",
+      "options": [
+        "STP",
+        "BGP",
+        "DTP",
+        "LDP"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What is a VRF on a PE router?",
+      "options": [
+        "One customer's own routing table",
+        "A label that marks voice traffic as EF",
+        "A backup path for a failed MPLS link",
+        "A list of every customer's passwords"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Two customers use the same private addresses on one MPLS backbone. What keeps their routes unique?",
+      "options": [
+        "The DSCP mark on packets",
+        "The route target value",
+        "The route distinguisher",
+        "The CoS value in the tag"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is tail drop?",
+      "options": [
+        "Dropping new packets because the queue is full",
+        "Dropping packets at random before it fills",
+        "Dropping the oldest packets in the queue first",
+        "Dropping voice packets before any other kind"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is TCP global synchronization?",
+      "options": [
+        "All flows slowing and speeding up at once",
+        "All flows sharing a single TCP connection",
+        "All routers agreeing on one path",
+        "All packets getting the same mark"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How does RED help?",
+      "options": [
+        "It adds bandwidth when the link is busy",
+        "It drops a few packets early, at random",
+        "It moves voice into the priority queue",
+        "It drops every packet once the queue fills"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How is WRED different from RED?",
+      "options": [
+        "It marks packets instead of dropping them",
+        "It has different thresholds per DSCP",
+        "It only ever drops voice traffic early",
+        "It needs no queue at all to work"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does ECN do instead of dropping packets?",
+      "options": [
+        "Changes their DSCP to best effort",
+        "Sends them down a second link",
+        "Holds them until the queue empties",
+        "Marks them to signal congestion"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why should you never use RED on voice?",
+      "options": [
+        "Voice doesn't back off; it just breaks",
+        "RED only works on UDP traffic flows",
+        "Voice has no DSCP mark at all",
+        "Voice packets are much too small to drop"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why load-balance per flow rather than per packet?",
+      "options": [
+        "So one flow's packets stay in order",
+        "So every packet takes a different path",
+        "So voice can skip the priority queue",
+        "So one link carries all of the traffic"
+      ],
+      "correct": "A"
+    }
+  ]
+}

@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "Which four parts does every security policy need?",
+      "options": [
+        "Purpose, scope, roles, enforcement",
+        "Title, date, author and page numbers",
+        "Tools, budget, vendors, prices",
+        "Steps, order, checks, signatures"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "In a policy, what does the scope say?",
+      "options": [
+        "Which tool enforces it",
+        "Why the policy exists",
+        "What happens if it is broken",
+        "Who and what it covers"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "In a policy, what does the purpose say?",
+      "options": [
+        "Which ports are open",
+        "Who must follow it daily",
+        "What the steps are",
+        "Why the policy exists"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A policy never says what happens if it is broken. What is missing?",
+      "options": [
+        "Scope",
+        "Enforcement",
+        "Purpose",
+        "A password standard"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why does a policy missing one of its four parts tend to be ignored?",
+      "options": [
+        "The policy becomes too long for anyone to read",
+        "Nobody is sure it applies or is enforced",
+        "A missing part deletes the policy automatically",
+        "Policies with four parts are always too strict"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How detailed is a policy meant to be?",
+      "options": [
+        "Very detailed: every exact step in order",
+        "One rule per computer",
+        "High-level: the what and the why",
+        "A list of passwords to use"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a standard?",
+      "options": [
+        "A specific, mandatory rule that supports a policy",
+        "A suggestion that can be skipped with good reason",
+        "The exact ordered steps for one task",
+        "The high-level reason the program exists"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why do auditors check standards rather than policies?",
+      "options": [
+        "A standard either holds or it doesn't",
+        "Policies are kept secret from auditors",
+        "Auditors are not allowed to read policies",
+        "Standards are always longer than policies"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "The standard says passwords need 12+ characters, mixed case, a number and a symbol. Which password complies?",
+      "options": [
+        "ORBIT-RELAY-STATION!",
+        "orbitrelaystation7",
+        "Orbit-Relay7!kx",
+        "Orbit7!"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A password contains the account name. Under the standard, what is true?",
+      "options": [
+        "It is a policy",
+        "It does not comply",
+        "It is a guideline",
+        "It complies if long"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "An account breaks the password standard. What should happen?",
+      "options": [
+        "Change the standard to fit it",
+        "Note it and check next year",
+        "Bring it into compliance now",
+        "Delete the whole standard"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What is a procedure?",
+      "options": [
+        "A rule that says \"should\" not \"must\"",
+        "A recommendation with room for judgment",
+        "An exact, ordered sequence of steps",
+        "The reason a policy exists at all"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Two people follow the same procedure. What should happen?",
+      "options": [
+        "They skip the steps they think are slow",
+        "They do the same thing in the same order",
+        "They each choose their own order of steps",
+        "They write a new procedure each time"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A tampered log needs restoring from backup. What comes first?",
+      "options": [
+        "Delete the tampered log file",
+        "Restore from the latest backup",
+        "Email the whole crew about it",
+        "Fingerprint the tampered file"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why does the order of steps matter in a procedure?",
+      "options": [
+        "The computer only accepts steps in one order",
+        "Done backwards, they can destroy what you need",
+        "Steps run faster in the order they are written",
+        "The order never matters if every step is done"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Verify a backup, or delete the original first?",
+      "options": [
+        "Verify the backup first",
+        "Do both at the same time",
+        "Skip the verification",
+        "Delete the original first"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How is a guideline different from a standard?",
+      "options": [
+        "A guideline says \"should\"; a standard says \"must\"",
+        "A guideline is checked pass or fail by auditors",
+        "A guideline says \"must\"; a standard says \"should\"",
+        "A guideline is the exact steps for a task"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is a good test for skipping a guideline?",
+      "options": [
+        "Did skipping it save you at least one minute?",
+        "Can you explain why this case was different?",
+        "Did anyone see you skip the guideline?",
+        "Is the guideline more than a year old?"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A guideline says prefer encrypted channels. An urgent shield-failure alert goes over a faster unencrypted channel. Is this right?",
+      "options": [
+        "Yes, if the reason can be explained",
+        "Yes, guidelines never matter at all",
+        "No, alerts must always be encrypted",
+        "No, guidelines can never be skipped"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A routine supply report is sent unencrypted just to save a minute. What is this?",
+      "options": [
+        "Following the standard exactly",
+        "Good use of discretion by the whole crew",
+        "Skipping the guideline, not judgment",
+        "A new procedure for every report"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why must policies, standards and procedures be reviewed on a schedule?",
+      "options": [
+        "Old documents stop being readable",
+        "Auditors require a new font each year",
+        "Reviews make the documents shorter",
+        "Systems, threats and people change"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which is a sign a document is stale?",
+      "options": [
+        "It has a clear purpose and a scope",
+        "It was reviewed by its owner last month",
+        "It has a review date on its first page",
+        "It names a system that no longer exists"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What does every document need so it stays current?",
+      "options": [
+        "A longer title and more pages",
+        "A copy on every console",
+        "An owner and a review date",
+        "A password on the file itself"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A procedure was never updated because nobody was assigned to review it. What is the real gap?",
+      "options": [
+        "The procedure had a typo",
+        "The procedure was printed",
+        "The procedure was too short",
+        "No owner and no review date"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A rule has been quietly ignored for months because it no longer fits. What should happen?",
+      "options": [
+        "Punish everyone who ignored it for months",
+        "Review it against how work is really done",
+        "Keep it exactly as it is and say nothing",
+        "Delete every other rule as well"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which comes last in the top-down flow?",
+      "options": [
+        "Leadership",
+        "Standards",
+        "Procedures",
+        "Policy"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "\"Protect crew data\" is an example of what?",
+      "options": [
+        "A policy",
+        "A guideline",
+        "A standard",
+        "A procedure"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which word marks a standard?",
+      "options": [
+        "Must",
+        "Should",
+        "Could",
+        "Might"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Which word marks a guideline?",
+      "options": [
+        "Must",
+        "Always",
+        "Shall",
+        "Should"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A document is only reviewed when something breaks. What is wrong?",
+      "options": [
+        "It should never be reviewed at all",
+        "It should be reviewed on a schedule",
+        "It should be reviewed by the attacker",
+        "It should be rewritten every day"
+      ],
+      "correct": "B"
+    }
+  ]
+}

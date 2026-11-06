@@ -1,0 +1,431 @@
+{
+  "app": "relay-console",
+  "version": 1,
+  "id": "g5-l1",
+  "title": "Lesson 5.1: Classification & Marking — DSCP and CoS",
+  "host": {
+    "name": "NORTHWATCH-EDGE",
+    "platform": "ISR4331",
+    "banner": "Cisco IOS Software, ISR4331 (Relay Console for TechLab)\nNorthwatch edge router: Gi0/1 crew LAN, Gi0/2 10 Mbps radio to the Citadel"
+  },
+  "story": {
+    "alert": "NORTHWATCH · VOICE CHANNEL BREAKING UP",
+    "victory": "Every patrol call now leaves Northwatch wearing an EF badge. Volt: \"Step one: the network knows what matters. Step two: make it act on it.\""
+  },
+  "modes": {
+    "cmap-voice": {
+      "prompt": "config-cmap"
+    },
+    "cmap-video": {
+      "prompt": "config-cmap"
+    },
+    "cmap-other": {
+      "prompt": "config-cmap"
+    },
+    "pmap": {
+      "prompt": "config-pmap"
+    },
+    "pmap-other": {
+      "prompt": "config-pmap"
+    },
+    "pmapc-voice": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "pmapc-video": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "pmapc-other": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap"
+    },
+    "pmapc-x": {
+      "prompt": "config-pmap-c",
+      "parent": "pmap-other"
+    },
+    "if-g01": {
+      "prompt": "config-if"
+    },
+    "if-other": {
+      "prompt": "config-if"
+    }
+  },
+  "running": "Building configuration...\n\nCurrent configuration : 1040 bytes\n!\nhostname NORTHWATCH-EDGE\n!\ninterface GigabitEthernet0/1\n description crew LAN\n ip address 192.168.30.1 255.255.255.0\n!\ninterface GigabitEthernet0/2\n description 10 Mbps radio to the Citadel\n bandwidth 10000\n ip address 10.0.23.2 255.255.255.252\n!\nend\n",
+  "outputs": [
+    {
+      "cmd": "dir flash:",
+      "text": "Directory of flash:/\n\n    1  -rw-     1100   traffic-survey.txt\n    2  -rw- 33554432   isr4300-universalk9.bin\n"
+    },
+    {
+      "cmd": "more flash:traffic-survey.txt",
+      "text": "NORTHWATCH RADIO UPLINK: TRAFFIC SURVEY (10 Mbps radio to the Citadel)\n======================================================================\nFlow                          What it needs                     Share now\nCrew voice (patrols, distress) no waiting at all, no loss          4%\nRidge camera video            steady bandwidth, a little delay    30%\nEarth backup sync             lots of bandwidth, can wait hours   60%\nEverything else               nothing special                     rest\n\nMarkings the Grid uses:\n  EF    (DSCP 46)   for traffic that cannot wait at all\n  AF41  (DSCP 34)   for interactive and live video\n  CS1   (DSCP 8)    \"scavenger\": only when nobody else needs the link\n  0     (BE)        best effort, the default\n\nAstro: give each flow its marking\n  submit VOICE=<marking>\n  submit VIDEO=<marking>\n  submit BULK=<marking>\n"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/1"
+      ],
+      "when": [
+        "applied",
+        "cm-voice",
+        "cm-video",
+        "pm-voice",
+        "pm-video"
+      ],
+      "sets": [
+        "seen"
+      ],
+      "text": "GigabitEthernet0/1\n\n  Service-policy input: MARK\n\n    Class-map: VOICE (match-any)\n      1842 packets, 368400 bytes\n      Match: protocol rtp audio\n      QoS Set\n        dscp ef\n          Packets marked 1842\n\n    Class-map: VIDEO (match-any)\n      9120 packets, 11856000 bytes\n      Match: protocol rtp video\n      QoS Set\n        dscp af41\n          Packets marked 9120\n\n    Class-map: class-default (match-any)\n      22510 packets, 30163400 bytes\n      Match: any"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "args": [
+        "GigabitEthernet0/1"
+      ],
+      "when": [
+        "applied"
+      ],
+      "text": "GigabitEthernet0/1\n\n  Service-policy input: MARK\n\n    Class-map: class-default (match-any)\n      33472 packets\n      Match: any\n\n! Rivet: everything lands in class-default. Is each class-map matching, and does MARK set both?"
+    },
+    {
+      "cmd": "show policy-map interface <if>",
+      "text": "% No service policy is attached to that interface yet."
+    },
+    {
+      "cmd": "show class-map",
+      "text": " Class Map match-any class-default (id 0)\n   Match any"
+    },
+    {
+      "cmd": "show policy-map",
+      "text": "  (use show running-config to see the policies you built)"
+    }
+  ],
+  "config": [
+    {
+      "cmd": "class-map match-any <word>",
+      "args": [
+        "VOICE"
+      ],
+      "enters": "cmap-voice"
+    },
+    {
+      "cmd": "class-map match-any <word>",
+      "args": [
+        "VIDEO"
+      ],
+      "enters": "cmap-video"
+    },
+    {
+      "cmd": "class-map match-all <word>",
+      "args": [
+        "VOICE"
+      ],
+      "enters": "cmap-voice"
+    },
+    {
+      "cmd": "class-map match-all <word>",
+      "args": [
+        "VIDEO"
+      ],
+      "enters": "cmap-video"
+    },
+    {
+      "cmd": "class-map <word>",
+      "args": [
+        "VOICE"
+      ],
+      "enters": "cmap-voice"
+    },
+    {
+      "cmd": "class-map <word>",
+      "args": [
+        "VIDEO"
+      ],
+      "enters": "cmap-video"
+    },
+    {
+      "cmd": "class-map match-any <word>",
+      "enters": "cmap-other"
+    },
+    {
+      "mode": "cmap-voice",
+      "cmd": "match protocol rtp audio",
+      "sets": [
+        "cm-voice"
+      ]
+    },
+    {
+      "mode": "cmap-video",
+      "cmd": "match protocol rtp video",
+      "sets": [
+        "cm-video"
+      ]
+    },
+    {
+      "mode": "cmap-voice",
+      "cmd": "match <rest>",
+      "reply": "% Saved, but the survey says to classify voice with: match protocol rtp audio"
+    },
+    {
+      "mode": "cmap-video",
+      "cmd": "match <rest>",
+      "reply": "% Saved, but the survey says to classify video with: match protocol rtp video"
+    },
+    {
+      "mode": "cmap-other",
+      "cmd": "match <rest>"
+    },
+    {
+      "cmd": "policy-map <word>",
+      "args": [
+        "MARK"
+      ],
+      "enters": "pmap"
+    },
+    {
+      "cmd": "policy-map <word>",
+      "enters": "pmap-other",
+      "reply": "% Saved. The orders name this policy MARK."
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "VOICE"
+      ],
+      "enters": "pmapc-voice"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "args": [
+        "VIDEO"
+      ],
+      "enters": "pmapc-video"
+    },
+    {
+      "mode": "pmap",
+      "cmd": "class <word>",
+      "enters": "pmapc-other"
+    },
+    {
+      "mode": "pmap-other",
+      "cmd": "class <word>",
+      "enters": "pmapc-x"
+    },
+    {
+      "mode": "pmapc-voice",
+      "cmd": "set dscp <word>",
+      "args": [
+        "ef"
+      ],
+      "sets": [
+        "pm-voice"
+      ]
+    },
+    {
+      "mode": "pmapc-voice",
+      "cmd": "set dscp <word>",
+      "args": [
+        "46"
+      ],
+      "sets": [
+        "pm-voice"
+      ]
+    },
+    {
+      "mode": "pmapc-voice",
+      "cmd": "set dscp <word>",
+      "reply": "% Saved, but voice should be EF (46)."
+    },
+    {
+      "mode": "pmapc-video",
+      "cmd": "set dscp <word>",
+      "args": [
+        "af41"
+      ],
+      "sets": [
+        "pm-video"
+      ]
+    },
+    {
+      "mode": "pmapc-video",
+      "cmd": "set dscp <word>",
+      "args": [
+        "34"
+      ],
+      "sets": [
+        "pm-video"
+      ]
+    },
+    {
+      "mode": "pmapc-video",
+      "cmd": "set dscp <word>",
+      "reply": "% Saved, but video should be AF41 (34)."
+    },
+    {
+      "mode": "pmapc-voice",
+      "cmd": "set cos <n>"
+    },
+    {
+      "mode": "pmapc-video",
+      "cmd": "set cos <n>"
+    },
+    {
+      "mode": "pmapc-other",
+      "cmd": "set <rest>"
+    },
+    {
+      "mode": "pmapc-x",
+      "cmd": "set <rest>"
+    },
+    {
+      "cmd": "interface <if>",
+      "args": [
+        "GigabitEthernet0/1"
+      ],
+      "enters": "if-g01"
+    },
+    {
+      "cmd": "interface <if>",
+      "enters": "if-other"
+    },
+    {
+      "mode": "if-g01",
+      "cmd": "service-policy input <word>",
+      "args": [
+        "MARK"
+      ],
+      "sets": [
+        "applied"
+      ]
+    },
+    {
+      "mode": "if-g01",
+      "cmd": "service-policy output <word>",
+      "store": false,
+      "reply": "% Marking belongs where traffic enters the network: use service-policy input."
+    },
+    {
+      "mode": "if-other",
+      "cmd": "service-policy <rest>",
+      "reply": "% Saved, but crew traffic enters on Gi0/1. That is the trust boundary."
+    },
+    {
+      "mode": "if-g01",
+      "cmd": "no service-policy <rest>",
+      "clears": [
+        "applied",
+        "seen"
+      ],
+      "store": false
+    }
+  ],
+  "steps": [
+    {
+      "by": "astro",
+      "title": "Know your traffic",
+      "body": "Type `enable`, then `more flash:traffic-survey.txt`. Match each flow to the right marking: `submit VOICE=...`, `submit VIDEO=...`, `submit BULK=...`.",
+      "objectives": [
+        {
+          "id": "a-voice",
+          "label": "Voice marking chosen",
+          "check": {
+            "type": "answer",
+            "value": "VOICE=EF",
+            "alt": [
+              "VOICE=46",
+              "VOICE=dscp ef"
+            ]
+          }
+        },
+        {
+          "id": "a-video",
+          "label": "Video marking chosen",
+          "check": {
+            "type": "answer",
+            "value": "VIDEO=AF41",
+            "alt": [
+              "VIDEO=34"
+            ]
+          }
+        },
+        {
+          "id": "a-bulk",
+          "label": "Bulk marking chosen",
+          "check": {
+            "type": "answer",
+            "value": "BULK=CS1",
+            "alt": [
+              "BULK=8",
+              "BULK=scavenger"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "by": "rivet",
+      "title": "Build the classes and the policy",
+      "body": "In `conf t`: `class-map match-any VOICE`, `match protocol rtp audio`, `exit`; `class-map match-any VIDEO`, `match protocol rtp video`, `exit`. Then `policy-map MARK`, `class VOICE`, `set dscp ef`, `exit`, `class VIDEO`, `set dscp af41`, `exit`, `exit`.",
+      "objectives": [
+        {
+          "id": "cm-voice",
+          "label": "class-map VOICE matches RTP audio",
+          "check": {
+            "type": "fact",
+            "fact": "cm-voice"
+          }
+        },
+        {
+          "id": "cm-video",
+          "label": "class-map VIDEO matches RTP video",
+          "check": {
+            "type": "fact",
+            "fact": "cm-video"
+          }
+        },
+        {
+          "id": "pm-voice",
+          "label": "policy MARK sets VOICE to EF",
+          "check": {
+            "type": "fact",
+            "fact": "pm-voice"
+          }
+        },
+        {
+          "id": "pm-video",
+          "label": "policy MARK sets VIDEO to AF41",
+          "check": {
+            "type": "fact",
+            "fact": "pm-video"
+          }
+        }
+      ]
+    },
+    {
+      "by": "volt",
+      "title": "Apply it at the trust boundary",
+      "body": "Crew traffic enters Northwatch on Gi0/1, so mark it there, inbound: `interface g0/1`, `service-policy input MARK`. `end`, then `show policy-map interface g0/1` to watch the counters.",
+      "objectives": [
+        {
+          "id": "applied",
+          "label": "MARK applied inbound on Gi0/1",
+          "check": {
+            "type": "fact",
+            "fact": "applied"
+          }
+        },
+        {
+          "id": "seen",
+          "label": "Saw voice and video being marked",
+          "check": {
+            "type": "fact",
+            "fact": "seen"
+          }
+        }
+      ]
+    }
+  ]
+}

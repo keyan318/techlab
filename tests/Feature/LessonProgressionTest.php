@@ -5,12 +5,15 @@ namespace Tests\Feature;
 use App\Models\LessonProgress;
 use App\Models\User;
 use App\Services\CourseProgressService;
+use App\Services\StudentDashboardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LessonProgressionTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
 
     private function lessonUrl(string $module, string $lesson, string $slug = 'programming'): string
     {
@@ -273,6 +276,46 @@ class LessonProgressionTest extends TestCase
         }
 
         $this->assertSame(1, LessonProgress::where('user_id', $user->id)->count());
+    }
+
+    public function test_solving_a_finished_challenge_again_earns_no_xp_but_saves_the_new_code(): void
+    {
+        $user = $this->studentIn();
+        $answer = ['output' => 'Astro to Codexia: comms online.'];
+
+        $this->actingAs($user)->postJson($this->completeUrl('m1', 'lesson01'), $answer + ['code' => 'first try'])
+            ->assertOk()->assertJson(['ok' => true, 'first' => true]);
+        $xp = StudentDashboardService::balance($user->fresh());
+
+        $this->actingAs($user)->postJson($this->completeUrl('m1', 'lesson01'), $answer + ['code' => 'second try'])
+            ->assertOk()->assertJson(['ok' => true, 'first' => false]);
+
+        $this->assertSame($xp, StudentDashboardService::balance($user->fresh()));
+        $this->assertSame('second try', LessonProgress::where('user_id', $user->id)->value('code'));
+    }
+
+    public function test_reopening_a_finished_challenge_loads_the_saved_code(): void
+    {
+        $user = $this->studentIn();
+        $this->actingAs($user)->postJson($this->completeUrl('m1', 'lesson01'), [
+            'output' => 'Astro to Codexia: comms online.', 'code' => 'printf("saved");',
+        ])->assertOk();
+
+        $this->actingAs($user)
+            ->post(route('student.planet.editor.launch', ['slug' => 'programming']), [
+                'starter_code' => '// starter',
+                'return_to' => $this->lessonUrl('m1', 'lesson01'),
+            ])
+            ->assertSessionHas('editor_completed', true)
+            ->assertSessionHas('editor_starter_code', 'printf("saved");')
+            ->assertSessionHas('editor_next_url', $this->lessonUrl('m1', 'lesson02'));
+
+        $this->actingAs($user)
+            ->withSession(['editor_completed' => true, 'editor_complete_url' => $this->completeUrl('m1', 'lesson01')])
+            ->get(route('student.planet.editor', ['slug' => 'programming']))
+            ->assertOk()
+            ->assertSee('Completed ✓')
+            ->assertSee('earns no extra XP');
     }
 
     public function test_every_gated_lesson_accepts_its_own_key_in_order(): void

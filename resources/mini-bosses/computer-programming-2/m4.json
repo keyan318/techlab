@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "How is a structure different from an array?",
+      "options": [
+        "It can only hold values of one type",
+        "It is reached by an index number",
+        "It groups values of different types",
+        "It has no name of its own"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What must come after the closing brace of a struct definition?",
+      "options": [
+        "A full stop",
+        "A semicolon",
+        "Nothing",
+        "A colon"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How do you reach the power member of a struct variable called fountain?",
+      "options": [
+        "fountain.power",
+        "fountain->power",
+        "fountain[power]",
+        "power.fountain"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "struct Machine has a char name[20] member. How do you put \"Fountain\" into it?",
+      "options": [
+        "strcmp(m.name, \"Fountain\");",
+        "strcpy(m.name, \"Fountain\");",
+        "m.name = \"Fountain\";",
+        "m.name == \"Fountain\";"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does struct Machine { ... }; create on its own?",
+      "options": [
+        "An array of machines",
+        "A function called Machine",
+        "One machine variable in memory",
+        "A blueprint for a new type"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Inside a struct variable, what is each member like?",
+      "options": [
+        "A pointer to the whole structure",
+        "A copy of the first member's value",
+        "An ordinary variable of its own type",
+        "A string, whatever its declared type"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "struct Machine backup = tram; What does this do?",
+      "options": [
+        "Makes backup point at the same card as tram",
+        "Copies every member of tram into backup",
+        "Compares backup and tram member by member",
+        "Copies only the first member of tram"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "After backup = tram;, tram.power is changed. What happens to backup.power?",
+      "options": [
+        "It becomes zero",
+        "It stays the same",
+        "It changes to match",
+        "It is deleted from memory"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Can you compare two structs with ==?",
+      "options": [
+        "Yes, if both have the same type",
+        "Yes, == checks every one of the members",
+        "No, structs cannot be compared",
+        "No, compare their members instead"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "pump.reading is 70. before = pump; then pump.reading += 20. What is before.reading?",
+      "options": [
+        "0",
+        "20",
+        "70",
+        "90"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "A struct is passed to a function normally, without &. What does the function get?",
+      "options": [
+        "A copy of the struct",
+        "A pointer to main",
+        "Only its first member",
+        "The struct's address"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How does a function change the caller's struct?",
+      "options": [
+        "It returns the struct with a new name",
+        "It takes the struct's address",
+        "It declares the struct as a global first",
+        "It changes a copy and C copies it back"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does m->power mean when m is a pointer to a struct?",
+      "options": [
+        "The same as (*m).power",
+        "The same as *m.power",
+        "The same as m[power] + 0",
+        "The same as &m.power"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "When do you use -> instead of a dot?",
+      "options": [
+        "When the struct is inside an array",
+        "When the member is a char array",
+        "When you have the struct's address",
+        "When the member is an int"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "harbor.flow is 10. boost(&harbor, 15) does p->flow = p->flow + extra. What is harbor.flow?",
+      "options": [
+        "25",
+        "150",
+        "10",
+        "15"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Why pass a large struct by address even if the function only reads it?",
+      "options": [
+        "C does not copy structs at all",
+        "The struct is deleted afterwards",
+        "The function cannot read a copy",
+        "Only the small address is copied"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "struct Machine registry[4]; What is each element?",
+      "options": [
+        "A whole struct Machine card",
+        "A pointer to a struct Machine",
+        "One member of a single card",
+        "A copy of the first card only"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "How do you read the power of the third machine in registry?",
+      "options": [
+        "registry[3].power",
+        "power[2].registry",
+        "registry.power[2]",
+        "registry[2].power"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How do you pass one card of registry to a function by address?",
+      "options": [
+        "registry[i]",
+        "&registry.i",
+        "*registry[i]",
+        "&registry[i]"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "A loop prints every card whose working member is 0. What is it reporting?",
+      "options": [
+        "The empty drawers",
+        "The broken machines",
+        "The working machines",
+        "The first machine"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How do you pass the whole registry to a function?",
+      "options": [
+        "Each card one at a time",
+        "A copy of every card",
+        "The array and its size",
+        "Only its first card"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What does typedef do?",
+      "options": [
+        "Copies one struct into another",
+        "Gives a type a new name",
+        "Turns a struct into an array",
+        "Creates a new variable in memory"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "typedef int Watts; What is Watts lampPower = 60;?",
+      "options": [
+        "A struct called Watts",
+        "An error, Watts is not a type",
+        "An int called lampPower",
+        "A pointer to an int"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "In typedef struct { ... } Tower;, where does the new name go?",
+      "options": [
+        "Before the opening brace",
+        "After the closing brace",
+        "After the word typedef",
+        "Inside the braces"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "With typedef struct { ... } Tower;, how do you declare a variable?",
+      "options": [
+        "Tower clock;",
+        "struct Tower clock;",
+        "Tower struct clock;",
+        "typedef Tower clock;"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Does typedef use any extra memory?",
+      "options": [
+        "No, but it slows the program",
+        "Yes, one byte per name",
+        "Yes, a copy of the type",
+        "No, it only adds a name"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "When do you need typedef struct Node { ... } Node; with the name in both places?",
+      "options": [
+        "When the struct has to mention itself",
+        "When the struct is used in a function",
+        "When the struct has more than two members",
+        "When the struct holds a char array"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "Point tram = x 2, y 5. move(&tram, 3) adds 3 to p->x. What is tram now?",
+      "options": [
+        "2,8",
+        "5,8",
+        "5,5",
+        "2,5"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Which can a typedef name like Tower be used for?",
+      "options": [
+        "Only arrays of exactly one element",
+        "Only variables that are declared inside main",
+        "Only parameters of void functions",
+        "Variables, arrays, parameters, pointers"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Which is a good use of an array of structs?",
+      "options": [
+        "A class list of students",
+        "One single test score of 90",
+        "A header for printf",
+        "A loop counter variable"
+      ],
+      "correct": "A"
+    }
+  ]
+}

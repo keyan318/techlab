@@ -181,6 +181,8 @@ export function runNslookup(device: IpDevice, args: string[], out: Out, done: ()
   let cancelled = false;
   device.resolveDns(name, ns, (r) => {
     if (cancelled) return;
+    // TechLab: record what this real lookup observed, so a lab objective can require it.
+    device.recordActivity('dns', name, typeof r === 'number' ? 'resolves' : r === null ? 'nxdomain' : 'blocked');
     out(`Server:  UnKnown\nAddress:  ${server}\n\n`);
     if (typeof r === 'number') out(`Name:    ${name}\nAddress:  ${ipToString(r)}\n\n`);
     else if (r === null) out(`*** UnKnown can't find ${name}: Non-existent domain\n`);
@@ -236,6 +238,8 @@ export function runTnc(device: IpDevice, args: string[], out: Out, done: () => v
     if (port === null) {
       pingOnce(device, ip, (ok) => {
         if (cancelled) return;
+        // TechLab: record what this real probe observed, so a lab objective can require it.
+        device.recordActivity('ping', ipToString(ip), ok ? 'success' : 'fail');
         if (!ok) out(`WARNING: Ping to ${host} failed with status: TimedOut\n`);
         out(header(ip) + `PingSucceeded    : ${ok ? 'True' : 'False'}\n\n`);
         done();
@@ -244,6 +248,8 @@ export function runTnc(device: IpDevice, args: string[], out: Out, done: () => v
     }
     const report = (r: 'open' | 'refused' | 'timeout' | 'unreachable') => {
       if (cancelled) return;
+      // TechLab: record what this real probe observed, so a lab objective can require it.
+      device.recordActivity('tcp', `${ipToString(ip)}:${port}`, r === 'open' ? 'open' : r === 'refused' ? 'refused' : 'filtered');
       if (r !== 'open') {
         const why =
           r === 'refused'
@@ -258,6 +264,7 @@ export function runTnc(device: IpDevice, args: string[], out: Out, done: () => v
     };
     const err = device.connectTcp(ip, port, 3000, report);
     if (err) {
+      device.recordActivity('tcp', `${ipToString(ip)}:${port}`, 'filtered');
       out(`WARNING: TCP connect to (${ipToString(ip)} : ${port}) failed  [${err}]\n` + header(ip) + 'TcpTestSucceeded : False\n\n');
       done();
     }

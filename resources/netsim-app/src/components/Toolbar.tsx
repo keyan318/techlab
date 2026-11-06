@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useStore } from '../store';
 import { LABS } from '../labs/library';
 import { EXAMPLES } from '../labs/examples';
+import { shellOs } from '../os';
 
 const USER_GUIDE_URL = 'https://github.com/michael-borck/netsim/blob/main/docs/USER_GUIDE.md';
 
@@ -69,7 +70,9 @@ export function Toolbar() {
     <header className="toolbar">
       <div className="brand">
         <span className="brand-name">NetSim</span>
-        <span className="brand-sub">real Linux syntax · in your browser</span>
+        <span className="brand-sub">
+          real {shellOs() === 'windows' ? 'Windows' : 'Linux'} syntax · in your browser
+        </span>
       </div>
 
       <div className="toolbar-group">

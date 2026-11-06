@@ -1,6 +1,8 @@
 {{-- Interactive code editor — Codedex-style split layout, shared by every course's
-     "Code it yourself" exercise. Which language runs (Python via Pyodide, C via the
-     self-hosted JSCPP interpreter) is picked by $lang, passed from PlanetController::editor().
+     "Code it yourself" exercise. Which language runs (Python via Pyodide, C via a
+     self-hosted interpreter) is picked by $lang, passed from PlanetController::editor().
+     C runs in a Web Worker: JSCPP by default, or PicoC when the course's blueprint sets
+     'c_runtime' => 'picoc' (Programming 2 needs structs, malloc and files, which JSCPP lacks).
      Left panel  → instruction card (flippable: instructions ↔ Astro's hint)
      Right panel → line-numbered code editor + Run / Submit + Terminal
 
@@ -10,6 +12,7 @@
 @php
     $lang = $lang ?? 'python';
     $langLabel = $lang === 'c' ? 'C' : 'Python';
+    $cWorker = ($cRuntime ?? 'jscpp') === 'picoc' ? 'js/picoc-worker.js' : 'js/jscpp-worker.js';
 @endphp
 
 <!DOCTYPE html>
@@ -186,6 +189,7 @@
             justify-content: center;
             margin-bottom: 14px;
         }
+        .astro-avatar-mascot { width: 36px; height: 36px; }
         .hint-title {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1rem;
@@ -378,6 +382,7 @@
         }
         .btn-run:hover { background: #263348; border-color: #475569; }
         .btn-run:disabled { opacity: 0.45; cursor: not-allowed; }
+        .btn-run[hidden] { display: none; }
 
         .btn-submit {
             display: inline-flex;
@@ -419,72 +424,6 @@
         .btn-next.visible { display: inline-flex; }
         .btn-next:hover { transform: translateY(-1px); opacity: 0.92; }
 
-        /* Toast stack (XP + success), Codedex-style */
-        .toast-stack {
-            position: fixed;
-            top: 52px;   /* below the tab bar so the Theme button stays clickable */
-            right: 20px;
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 320px;
-            pointer-events: none;
-        }
-        .toast-card {
-            pointer-events: auto;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 16px 18px;
-            border-radius: 14px;
-            opacity: 0;
-            transform: translateY(-10px) scale(0.97);
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
-        .toast-card.show {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        .toast-card.xp-toast {
-            background: #eaf3ff;
-            border: 1px solid #bcdcff;
-        }
-        .toast-card.success-toast {
-            background: #f4f9ff;
-            border: 1px solid #cfe4ff;
-        }
-        .toast-icon {
-            width: 28px; height: 28px;
-            display: grid; place-items: center;
-            color: #2f7de1;
-            flex-shrink: 0;
-        }
-        .toast-body { flex: 1; min-width: 0; }
-        .toast-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            color: #0e1230;
-            margin-bottom: 4px;
-        }
-        .toast-text {
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: #475569;
-        }
-        .toast-close {
-            flex-shrink: 0;
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 2px;
-            line-height: 1;
-        }
-        .toast-close:hover { color: #475569; }
-
         /* Test toast (inline fail state) */
         .test-toast {
             display: none;
@@ -500,6 +439,13 @@
             border: 1px solid #f87171;
             color: #f87171;
         }
+        .test-toast.pass {
+            display: block;
+            background: rgba(47,165,107,0.14);
+            border: 1px solid #2fa56b;
+            color: #4ade80;
+        }
+        html[data-theme="light"] .test-toast.pass { color: #1f7a4d; }
 
         /* stdin box (C exercises that use scanf) */
         .stdin-panel {
@@ -607,6 +553,10 @@
             cursor: pointer;
             transition: background 0.15s, color 0.15s, transform 0.12s cubic-bezier(.34,1.56,.64,1);
         }
+        /* XP · gems · streak badge sits right of the file tab, before Theme */
+        .file-tab-bar .tl-stats { margin-left: auto; }
+        .file-tab-bar .tl-stats + .theme-btn { margin-left: 8px; }
+        .file-tab-bar .tl-stat { height: 26px; }
         .theme-btn svg { width: 20px; height: 20px; flex: none; transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); }
         .theme-btn:hover { background: rgba(123,142,220,0.09); color: #e2e8f0; }
         .theme-btn:hover svg { transform: rotate(180deg); }
@@ -703,7 +653,6 @@
             .card-flipper { min-height: unset; }
             .card-face { position: relative; min-height: unset; }
             .right-panel { height: 70vh; }
-            .toast-stack { left: 12px; right: 12px; width: auto; top: 52px; }
         }
     </style>
   <link rel="stylesheet" href="{{ asset('css/cursor.css') }}?v={{ filemtime(public_path('css/cursor.css')) }}">
@@ -730,31 +679,15 @@
     // The answer key itself is never sent to the browser.
     $completeUrl = session('editor_complete_url', null);
 
+    // Already finished: the editor opened with the code that passed it, and solving it again earns no XP.
+    $completed   = (bool) session('editor_completed', false);
+    $nextUrl     = session('editor_next_url', null);
+
     // Programming lessons: Astro's hint is bought with XP (text served by the server after purchase).
     $hintStatusUrl = session('editor_hint_status_url', null);
     $hintBuyUrl    = session('editor_hint_buy_url', null);
     $hintCost      = \App\Services\StudentDashboardService::XP_HINT_COST;
 @endphp
-
-{{-- Toast stack: XP + success, appear together on a correct submission --}}
-<div class="toast-stack" id="toast-stack">
-    <div class="toast-card xp-toast" id="xp-toast">
-        <span class="toast-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></svg></span>
-        <div class="toast-body">
-            <div class="toast-title">+{{ $xp ?: 0 }} XP</div>
-            <div class="toast-text">You earned XP for this exercise. Keep it up!</div>
-        </div>
-        <button class="toast-close" type="button" data-dismiss="xp-toast">✕</button>
-    </div>
-    <div class="toast-card success-toast" id="success-toast">
-        <span class="toast-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg></span>
-        <div class="toast-body">
-            <div class="toast-title">You got it!</div>
-            <div class="toast-text">Press "Next" to continue.</div>
-        </div>
-        <button class="toast-close" type="button" data-dismiss="success-toast">✕</button>
-    </div>
-</div>
 
 <main class="editor-layout">
 
@@ -771,7 +704,9 @@
                 <div class="card-face card-front">
                     <div class="card-meta">
                         <div class="card-title">{{ $title }}</div>
-                        @if($xp)
+                        @if($completed)
+                            <div class="card-xp">Completed ✓</div>
+                        @elseif($xp)
                             <div class="card-xp">{{ $xp }} XP</div>
                         @endif
                     </div>
@@ -787,7 +722,7 @@
 
                 {{-- BACK: Astro's hint --}}
                 <div class="card-face card-back">
-                    <div class="astro-avatar"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></svg></div>
+                    <div class="astro-avatar"><x-astro-mascot class="astro-avatar-mascot" /></div>
                     @if($hintBuyUrl)
                         {{-- Earned the hard way: the hint text is not in this page until it is bought. --}}
                         <div id="hint-locked">
@@ -830,6 +765,7 @@
 
         <div class="file-tab-bar">
             <div class="file-tab">@include('components.'.($lang === 'c' ? 'c-logo' : 'python-logo')) <span>{{ $fileName }}</span></div>
+            <x-stat-chips theme="auto" />
             <button type="button" class="theme-btn" onclick="window.techlabTheme.toggle()" aria-label="Toggle theme">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <circle cx="12" cy="12" r="8.5"/>
@@ -864,15 +800,19 @@
 
         <div class="action-bar">
             <span id="editor-status" class="editor-status">Loading {{ $langLabel }}…</span>
+            @if($music)
+                {{-- Music on/off; public/citadel-sim/js/music.js shows and labels it. --}}
+                <button id="music-btn" class="btn-run" type="button" hidden></button>
+            @endif
             <button id="run-btn" class="btn-run" disabled><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg> Run</button>
             @if($completeUrl)
                 <button id="submit-btn" class="btn-submit" disabled>Submit answer</button>
                 {{-- href is set from the server's response once the answer is verified --}}
-                <a id="next-btn" class="btn-next" href="{{ $returnTo }}">Next →</a>
+                <a id="next-btn" class="btn-next {{ $completed ? 'visible' : '' }}" href="{{ $nextUrl ?: $returnTo }}">Next →</a>
             @endif
         </div>
 
-        <div id="test-toast" class="test-toast"></div>
+        <div id="test-toast" class="test-toast {{ $completed && $completeUrl ? 'pass' : '' }}">@if($completed && $completeUrl)✅ You already finished this one. Your code is saved here, and solving it again earns no extra XP.@endif</div>
 
         <div class="terminal-panel">
             <div class="terminal-header">
@@ -891,8 +831,8 @@
 
 <script src="{{ asset('js/code-highlight.js') }}?v={{ filemtime(public_path('js/code-highlight.js')) }}"></script>
 @if($lang === 'c')
-    {{-- Self-hosted (see resources/js/vendor/README.md) — no external CDN for the C runtime. --}}
-    <script src="{{ asset('js/jscpp.bundle.js') }}?v={{ filemtime(public_path('js/jscpp.bundle.js')) }}"></script>
+    {{-- The C runtime is self-hosted (see resources/js/vendor/README.md) and loads inside
+         its worker (spawnCWorker below), so the page itself needs no script for it. --}}
 @else
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 @endif
@@ -912,9 +852,6 @@
     const flipper   = document.getElementById('card-flipper');
     const flipBtn   = document.getElementById('flip-btn');
     const flipLabel = document.getElementById('flip-label');
-
-    const xpToast      = document.getElementById('xp-toast');
-    const successToast = document.getElementById('success-toast');
 
     // Server endpoint that verifies the output and records the completion.
     const COMPLETE_URL = @json($completeUrl);
@@ -1007,31 +944,32 @@
                 if (r.status === 402) { render(st); return; }
                 if (!r.ok || !st.ok) throw new Error('bad');
                 render(st);
+                if (window.techlabStats) window.techlabStats.refresh();
                 if (st.spent) { const t = document.getElementById('flip-label'); t.textContent = 'Flip back to instructions'; }
             } catch (e) { say('Could not unlock the hint. Please try again.', 'err'); hBuy.disabled = false; }
         });
     }
 
-    /* Toasts */
-    function showToast(el) {
-        el.classList.add('show');
+    const sfx = (name) => { if (window.techlabSfx) window.techlabSfx.play(name); };
+
+    // Astro jumps for joy. The music's fanfare is the win sound when it's playing; otherwise a jingle.
+    // `first` is false when the lesson was already finished: no XP is earned again, so none is shown.
+    function cheer(nextUrl, first) {
+        if (window.editorMusic) window.editorMusic.update(1, 1);
+        if (!(window.editorMusic && window.editorMusic.playing)) sfx('win');
+        if (window.techlabStats) window.techlabStats.refresh();
+        if (window.astroCheer) window.astroCheer.show({ kicker: first ? 'Challenge complete' : 'Solved again', xp: first ? @json($xp ?: 0) : 0, nextUrl: nextUrl });
     }
-    function hideToast(el) {
-        el.classList.remove('show');
-    }
-    document.querySelectorAll('[data-dismiss]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-dismiss');
-            hideToast(document.getElementById(id));
-        });
-    });
 
     // ── Called once when the SERVER has verified the answer and recorded the
     //    completion. Progress lives in the database, so there is nothing to
     //    persist client-side; `nextUrl` (from the server) unlocks the Next link.
-    function showSuccessState(nextUrl) {
-        showToast(xpToast);
-        showToast(successToast);
+    function showSuccessState(nextUrl, first) {
+        cheer(nextUrl, first);
+        if (!first) {
+            toast.className = 'test-toast pass';
+            toast.textContent = '✅ Correct again! Your new code is saved. You already earned this lesson\'s XP, so no extra XP this time.';
+        }
         if (nextBtn) {
             if (nextUrl) nextBtn.setAttribute('href', nextUrl);
             nextBtn.classList.add('visible');
@@ -1041,8 +979,8 @@
         }
     }
 
-    /* Runtime: Pyodide for Python, a Web Worker running JSCPP for C
-       (JSCPP.run() is synchronous, so it runs off the main thread — an infinite
+    /* Runtime: Pyodide for Python, a Web Worker running JSCPP or PicoC for C
+       (both run synchronously, so they run off the main thread — an infinite
        loop in a student's program can then be killed on a timeout instead of
        freezing the tab). Both paths funnel into the same runCode(). */
     let pyodide = null;
@@ -1063,7 +1001,7 @@
     // Run doesn't pay its (near-instant) startup cost.
     function spawnCWorker() {
         return new Promise((resolve, reject) => {
-            const w = new Worker(@json(asset('js/jscpp-worker.js')));
+            const w = new Worker(@json(asset($cWorker).'?v='.filemtime(public_path($cWorker))));
             const onReady = (e) => {
                 if (e.data && e.data.ready) {
                     w.removeEventListener('message', onReady);
@@ -1149,7 +1087,7 @@
         const code = codeArea.value;
         if (!code.trim()) {
             termOut.innerHTML = '<span class="out-error">Please write some ' + @json($langLabel) + ' code first.</span>';
-            return null;
+            return false;
         }
         busy = true;
         runBtn.disabled = true;
@@ -1168,7 +1106,7 @@
         } catch (err) {
             termOut.innerHTML = '<span class="out-error">' + esc(err.message || err.toString()) + '</span>';
             setStatus('Error', 'error');
-            return null;
+            return false;
         } finally {
             busy = false;
             runBtn.disabled = false;
@@ -1186,8 +1124,10 @@
 
     if (submitBtn) {
         submitBtn.addEventListener('click', async () => {
+            // null: the runtime was busy or still loading. false: the program didn't run (an error).
             const result = await runCode();
             if (result === null) return;
+            if (result === false) { sfx('lose'); return; }
 
             // The server holds the answer key: it compares the output, records
             // the completion, and tells us where "Next" goes.
@@ -1200,17 +1140,19 @@
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': CSRF_TOKEN,
                     },
-                    body: JSON.stringify({ output: result }),
+                    body: JSON.stringify({ output: result, code: codeArea.value }),
                 });
 
                 if (res.ok) {
                     const data = await res.json();
-                    toast.style.display = 'none';
-                    showSuccessState(data.next);
+                    const first = data.first !== false;
+                    toast.style.display = first ? 'none' : '';
+                    showSuccessState(data.next, first);
                     return;
                 }
 
                 submitBtn.disabled = false;
+                if (res.status === 422) sfx('lose');
                 showFail(res.status === 422
                     ? '❌ Not quite — check the output above and try again.'
                     : 'Could not verify your answer (' + res.status + '). Please try again.');
@@ -1223,6 +1165,14 @@
 })();
 </script>
 
+@if($music)
+<script type="module">
+    import { createMusic } from @json(asset('citadel-sim/js/music.js').'?v='.filemtime(public_path('citadel-sim/js/music.js')));
+    window.editorMusic = createMusic({ enabled: true, button: document.getElementById('music-btn') });
+</script>
+@endif
+
+<x-astro-cheer />
 <x-page-loader />
 </body>
 </html>

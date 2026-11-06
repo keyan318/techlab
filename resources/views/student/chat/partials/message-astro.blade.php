@@ -43,23 +43,9 @@
 
     {{-- Action row --}}
     <div
-      x-data="{ saved: false, copied: false }"
+      x-data="{ copied: false }"
       class="mt-2 flex items-center gap-1 text-muted"
     >
-      <button
-        type="button"
-        @click="saved = !saved"
-        :class="saved ? 'text-[#73b6ff]' : 'hover:text-ink'"
-        class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs transition"
-        :title="saved ? 'Saved to note' : 'Save to note'"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" :fill="saved ? 'currentColor' : 'none'">
-          <path d="M12 17v5M9 10.5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6.5l2 6H7z"/>
-        </svg>
-        <span x-show="!saved">Save to note</span>
-        <span x-show="saved" x-cloak>Saved</span>
-      </button>
-
       <button
         type="button"
         @click="copied = true; setTimeout(() => copied = false, 1500)"

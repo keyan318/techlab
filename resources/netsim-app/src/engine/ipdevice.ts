@@ -1,4 +1,7 @@
-import { Device, NetInterface } from './device';
+import { Device, NetInterface, SubInterface } from './device';
+import { activeGroups, vmacFor } from './fhrp';
+import { ospfRoutesFor, type OspfConfig } from './ospf';
+import { aclPermits, type Acl } from './acl';
 import type { ScheduledEvent } from './scheduler';
 import type {
   AppData,
@@ -50,7 +53,7 @@ export interface Route {
   prefix: number;
   via: U32 | null;
   ifaceName: string;
-  kind: 'connected' | 'static' | 'rip';
+  kind: 'connected' | 'static' | 'rip' | 'ospf';
   metric?: number;
 }
 
@@ -170,6 +173,15 @@ export abstract class IpDevice extends Device {
   // DHCP client sessions (dhclient) register here to hear offers/acks.
   dhcpListeners = new Set<(app: DhcpApp) => void>();
   ripEnabled = false;
+  // TechLab (Networking 2): `router ospf` (engine/ospf.ts).
+  ospf: OspfConfig | null = null;
+  // TechLab (Networking 2): IOS access lists by name or number (engine/acl.ts).
+  acls = new Map<string, Acl>();
+  // TechLab: what the student's own ping/curl/nslookup/Test-NetConnection commands actually observed,
+  // keyed by `${kind}:${target}` (last attempt wins). Lab grading requires this, not just a live probe
+  // the grader sent itself, so a check can't pass on network state alone when the student's own command
+  // errored or was never run (see labs/checker.ts matchesActivity).
+  activity = new Map<string, { outcome: string; at: number }>();
   private ripRoutes: RipRoute[] = [];
   private ripScheduled = false;
 
@@ -185,6 +197,12 @@ export abstract class IpDevice extends Device {
 
   allocIcmpId(): number {
     return ++this.icmpIdSeq;
+  }
+
+  // TechLab: record what a real command the student typed actually observed, so lab grading can require
+  // proof of their own typing instead of just probing the network itself.
+  recordActivity(kind: string, target: string, outcome: string): void {
+    this.activity.set(`${kind}:${target.toLowerCase()}`, { outcome, at: Date.now() });
   }
 
   nextDhcpXid(): number {
@@ -221,6 +239,8 @@ export abstract class IpDevice extends Device {
       }
     }
     rs.push(...this.staticRoutes);
+    // Order is administrative distance: connected, static, OSPF (110), RIP (120).
+    rs.push(...ospfRoutesFor(this));
     for (const r of this.freshRipRoutes()) {
       rs.push({ dest: r.dest, prefix: r.prefix, via: r.via, ifaceName: r.ifaceName, kind: 'rip', metric: r.metric });
     }
@@ -298,13 +318,26 @@ export abstract class IpDevice extends Device {
 
   lookupRoute(dst: U32): Route | null {
     let best: Route | null = null;
+    // Equal-cost OSPF paths to the same prefix: each destination sticks to one of them.
+    let equal: Route[] = [];
     for (const r of this.routes()) {
       if (networkOf(dst, r.prefix) !== r.dest) continue;
       const iface = this.getInterface(r.ifaceName);
       if (!iface || !iface.up || !iface.link) continue;
-      if (!best || r.prefix > best.prefix) best = r;
+      if (!best || r.prefix > best.prefix) {
+        best = r;
+        equal = [r];
+      } else if (r.prefix === best.prefix && r.kind === 'ospf' && best.kind === 'ospf' && r.dest === best.dest) {
+        equal.push(r);
+      }
     }
+    if (equal.length > 1) return equal[(dst >>> 0) % equal.length];
     return best;
+  }
+
+  // HSRP/VRRP: virtual gateway addresses this router is currently active for.
+  ownsVip(ip: U32): boolean {
+    return this.interfaces.some((i) => activeGroups(i).some((g) => g.vip === ip));
   }
 
   addIp(ifaceName: string, addr: U32, prefix: number): string | null {
@@ -339,6 +372,7 @@ export abstract class IpDevice extends Device {
     if (this.staticRoutes.some((r) => r.dest === dest && r.prefix === prefix))
       return 'RTNETLINK answers: File exists';
     this.staticRoutes.push({ dest: networkOf(dest, prefix), prefix, via, ifaceName, kind: 'static' });
+    this.network.touch();
     return null;
   }
 
@@ -348,6 +382,7 @@ export abstract class IpDevice extends Device {
     );
     if (i < 0) return 'RTNETLINK answers: No such process';
     this.staticRoutes.splice(i, 1);
+    this.network.touch();
     return null;
   }
 
@@ -584,13 +619,24 @@ export abstract class IpDevice extends Device {
 
   // ---------- receive path ----------
 
-  receiveFrame(iface: NetInterface, frame: EthernetFrame): void {
+  receiveFrame(port: NetInterface, frame: EthernetFrame): void {
+    // 802.1Q: a tagged frame belongs to the sub-interface for its VLAN; untagged to the port
+    // itself (or its native-VLAN sub-interface). A NIC with no matching sub-interface drops it.
+    const iface = this.interfaceForFrame(port, frame);
+    if (!iface) return;
     if (frame.payload.kind === 'arp') {
       this.handleArp(iface, frame.payload);
       return;
     }
-    if (frame.dstMac !== iface.mac && frame.dstMac !== BROADCAST_MAC) return;
+    if (frame.dstMac !== iface.mac && frame.dstMac !== BROADCAST_MAC && !activeGroups(iface).some((g) => vmacFor(g) === frame.dstMac))
+      return;
     this.handleIp(frame.payload, iface.name);
+  }
+
+  private interfaceForFrame(port: NetInterface, frame: EthernetFrame): NetInterface | null {
+    const subs = this.interfaces.filter((i): i is SubInterface => i instanceof SubInterface && i.parent === port);
+    if (frame.vlan === undefined) return subs.find((i) => i.nativeVlan) ?? port;
+    return subs.find((i) => i.vlan === frame.vlan && !i.nativeVlan) ?? null;
   }
 
   private handleIp(pktIn: Ipv4Packet, iif: string): void {
@@ -604,6 +650,10 @@ export abstract class IpDevice extends Device {
       return;
     }
 
+    // IOS inbound access list on the arriving interface (stateless: checked before anything else).
+    const inAcl = this.getInterface(iif)?.cfg.aclIn;
+    if (inAcl && !aclPermits(this.acls.get(inAcl), pktIn)) return;
+
     const now = this.network.now;
     const proc = this.ct.process(pktIn, now);
     let pkt = proc.pkt;
@@ -616,7 +666,7 @@ export abstract class IpDevice extends Device {
       if (nr && nr.action.type === 'dnat') pkt = this.applyDnat(pkt, nr.action.addr, nr.action.port);
     }
 
-    if (this.hasIp(pkt.dst)) {
+    if (this.hasIp(pkt.dst) || this.ownsVip(pkt.dst)) {
       const res = this.fw.evaluate('input', pkt, { iif, ctState });
       this.logFw(res, pkt);
       if (res.verdict === 'drop') return;
@@ -645,6 +695,8 @@ export abstract class IpDevice extends Device {
         this.sendIcmp(pkt.src, { type: 'dest-unreachable', code: 'net', original: refOf(pkt) });
       return;
     }
+    const outAcl = this.getInterface(route.ifaceName)?.cfg.aclOut;
+    if (outAcl && !aclPermits(this.acls.get(outAcl), pkt)) return;
     const res = this.fw.evaluate('forward', pkt, { iif, oif: route.ifaceName, ctState });
     this.logFw(res, pkt);
     if (res.verdict === 'drop') return;
@@ -828,6 +880,17 @@ export abstract class IpDevice extends Device {
 
   private handleArp(iface: NetInterface, arp: ArpPayload): void {
     if (arp.op === 'request') {
+      const vg = activeGroups(iface).find((g) => g.vip === arp.targetIp);
+      if (vg && iface.ip) {
+        // Answer for the virtual gateway with the group's virtual MAC.
+        const vmac = vmacFor(vg);
+        iface.send({
+          srcMac: vmac,
+          dstMac: arp.senderMac,
+          payload: { kind: 'arp', op: 'reply', senderIp: arp.targetIp, senderMac: vmac, targetIp: arp.senderIp, targetMac: arp.senderMac },
+        });
+        return;
+      }
       if (iface.ip && arp.targetIp === iface.ip.addr) {
         this.arpTable.set(arp.senderIp, { mac: arp.senderMac, ifaceName: iface.name, at: this.network.now });
         iface.send({
@@ -874,7 +937,7 @@ export abstract class IpDevice extends Device {
         this.sendIcmp(
           pkt.src,
           { type: 'echo-reply', id: msg.id, seq: msg.seq },
-          { srcOverride: this.hasIp(pkt.dst) ? pkt.dst : undefined },
+          { srcOverride: this.hasIp(pkt.dst) || this.ownsVip(pkt.dst) ? pkt.dst : undefined },
         );
         break;
       case 'echo-reply':
@@ -916,7 +979,7 @@ export abstract class IpDevice extends Device {
           dstPort: dgram.srcPort,
           app: { kind: 'dns-answer', qid: app.qid, qname: app.qname, addr },
         },
-        { srcOverride: this.hasIp(pkt.dst) ? pkt.dst : undefined },
+        { srcOverride: this.hasIp(pkt.dst) || this.ownsVip(pkt.dst) ? pkt.dst : undefined },
       );
       return;
     }
@@ -961,7 +1024,7 @@ export abstract class IpDevice extends Device {
           fin: false,
           ...flags,
         },
-        { srcOverride: this.hasIp(pkt.dst) ? pkt.dst : undefined },
+        { srcOverride: this.hasIp(pkt.dst) || this.ownsVip(pkt.dst) ? pkt.dst : undefined },
       );
     };
 
@@ -1002,7 +1065,7 @@ export abstract class IpDevice extends Device {
           fin: false,
           app: { kind: 'http-response', status: 200, reason: 'OK', body: this.httpServer.body },
         },
-        { srcOverride: this.hasIp(pkt.dst) ? pkt.dst : undefined },
+        { srcOverride: this.hasIp(pkt.dst) || this.ownsVip(pkt.dst) ? pkt.dst : undefined },
       );
     }
     // Data to a generic open port (services/nc) is accepted silently.

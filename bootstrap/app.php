@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Middleware\ChargeAiXp;
 use App\Http\Middleware\EnsureCourseMember;
 use App\Http\Middleware\EnsureEnrolled;
 use App\Http\Middleware\EnsureLessonUnlocked;
 use App\Http\Middleware\EnsureRole;
+use App\Http\Middleware\EnsureTermsAccepted;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,11 +23,15 @@ return Application::configure(basePath: dirname(__DIR__))
         // URLs, which browsers block as mixed content on an https:// tunnel page.
         $middleware->trustProxies(at: '*');
 
+        // Students and faculty agree to the Terms before onboarding or anything else.
+        $middleware->web(append: [EnsureTermsAccepted::class]);
+
         $middleware->alias([
             'role' => EnsureRole::class,
             'enrolled' => EnsureEnrolled::class,
             'course.member' => EnsureCourseMember::class,
             'lesson.unlocked' => EnsureLessonUnlocked::class,
+            'ai.xp' => ChargeAiXp::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

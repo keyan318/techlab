@@ -8,13 +8,18 @@ use App\Models\Crew;
 use App\Models\CrewQuiz;
 use App\Models\CrewQuizAttempt;
 use App\Models\LessonProgress;
+use App\Models\StudyActivity;
 use App\Models\TeacherClass;
 use App\Models\User;
 use App\Services\CourseProgressService;
+use App\Services\CourseStructure;
+use App\Services\FacultyDashboardService;
 use App\Services\StudentDashboardService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class FacultyController extends Controller
@@ -38,8 +43,11 @@ class FacultyController extends Controller
             ->whereHas('crew', fn ($q) => $q->where('teacher_id', Auth::id()))
             ->oldest()->get();
 
-        $courses = CourseAssignment::where('faculty_id', Auth::id())->get()->map(function (CourseAssignment $a) use ($requests) {
-            $catalog = config("course-catalog.{$a->planet}.courses.{$a->course_slug}", []);
+        // The self-paced run of each course this faculty member built from scratch: theirs to watch too.
+        $selfPaced = $this->ownSelfPaced();
+
+        $courses = CourseAssignment::where('faculty_id', Auth::id())->get()->map(function (CourseAssignment $a) use ($requests, $selfPaced) {
+            $catalog = CourseStructure::card($a->planet, $a->course_slug);
             $crew = $a->crew();
 
             return [
@@ -47,6 +55,7 @@ class FacultyController extends Controller
                 'title' => $catalog['title'] ?? $a->course_slug,
                 'planetTitle' => config("course-catalog.{$a->planet}.title", $a->planet),
                 'crew' => $crew,
+                'selfPaced' => $selfPaced->get($a->planet.'.'.$a->course_slug),
                 'waiting' => $crew ? $requests->where('crew_id', $crew->id)->count() : 0,
             ];
         });
@@ -64,13 +73,46 @@ class FacultyController extends Controller
             },
         ]);
 
-        // Students caught leaving a final exam that this faculty member hasn't looked at yet.
+        // Students caught leaving a final exam or a mini boss that this faculty member hasn't looked at yet.
         $alerts = CrewQuizAttempt::with(['user', 'quiz.crew'])
             ->whereNotNull('violation')->whereNull('faculty_seen_at')
-            ->whereHas('quiz', fn ($q) => $q->where('is_final', true)->whereHas('crew', fn ($c) => $c->where('teacher_id', Auth::id())))
+            // A mini boss that ran out of time isn't an alert (no rule was broken); the final's always was.
+            ->where(fn ($a) => $a->where('violation', '!=', 'time_up')->orWhereHas('quiz', fn ($q) => $q->where('is_final', true)))
+            ->whereHas('quiz', fn ($q) => $q->where(fn ($p) => $p->where('is_final', true)->orWhereNotNull('module'))
+                ->whereHas('crew', fn ($c) => $c->where('teacher_id', Auth::id())))
             ->latest('finished_at')->get();
 
-        return view('faculty.facultyDashboard', compact('courses', 'requests', 'alerts'));
+        // Charts, stat tiles and the student table: filtered by course and date range in the browser.
+        $analytics = FacultyDashboardService::build($courses->pluck('crew')->concat($courses->pluck('selfPaced'))->filter()->values());
+        $joined = collect($analytics['courses'])->pluck('students', 'id');
+
+        return view('faculty.facultyDashboard', compact('courses', 'requests', 'alerts', 'analytics', 'joined'));
+    }
+
+    /** The faculty member's signature, printed on their class's certificates. */
+    public function saveSignature(Request $request): RedirectResponse
+    {
+        $request->validate(['signature' => ['required', 'image', 'mimes:png,jpg,jpeg', 'max:1024']]);
+        $user = Auth::user();
+
+        $old = $user->signature_path;
+        $user->forceFill(['signature_path' => $request->file('signature')->store('signatures', 'public')])->save();
+        if ($old) {
+            Storage::disk('public')->delete($old);
+        }
+
+        return redirect(route('faculty.dashboard'))->with('status', 'Signature saved. It goes on your class\'s certificates.');
+    }
+
+    public function deleteSignature(): RedirectResponse
+    {
+        $user = Auth::user();
+        if ($user->signature_path) {
+            Storage::disk('public')->delete($user->signature_path);
+            $user->forceFill(['signature_path' => null])->save();
+        }
+
+        return redirect(route('faculty.dashboard'))->with('status', 'Signature removed. Certificates show your name instead.');
     }
 
     /** Classes page — the faculty member's weekly schedule (upload it, Astro organizes it; "View Calendar" opens the drawer). */
@@ -90,35 +132,20 @@ class FacultyController extends Controller
     }
 
     /**
-     * Generate this course's join code — the assigned faculty member's own action,
+     * Open this course's class (and its class code, the class's ID) — the assigned faculty member's own action,
      * not admin's. Creates the Crew the moment the course actually goes live.
      */
-    public function generateCode(CourseAssignment $assignment): RedirectResponse
+    public function generateCode(Request $request, CourseAssignment $assignment): RedirectResponse
     {
         if (! Auth::check() || (Auth::user()->role ?? 'student') !== 'faculty') {
             return redirect(route('login'));
         }
         abort_unless($assignment->faculty_id === Auth::id(), 403);
 
-        if (! $assignment->crew()) {
-            do {
-                $code = strtoupper(Str::random(6));
-            } while (Crew::where('code', $code)->exists());
+        $assignment->openClass();
 
-            $title = config("course-catalog.{$assignment->planet}.courses.{$assignment->course_slug}.title", $assignment->course_slug);
-
-            $crew = Crew::create([
-                'name' => $title,
-                'code' => $code,
-                'teacher_id' => Auth::id(),
-                'planet' => $assignment->planet,
-                'course_slug' => $assignment->course_slug,
-            ]);
-
-            $crew->roster()->attach(Auth::id(), ['role' => 'faculty']);
-        }
-
-        return redirect(route('faculty.dashboard'));
+        // Generated from the Crew page: stay there so the new crew shows up.
+        return redirect(route($request->input('return') === 'crew' ? 'faculty.crew' : 'faculty.dashboard'));
     }
 
     /**
@@ -136,54 +163,10 @@ class FacultyController extends Controller
 
         $crew->load(['modules.materials']);
 
+        // Just enough to show the "publish your final exam" banner; the Exams tab has the full picture.
         $final = $crew->finalExam()->withCount('questions')->first();
-        $finalResults = $final ? $this->finalResults($crew, $final) : [];
 
-        // Opening this page is how the faculty member sees who was caught, so those alerts clear.
-        if ($final) {
-            $final->attempts()->whereNotNull('violation')->whereNull('faculty_seen_at')->update(['faculty_seen_at' => now()]);
-        }
-
-        return view('faculty.facultyCrew', compact('crew', 'final', 'finalResults'));
-    }
-
-    /**
-     * One row per student for the final exam: still on the lessons, ready to take it, taking it
-     * right now, passed, failed, or caught leaving. Lesson progress for the whole crew comes in
-     * one query (the database is remote, so a query per student would be slow).
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function finalResults(Crew $crew, CrewQuiz $final): array
-    {
-        $students = $crew->roster()->wherePivot('role', 'student')->orderBy('name')->get();
-        $attempts = $final->attempts()->get()->keyBy('user_id');
-
-        $key = CourseProgressService::keyFor($crew->planet, $crew->course_slug);
-        $lessons = collect(CourseProgressService::order($key))->map(fn ($i) => $i['module'].'/'.$i['lesson'])->flip();
-        $done = LessonProgress::where('course', $key)->whereIn('user_id', $students->pluck('id'))
-            ->get(['user_id', 'module', 'lesson'])
-            ->filter(fn ($row) => $lessons->has($row->module.'/'.$row->lesson))
-            ->countBy('user_id');
-
-        return $students->map(function (User $student) use ($attempts, $done, $lessons) {
-            $attempt = $attempts->get($student->id);
-            $percent = $lessons->count() ? (int) round(($done[$student->id] ?? 0) / $lessons->count() * 100) : 0;
-
-            return [
-                'student' => $student,
-                'attempt' => $attempt,
-                'lessonsPercent' => $percent,
-                'state' => match (true) {
-                    $attempt?->inProgress() => 'taking',
-                    $attempt?->passed() => 'passed',
-                    $attempt?->violation !== null => 'caught',
-                    $attempt !== null => 'failed',
-                    $percent >= 100 => 'ready',
-                    default => 'studying',
-                },
-            ];
-        })->all();
+        return view('faculty.facultyCrew', compact('crew', 'final'));
     }
 
     /**
@@ -197,17 +180,34 @@ class FacultyController extends Controller
         if ((Auth::user()->role ?? 'student') !== 'faculty') {
             return redirect(route('student.courses'));
         }
-        abort_unless($crew->teacher_id === Auth::id(), 403);
+        abort_unless($crew->isWatchedBy(Auth::user()), 403);
 
+        $roster = $this->rosterFor($crew);
+
+        return view('faculty.facultyCrewRoster', compact('crew', 'roster'));
+    }
+
+    /**
+     * Everyone on the crew's roster, each with their course progress (percent of lessons done),
+     * XP and gems. The captain is on the roster too, without numbers.
+     */
+    private function rosterFor(Crew $crew)
+    {
         $crew->load(['roster']);
 
         $progressKey = $crew->planet && $crew->course_slug ? CourseProgressService::keyFor($crew->planet, $crew->course_slug) : null;
         $order = $progressKey ? CourseProgressService::order($progressKey) : [];
 
-        $roster = $crew->roster->map(function (User $member) use ($order, $progressKey) {
+        // Day streaks for every student in two queries, not two per student (the database is remote).
+        $studentIds = $crew->roster->filter(fn (User $m) => $m->pivot->role === 'student')->pluck('id');
+        $progressDays = LessonProgress::whereIn('user_id', $studentIds)->whereNotNull('completed_at')->get(['user_id', 'completed_at'])->groupBy('user_id');
+        $activityDays = StudyActivity::whereIn('user_id', $studentIds)->where('minutes', '>', 0)->get(['user_id', 'date'])->groupBy('user_id');
+
+        $roster = $crew->roster->map(function (User $member) use ($order, $progressKey, $progressDays, $activityDays) {
             $percent = null;
             $xp = null;
             $gems = null;
+            $streak = null;
             if ($member->pivot->role === 'student') {
                 if ($order) {
                     $done = array_flip(CourseProgressService::completedKeys($member, $progressKey));
@@ -215,20 +215,26 @@ class FacultyController extends Controller
                     $percent = (int) round($completed / count($order) * 100);
                 }
                 $xp = StudentDashboardService::earnedXp($member);
-                $gems = $progressKey ? CourseProgressService::completedModulesCount($member, $progressKey) : 0;
+                $gems = $progressKey ? CourseProgressService::completedModulesCount($member, $progressKey) * StudentDashboardService::GEMS_PER_MODULE : 0;
+                $streak = StudentDashboardService::streak($member, $progressDays->get($member->id, collect()), $activityDays->get($member->id, collect()));
             }
             $member->progressPercent = $percent;
             $member->xp = $xp;
             $member->gems = $gems;
+            $member->streak = $streak;
 
             return $member;
         });
 
-        return view('faculty.facultyCrewRoster', compact('crew', 'roster'));
+        return $roster;
     }
 
-    /** Sidebar shortcut: jump to the faculty's active crew's roster. */
-    public function crewShortcut(): RedirectResponse
+    /**
+     * Sidebar "Crew": with a single crew, straight to its roster; otherwise every crew the captain watches
+     * (their classes, and the self-paced run of a course they built), grouped by planet, with each
+     * crew's astronauts and their progress — or how to open a class for a course that has none yet.
+     */
+    public function crewShortcut(): View|RedirectResponse
     {
         if (! Auth::check()) {
             return redirect(route('login'));
@@ -237,12 +243,32 @@ class FacultyController extends Controller
             return redirect(route('student.dashboard'));
         }
 
-        $crew = $this->activeCrewOrNull();
-        if (! $crew) {
-            return redirect(route('faculty.dashboard'))->with('status', 'Generate a course code first.');
+        $selfPaced = $this->ownSelfPaced();
+
+        $courses = CourseAssignment::where('faculty_id', Auth::id())->latest()->get()->map(function (CourseAssignment $a) use ($selfPaced) {
+            $crews = collect([$a->crew(), $selfPaced->get($a->planet.'.'.$a->course_slug)])->filter()
+                ->map(fn (Crew $crew) => ['crew' => $crew, 'roster' => $this->rosterFor($crew)])->values();
+
+            return [
+                'assignment' => $a,
+                'planet' => $a->planet,
+                'title' => CourseStructure::card($a->planet, $a->course_slug)['title'] ?? Crew::courseTitle($a->planet, $a->course_slug),
+                'planetTitle' => config("course-catalog.{$a->planet}.title", ucfirst($a->planet)),
+                'hasClass' => $crews->contains(fn ($c) => ! $c['crew']->isSelfPaced()),
+                'crews' => $crews,
+            ];
+        });
+
+        $crews = $courses->flatMap(fn ($c) => $c['crews']);
+        if ($courses->count() === 1 && $crews->count() === 1) {
+            return redirect(route('faculty.course.roster', $crews->first()['crew']));
         }
 
-        return redirect(route('faculty.course.roster', $crew));
+        // Planets in catalog order, each with its courses.
+        $planets = $courses->groupBy('planet')
+            ->sortBy(fn ($group, $planet) => array_search($planet, array_keys(config('course-catalog')), true));
+
+        return view('faculty.facultyCrews', compact('planets'));
     }
 
     /** Sidebar shortcut: jump to the faculty's active crew's learning materials. */
@@ -261,6 +287,13 @@ class FacultyController extends Controller
         }
 
         return redirect(route('faculty.course', $crew));
+    }
+
+    /** @return Collection<string, Crew> self-paced crews of courses this faculty member built, keyed "planet.slug" */
+    private function ownSelfPaced()
+    {
+        return Crew::watchedBy(Auth::user())->where('type', Crew::SELF_PACED)->get()
+            ->keyBy(fn (Crew $c) => $c->planet.'.'.$c->course_slug);
     }
 
     /** The faculty member's most-recently-assigned course that already has a crew, if any. */

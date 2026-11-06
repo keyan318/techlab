@@ -130,7 +130,7 @@ class CourseModulesTest extends TestCase
     {
         [, $student] = $this->setUpCrew();
 
-        $this->actingAs($student)->get(route('student.course.materials', ['slug' => 'programming', 'course' => 'python']))->assertOk()->assertSee('No extra materials yet');
+        $this->actingAs($student)->get(route('student.course.materials', ['slug' => 'programming', 'course' => 'python']))->assertOk()->assertSee('No supplementary materials yet');
     }
 
     public function test_outsiders_cannot_download_materials(): void
@@ -207,38 +207,18 @@ class CourseModulesTest extends TestCase
         $this->actingAs($faculty)->get(route('faculty.dashboard'))
             ->assertOk()
             ->assertSee('aria-label="Dashboard"', false)
-            ->assertSee('aria-label="Chat"', false)
+            ->assertDontSee('aria-label="Chat"', false)
             ->assertSee('aria-label="Crew"', false)
             ->assertSee('aria-label="Materials"', false)
             ->assertDontSee('aria-label="Planets"', false)
             ->assertSee('Captain');
     }
 
-    public function test_faculty_chat_is_its_own_route_without_student_features(): void
+    public function test_faculty_has_no_chat(): void
     {
         [$faculty] = $this->setUpCrew();
 
-        $this->assertSame('/faculty/chat', route('faculty.chat', absolute: false));
-        $this->actingAs($faculty)->get(route('student.chat'))->assertRedirect(route('faculty.chat'));
-        $this->actingAs($faculty)->get(route('faculty.chat'))
-            ->assertOk()
-            ->assertSee('Hi Captain')
-            ->assertSee('Web sources')
-            ->assertSee('Saved outputs')
-            ->assertSee('Add note')
-            ->assertDontSee('Add from Planets')
-            ->assertDontSee('>Slide deck</span>', false)
-            ->assertDontSee('>Flashcards</span>', false)
-            ->assertDontSee('>Infographic</span>', false)
-            ->assertDontSee('>Reports</span>', false);
-        $this->actingAs($faculty)->get(route('student.chat'))->assertRedirect();
-    }
-
-    public function test_students_cannot_use_the_faculty_chat(): void
-    {
-        [, $student] = $this->setUpCrew();
-
-        $this->actingAs($student)->get(route('faculty.chat'))->assertRedirect(route('student.chat'));
-        $this->actingAs($student)->postJson(route('faculty.chat.message'), ['message' => 'hi'])->assertForbidden();
+        $this->actingAs($faculty)->get(route('student.chat'))->assertRedirect(route('faculty.dashboard'));
+        $this->get('/faculty/chat')->assertNotFound();
     }
 }

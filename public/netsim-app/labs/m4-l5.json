@@ -123,7 +123,7 @@
       "httpServer": {
         "enabled": true,
         "port": 80,
-        "body": "Earth here. Trail followed, Captain."
+        "body": "Earth here. Trail followed, astronaut."
       }
     }
   ],

@@ -71,7 +71,7 @@
     "story": {
       "alert": "06:20 · UNKNOWN DEVICE ON THE PUBLIC DOCK · CITADEL NETWORK",
       "vex": "Every network is one flat room if nobody bothers to build walls inside it. (Commander Vex, Planet Doom)",
-      "victory": "DOOM ATTACK REPELLED. The dock is still public, but the command deck is now its own locked room. Astro: \"Zones of trust, Cadet. Not every device on our network deserves the same trust.\""
+      "victory": "DOOM ATTACK REPELLED. The dock is still public, but the command deck is now its own locked room. Astro: \"Zones of trust, Astronaut. Not every device on our network deserves the same trust.\""
     },
     "steps": [
       {

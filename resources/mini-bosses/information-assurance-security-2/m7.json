@@ -1,0 +1,304 @@
+{
+  "questions": [
+    {
+      "prompt": "What is disaster recovery?",
+      "options": [
+        "Restoring IT systems after a disruption",
+        "Choosing a safe site for a new building",
+        "Classifying assets by how sensitive they are",
+        "Keeping the whole organization running"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does RTO measure?",
+      "options": [
+        "The maximum time a system can be down",
+        "The maximum data you can afford to lose",
+        "The time between two backup jobs",
+        "The number of backups kept off site"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does RPO measure?",
+      "options": [
+        "The cost of one hour of downtime",
+        "The number of copies kept on different media",
+        "The most data you can lose, in time",
+        "The longest time a system may stay offline"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "The last backup was 45 minutes old when the failure hit. Up to how much data is lost?",
+      "options": [
+        "None at all",
+        "4.5 hours",
+        "45 minutes",
+        "45 seconds"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "The RTO is 2 hours and the relay was down for 3 hours. Was the target met?",
+      "options": [
+        "Only partly",
+        "It depends on RPO",
+        "No",
+        "Yes"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "The RPO is 1 hour and the last backup was 30 minutes old. Was the target met?",
+      "options": [
+        "It depends on RTO",
+        "No",
+        "Only partly",
+        "Yes"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Where should RTO and RPO targets come from?",
+      "options": [
+        "The smallest number that sounds good",
+        "Whatever another crew happens to use",
+        "A real look at cost and impact",
+        "A guess made during the outage itself"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "Why not set every RTO and RPO as small as possible?",
+      "options": [
+        "Small targets are against the law",
+        "Tighter targets cost more to reach",
+        "Backups stop working below one hour",
+        "Small targets make systems slower"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "How is business continuity planning different from disaster recovery?",
+      "options": [
+        "BCP only covers the backups kept off site",
+        "BCP keeps the whole organization running",
+        "BCP and DR mean exactly the same thing",
+        "BCP restores IT systems after a disruption happens"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which activity belongs to business continuity, not disaster recovery?",
+      "options": [
+        "Replacing a failed hard drive in a server",
+        "Restoring a database from last night's backup copy",
+        "Bringing a crashed server back online",
+        "An alternate place to work if the site is gone"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Backup personnel who can step into a critical role belong to which plan?",
+      "options": [
+        "Asset classification",
+        "Business continuity",
+        "Disaster recovery",
+        "Change management"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Which question does BCP ask?",
+      "options": [
+        "How do we keep operating at all?",
+        "How do we stop every attack?",
+        "How do we classify each file?",
+        "How do we get the systems back up?"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does the 3 in the 3-2-1 backup rule mean?",
+      "options": [
+        "Three backups taken per day",
+        "Three copies of the data",
+        "Three sites for servers",
+        "Three people check it"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does the 2 in the 3-2-1 backup rule mean?",
+      "options": [
+        "Two backups are taken every single hour",
+        "Two different types of storage media",
+        "Two copies are kept on the same drive",
+        "Two people must approve each backup"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What does the 1 in the 3-2-1 backup rule mean?",
+      "options": [
+        "One admin password",
+        "One copy kept offsite",
+        "One backup per year",
+        "One drive for all data"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "Why keep one copy offsite?",
+      "options": [
+        "Offsite copies are faster to restore",
+        "Offsite copies never need testing",
+        "The law forbids keeping copies onsite",
+        "One disaster can't destroy every copy"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why can't an untested backup be trusted?",
+      "options": [
+        "Failures hide until you restore",
+        "Testing makes the backup much smaller",
+        "Untested backups are against the rule",
+        "Untested backups are always deleted"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A backup job has been silently failing for weeks. How is this usually found?",
+      "options": [
+        "By restoring and checking a backup",
+        "By reading the backup's file name aloud",
+        "By waiting for the next disaster",
+        "By buying a second backup drive"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What is high availability?",
+      "options": [
+        "Restoring data from a backup after a failure",
+        "Keeping a system running when one part fails",
+        "Keeping one copy of the data off site",
+        "Checking a plan against a regulation"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "What is a single point of failure?",
+      "options": [
+        "A part that has a working backup beside it",
+        "A backup that is stored in only one place",
+        "A failure that happens only one time ever",
+        "One part whose failure stops everything"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What removes a single point of failure?",
+      "options": [
+        "A single backup",
+        "A longer password",
+        "A stricter policy",
+        "Redundancy"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "Why add load balancing to redundant parts?",
+      "options": [
+        "RPO gets a lot longer",
+        "Backups get much smaller",
+        "Logs get shorter each day",
+        "Failover becomes instant"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "How do backups and high availability differ?",
+      "options": [
+        "HA prevents downtime; backups recover data after it",
+        "Backups prevent downtime; HA recovers data after it",
+        "They are the same thing with two different names",
+        "HA only works if there are no backups at all"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "The whole Citadel loses contact when one relay fails. What is that relay?",
+      "options": [
+        "A single point of failure",
+        "An offsite backup copy",
+        "A load balancer pair",
+        "A compliance record entry"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "What does auditing a DR plan mean?",
+      "options": [
+        "Checking the plan and evidence against requirements",
+        "Deleting old plans so only the newest one remains",
+        "Trusting the plan is fine because it is written down",
+        "Rewriting the plan from scratch every single month"
+      ],
+      "correct": "A"
+    },
+    {
+      "prompt": "A DR plan is detailed and well written but has never been tested. Is it compliant?",
+      "options": [
+        "Yes",
+        "Mostly",
+        "Only on paper",
+        "No"
+      ],
+      "correct": "D"
+    },
+    {
+      "prompt": "What do most standards require for a DR plan?",
+      "options": [
+        "A plan that is at least fifty pages long in total",
+        "A signature from every single crew member",
+        "Documented proof of a real test in a set period",
+        "A copy of the plan printed and kept on the wall"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "\"We have a plan\" and \"we tested this plan and it worked\" — how do they differ?",
+      "options": [
+        "They are the same claim",
+        "Only the first counts in an audit",
+        "Only the second is real evidence",
+        "Neither one matters to auditors"
+      ],
+      "correct": "C"
+    },
+    {
+      "prompt": "What should be kept after a DR test?",
+      "options": [
+        "Only the backup file that was used",
+        "A written record of the test and result",
+        "Only the name of the person who ran it",
+        "Nothing, since the test is enough by itself"
+      ],
+      "correct": "B"
+    },
+    {
+      "prompt": "A tighter RPO usually needs what?",
+      "options": [
+        "Less storage space",
+        "Fewer backup copies",
+        "More frequent backups",
+        "A longer outage window"
+      ],
+      "correct": "C"
+    }
+  ]
+}

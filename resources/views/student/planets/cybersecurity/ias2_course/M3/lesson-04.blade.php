@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit C.4 Security Guidelines. --}}
         why this case called for a different choice than the guideline suggests?
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">How is a guideline different from a standard?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A guideline is always checked pass/fail</li>
+            <li class="quiz-option quiz-correct">B. A guideline says “should”, not “must” ✓</li>
+            <li class="quiz-option">C. A guideline can never be set aside</li>
+            <li class="quiz-option">D. A guideline lists the exact steps</li>
+        </ul>
+        <p class="quiz-explanation"><em>A standard is a must, checked pass/fail. A guideline is a should, with room for judgment.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit C.4 Security Guidelines. --}}
         than the guideline this one time. If you'd done that for a routine supply report just to save a minute,
         that's not judgment, that's just skipping the guideline."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why did Astro approve the unencrypted shield alert?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The guideline says never to encrypt</li>
+            <li class="quiz-option">B. Encrypted channels were all broken</li>
+            <li class="quiz-option">C. It was only a routine supply report anyway</li>
+            <li class="quiz-option quiz-correct">D. Speed mattered, and it can be explained ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Discretion used correctly: the cadet can explain why speed mattered more this one time.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -52,6 +74,17 @@ Syllabus: ITP1333 Unit C.4 Security Guidelines. --}}
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">A guideline can be set aside with good reason; a standard cannot</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what can be set aside with good reason?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. A guideline ✓</li>
+            <li class="quiz-option">B. A standard</li>
+            <li class="quiz-option">C. A policy</li>
+            <li class="quiz-option">D. Both of them</li>
+        </ul>
+        <p class="quiz-explanation"><em>A guideline can be set aside with good reason; a standard cannot.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

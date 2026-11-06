@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit H.1 Classification of Assets. --}}
         before.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which tier means severe harm if exposed or lost?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Public</li>
+            <li class="quiz-option">B. Internal</li>
+            <li class="quiz-option quiz-correct">C. Restricted ✓</li>
+            <li class="quiz-option">D. Confidential</li>
+        </ul>
+        <p class="quiz-explanation"><em>Restricted gets the highest protection. Confidential means real harm and needs access control.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -36,6 +47,17 @@ Syllabus: ITP1333 Unit H.1 Classification of Assets. --}}
         where it matters: the starmap is restricted, and the crew roster with everyone's personal details is
         confidential. Protecting everything the same way means protecting nothing well."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Astro say the flyer doesn't belong in the vault?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. It is public, so no harm if seen ✓</li>
+            <li class="quiz-option">B. It is restricted like the starmap</li>
+            <li class="quiz-option">C. The vault is already completely full</li>
+            <li class="quiz-option">D. The crew roster needs that space now</li>
+        </ul>
+        <p class="quiz-explanation"><em>Protecting everything the same way means protecting nothing well. Put vault effort where it matters.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -52,6 +74,17 @@ Syllabus: ITP1333 Unit H.1 Classification of Assets. --}}
             <text x="320" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">Protection should match the tier — not every asset needs a vault</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, which tier is mild harm if it leaked?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Public</li>
+            <li class="quiz-option quiz-correct">B. Internal ✓</li>
+            <li class="quiz-option">C. Restricted</li>
+            <li class="quiz-option">D. Confidential</li>
+        </ul>
+        <p class="quiz-explanation"><em>Internal is meant for the crew, with mild harm if it leaked.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

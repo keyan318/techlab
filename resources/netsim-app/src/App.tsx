@@ -18,19 +18,25 @@ export default function App() {
 
   return (
     <ReactFlowProvider>
-      <div
-        className={`app${hasTerminals ? ' with-dock' : ''}`}
-        style={hasTerminals ? { gridTemplateRows: `52px 1fr ${dockHeight}px` } : undefined}
-      >
+      <div className="app">
         <Toolbar />
         <div className="main">
+          {/* TechLab: the side column runs the full height, so the terminal only
+              shares space with the map and never squeezes the lab instructions. */}
           <Palette />
-          <div className="canvas">
-            <Flow />
+          <div
+            className={`workspace${hasTerminals ? ' with-dock' : ''}`}
+            style={hasTerminals ? { gridTemplateRows: `minmax(0, 1fr) ${dockHeight}px` } : undefined}
+          >
+            <div className="work-top">
+              <div className="canvas">
+                <Flow />
+              </div>
+              {selected && <Inspector />}
+            </div>
+            <TerminalDock height={dockHeight} onResize={setDockHeight} />
           </div>
-          {selected && <Inspector />}
         </div>
-        <TerminalDock height={dockHeight} onResize={setDockHeight} />
       </div>
     </ReactFlowProvider>
   );

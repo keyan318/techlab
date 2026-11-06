@@ -27,6 +27,17 @@ Syllabus: ITP1333 Unit H.5 Physical Intrusion Detection (Sensors, CCTV, Alarms).
         beaten, nothing else notices. Detection and prevention are different jobs, and a facility needs both.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Why is detection without response close to useless?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Cameras cost too much money to keep running</li>
+            <li class="quiz-option quiz-correct">B. The intruder finishes before anyone acts ✓</li>
+            <li class="quiz-option">C. Alarms always ring at the wrong time</li>
+            <li class="quiz-option">D. Detection stops every intruder anyway</li>
+        </ul>
+        <p class="quiz-explanation"><em>A camera nobody watches or an alarm nobody answers still lets an intruder finish.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -35,6 +46,17 @@ Syllabus: ITP1333 Unit H.5 Physical Intrusion Detection (Sensors, CCTV, Alarms).
         walk-through, maybe hours later. Prevention without detection means we only find out after the damage is
         already done."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What is missing at the cargo bay?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A lock</li>
+            <li class="quiz-option">B. A door</li>
+            <li class="quiz-option quiz-correct">C. Detection ✓</li>
+            <li class="quiz-option">D. A guard post</li>
+        </ul>
+        <p class="quiz-explanation"><em>There is a solid lock (prevention), but no camera and no alarm, so a beaten lock goes unnoticed.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -56,6 +78,17 @@ Syllabus: ITP1333 Unit H.5 Physical Intrusion Detection (Sensors, CCTV, Alarms).
             <text x="320" y="154" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4a35b8">Detection without a fast response still lets an intruder finish before anyone acts</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is the response part?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Locks that stop anyone entering</li>
+            <li class="quiz-option quiz-correct">B. Someone assigned to act ✓</li>
+            <li class="quiz-option">C. Cameras that notice</li>
+            <li class="quiz-option">D. Badges for the staff</li>
+        </ul>
+        <p class="quiz-explanation"><em>Prevention stops entry, detection notices a breach, and response means someone is assigned to act.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

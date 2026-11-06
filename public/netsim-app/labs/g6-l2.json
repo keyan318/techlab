@@ -1,0 +1,467 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "astro",
+      "kind": "host",
+      "name": "astro",
+      "x": 20,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.21/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "crew-db",
+      "kind": "server",
+      "name": "crew-db",
+      "x": 20,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.50/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ],
+      "services": {
+        "tcp": [
+          5432
+        ],
+        "udp": []
+      }
+    },
+    {
+      "id": "inside-sw",
+      "kind": "switch",
+      "name": "inside-sw",
+      "x": 200,
+      "y": 150,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "INSIDE-SW"
+    },
+    {
+      "id": "shield",
+      "kind": "firewall",
+      "name": "shield",
+      "x": 400,
+      "y": 150,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.1/24",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "172.16.0.1/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "203.0.113.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": []
+    },
+    {
+      "id": "dmz-web",
+      "kind": "server",
+      "name": "dmz-web",
+      "x": 400,
+      "y": 340,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "172.16.0.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "172.16.0.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Grid public page: docking times, Codexia weather."
+      }
+    },
+    {
+      "id": "outside-sw",
+      "kind": "switch",
+      "name": "outside-sw",
+      "x": 600,
+      "y": 150,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "OUTSIDE-SW"
+    },
+    {
+      "id": "earth-srv",
+      "kind": "server",
+      "name": "earth-srv",
+      "x": 780,
+      "y": 40,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Earth relay page: hello, Grid."
+      }
+    },
+    {
+      "id": "doom-scan",
+      "kind": "host",
+      "name": "doom-scan",
+      "x": 780,
+      "y": 260,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "203.0.113.66/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "203.0.113.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "astro.eth0-inside-sw.eth0",
+      "a": [
+        "astro",
+        "eth0"
+      ],
+      "b": [
+        "inside-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "crew-db.eth0-inside-sw.eth1",
+      "a": [
+        "crew-db",
+        "eth0"
+      ],
+      "b": [
+        "inside-sw",
+        "eth1"
+      ]
+    },
+    {
+      "id": "shield.eth0-inside-sw.eth7",
+      "a": [
+        "shield",
+        "eth0"
+      ],
+      "b": [
+        "inside-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "shield.eth1-dmz-web.eth0",
+      "a": [
+        "shield",
+        "eth1"
+      ],
+      "b": [
+        "dmz-web",
+        "eth0"
+      ]
+    },
+    {
+      "id": "shield.eth2-outside-sw.eth7",
+      "a": [
+        "shield",
+        "eth2"
+      ],
+      "b": [
+        "outside-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "earth-srv.eth0-outside-sw.eth0",
+      "a": [
+        "earth-srv",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "doom-scan.eth0-outside-sw.eth1",
+      "a": [
+        "doom-scan",
+        "eth0"
+      ],
+      "b": [
+        "outside-sw",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g6-l2",
+    "title": "Lesson 6.2 — DMZ Design",
+    "blurb": "Three zones, one firewall, default deny.",
+    "steps": [
+      {
+        "title": "Default deny",
+        "body": "Double-click `shield` (it runs Windows Server). `netsh advfirewall show allprofiles`: on, but allowing everything. Make it stateful and default deny: `netsh advfirewall set allprofiles state on`, then `netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound`.",
+        "objectives": [
+          {
+            "id": "g6l2-pol",
+            "label": "shield blocks routed traffic by default",
+            "check": {
+              "type": "fw-policy",
+              "device": "shield",
+              "hook": "forward",
+              "policy": "drop"
+            }
+          },
+          {
+            "id": "g6l2-doomdb",
+            "label": "doom-scan can no longer reach the crew database (5432)",
+            "check": {
+              "type": "tcp",
+              "from": "doom-scan",
+              "toDevice": "crew-db",
+              "port": 5432,
+              "expect": "filtered"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Let the crew out",
+        "body": "Now the crew is blocked too. Allow anything that starts on the inside: `netsh advfirewall firewall add rule name=CrewOut dir=in action=allow remoteip=192.168.20.0/24`. The replies come back by themselves: that's the stateful part.",
+        "objectives": [
+          {
+            "id": "g6l2-crewrule",
+            "label": "shield has the CrewOut rule",
+            "check": {
+              "type": "fw-rule",
+              "device": "shield",
+              "name": "CrewOut"
+            }
+          },
+          {
+            "id": "g6l2-earth",
+            "label": "astro opens Earth's page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://203.0.113.10/",
+              "expect": "ok",
+              "contains": "Earth relay"
+            }
+          },
+          {
+            "id": "g6l2-dmz",
+            "label": "astro opens the DMZ page",
+            "check": {
+              "type": "http",
+              "from": "astro",
+              "url": "http://172.16.0.10/",
+              "expect": "ok",
+              "contains": "Grid public page"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Publish the DMZ, nothing more",
+        "body": "Open exactly one door from outside: `netsh advfirewall firewall add rule name=DMZWeb dir=in action=allow protocol=TCP localport=80 localip=172.16.0.10`. No rule lets the DMZ start connections to the inside, so a hacked web server stays in its box.",
+        "objectives": [
+          {
+            "id": "g6l2-webrule",
+            "label": "shield has the DMZWeb rule",
+            "check": {
+              "type": "fw-rule",
+              "device": "shield",
+              "name": "DMZWeb"
+            }
+          },
+          {
+            "id": "g6l2-pub",
+            "label": "Earth opens the Grid's public page",
+            "check": {
+              "type": "http",
+              "from": "earth-srv",
+              "url": "http://172.16.0.10/",
+              "expect": "ok",
+              "contains": "Grid public page"
+            }
+          },
+          {
+            "id": "g6l2-dmzdb",
+            "label": "dmz-web cannot reach the crew database",
+            "check": {
+              "type": "tcp",
+              "from": "dmz-web",
+              "toDevice": "crew-db",
+              "port": 5432,
+              "expect": "filtered"
+            }
+          },
+          {
+            "id": "g6l2-doomdb2",
+            "label": "doom-scan still cannot reach the crew database",
+            "check": {
+              "type": "tcp",
+              "from": "doom-scan",
+              "toDevice": "crew-db",
+              "port": 5432,
+              "expect": "filtered"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

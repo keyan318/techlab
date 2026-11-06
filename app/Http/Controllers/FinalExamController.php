@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Crew;
 use App\Models\CrewQuiz;
 use App\Models\CrewQuizAttempt;
+use App\Services\CourseStructure;
+use App\Services\DefaultFinalExamService;
 use App\Services\FinalExamService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -25,7 +27,7 @@ use Illuminate\View\View;
 class FinalExamController extends Controller
 {
     /** Seconds allowed after the clock hits zero for the page's own auto-submit to arrive. */
-    private const LATE_GRACE_SECONDS = 90;
+    private const LATE_GRACE_SECONDS = CrewQuiz::LATE_GRACE_SECONDS;
 
     /** GET /student/course/{slug}/{course}/final-exam — the arena: rules, then the exam itself. */
     public function show(string $slug, string $course): View|RedirectResponse
@@ -39,23 +41,30 @@ class FinalExamController extends Controller
             return redirect(route('faculty.dashboard'));
         }
 
-        $meta = config("course-catalog.{$slug}.courses.{$course}");
-        abort_if(! $meta || ! empty($meta['coming_soon']), 404);
+        $meta = CourseStructure::card($slug, $course);
+        abort_if($meta === [] || ! empty($meta['coming_soon']), 404);
 
         $crew = request()->attributes->get('crew')
-            ?? Crew::where('planet', $slug)->where('course_slug', $course)->first();
+            ?? Crew::viewFor(Auth::user(), $slug, $course);
         abort_if($crew === null, 404);
 
+        // First: an attempt left in progress fails here (and sends them back), before lessons are counted.
         ['exam' => $exam, 'attempt' => $attempt] = FinalExamService::for($user, $crew);
         $lessonsDone = FinalExamService::lessonsDone($user, $crew);
+        if ($exam === null && $lessonsDone && $crew->isSelfPaced()) {
+            $exam = DefaultFinalExamService::ensure($crew)?->loadCount('questions');   // self-paced: the default final, built the first time it's needed
+        }
 
         return view('student.course.final-exam', [
             'courseTitle' => $meta['title'],
-            'captain' => $crew->faculty?->name,
+            // Self-paced has no faculty member: the admin looks after its final exam.
+            'captain' => $crew->faculty?->name ?? ($crew->isSelfPaced() ? "TechLab's admin" : null),
             'student' => $user,
             'exam' => $exam,
             'state' => FinalExamService::state($exam, $attempt, $lessonsDone),
             'result' => $attempt ? $this->result($exam, $attempt, $slug, $course) : null,
+            // Caught once already: one more and they're banned.
+            'strikes' => $attempt?->strikes ?? 0,
             'closed' => $exam?->isPastDue() && $attempt === null,
             'backUrl' => route('student.course.overview', ['slug' => $slug, 'course' => $course]),
             'certificateUrl' => route('student.course.certificate', ['slug' => $slug, 'course' => $course]),
@@ -74,10 +83,21 @@ class FinalExamController extends Controller
             abort(403, 'This final exam closed on '.$quiz->due_at->format('j M Y, g:ia').'.');
         }
 
+        // Failed before, sent back through the course, and (openExam checked) every lesson done
+        // again: that old attempt makes way for a fresh one.
+        $previous = $quiz->attempts()->where('user_id', Auth::id())->first();
+        $tryNumber = 1;
+        $strikes = 0;
+        if ($previous && FinalExamService::sentBack($previous)) {
+            $tryNumber = $previous->try_number + 1;
+            $strikes = $previous->strikes;   // a strike follows the student to the next try
+            $previous->delete();
+        }
+
         try {
             $attempt = CrewQuizAttempt::firstOrCreate(
                 ['crew_quiz_id' => $quiz->id, 'user_id' => Auth::id()],
-                ['score' => 0, 'total' => $quiz->questions()->count(), 'answers' => [], 'status' => CrewQuizAttempt::IN_PROGRESS, 'started_at' => now()],
+                ['score' => 0, 'total' => $quiz->questions()->count(), 'answers' => [], 'status' => CrewQuizAttempt::IN_PROGRESS, 'started_at' => now(), 'try_number' => $tryNumber, 'strikes' => $strikes],
             );
         } catch (QueryException) {
             // Two starts raced on the unique (quiz, user) index: the other one won.
@@ -93,15 +113,8 @@ class FinalExamController extends Controller
             return response()->json(['message' => 'You have already used your attempt at this final exam.', 'result' => $this->resultFor($quiz, $attempt)], 409);
         }
 
-        $quiz->load('questions');
-
         return response()->json([
-            'questions' => $quiz->questions->map(fn ($q) => [
-                'id' => $q->id,
-                'prompt' => $q->prompt,
-                'type' => $q->type,
-                'options' => $q->options,
-            ])->values(),
+            'questions' => $quiz->studentQuestions(),
             // The page counts down from this; the server holds it to the same moment on submit.
             'seconds_left' => $quiz->minutes ? $quiz->minutes * 60 : null,
         ]);
@@ -125,7 +138,7 @@ class FinalExamController extends Controller
         return response()->json(['result' => $this->resultFor($quiz, $attempt)]);
     }
 
-    /** POST: the student's answers. Graded here against the pass mark; the right answers are never sent back. */
+    /** POST: the student's answers, graded here against the pass mark. The right answers come back only once it's over. */
     public function submit(Request $request, CrewQuiz $quiz): JsonResponse
     {
         $this->memberExam($quiz)->load('questions');
@@ -148,7 +161,7 @@ class FinalExamController extends Controller
         $passed = $graded['total'] > 0 && $quiz->passPercent() <= $graded['score'] / $graded['total'] * 100;
 
         // Conditional, like fail(): a submit racing a "caught leaving" report cannot overwrite it.
-        CrewQuizAttempt::whereKey($attempt->id)->where('status', CrewQuizAttempt::IN_PROGRESS)->update([
+        $ended = CrewQuizAttempt::whereKey($attempt->id)->where('status', CrewQuizAttempt::IN_PROGRESS)->update([
             'score' => $graded['score'],
             'total' => $graded['total'],
             'answers' => json_encode($graded['answers']),
@@ -156,20 +169,33 @@ class FinalExamController extends Controller
             'finished_at' => now(),
         ]);
 
+        // Not passed: back to the start of the course.
+        if ($ended && ! $passed) {
+            FinalExamService::sendBackToStart($attempt->refresh());
+        }
+
         return response()->json(['result' => $this->resultFor($quiz, $attempt->refresh())]);
     }
 
-    /** POST (faculty): let a student sit the final again, e.g. after an honest mistake. Their old result is removed. */
+    /**
+     * POST (faculty): let a student sit the final again right away, e.g. after a power cut. The
+     * lessons the fail wiped come back, and their old result is removed.
+     */
     public function retake(CrewQuizAttempt $attempt): RedirectResponse
     {
         $quiz = $attempt->quiz;
-        abort_unless($quiz->is_final && Auth::check() && $quiz->crew->teacher_id === Auth::id(), 403);
+        abort_unless($quiz->is_final && $quiz->crew->managedBy(Auth::user()), 403);
+        abort_if($attempt->passed(), 422, 'This student already passed.');
 
         $name = $attempt->user?->name ?? 'The student';
-        $attempt->delete();
+        $wasBanned = $attempt->banned();
+        FinalExamService::giveBackProgress($attempt);
+        $attempt->delete();   // its strikes go with it
 
-        return redirect(route('faculty.course', $quiz->crew_id).'#final-exam')
-            ->with('status', "{$name} can take the final exam again.");
+        return redirect($quiz->crew->isSelfPaced() ? route('admin.self-paced') : route('faculty.exams.index', $quiz->crew_id).'#final-exam')
+            ->with('status', $wasBanned
+                ? "{$name}'s ban is lifted. They can take the final exam again now."
+                : "{$name} has their lessons back and can take the final exam again now.");
     }
 
     /** A published final exam in one of this student's crews. */
@@ -205,6 +231,9 @@ class FinalExamController extends Controller
             'percent' => $attempt->percent(),
             'pass_percent' => $quiz->passPercent(),
             'violation' => $attempt->violationText(),
+            'redo' => FinalExamService::sentBack($attempt),
+            'banned' => $attempt->banned(),
+            'strikes' => $attempt->strikes,
             'certificate_url' => $attempt->passed() ? route('student.course.certificate', ['slug' => $slug, 'course' => $course]) : null,
         ];
     }

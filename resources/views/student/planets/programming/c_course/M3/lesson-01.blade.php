@@ -34,32 +34,47 @@ Syllabus: CC102 Unit 3 — Functions (definition, declaration, and calling). --}
         further down the file — <code>main</code> can only call functions it already knows about.
     </p>
 
-    <h2 class="section-heading">Astro Says</h2>
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">What does it mean to call a function?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Write out its body once</li>
+            <li class="quiz-option">B. Delete it from the file</li>
+            <li class="quiz-option">C. Give it a brand-new name</li>
+            <li class="quiz-option quiz-correct">D. Run it by using its name ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>You define a function once, then call it by name, like <code>reportStatus();</code>, whenever you want it to run.</em></p>
+    </div>
+
+    <h2 class="section-heading">Picture It</h2>
 
     <p class="body-text">
-        Something came in through the broken hatch overnight — something small and fast with too many legs — and
-        tripped a sensor at 4 a.m. The alarm worked. Eventually. On the fourth try.
+        A song sheet doesn't write the chorus out five times. It writes it <strong>once</strong>, gives it a name, and then just says <strong>“Chorus”</strong> wherever it should be sung.
     </p>
 
     <p class="body-text">
-        <strong>Astro</strong> scrolls the file. Then keeps scrolling. "Rivet. How many times have you written
-        this same alarm?"
+        A <strong>function</strong> is the same idea. You write the steps once, give them a name, and then <strong>call</strong> that name whenever you need them. <code>void</code> means the chorus just gets sung: it does something, but it doesn't hand anything back. And the chorus has to be written down somewhere above before the sheet can say “sing the chorus”.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong>, wincing: "…Nine? Nine times. Slightly different each time, which is the part
-        that should worry you."
-    </p>
+    <figure class="net-diagram">
+        <svg viewBox="0 0 640 345" role="img" aria-label="A song sheet with the chorus written once at the top, and Chorus pointers after verse 1 and verse 2. The same in C: void chorus defined once, then main calls verse1, chorus, verse2, chorus.">
+            <rect x="20" y="30" width="310" height="300" rx="12" fill="#fffdf7" stroke="#d8cfb6" stroke-width="2"/><text x="40" y="56" font-size="12" fill="#8a6a2b" font-weight="800" letter-spacing="1">SONG SHEET</text><rect x="40" y="70" width="270" height="72" rx="10" fill="#ffe3ec" stroke="#e8457c" stroke-width="2"/><text x="56" y="92" font-size="12" fill="#9c1f4c" font-weight="800" letter-spacing="0.5">CHORUS · written once</text><text x="56" y="113" font-size="13" fill="#9c1f4c" font-style="italic">Hands up high, here we go,</text><text x="56" y="132" font-size="13" fill="#9c1f4c" font-style="italic">sing it loud and nice and slow!</text><text x="40" y="176" font-size="13" fill="#5b6b86">Verse 1: Woke up early, sun is out…</text><rect x="40" y="188" width="100" height="28" rx="14.0" fill="#ffe3ec" stroke="#e8457c" stroke-width="1.8"/><text x="90.0" y="206.68" font-size="13" fill="#9c1f4c" text-anchor="middle"><tspan font-weight="800">Chorus</tspan></text><text x="40" y="252" font-size="13" fill="#5b6b86">Verse 2: Grab your friends and…</text><rect x="40" y="264" width="100" height="28" rx="14.0" fill="#ffe3ec" stroke="#e8457c" stroke-width="1.8"/><text x="90.0" y="282.68" font-size="13" fill="#9c1f4c" text-anchor="middle"><tspan font-weight="800">Chorus</tspan></text><path d="M144 202 Q270 196 270 152" fill="none" stroke="#e8457c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,4"/><polygon points="270,145 264.0,154.0 276.0,154.0" fill="#e8457c"/><path d="M144 278 Q300 268 296 152" fill="none" stroke="#e8457c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5,4"/><polygon points="296,145 290.3,154.2 302.3,153.8" fill="#e8457c"/><rect x="352" y="30" width="268" height="300" rx="12" fill="#f6f8fb" stroke="#cfd7e6" stroke-width="2"/><text x="370" y="56" font-size="12" fill="#5b6b86" font-weight="800" letter-spacing="1">THE SAME IN C</text><text x="368" y="88" font-size="13" fill="#9c1f4c" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">void&#160;chorus()&#160;{</text><text x="368" y="111" font-size="13" fill="#9c1f4c" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;printf("Hands&#160;up...");</text><text x="368" y="134" font-size="13" fill="#9c1f4c" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">}</text><text x="368" y="180" font-size="13" fill="#1b2440" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">int&#160;main()&#160;{</text><text x="368" y="203" font-size="13" fill="#5b6b86" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;verse1();</text><text x="368" y="226" font-size="13" fill="#9c1f4c" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;chorus();</text><text x="368" y="249" font-size="13" fill="#5b6b86" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;verse2();</text><text x="368" y="272" font-size="13" fill="#9c1f4c" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">&#160;&#160;chorus();</text><text x="368" y="295" font-size="13" fill="#1b2440" font-weight="700" font-family="ui-monospace, Menlo, Consolas, monospace">}</text><text x="604" y="88" font-size="11" fill="#9c1f4c" font-weight="700" text-anchor="end">← write once</text><text x="604" y="226" font-size="11" fill="#9c1f4c" font-weight="700" text-anchor="end">← call it</text><text x="604" y="272" font-size="11" fill="#9c1f4c" font-weight="700" text-anchor="end">← again</text>
+        </svg>
+    </figure>
 
     <p class="body-text">
-        <strong>Astro</strong>: "So when it's wrong, it's wrong in nine places and we fix eight of them. No.
-        Write it once. Give it a name. Then just say the name."
+        Bonus: if you want to change the words, you change them in one place and every chorus updates.
     </p>
 
-    <p class="body-text">
-        <strong>Rivet</strong> brightens immediately. "One job, one name. And when it changes, it changes in
-        <em>one</em> place." He's already deleting. "Oh, this is going to feel so good."
-    </p>
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why write the chorus once and just say “Chorus” after each verse?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Songs are only allowed one chorus each</li>
+            <li class="quiz-option">B. It makes the song play louder each time</li>
+            <li class="quiz-option quiz-correct">C. Write it once, reuse it many times ✓</li>
+            <li class="quiz-option">D. The chorus changes every time it's sung</li>
+        </ul>
+        <p class="quiz-explanation"><em>Writing it once means less repeating and only one place to fix. Calling a function by name works the same way.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -102,6 +117,17 @@ int main() {
         Output: <code>reportStatus()</code> runs twice because <code>main</code> calls it twice, printing the
         same line each time.
     </p>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">If <code>main</code> called <code>reportStatus();</code> three times, how many times would “Systems nominal.” print?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Once</li>
+            <li class="quiz-option">B. Twice</li>
+            <li class="quiz-option quiz-correct">C. Three times ✓</li>
+            <li class="quiz-option">D. Never</li>
+        </ul>
+        <p class="quiz-explanation"><em>Every call runs the function's body once, so three calls print the line three times.</em></p>
+    </div>
 
     <h2 class="section-heading">Interactive Coding Exercise</h2>
 
@@ -162,10 +188,10 @@ int main() {
     <div class="quiz-block" data-q="1">
         <p class="quiz-prompt">Q1. What is a function in C?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. A type of variable</li>
-            <li class="quiz-option quiz-correct">B. A named, reusable block of code you can call by name ✓</li>
-            <li class="quiz-option">C. A kind of loop</li>
-            <li class="quiz-option">D. A comment that documents the program</li>
+            <li class="quiz-option">A. A variable that stores some code</li>
+            <li class="quiz-option">B. A loop that runs a set number of times</li>
+            <li class="quiz-option quiz-correct">C. A named block of code you can reuse ✓</li>
+            <li class="quiz-option">D. A comment that explains the program</li>
         </ul>
         <p class="quiz-explanation"><em>A function packages statements under a name, so you can run them again anywhere just by calling that name.</em></p>
     </div>
@@ -173,10 +199,10 @@ int main() {
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. What does <code>void</code> mean in <code>void reportStatus() { ... }</code>?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. The function takes no parameters</li>
-            <li class="quiz-option quiz-correct">B. The function does not send any value back to its caller ✓</li>
-            <li class="quiz-option">C. The function cannot be called more than once</li>
-            <li class="quiz-option">D. The function is empty and does nothing</li>
+            <li class="quiz-option quiz-correct">A. It sends no value back to its caller ✓</li>
+            <li class="quiz-option">B. It cannot be called more than once</li>
+            <li class="quiz-option">C. It is empty and does nothing at all</li>
+            <li class="quiz-option">D. It can only be called from inside main</li>
         </ul>
         <p class="quiz-explanation"><em>void means the function has no return value — it performs an action (like printing) but hands nothing back.</em></p>
     </div>
@@ -184,10 +210,10 @@ int main() {
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. In the Code Example, why does "Systems nominal." print twice?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. printf always runs its line twice by default</li>
-            <li class="quiz-option quiz-correct">B. main() calls reportStatus() twice, and each call re-runs the whole function ✓</li>
-            <li class="quiz-option">C. It's a typo — it should only print once</li>
-            <li class="quiz-option">D. void functions always run exactly twice</li>
+            <li class="quiz-option">A. printf always prints each line twice</li>
+            <li class="quiz-option">B. void functions always run exactly twice</li>
+            <li class="quiz-option">C. The function body has two printf calls</li>
+            <li class="quiz-option quiz-correct">D. main() calls reportStatus() twice ✓</li>
         </ul>
         <p class="quiz-explanation"><em>Every call to reportStatus() re-runs its body from the top — call it twice, and its printf runs twice.</em></p>
     </div>
@@ -195,23 +221,12 @@ int main() {
     <div class="quiz-block" data-q="4">
         <p class="quiz-prompt">Q4. Why must a function be defined above main (or otherwise known to it) before main can call it?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. There is no real reason — order never matters in C</li>
-            <li class="quiz-option quiz-correct">B. C reads top to bottom, so main can only call a function it has already seen ✓</li>
-            <li class="quiz-option">C. Functions can only be called from other functions, never from main</li>
-            <li class="quiz-option">D. void functions are always defined automatically</li>
+            <li class="quiz-option">A. No reason; order never matters in C</li>
+            <li class="quiz-option quiz-correct">B. C reads the file from top to bottom ✓</li>
+            <li class="quiz-option">C. main can only call built-in functions</li>
+            <li class="quiz-option">D. Functions below main run automatically</li>
         </ul>
         <p class="quiz-explanation"><em>The compiler processes a file top to bottom, so a function's definition (or at least its prototype, coming in Lesson 3.4) must appear before any code that calls it.</em></p>
-    </div>
-
-    <div class="quiz-block" data-q="5">
-        <p class="quiz-prompt">Q5. According to Rivet, what's the main benefit of writing the alarm logic as one function instead of copying it everywhere it's needed?</p>
-        <ul class="quiz-options">
-            <li class="quiz-option">A. Functions make a program run faster, always</li>
-            <li class="quiz-option quiz-correct">B. A later change only has to be made in one place, not everywhere it was copied ✓</li>
-            <li class="quiz-option">C. It lets the program skip writing printf statements</li>
-            <li class="quiz-option">D. It removes the need for main() entirely</li>
-        </ul>
-        <p class="quiz-explanation"><em>Writing logic once inside a function means fixing or changing it later only takes one edit, instead of hunting down every copy.</em></p>
     </div>
 
 </div>

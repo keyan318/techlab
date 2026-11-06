@@ -13,6 +13,8 @@ class LessonLabPageTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected bool $skipQuizGate = true;   // about finishing lessons, not the quiz lock
+
     private function labPage(string $module, string $lesson, string $slug = 'networking'): string
     {
         return route('student.planet.lab', compact('slug', 'module', 'lesson'));
@@ -105,20 +107,36 @@ class LessonLabPageTest extends TestCase
             ->assertSee('citadel-sim/index.html?lab=c1-l1&u='.$user->id.'&music=1', false);
     }
 
-    public function test_other_courses_labs_stay_silent(): void
+    public function test_networking_labs_play_the_music_from_the_lab_page(): void
     {
+        // NetSim has no music of its own, so the page around it plays it (the iframe gets no ?music=1).
         $this->actingAs($this->studentIn('networking', 'networking-fundamentals'))
             ->get($this->labPage('m1', 'lesson01'))
             ->assertOk()
-            ->assertDontSee('music=1', false);
+            ->assertDontSee('music=1', false)
+            ->assertSee('citadel-sim\/js\/music.js', false)
+            ->assertSee('id="lab-music"', false);
+    }
 
+    public function test_ias2_labs_have_no_music_yet(): void
+    {
         // IAS2 shares Citadel Sim but has not been given music yet.
         $ias2 = $this->studentIn('cybersecurity', 'information-assurance-security-2', ['role' => 'student', 'planets' => ['cybersecurity']]);
         $this->actingAs($ias2)
             ->get($this->labPage('m1', 'lesson01', 'information-assurance-security-2'))
             ->assertOk()
             ->assertSee('citadel-sim/index.html?lab=a1-l1', false)
-            ->assertDontSee('music=1', false);
+            ->assertDontSee('music=1', false)
+            ->assertDontSee('music.js', false);
+    }
+
+    public function test_every_lab_has_astros_cheer_pop_up(): void
+    {
+        $this->actingAs($this->studentIn('networking', 'networking-fundamentals'))
+            ->get($this->labPage('m1', 'lesson01'))
+            ->assertOk()
+            ->assertSee('id="astro-cheer"', false)
+            ->assertSee('astroCheer.show', false);
     }
 
     public function test_a_network_lab_still_listens_to_netsim(): void

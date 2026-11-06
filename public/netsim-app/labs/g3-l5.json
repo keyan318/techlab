@@ -1,0 +1,555 @@
+{
+  "app": "netsim",
+  "version": 1,
+  "devices": [
+    {
+      "id": "citadel",
+      "kind": "router",
+      "name": "citadel",
+      "x": 300,
+      "y": 20,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.31.1/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "10.0.32.1/30",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": "192.168.20.1/24",
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "CITADEL",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.31.0",
+            "wildcard": "0.0.0.3",
+            "area": 1
+          },
+          {
+            "addr": "10.0.32.0",
+            "wildcard": "0.0.0.3",
+            "area": 1
+          },
+          {
+            "addr": "192.168.20.0",
+            "wildcard": "0.0.0.255",
+            "area": 0
+          }
+        ],
+        "passive": [
+          "eth2"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      }
+    },
+    {
+      "id": "citadel-srv",
+      "kind": "server",
+      "name": "citadel-srv",
+      "x": 560,
+      "y": 20,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.20.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.20.1",
+          "dev": "eth0"
+        }
+      ],
+      "httpServer": {
+        "enabled": true,
+        "port": 80,
+        "body": "Citadel: Northwatch is back on the Grid."
+      }
+    },
+    {
+      "id": "nw-a",
+      "kind": "router",
+      "name": "nw-a",
+      "x": 120,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.31.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.30.2/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "NW-A",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.31.0",
+            "wildcard": "0.0.0.3",
+            "area": 1
+          },
+          {
+            "addr": "192.168.30.0",
+            "wildcard": "0.0.0.255",
+            "area": 1
+          }
+        ],
+        "passive": [
+          "eth1"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      },
+      "ifaceCfg": {
+        "eth1": {
+          "fhrp": [
+            {
+              "proto": "hsrp",
+              "group": 30,
+              "vip": 3232243201,
+              "priority": 110,
+              "preempt": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "nw-b",
+      "kind": "router",
+      "name": "nw-b",
+      "x": 480,
+      "y": 160,
+      "forwarding": true,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "10.0.32.2/30",
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": "192.168.30.3/24",
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": false
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": false
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "NW-B",
+      "ospf": {
+        "pid": 1,
+        "routerId": null,
+        "networks": [
+          {
+            "addr": "10.0.32.0",
+            "wildcard": "0.0.0.3",
+            "area": 0
+          },
+          {
+            "addr": "192.168.30.0",
+            "wildcard": "0.0.0.255",
+            "area": 1
+          }
+        ],
+        "passive": [
+          "eth1"
+        ],
+        "passiveDefault": false,
+        "nonPassive": [],
+        "refBw": 100,
+        "defaultOriginate": false
+      },
+      "ifaceCfg": {
+        "eth1": {
+          "fhrp": [
+            {
+              "proto": "hsrp",
+              "group": 30,
+              "vip": 3232243454,
+              "priority": 100,
+              "preempt": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "nw-sw",
+      "kind": "switch",
+      "name": "nw-sw",
+      "x": 300,
+      "y": 290,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth1",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth2",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth3",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth4",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth5",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth6",
+          "ip": null,
+          "up": true
+        },
+        {
+          "name": "eth7",
+          "ip": null,
+          "up": true
+        }
+      ],
+      "routes": [],
+      "cli": "ios",
+      "hostname": "NW-SW",
+      "vlans": {
+        "eth6": 30,
+        "eth7": 30,
+        "eth1": 30
+      },
+      "vlanDb": [
+        [
+          30,
+          "NORTHWATCH"
+        ]
+      ],
+      "ifaceCfg": {
+        "eth0": {
+          "mode": "access",
+          "portfast": true
+        },
+        "eth1": {
+          "mode": "access",
+          "portfast": true
+        }
+      }
+    },
+    {
+      "id": "volt",
+      "kind": "host",
+      "name": "volt",
+      "x": 160,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.30.10/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.30.1",
+          "dev": "eth0"
+        }
+      ]
+    },
+    {
+      "id": "nw-cam",
+      "kind": "host",
+      "name": "nw-cam",
+      "x": 440,
+      "y": 420,
+      "forwarding": false,
+      "ifaces": [
+        {
+          "name": "eth0",
+          "ip": "192.168.30.20/24",
+          "up": true
+        }
+      ],
+      "routes": [
+        {
+          "dest": "0.0.0.0/0",
+          "via": "192.168.30.1",
+          "dev": "eth0"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "citadel.eth0-nw-a.eth0",
+      "a": [
+        "citadel",
+        "eth0"
+      ],
+      "b": [
+        "nw-a",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth1-nw-b.eth0",
+      "a": [
+        "citadel",
+        "eth1"
+      ],
+      "b": [
+        "nw-b",
+        "eth0"
+      ]
+    },
+    {
+      "id": "citadel.eth2-citadel-srv.eth0",
+      "a": [
+        "citadel",
+        "eth2"
+      ],
+      "b": [
+        "citadel-srv",
+        "eth0"
+      ]
+    },
+    {
+      "id": "nw-a.eth1-nw-sw.eth6",
+      "a": [
+        "nw-a",
+        "eth1"
+      ],
+      "b": [
+        "nw-sw",
+        "eth6"
+      ]
+    },
+    {
+      "id": "nw-b.eth1-nw-sw.eth7",
+      "a": [
+        "nw-b",
+        "eth1"
+      ],
+      "b": [
+        "nw-sw",
+        "eth7"
+      ]
+    },
+    {
+      "id": "volt.eth0-nw-sw.eth0",
+      "a": [
+        "volt",
+        "eth0"
+      ],
+      "b": [
+        "nw-sw",
+        "eth0"
+      ]
+    },
+    {
+      "id": "nw-cam.eth0-nw-sw.eth1",
+      "a": [
+        "nw-cam",
+        "eth0"
+      ],
+      "b": [
+        "nw-sw",
+        "eth1"
+      ]
+    }
+  ],
+  "lab": {
+    "id": "g3-l5",
+    "title": "Lesson 3.5 — Midterm Mission: The Northwatch Storm",
+    "blurb": "A storm, an old backup, and at least three faults. Bottom up.",
+    "steps": [
+      {
+        "title": "Layer 2 first",
+        "body": "On `nw-sw`, run `show vlan brief`. Northwatch's subnet is VLAN 30: both router ports and the camera are there, but one PC port is not. Fix it with `switchport access vlan 30` on that port.",
+        "objectives": [
+          {
+            "id": "g3l5-v",
+            "label": "volt's port Gi0/1 is in VLAN 30",
+            "check": {
+              "type": "iface-config",
+              "device": "nw-sw",
+              "iface": "eth0",
+              "is": {
+                "accessVlan": 30
+              }
+            }
+          },
+          {
+            "id": "g3l5-gw",
+            "label": "volt reaches nw-a (192.168.30.2)",
+            "check": {
+              "type": "ping",
+              "from": "volt",
+              "expect": "success",
+              "toAddr": "192.168.30.2"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Routing next",
+        "body": "On `citadel`, `show ip ospf neighbor` should list both Northwatch routers. One is missing. Compare `show ip ospf interface brief` on `citadel` and on the missing router, then fix the area on the Northwatch side: Northwatch's uplinks belong to area 1.",
+        "objectives": [
+          {
+            "id": "g3l5-n1",
+            "label": "citadel and nw-a are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "citadel",
+              "neighbor": "nw-a",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g3l5-n2",
+            "label": "citadel and nw-b are OSPF neighbors",
+            "check": {
+              "type": "ospf-neighbor",
+              "device": "citadel",
+              "neighbor": "nw-b",
+              "expect": "full"
+            }
+          },
+          {
+            "id": "g3l5-r",
+            "label": "citadel has two paths to Northwatch's LAN",
+            "check": {
+              "type": "route",
+              "device": "citadel",
+              "dest": "192.168.30.0/24",
+              "source": "ospf",
+              "expect": "present",
+              "paths": 2
+            }
+          }
+        ]
+      },
+      {
+        "title": "Then the gateway",
+        "body": "The PCs use 192.168.30.1. Run `show standby brief` on both routers: they don't agree on the virtual IP, so each thinks it is alone. Fix the wrong one with `standby 30 ip 192.168.30.1` on its g0/1. Then prove it: the grader cuts each router's LAN port in turn.",
+        "objectives": [
+          {
+            "id": "g3l5-act",
+            "label": "nw-a is the active router for group 30",
+            "check": {
+              "type": "fhrp-active",
+              "device": "nw-a",
+              "group": 30,
+              "proto": "hsrp"
+            }
+          },
+          {
+            "id": "g3l5-http",
+            "label": "volt opens the Citadel server",
+            "check": {
+              "type": "http",
+              "from": "volt",
+              "url": "http://192.168.20.10/",
+              "expect": "ok",
+              "contains": "Northwatch is back"
+            }
+          },
+          {
+            "id": "g3l5-s1",
+            "label": "volt still reaches the Citadel if nw-a's LAN port fails",
+            "check": {
+              "type": "survives",
+              "from": "volt",
+              "toDevice": "citadel-srv",
+              "cut": {
+                "device": "nw-a",
+                "iface": "eth1"
+              }
+            }
+          },
+          {
+            "id": "g3l5-s2",
+            "label": "volt still reaches the Citadel if nw-b's LAN port fails",
+            "check": {
+              "type": "survives",
+              "from": "volt",
+              "toDevice": "citadel-srv",
+              "cut": {
+                "device": "nw-b",
+                "iface": "eth1"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

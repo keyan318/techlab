@@ -32,6 +32,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l6.json) complete
         To reach a cloud your traffic leaves your LAN through the <strong>default gateway</strong>, crosses the WAN, and arrives at the remote server. The remote server also needs a route back, or its reply is lost.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">In PaaS, what do you bring yourself?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The raw servers and storage</li>
+            <li class="quiz-option">B. The finished email software</li>
+            <li class="quiz-option">C. The operating system to run</li>
+            <li class="quiz-option quiz-correct">D. Only your own code ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>In PaaS the provider runs the platform and the operating system. You only bring your code.</em></p>
+    </div>
+
     <h2 class="section-heading">Crew Briefing</h2>
 
     <p class="body-text">
@@ -43,6 +54,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l6.json) complete
     <p class="body-text">
         There is one catch, and it is a classic. A message needs a route <em>out</em>, and the reply needs a route <em>back</em>.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">What classic catch does the crew face reaching the cloud?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The cloud only accepts radio traffic</li>
+            <li class="quiz-option">B. The router can't leave the ship's LAN</li>
+            <li class="quiz-option quiz-correct">C. The reply also needs a route back ✓</li>
+            <li class="quiz-option">D. The message must be sent two times</li>
+        </ul>
+        <p class="quiz-explanation"><em>A message needs a route out, and the reply needs a route back. Without the return route, the reply is lost.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -71,6 +93,17 @@ The Relay Lab is NetSim; passing it (public/netsim-app/labs/m1-l6.json) complete
 
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how does astro's traffic leave the ship's LAN?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Through the cloud's route</li>
+            <li class="quiz-option quiz-correct">B. Through its default route ✓</li>
+            <li class="quiz-option">C. Through a second LAN</li>
+            <li class="quiz-option">D. Through the jammed radio</li>
+        </ul>
+        <p class="quiz-explanation"><em>Astro's default route sends traffic to the router (192.168.1.1), which carries it out across the WAN.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

@@ -5,7 +5,7 @@
     <div class="flex min-w-0 flex-col gap-10">
 
       {{-- ═══════════ THE LESSONS ═══════════ --}}
-      <ol class="flex min-w-0 flex-col gap-10" aria-label="Chapters">
+      <ol class="flex min-w-0 flex-col gap-10" aria-label="Chapters" data-tour="course-chapters">
         @forelse ($chapters as $c)
           <li class="relative {{ ! $loop->last ? 'px-chain' : '' }}">
             <article class="px-card p-5 sm:p-8" aria-labelledby="ch-{{ $c['number'] }}">
@@ -36,7 +36,7 @@
                         <x-px-icon name="check" :size="16" /> Done!
                       </a>
                     @elseif ($lesson['state'] === 'current')
-                      <a href="{{ $lesson['url'] }}" class="px-btn px-btn-yellow min-w-[128px]" aria-label="Lesson {{ $lesson['number'] }}, {{ $lesson['title'] }}: start, earns {{ $lesson['xp'] }} XP">+{{ $lesson['xp'] }} XP</a>
+                      <a href="{{ $lesson['url'] }}" class="px-btn px-btn-blue min-w-[128px]" aria-label="Lesson {{ $lesson['number'] }}, {{ $lesson['title'] }}: start, earns {{ $lesson['xp'] }} XP">+{{ $lesson['xp'] }} XP</a>
                     @else
                       <span class="px-btn px-btn-locked min-w-[128px]" aria-label="Lesson {{ $lesson['number'] }}, {{ $lesson['title'] }}: locked until the lesson before it is done">
                         <x-px-icon name="lock" :size="16" /> Locked
@@ -44,6 +44,9 @@
                     @endif
                   </li>
                 @endforeach
+                @if ($c['boss'])
+                  @include('student.course.partials.mini-boss-row', ['boss' => $c['boss'], 'chapter' => $c['number']])
+                @endif
               </ul>
             </article>
           </li>

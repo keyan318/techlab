@@ -28,6 +28,17 @@ Syllabus: ITP1333 Unit D.1 Roles & Responsibilities. --}}
         everyone assumes someone else has it covered.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Who decides who may access a specific dataset?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. The system admin</li>
+            <li class="quiz-option">B. Every crew member</li>
+            <li class="quiz-option">C. The security council</li>
+            <li class="quiz-option quiz-correct">D. The data owner ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The data owner decides who should have access to that data. The admin carries out the technical work.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -38,10 +49,21 @@ Syllabus: ITP1333 Unit D.1 Roles & Responsibilities. --}}
         written down, not assumed."
     </p>
 
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why had nobody approved starmap access?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. Each assumed someone else had it ✓</li>
+            <li class="quiz-option">B. The starmap had no files left</li>
+            <li class="quiz-option">C. Astro refused to let anyone in at all</li>
+            <li class="quiz-option">D. Volt approved it every morning</li>
+        </ul>
+        <p class="quiz-explanation"><em>A task with no clearly assigned role tends not to get done, because everyone assumes someone else has it.</em></p>
+    </div>
+
     <h2 class="section-heading">Field Diagram</h2>
 
     <figure class="net-diagram">
-        <svg viewBox="0 0 640 230" role="img" aria-label="A task assumed to be "someone else's" is a task nobody actually does">
+        <svg viewBox="0 0 640 230" role="img" aria-label="A task assumed to be “someone else’s” is a task nobody actually does">
             <rect x="245" y="75" width="150" height="62" rx="14" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2.5"/>
             <text x="320" y="102" text-anchor="middle" font-size="16" font-weight="700" fill="#4a35b8">A Security Task</text>
             <text x="320" y="123" text-anchor="middle" font-size="12" fill="#4a35b8">needs one clear owner</text>
@@ -60,6 +82,17 @@ Syllabus: ITP1333 Unit D.1 Roles & Responsibilities. --}}
             <text x="320" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">A task assumed to be "someone else's" is a task nobody actually does</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what does the system admin do?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. The technical work ✓</li>
+            <li class="quiz-option">B. Approves access</li>
+            <li class="quiz-option">C. Sets the direction</li>
+            <li class="quiz-option">D. Writes the policy</li>
+        </ul>
+        <p class="quiz-explanation"><em>The system admin does the technical work: accounts, patches, configuration.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

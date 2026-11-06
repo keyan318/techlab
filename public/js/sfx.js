@@ -9,6 +9,8 @@
  *   pop   — every other button or link
  * An element (or any parent) can pick its own with data-sfx="coin|tick|thud|pop|win|lose",
  * or stay silent with data-sfx="off". Pages can also call window.techlabSfx.play('win').
+ * "alarm" is the final exam's danger siren (leaving the exam, a screenshot); the exam plays it
+ * with play('alarm', true) so it sounds even when clicks are muted, after unlock() on Start.
  *
  * Muted state lives in localStorage under "techlab_sfx" ("off" = muted); the sidebar's Sound
  * button flips it.
@@ -58,10 +60,19 @@
     lose: function () {
       [392, 330, 262].forEach(function (f, i) { note('triangle', f, f * 0.97, i * 0.18, i === 2 ? 0.45 : 0.18, 0.1); });
     },
+    /* A two-tone siren wailing up and down for about two seconds. */
+    alarm: function () {
+      for (var i = 0; i < 6; i++) {
+        var up = i % 2 === 0;
+        note('sawtooth', up ? 620 : 1040, up ? 1040 : 620, i * 0.34, 0.33, 0.11);
+        note('square', up ? 310 : 520, up ? 520 : 310, i * 0.34, 0.33, 0.04);
+      }
+    },
   };
 
-  function play(name) {
-    if (muted() || !SOUNDS[name]) return;
+  /* force: play even when muted (the exam's alarm must be heard). */
+  function play(name, force) {
+    if ((muted() && !force) || !SOUNDS[name]) return;
     try { SOUNDS[name](); } catch (e) {}
   }
 
@@ -101,6 +112,8 @@
   window.techlabSfx = {
     play: play,
     muted: muted,
+    /* Start the audio engine during a click, so sounds played later (with no click) still work. */
+    unlock: function () { audio(); },
     /* Flips sound on/off; returns true when sound is now on. */
     toggle: function () {
       var on = muted();

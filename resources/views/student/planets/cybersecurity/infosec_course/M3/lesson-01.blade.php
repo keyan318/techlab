@@ -36,6 +36,17 @@ Syllabus: ITP1232 Unit C.1 IT Risks. --}}
         <li><strong>Accept</strong>: note it and move on. Used for risks with low impact, no matter how likely.</li>
     </ul>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which response fits a risk with low impact?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Treat</li>
+            <li class="quiz-option">B. Transfer</li>
+            <li class="quiz-option">C. Escalate</li>
+            <li class="quiz-option quiz-correct">D. Accept ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Low-impact risks are accepted: note them and move on, no matter how likely.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -59,6 +70,17 @@ Syllabus: ITP1232 Unit C.1 IT Risks. --}}
         needed, but if it is, losing the only copy is catastrophic. That's not ours to carry alone — Codexia's
         allied fleet already offered to hold a copy. We transfer that one."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why is the offsite backup risk transferred?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It is both very likely and damaging</li>
+            <li class="quiz-option">B. Losing the only copy wouldn't matter</li>
+            <li class="quiz-option">C. The crew can fix it alone right now</li>
+            <li class="quiz-option quiz-correct">D. The allies can hold a copy for them ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Low likelihood but catastrophic impact, and not the crew's to carry alone. The allied fleet holds a copy.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -92,6 +114,17 @@ Syllabus: ITP1232 Unit C.1 IT Risks. --}}
             <text x="215" y="199" text-anchor="middle" font-size="11.5" fill="#146633">cargo bay lock</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the grid, which zone is the cargo bay lock in?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Treat</li>
+            <li class="quiz-option">B. Transfer</li>
+            <li class="quiz-option">C. Escalate</li>
+            <li class="quiz-option quiz-correct">D. Accept ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>The cargo bay lock is low likelihood and low impact, so it is accepted.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

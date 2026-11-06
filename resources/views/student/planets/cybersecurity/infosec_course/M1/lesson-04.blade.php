@@ -37,6 +37,17 @@ Syllabus: ITP1232 Unit A.4 Awareness & Management Commitment. --}}
         target was never the network — it was a person's judgment in the moment.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which of these is a phishing tell?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. A message with no link at all</li>
+            <li class="quiz-option">B. A sender from your own domain</li>
+            <li class="quiz-option">C. A request that follows the rules</li>
+            <li class="quiz-option quiz-correct">D. A message that rushes you ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Urgency is a classic tell. It is designed to make you skip the normal steps you would otherwise take.</em></p>
+    </div>
+
     <h2 class="section-heading">Astro Says</h2>
 
     <p class="body-text">
@@ -51,6 +62,17 @@ Syllabus: ITP1232 Unit A.4 Awareness & Management Commitment. --}}
         — look closely, not quickly." <strong>Astro</strong>: "This isn't a one-time drill. Every crew member checks
         every message like this, every time. That commitment is the actual defense."
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Astro say one click is enough?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. It makes Volt's walls not matter ✓</li>
+            <li class="quiz-option">B. It deletes the crew inbox for good</li>
+            <li class="quiz-option">C. It sends the click to Earth's fleet</li>
+            <li class="quiz-option">D. It turns every alarm in the base off</li>
+        </ul>
+        <p class="quiz-explanation"><em>Phishing walks past every technical defense by getting a person to open the door themselves.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -71,6 +93,17 @@ Syllabus: ITP1232 Unit A.4 Awareness & Management Commitment. --}}
             <text x="358" y="145" font-size="12" fill="#14306b" font-weight="700">0 tells: report vs. keep is clear</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, what is wrong with c0dexia.fleet?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. It has an extra word</li>
+            <li class="quiz-option">B. It uses a real domain</li>
+            <li class="quiz-option">C. It is missing the @</li>
+            <li class="quiz-option quiz-correct">D. A zero replaces an O ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>A spoofed sender is almost right: here a zero stands in for the O in codexia.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 

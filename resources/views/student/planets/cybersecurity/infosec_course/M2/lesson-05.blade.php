@@ -37,6 +37,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l5.js
         exactly why attackers look for the machine that skipped them.
     </p>
 
+    <div class="checkpoint-block" data-cp="1">
+        <p class="quiz-prompt">Which of these is an endpoint hardening habit?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Keep every old service running</li>
+            <li class="quiz-option">B. Share one password across accounts</li>
+            <li class="quiz-option quiz-correct">C. Disable unused accounts like Guest ✓</li>
+            <li class="quiz-option">D. Leave the default password in place</li>
+        </ul>
+        <p class="quiz-explanation"><em>An account nobody uses is an account nobody watches. Disable it, along with unused services.</em></p>
+    </div>
+
     <h2 class="section-heading">Volt Says</h2>
 
     <p class="body-text">
@@ -52,6 +63,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l5.js
         it watches is either." Volt doesn't argue: disable Guest, set a real password, kill the legacy service —
         then test it. Try to log in as Guest again. If it fails, the wall holds.
     </p>
+
+    <div class="checkpoint-block" data-cp="2">
+        <p class="quiz-prompt">Why does Vex target Volt's guard post?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option quiz-correct">A. It watches everything else ✓</li>
+            <li class="quiz-option">B. It has no power left</li>
+            <li class="quiz-option">C. It holds the starmap</li>
+            <li class="quiz-option">D. It is the newest machine they own</li>
+        </ul>
+        <p class="quiz-explanation"><em>If the watchtower isn't secure, nothing it watches is either. Harden your own post first.</em></p>
+    </div>
 
     <h2 class="section-heading">Field Diagram</h2>
 
@@ -83,6 +105,17 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l5.js
             <text x="320" y="172" text-anchor="middle" font-size="13" font-weight="700" fill="#14306b">Volt's Drill: login guest anything → fails</text>
         </svg>
     </figure>
+
+    <div class="checkpoint-block" data-cp="3">
+        <p class="quiz-prompt">In the diagram, how does Volt test the fix?</p>
+        <ul class="quiz-options">
+            <li class="quiz-option">A. Restarts the console</li>
+            <li class="quiz-option">B. Opens the legacy port</li>
+            <li class="quiz-option">C. Deletes the volt user</li>
+            <li class="quiz-option quiz-correct">D. Tries the Guest login ✓</li>
+        </ul>
+        <p class="quiz-explanation"><em>Volt's drill: log in as guest again. If it fails, the wall holds.</em></p>
+    </div>
 
     <h2 class="section-heading">Quiz</h2>
 
