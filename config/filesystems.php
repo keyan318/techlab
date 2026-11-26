@@ -1,3 +1,4 @@
+
 <?php
 
 return [
@@ -6,11 +7,6 @@ return [
     |--------------------------------------------------------------------------
     | Default Filesystem Disk
     |--------------------------------------------------------------------------
-    |
-    | Here you may specify the default filesystem disk that should be used
-    | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application for file storage.
-    |
     */
 
     'default' => env('FILESYSTEM_DISK', 'local'),
@@ -19,16 +15,15 @@ return [
     |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
-    |
-    | Below you may configure as many filesystem disks as necessary, and you
-    | may even configure multiple disks for the same driver. Examples for
-    | most supported storage drivers are configured here for reference.
-    |
-    | Supported drivers: "local", "ftp", "sftp", "s3"
-    |
     */
 
     'disks' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Local Private Storage
+        |--------------------------------------------------------------------------
+        */
 
         'local' => [
             'driver' => 'local',
@@ -38,14 +33,40 @@ return [
             'report' => false,
         ],
 
-        'public' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Local Public Storage
+        |--------------------------------------------------------------------------
+        */
+
+        // PUBLIC_DISK=supabase (production on Render, whose disk is wiped on every deploy) keeps
+        // uploads such as course art, lesson images and signatures in the techlab-public bucket.
+        'public' => env('PUBLIC_DISK') === 'supabase' ? [
+            'driver' => 's3',
+            'key' => env('SUPABASE_S3_KEY'),
+            'secret' => env('SUPABASE_S3_SECRET'),
+            'region' => env('SUPABASE_S3_REGION', 'ap-northeast-2'),
+            'bucket' => 'techlab-public',
+            'endpoint' => env('SUPABASE_S3_ENDPOINT'),
+            'url' => env('SUPABASE_PUBLIC_URL'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ] : [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Existing AWS S3 Storage
+        |--------------------------------------------------------------------------
+        */
 
         's3' => [
             'driver' => 's3',
@@ -60,17 +81,48 @@ return [
             'report' => false,
         ],
 
+        /*
+        |--------------------------------------------------------------------------
+        | Supabase Private Storage
+        |--------------------------------------------------------------------------
+        */
+
+        'supabase_private' => [
+            'driver' => 's3',
+            'key' => env('SUPABASE_S3_KEY'),
+            'secret' => env('SUPABASE_S3_SECRET'),
+            'region' => env('SUPABASE_S3_REGION', 'ap-northeast-2'),
+            'bucket' => 'techlab-private',
+            'endpoint' => env('SUPABASE_S3_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Supabase Public Storage
+        |--------------------------------------------------------------------------
+        */
+
+        'supabase_public' => [
+            'driver' => 's3',
+            'key' => env('SUPABASE_S3_KEY'),
+            'secret' => env('SUPABASE_S3_SECRET'),
+            'region' => env('SUPABASE_S3_REGION', 'ap-northeast-2'),
+            'bucket' => 'techlab-public',
+            'endpoint' => env('SUPABASE_S3_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'public',
+            'throw' => true,
+        ],
+
     ],
 
     /*
     |--------------------------------------------------------------------------
     | Symbolic Links
     |--------------------------------------------------------------------------
-    |
-    | Here you may configure the symbolic links that will be created when the
-    | `storage:link` Artisan command is executed. The array keys should be
-    | the locations of the links and the values should be their targets.
-    |
     */
 
     'links' => [

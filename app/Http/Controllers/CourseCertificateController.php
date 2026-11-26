@@ -66,14 +66,26 @@ class CourseCertificateController extends Controller
             // A class's certificate is signed by its faculty member; a self-paced one is issued by TechLab.
             'selfPaced' => (bool) $crew?->isSelfPaced(),
             'captain' => $crew?->isSelfPaced() ? null : $crew?->faculty?->name,
-            // A file path, not a URL: Dompdf reads the signature straight from disk.
-            'signature' => ! $crew?->isSelfPaced() && $crew?->faculty?->signature_path ? Storage::disk('public')->path($crew->faculty->signature_path) : null,
+            // Embedded as a data URI so it works whether the public disk is local or Supabase.
+            'signature' => ! $crew?->isSelfPaced() && $crew?->faculty?->signature_path ? self::signatureDataUri($crew->faculty->signature_path) : null,
         ];
 
         return response($pdfs->render($data), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="'.CertificatePdfService::fileName($data).'"',
         ]);
+    }
+
+    private static function signatureDataUri(string $path): ?string
+    {
+        $disk = Storage::disk('public');
+        $bytes = $disk->exists($path) ? $disk->get($path) : null;
+        if (! $bytes) {
+            return null;
+        }
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->buffer($bytes) ?: 'image/png';
+
+        return 'data:'.$mime.';base64,'.base64_encode($bytes);
     }
 
     /** "TL-ITP1232-7F3A-09C2": the same for one student and course every time, and not guessable from either. */

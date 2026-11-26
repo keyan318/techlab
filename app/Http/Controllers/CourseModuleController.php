@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Faculty-authored course content: modules and the files (docx, pptx, pdf, ...) inside them.
- * Files live on the private local disk and are only served through download(), which
+ * Files live in private Supabase Storage and are only served through download(), which
  * checks the requester belongs to the module's crew.
  */
 class CourseModuleController extends Controller
@@ -24,7 +24,12 @@ class CourseModuleController extends Controller
 
     private function ownCrew(Crew $crew): Crew
     {
-        abort_unless(Auth::check() && (Auth::user()->role ?? 'student') === 'faculty' && $crew->teacher_id === Auth::id(), 403);
+        abort_unless(
+            Auth::check()
+            && (Auth::user()->role ?? 'student') === 'faculty'
+            && $crew->teacher_id === Auth::id(),
+            403
+        );
 
         return $crew;
     }
@@ -39,6 +44,7 @@ class CourseModuleController extends Controller
     public function store(Request $request, Crew $crew): RedirectResponse
     {
         $this->ownCrew($crew);
+
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
@@ -75,8 +81,11 @@ class CourseModuleController extends Controller
     public function destroy(CourseModule $module): RedirectResponse
     {
         $this->ownModule($module);
+
         $crewId = $module->crew_id;
-        Storage::disk('local')->deleteDirectory($this->dir($module));
+
+        Storage::disk('supabase_private')->deleteDirectory($this->dir($module));
+
         $module->delete();
 
         return redirect(route('faculty.course', $crewId).'#modules');
@@ -85,6 +94,7 @@ class CourseModuleController extends Controller
     public function storeMaterials(Request $request, CourseModule $module): RedirectResponse
     {
         $this->ownModule($module);
+
         $request->validate([
             'files' => ['required', 'array', 'max:20'],
             'files.*' => ['file', 'max:'.self::MAX_KB, 'extensions:'.implode(',', array_keys(ModuleMaterial::KINDS))],
@@ -98,15 +108,18 @@ class CourseModuleController extends Controller
         return redirect(route('faculty.course', $module->crew_id).'#module-'.$module->id);
     }
 
-    /** @param UploadedFile[] $files */
+    /**
+     * @param UploadedFile[] $files
+     */
     private function attachMaterials(CourseModule $module, array $files): void
     {
         foreach ($files as $file) {
             $ext = strtolower($file->getClientOriginalExtension());
+
             $material = $module->materials()->create([
                 'name' => mb_substr($file->getClientOriginalName(), 0, 255),
                 'ext' => $ext,
-                'path' => $file->store($this->dir($module), 'local'),
+                'path' => $file->store($this->dir($module), 'supabase_private'),
                 'mime' => $file->getClientMimeType(),
                 'size' => $file->getSize(),
             ]);
@@ -116,10 +129,13 @@ class CourseModuleController extends Controller
         }
     }
 
-    /** A link (YouTube, an article, a Drive file) stored as a material with a url instead of a file. */
+    /**
+     * A link (YouTube, an article, a Drive file) stored as a material with a URL instead of a file.
+     */
     public function storeLink(Request $request, CourseModule $module): RedirectResponse
     {
         $this->ownModule($module);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'url' => ['required', 'url:http,https', 'max:2048'],
@@ -134,6 +150,7 @@ class CourseModuleController extends Controller
             'url' => $data['url'],
             'mime' => 'text/uri-list',
             'size' => 0,
+
             // Nothing to read: we cite the link, we do not fetch the page behind it.
             'indexed_at' => now(),
             'index_error' => 'Astro cites this link but does not read the page behind it.',
@@ -145,23 +162,31 @@ class CourseModuleController extends Controller
     public function destroyMaterial(ModuleMaterial $material): RedirectResponse
     {
         $module = $this->ownModule($material->module);
+
         if (! $material->isLink()) {
-            Storage::disk('local')->delete($material->path);
+            Storage::disk('supabase_private')->delete($material->path);
         }
+
         $material->delete();
 
         return redirect(route('faculty.course', $module->crew_id).'#module-'.$module->id);
     }
 
-    /** Faculty or a member of the module's crew may download. */
+    /**
+     * Faculty or a member of the module's crew may download.
+     */
     public function download(ModuleMaterial $material): StreamedResponse
     {
         $user = Auth::user();
+
         abort_unless($user && $user->belongsToCrew($material->module->crew_id), 403);
         abort_if($material->isLink(), 404);
-        abort_unless(Storage::disk('local')->exists($material->path), 404);
 
-        return Storage::disk('local')->download($material->path, $material->name);
+        $disk = Storage::disk('supabase_private');
+
+        abort_unless($disk->exists($material->path), 404);
+
+        return $disk->download($material->path, $material->name);
     }
 
     /**
@@ -173,13 +198,18 @@ class CourseModuleController extends Controller
     public function preview(Request $request, ModuleMaterial $material): StreamedResponse
     {
         abort_if($material->isLink(), 404);
+
         if (! $request->hasValidSignature()) {
             $user = Auth::user();
+
             abort_unless($user && $user->belongsToCrew($material->module->crew_id), 403);
         }
-        abort_unless(Storage::disk('local')->exists($material->path), 404);
 
-        return Storage::disk('local')->response($material->path, $material->name);
+        $disk = Storage::disk('supabase_private');
+
+        abort_unless($disk->exists($material->path), 404);
+
+        return $disk->response($material->path, $material->name);
     }
 
     private function dir(CourseModule $module): string
