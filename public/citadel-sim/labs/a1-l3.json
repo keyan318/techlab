@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: the crew funds the one control that actually closes a gap Vex could use. Astro: \"Now our credits go where the risk is, not where the shiniest tool is.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nThree purchase proposals are on the table. Read proposals.txt, then decide each one: worth-it or skip-it, based on cost versus the loss it actually prevents.\n\n1. cat proposals.txt\n2. classify <item> worth-it   OR   classify <item> skip-it\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nThree purchase proposals are on the table. Read proposals.txt, then decide each one: worth-it or skip-it, based on cost versus the loss it actually prevents.\n\n1. cat proposals.txt\n2. echo <item> worth-it >> findings.txt   OR   echo <item> skip-it >> findings.txt\n",
     "/home/cadet/citadel/proposals.txt": "PURCHASE PROPOSALS\n-------------------\nproposal-relay-password   cost: 0 credits    prevents: a repeat of the exact breach Vex already used (high likelihood, high impact)\nproposal-shield-diagnostic cost: 8,000 credits prevents: a rare failure that would cost 2,000 credits to fix (low likelihood, low impact)\nproposal-backup-relay      cost: 400 credits   prevents: total comms blackout if the main relay fails (medium likelihood, high impact)\n"
   },
   "users": [
@@ -54,7 +54,7 @@
     {
       "by": "rivet",
       "title": "Fund the gap, not the gadget",
-      "body": "Rivet: \"Free and closes the exact breach Vex used? Fund it. Expensive and barely helps? Skip it.\" Classify all three: `classify proposal-relay-password worth-it`, `classify proposal-shield-diagnostic skip-it`, `classify proposal-backup-relay worth-it`.",
+      "body": "Rivet: \"Free and closes the exact breach Vex used? Fund it. Expensive and barely helps? Skip it.\" Classify all three: `echo proposal-relay-password worth-it >> findings.txt`, `echo proposal-shield-diagnostic skip-it >> findings.txt`, `echo proposal-backup-relay worth-it >> findings.txt`.",
       "objectives": [
         {
           "id": "p1",

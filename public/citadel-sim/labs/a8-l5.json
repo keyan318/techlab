@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every entry point that could be quietly beaten now has a way to notice if it is. Astro: \"Locks buy time. Detection is what tells us the time ran out.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead coverage-audit.txt: four entry points. Classify each as covered or detection-gap.\n\n1. cat coverage-audit.txt\n2. classify <entry> covered | detection-gap\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead coverage-audit.txt: four entry points. Classify each as covered or detection-gap.\n\n1. cat coverage-audit.txt\n2. echo <entry> <answer> >> findings.txt   (answer: covered | detection-gap)\n",
     "/home/cadet/citadel/coverage-audit.txt": "DETECTION COVERAGE AUDIT\n---------------------------\nentry-main-hall       solid lock, CCTV covers it, alarm wired and monitored\nentry-cargo-loading   solid lock, but no camera and no alarm on this door\nentry-side-corridor   solid lock, motion sensor active, alarm wired and monitored\nentry-maintenance-hatch  lock present, camera nearby but pointed the wrong direction, no alarm\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "volt",
       "title": "Flag every detection gap",
-      "body": "Volt: \"A lock with nothing watching it if it fails is a gap, no matter how solid the lock is.\" Classify all four entry points.",
+      "body": "Volt: \"A lock with nothing watching it if it fails is a gap, no matter how solid the lock is.\" Classify all four entry points. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "e1",

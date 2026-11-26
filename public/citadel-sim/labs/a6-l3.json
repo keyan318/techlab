@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every violation gets a response that fits its pattern, applied the same way for everyone. Astro: \"Fair, and firm where it needs to be.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead violation-log.txt: four AUP violations this week. Classify each by the correct enforcement: reminder or revoke-access.\n\n1. cat violation-log.txt\n2. classify <violation> reminder | revoke-access\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead violation-log.txt: four AUP violations this week. Classify each by the correct enforcement: reminder or revoke-access.\n\n1. cat violation-log.txt\n2. echo <violation> <answer> >> findings.txt   (answer: reminder | revoke-access)\n",
     "/home/cadet/citadel/violation-log.txt": "AUP VIOLATION LOG — this week\n---------------------------------\nviolation-1   first offense, minor, cadet removed the unauthorized program immediately when told\nviolation-2   third offense this month, after two prior warnings, same cadet\nviolation-3   first offense, accidentally left a session unlocked, corrected right away\nviolation-4   deliberately shared their login with another cadet, against explicit policy\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "volt",
       "title": "Match the response to the pattern",
-      "body": "Volt: \"First and minor, corrected fast — reminder. Repeated or deliberate — revoke access.\" Classify all four violations.",
+      "body": "Volt: \"First and minor, corrected fast — reminder. Repeated or deliberate — revoke access.\" Classify all four violations. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "v1",

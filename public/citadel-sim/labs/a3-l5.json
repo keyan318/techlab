@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every stale document is flagged for review, before it could mislead anyone. Astro: \"An owner, and a date. That's all it takes to keep a document alive.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead document-register.txt: four documents, their last review date and owner status. Classify each as current or overdue.\n\n1. cat document-register.txt\n2. classify <doc> current | overdue\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead document-register.txt: four documents, their last review date and owner status. Classify each as current or overdue.\n\n1. cat document-register.txt\n2. echo <doc> <answer> >> findings.txt   (answer: current | overdue)\n",
     "/home/cadet/citadel/document-register.txt": "DOCUMENT REGISTER\n--------------------\ndoc-shield-duty       last reviewed: 3 years ago, no owner assigned, references a retired role\ndoc-password-standard last reviewed: 2 months ago, owner: Rivet\ndoc-visitor-policy    last reviewed: 4 years ago, no owner assigned, references decommissioned equipment\ndoc-incident-response last reviewed: 1 month ago, owner: Volt\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "volt",
       "title": "Flag what's overdue",
-      "body": "Volt: \"No owner and years unreviewed — overdue. Recent and owned — current.\" Classify all four documents.",
+      "body": "Volt: \"No owner and years unreviewed — overdue. Recent and owned — current.\" Classify all four documents. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "d1",

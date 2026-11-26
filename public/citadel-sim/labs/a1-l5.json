@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: the crew keeps working the list instead of declaring victory. Astro: \"No last piece. Just the next item.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRivet thinks the new firewall means we're finished. Read open-items.txt and sort each one: strategy (long-term plan), tactics (this week's action), or process-fix (a workflow problem, not a tool problem).\n\n1. cat open-items.txt\n2. classify <item> strategy | tactics | process-fix\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRivet thinks the new firewall means we're finished. Read open-items.txt and sort each one: strategy (long-term plan), tactics (this week's action), or process-fix (a workflow problem, not a tool problem).\n\n1. cat open-items.txt\n2. echo <item> <answer> >> findings.txt   (answer: strategy | tactics | process-fix)\n",
     "/home/cadet/citadel/open-items.txt": "OPEN ITEMS\n-----------\nitem-reduce-single-relay   \"Reduce our reliance on any single relay over the next year.\"\nitem-install-backup-relay  \"Install a backup relay this week.\"\nitem-self-approval-gap     \"The same cadet can request AND approve their own supply order.\"\nitem-password-training     \"Run a crew-wide session on why reused passwords are dangerous.\"\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Sort strategy, tactics, and process",
-      "body": "Astro: \"Long-term plan is strategy. This week's action is tactics. A workflow gap no tool can fix is a process-fix.\" Classify all four items.",
+      "body": "Astro: \"Long-term plan is strategy. This week's action is tactics. A workflow gap no tool can fix is a process-fix.\" Classify all four items. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "i1",

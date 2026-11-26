@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: the critical gap is fixed first, exactly where Vex would have gone in. Astro: \"Honest severity ranking, not equal urgency for everything.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead pva-findings.txt: four findings from Volt's walk-through. Classify each by severity.\n\n1. cat pva-findings.txt\n2. classify <finding> critical | moderate | low\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead pva-findings.txt: four findings from Volt's walk-through. Classify each by severity.\n\n1. cat pva-findings.txt\n2. echo <finding> <answer> >> findings.txt   (answer: critical | moderate | low)\n",
     "/home/cadet/citadel/pva-findings.txt": "PVA FINDINGS\n--------------\nfinding-side-door        hasn't locked properly in weeks, a direct way in\nfinding-camera-blind-spot two-meter gap near the cargo bay, but the door there is locked\nfinding-decorative-panel  loose, but leads nowhere useful\nfinding-emergency-exit    propped open with a supply crate during shift changes\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "volt",
       "title": "Rank each finding honestly",
-      "body": "Volt: \"Easy way in with real damage — critical. A real gap but still contained — moderate. Leads nowhere — low.\" Classify all four.",
+      "body": "Volt: \"Easy way in with real damage — critical. A real gap but still contained — moderate. Leads nowhere — low.\" Classify all four. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "f1",

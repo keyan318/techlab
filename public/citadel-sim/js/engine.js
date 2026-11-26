@@ -275,6 +275,7 @@ Look around
   head | tail [-n 5] <file>          first or last lines of a file
   grep [-i] [-n] [-r] <text> <file>  find lines that contain text (-i: any case)
   <command> | grep <text>            send one command's output into another
+  echo <text> >> <file>              add a line to the end of a file (> replaces the file)
   whoami | id | hostname | uname -a | history | clear
 
 Accounts (admin commands need sudo in front)
@@ -296,11 +297,14 @@ Files and permissions
   chmod <mode> <file>                change permissions, e.g. chmod 600 secret.txt
   sha256sum <file>                   fingerprint a file (also md5sum, sha1sum)
 
+Writing down your answers
+  echo <item> <answer> >> findings.txt   one answer per line, e.g. echo event-1 C >> findings.txt
+                                         answers: asset, threat, vulnerability, risk,
+                                         C (confidentiality), I (integrity), A (availability),
+                                         or any answer the lab asks for
+  cat findings.txt                       check what you wrote (a new line fixes an old answer)
+
 Lab tools (the crew's field kit)
-  classify <item> <category>         record what something is:
-                                     asset, threat, vulnerability, risk,
-                                     C (confidentiality), I (integrity), A (availability),
-                                     or any category the lab asks for
   login <user> <password>            try to log in as an account (Volt's Drill: test it)
   mask <file>                        write a redacted copy of a file, hiding sensitive patterns
   inbox                              list messages in the crew inbox
@@ -387,7 +391,6 @@ const COMMANDS = {
   sha256sum: (ctx) => hashsum(ctx, 'sha256', 64),
   sha1sum: (ctx) => hashsum(ctx, 'sha1', 40),
   md5sum: (ctx) => hashsum(ctx, 'md5', 32),
-  classify: (ctx) => classify(ctx.lab, ctx.state, ctx.args),
   login: (ctx) => login(ctx.state, ctx.args),
   mask: (ctx) => mask(ctx.lab, ctx.state, ctx.args),
   inbox: (ctx) => inboxList(ctx.lab, ctx.state),
@@ -441,8 +444,10 @@ function lex(line) {
       out.push({ op: ch });
     } else if (ch === '>') {
       push();
-      if (line[i + 1] === '>') i++;
-      out.push({ op: '>' });
+      if (line[i + 1] === '>') {
+        out.push({ op: '>>' });
+        i++;
+      } else out.push({ op: '>' });
     } else {
       cur += ch;
       has = true;
@@ -462,9 +467,9 @@ export function runCommand(lab, state, line) {
   if (!trimmed) return { output: '' };
   const toks = lex(trimmed);
 
-  if (toks.some((t) => ['>', '<', '&'].includes(t.op))) {
+  if (toks.some((t) => ['<', '&'].includes(t.op))) {
     remember(state, trimmed);
-    return { output: 'bash: > < and & are switched off on this training computer. To copy a file, use cp <from> <to>.\n' };
+    return { output: 'bash: < and & are switched off on this training computer. To copy a file, use cp <from> <to>.\n' };
   }
 
   // `a ; b`, `a && b` and `a || b` run one after another; each part is one history entry.
@@ -475,7 +480,23 @@ export function runCommand(lab, state, line) {
   }
   const parts = groups.filter((g) => g.length);
   let output = '';
-  for (const g of parts) {
+  for (let g of parts) {
+    // `command > file` writes the output into a file, `>> file` adds it to the end.
+    let redirect = null;
+    const at = g.findIndex((t) => t.op === '>' || t.op === '>>');
+    if (at >= 0) {
+      const target = g[at + 1];
+      if (!target || !('w' in target) || at + 2 !== g.length) {
+        remember(state, trimmed);
+        return { output: output + "bash: put the file name right after > or >>, at the end, e.g. echo event-1 C >> findings.txt\n" };
+      }
+      redirect = { append: g[at].op === '>>', file: target.w };
+      g = g.slice(0, at);
+      if (!g.length) {
+        remember(state, trimmed);
+        return { output: output + "bash: syntax error near unexpected token `>'\n" };
+      }
+    }
     const stages = [[]];
     for (const t of g) {
       if (t.op === '|') stages.push([]);
@@ -490,9 +511,46 @@ export function runCommand(lab, state, line) {
       if (res.prompt) return { ...res, output: output + (res.output || '') };
       stdin = res.output || '';
     }
-    output += stdin;
+    output += redirect ? writeOut(lab, state, redirect, stdin) : stdin;
   }
   return { output };
+}
+
+// Saves a command's output into a file (> replaces it, >> adds to the end).
+// Lines written to findings.txt are the crew's answers: `<item> <answer>`, e.g. `event-1 C`.
+function writeOut(lab, state, redirect, text) {
+  const abs = resolvePath(state.cwd, redirect.file, state.home);
+  if (isDir(state, abs) && !state.files[abs]) return `bash: ${redirect.file}: Is a directory\n`;
+  if (!isDir(state, dirname(abs))) return `bash: ${redirect.file}: No such file or directory\n` + pathHint(state, redirect.file);
+  if (VIRTUAL_FILES.includes(abs) || !canWrite(state, abs, false)) return `bash: ${redirect.file}: Permission denied\n`;
+  const old = redirect.append && state.files[abs] ? state.files[abs].content : '';
+  state.files[abs] = { path: abs, content: old + text };
+  return basename(abs) === FINDINGS ? recordFindings(lab, state, text) : '';
+}
+
+const FINDINGS = 'findings.txt';
+
+function recordFindings(lab, state, text) {
+  const items = lab.classify || {};
+  const names = Object.keys(items);
+  if (!names.length) return '';
+  let out = '';
+  for (const line of text.split('\n')) {
+    const words = line.replace(/[:=,]/g, ' ').trim().split(/\s+/).filter(Boolean);
+    if (!words.length) continue;
+    const item = words[0].toLowerCase();
+    if (!(item in items)) {
+      out += `(findings.txt: "${words[0]}" is not on this lab's list. Items: ${names.join(', ')})\n`;
+      continue;
+    }
+    if (words.length < 2) {
+      out += `(findings.txt: write an answer after ${words[0]}, e.g. echo ${words[0]} <answer> >> findings.txt)\n`;
+      continue;
+    }
+    const raw = words[words.length - 1].toLowerCase();
+    state.classified[item] = CATEGORY[raw] || raw;
+  }
+  return out;
 }
 
 function remember(state, line) {
@@ -525,6 +583,7 @@ function unknown(name) {
   if (Object.hasOwn(WINDOWS, lower)) s += `(${name} is a Windows command. On Linux, use: ${WINDOWS[lower]})\n`;
   else if (lower !== name && Object.hasOwn(COMMANDS, lower)) s += `(Linux is case-sensitive. Try: ${lower})\n`;
   else if (Object.hasOwn(MISSING, lower)) s += `(This training computer doesn't have ${lower}. Try: ${MISSING[lower]})\n`;
+  else if (/^clas+s?if/.test(lower)) s += '(Linux has no classify command. Write your answer into findings.txt instead, e.g. echo event-1 C >> findings.txt)\n';
   else s += "(Type help to see the commands you can use.)\n";
   return s;
 }
@@ -1083,20 +1142,6 @@ function hashsum(ctx, algo, len) {
     out += r.err || `${fakeHash(r.file.content, algo, len)}  ${a}\n`;
   }
   return out;
-}
-
-function classify(lab, state, args) {
-  const items = lab.classify || {};
-  if (args.length < 2) {
-    const names = Object.keys(items);
-    return 'Usage: classify <item> <category>\n' + (names.length ? `Items in this lab: ${names.join(', ')}\n` : '');
-  }
-  const item = args[0].toLowerCase();
-  const raw = args[1].toLowerCase();
-  const cat = CATEGORY[raw] || raw;
-  if (!(item in items)) return `Unknown item "${args[0]}". Items in this lab: ${Object.keys(items).join(', ')}\n`;
-  state.classified[item] = cat;
-  return `Recorded: ${item} = ${cat}.\n`;
 }
 
 function submit(lab, state, args) {

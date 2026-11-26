@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every recovery event is checked honestly against the plan's own targets. Astro: \"The plan is only as good as what it actually does under pressure.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead dr-plan.txt for the targets, then recovery-log.txt for three real events. Classify each event as within-target or exceeded-target.\n\n1. cat dr-plan.txt\n2. cat recovery-log.txt\n3. classify <event> within-target | exceeded-target\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead dr-plan.txt for the targets, then recovery-log.txt for three real events. Classify each event as within-target or exceeded-target.\n\n1. cat dr-plan.txt\n2. cat recovery-log.txt\n3. echo <event> <answer> >> findings.txt   (answer: within-target | exceeded-target)\n",
     "/home/cadet/citadel/dr-plan.txt": "DISASTER RECOVERY PLAN — Targets\n------------------------------------\nRTO (recovery time objective): 4 hours\nRPO (recovery point objective): 1 hour\n",
     "/home/cadet/citadel/recovery-log.txt": "RECOVERY LOG\n--------------\nevent-relay-drill      down 3 hours, backup was 30 minutes old at time of failure\nevent-shield-outage    down 6 hours, backup was 20 minutes old at time of failure\nevent-storage-failure  down 2 hours, backup was 90 minutes old at time of failure\n"
   },
@@ -63,7 +63,7 @@
     {
       "by": "astro",
       "title": "Check each event against the targets",
-      "body": "Astro: \"Downtime under 4 hours and data loss under 1 hour both meet target. Either one exceeded is a miss.\" Classify all three events.",
+      "body": "Astro: \"Downtime under 4 hours and data loss under 1 hour both meet target. Either one exceeded is a miss.\" Classify all three events. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "e1",

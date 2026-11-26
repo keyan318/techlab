@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every requirement is checked against real evidence before Codexia's inspector ever asks. Astro: \"Only what's actually documented counts.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead compliance-checklist.txt for the requirements, then evidence-file.txt for what's actually documented. Classify each requirement as compliant or non-compliant.\n\n1. cat compliance-checklist.txt\n2. cat evidence-file.txt\n3. classify <requirement> compliant | non-compliant\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead compliance-checklist.txt for the requirements, then evidence-file.txt for what's actually documented. Classify each requirement as compliant or non-compliant.\n\n1. cat compliance-checklist.txt\n2. cat evidence-file.txt\n3. echo <requirement> <answer> >> findings.txt   (answer: compliant | non-compliant)\n",
     "/home/cadet/citadel/compliance-checklist.txt": "PHYSICAL SECURITY COMPLIANCE CHECKLIST\n------------------------------------------\nrequirement-vault-log         all vault entries must be logged with identity and timestamp\nrequirement-footage-retention  camera footage must be retained for at least 90 days\nrequirement-restricted-mfa     restricted areas require two independent forms of physical access\nrequirement-visitor-badges     all visitors must wear a visible, dated badge\n",
     "/home/cadet/citadel/evidence-file.txt": "EVIDENCE ON FILE\n------------------\nrequirement-vault-log: full entry log exists, identity and timestamp recorded for every entry.\nrequirement-footage-retention: system currently retains only 30 days of footage.\nrequirement-restricted-mfa: restricted areas require both a smart card and a biometric scan.\nrequirement-visitor-badges: badges are issued but do not show a date.\n"
   },
@@ -64,7 +64,7 @@
     {
       "by": "astro",
       "title": "Audit each requirement against the evidence",
-      "body": "Astro: \"Only what actually matches the requirement counts as compliant.\" Classify all four requirements.",
+      "body": "Astro: \"Only what actually matches the requirement counts as compliant.\" Classify all four requirements. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "r1",

@@ -182,7 +182,7 @@ Syllabus: ITP1333 Unit A.1 Importance of Info Protection. --}}
         </a>
         <p class="body-text relay-lab-note">
             Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Linux commands there
-            (a terminal), such as <code>ls</code>, <code>cat</code> and <code>classify</code>. Objectives tick off as you go.
+            (a terminal), such as <code>ls</code>, <code>cat</code> and <code>echo</code>. Objectives tick off as you go.
         </p>
     </div>
 

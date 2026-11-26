@@ -170,7 +170,7 @@
     {
       "by": "astro",
       "title": "Alert 5: Reject the forged order",
-      "body": "Astro: \"An unsigned order to surrender is not my order.\" Read both final orders, classify each `valid` or `forged`, and submit the id of the one to actually obey.",
+      "body": "Astro: \"An unsigned order to surrender is not my order.\" Read both final orders, classify each `valid` or `forged`, and submit the id of the one to actually obey. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "read-1",

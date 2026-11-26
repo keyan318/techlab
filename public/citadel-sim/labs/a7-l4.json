@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every single point of failure is identified before Vex could find it first. Astro: \"One failure should never mean total loss. Not anymore.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead relay-architecture.txt: four components. Classify each as single-point-of-failure or already-redundant.\n\n1. cat relay-architecture.txt\n2. classify <component> single-point-of-failure | already-redundant\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead relay-architecture.txt: four components. Classify each as single-point-of-failure or already-redundant.\n\n1. cat relay-architecture.txt\n2. echo <component> <answer> >> findings.txt   (answer: single-point-of-failure | already-redundant)\n",
     "/home/cadet/citadel/relay-architecture.txt": "RELAY SYSTEM ARCHITECTURE\n----------------------------\ncomponent-relay          one relay unit, no backup — if it fails, contact is lost\ncomponent-power-feed     one power source, no backup — if it cuts out, everything stops\ncomponent-antenna        one antenna, no backup — if damaged, no signal at all\ncomponent-cooling        two cooling units running together, load-balanced\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "rivet",
       "title": "Find every single point of failure",
-      "body": "Rivet: \"No backup, one failure ends it — that's a single point of failure. Already load-balanced — that's redundant.\" Classify all four components.",
+      "body": "Rivet: \"No backup, one failure ends it — that's a single point of failure. Already load-balanced — that's redundant.\" Classify all four components. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "c1",

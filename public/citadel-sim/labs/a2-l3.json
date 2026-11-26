@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every system now sits in its correct zone, and nothing crosses straight from public to restricted. Astro: \"One boundary at a time. No shortcuts.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead zone-drill.txt: five Citadel systems with no zone assigned. Classify each as public, dmz, or restricted.\n\n1. cat zone-drill.txt\n2. classify <system> public | dmz | restricted\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead zone-drill.txt: five Citadel systems with no zone assigned. Classify each as public, dmz, or restricted.\n\n1. cat zone-drill.txt\n2. echo <system> <answer> >> findings.txt   (answer: public | dmz | restricted)\n",
     "/home/cadet/citadel/zone-drill.txt": "ZONE DRILL\n-----------\nsystem-public-beacon    broadcasts the Citadel's callsign to any passing ship — open to everyone\nsystem-comms-relay      talks to allied fleets outward, and passes verified requests inward\nsystem-starmap-vault    the crew's most sensitive data, never talks to the outside directly\nsystem-guest-terminal   a kiosk visiting allies use, filtered on both sides\nsystem-command-core     Astro's private command systems, reached only through the relay\n"
   },
   "users": [
@@ -56,7 +56,7 @@
     {
       "by": "volt",
       "title": "Place each system in its zone",
-      "body": "Volt: \"Open to everyone is public. Filtered both ways is dmz. Sensitive and reached only through the dmz is restricted.\" Classify all five systems.",
+      "body": "Volt: \"Open to everyone is public. Filtered both ways is dmz. Sensitive and reached only through the dmz is restricted.\" Classify all five systems. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "s1",

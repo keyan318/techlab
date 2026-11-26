@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: leadership's own actions reinforce the program instead of quietly undermining it. Astro: \"What I do matters more than what I sign.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead leadership-actions.txt: four actions from this month. Classify each as supports-program or undermines-program.\n\n1. cat leadership-actions.txt\n2. classify <action> supports-program | undermines-program\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead leadership-actions.txt: four actions from this month. Classify each as supports-program or undermines-program.\n\n1. cat leadership-actions.txt\n2. echo <action> <answer> >> findings.txt   (answer: supports-program | undermines-program)\n",
     "/home/cadet/citadel/leadership-actions.txt": "LEADERSHIP ACTIONS — this month\n-----------------------------------\naction-1   Astro signed in at the console like every other cadet, even when running late\naction-2   Command approved the security budget request in full, on schedule\naction-3   A department head skipped the access review \"just this once,\" no consequence noted\naction-4   Astro publicly thanked a cadet for reporting a phishing email, in front of the crew\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Judge each action",
-      "body": "Astro: \"Following the same rule, funding it properly, praising good behavior — all support it. A quiet exception undermines it.\" Classify all four.",
+      "body": "Astro: \"Following the same rule, funding it properly, praising good behavior — all support it. A quiet exception undermines it.\" Classify all four. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "a1",

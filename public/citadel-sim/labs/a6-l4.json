@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every control is placed where it actually works — automated where it can be, reviewed by people where it must be. Astro: \"Neither one covers everything alone.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead control-proposals.txt: four proposed controls. Classify each as administrative or technical.\n\n1. cat control-proposals.txt\n2. classify <control> administrative | technical\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead control-proposals.txt: four proposed controls. Classify each as administrative or technical.\n\n1. cat control-proposals.txt\n2. echo <control> <answer> >> findings.txt   (answer: administrative | technical)\n",
     "/home/cadet/citadel/control-proposals.txt": "PROPOSED CONTROLS\n-------------------\ncontrol-1   a firewall rule blocking all unused ports automatically\ncontrol-2   a quarterly review of who has access to the starmap, signed off by Astro\ncontrol-3   the system automatically rejecting any password under 12 characters\ncontrol-4   a background check required before any new crew member is hired\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Sort administrative from technical",
-      "body": "Astro: \"Automatic and enforced by a tool is technical. Judged and signed off by a person is administrative.\" Classify all four.",
+      "body": "Astro: \"Automatic and enforced by a tool is technical. Judged and signed off by a person is administrative.\" Classify all four. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "c1",

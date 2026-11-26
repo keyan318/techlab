@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED. Every secret file now stays with its owner. Astro: \"Protect the data itself, not just the door. That is data-centric security.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nWe found files sitting around unsorted, readable by anyone who's logged in — including a captured Doom intern account. Classify each one, then lock the secret ones down.\n\n1. cat starmap-copy.txt and crew-roster.txt\n2. classify each file: secret or public\n3. block doom_intern from the secret ones: setfacl -m u:doom_intern:--- <file>\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nWe found files sitting around unsorted, readable by anyone who's logged in — including a captured Doom intern account. Classify each one, then lock the secret ones down.\n\n1. cat starmap-copy.txt and crew-roster.txt\n2. write each file's label into findings.txt: echo <file> secret >> findings.txt (or public)\n3. block doom_intern from the secret ones: setfacl -m u:doom_intern:--- <file>\n",
     "/home/cadet/citadel/starmap-copy.txt": "A working copy of the route home. If Doom gets this, they get everything.\n",
     "/home/cadet/citadel/crew-roster.txt": "Public roster: Astro (Captain), Rivet (Engineer), Volt (Shield Tech), Cadet (Shield Cadet). No addresses, no codes.\n"
   },
@@ -71,7 +71,7 @@
     {
       "by": "astro",
       "title": "Classify and lock it down",
-      "body": "Astro: \"Data-centric security means the protection travels with the data, not just the door.\" Classify each file (`classify starmap-copy.txt secret` or `public`), then deny the captured account access to whichever one is secret: `setfacl -m u:doom_intern:--- starmap-copy.txt`.",
+      "body": "Astro: \"Data-centric security means the protection travels with the data, not just the door.\" Classify each file (`echo starmap-copy.txt secret >> findings.txt` or `public`), then deny the captured account access to whichever one is secret: `setfacl -m u:doom_intern:--- starmap-copy.txt`.",
       "objectives": [
         {
           "id": "class-starmap",

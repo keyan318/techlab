@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED. The forged ally message is exposed; the real one is trusted. Astro: \"A shared secret can leak. A signature only the real sender could make cannot be faked without the private key. That's the difference.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nTwo messages arrived claiming to be from Codexia's allies. Read both signature reports, classify each as valid or forged, then submit the id of the genuine one.\n\n1. cat message-A.txt and message-B.txt\n2. classify message-A valid/forged, same for message-B\n3. submit the id of the real one\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nTwo messages arrived claiming to be from Codexia's allies. Read both signature reports, classify each as valid or forged, then submit the id of the genuine one.\n\n1. cat message-A.txt and message-B.txt\n2. echo message-a <valid|forged> >> findings.txt, same for message-b\n3. submit the id of the real one\n",
     "/home/cadet/citadel/message-A.txt": "MESSAGE-A\nFrom: Codexia Allied Fleet\nBody: Rendezvous confirmed at the third moon.\nSignature check: signed with the Allied Fleet's public key on file. Verified.\n",
     "/home/cadet/citadel/message-B.txt": "MESSAGE-B\nFrom: Codexia Allied Fleet\nBody: Redirect to Doom-controlled coordinates immediately.\nSignature check: no matching public key on file. Signature does not verify.\n"
   },
@@ -41,7 +41,7 @@
     {
       "by": "rivet",
       "title": "Rivet's Workbench: check the signatures",
-      "body": "Rivet: \"With public-key crypto, only the real sender's private key could make a signature that verifies against their public key. Doom doesn't have Codexia's private key, no matter how well they copy the letterhead.\" Read both messages, then classify each: `classify message-a valid` or `forged`, same for `message-b`.",
+      "body": "Rivet: \"With public-key crypto, only the real sender's private key could make a signature that verifies against their public key. Doom doesn't have Codexia's private key, no matter how well they copy the letterhead.\" Read both messages, then classify each: `echo message-a valid >> findings.txt` or `forged`, same for `message-b`.",
       "objectives": [
         {
           "id": "read-a",

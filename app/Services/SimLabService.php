@@ -546,7 +546,7 @@ class SimLabService
                     return $fail("{$field['label']} is too long.");
                 }
                 if (! empty($field['category'])) {
-                    // Students type it as one word after `classify <item>`; the simulator stores it in lower case.
+                    // Students type it as one word in `echo <item> <answer> >> findings.txt`; the simulator stores it in lower case.
                     $value = strtolower($value);
                     $value = self::CATEGORY[$value] ?? $value;
                     if (! preg_match('/^[a-z0-9-]{1,60}$/', $value)) {

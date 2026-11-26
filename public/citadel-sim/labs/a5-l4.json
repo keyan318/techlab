@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every rule that matters is enforced again on the server. Astro: \"The client offers convenience. The server holds the line.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead design-note.txt: three proposed fixes for the supply app's client-only total check. Classify each as safe or still-risky.\n\n1. cat design-note.txt\n2. classify <fix> safe | still-risky\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead design-note.txt: three proposed fixes for the supply app's client-only total check. Classify each as safe or still-risky.\n\n1. cat design-note.txt\n2. echo <fix> <answer> >> findings.txt   (answer: safe | still-risky)\n",
     "/home/cadet/citadel/design-note.txt": "PROPOSED FIXES\n----------------\nfix-1   add the same total check on the server, so it's verified again after the client\nfix-2   make the client-side check run twice, to be extra sure\nfix-3   store the session token in an unencrypted local file for \"faster loading\"\n"
   },
   "users": [
@@ -54,7 +54,7 @@
     {
       "by": "volt",
       "title": "Only a server check actually holds",
-      "body": "Volt: \"Running the same bypassable check twice fixes nothing. A readable token is still a readable token. Only a real server-side check closes the gap.\" Classify all three.",
+      "body": "Volt: \"Running the same bypassable check twice fixes nothing. A readable token is still a readable token. Only a real server-side check closes the gap.\" Classify all three. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "f1",

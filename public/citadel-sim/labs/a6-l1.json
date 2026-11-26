@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: the real alarm reaches Astro immediately, and nothing else drowns it out. Astro: \"The right event, to the right person, at the right speed.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead overnight-queue.txt: four events. Classify each by how it should be routed: immediate, routine, or council.\n\n1. cat overnight-queue.txt\n2. classify <event> immediate | routine | council\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead overnight-queue.txt: four events. Classify each by how it should be routed: immediate, routine, or council.\n\n1. cat overnight-queue.txt\n2. echo <event> <answer> >> findings.txt   (answer: immediate | routine | council)\n",
     "/home/cadet/citadel/overnight-queue.txt": "OVERNIGHT EVENT QUEUE\n------------------------\nevent-1   active intrusion detected on the relay console, ongoing right now\nevent-2   a false alarm from last week, already confirmed harmless\nevent-3   a recurring pattern of minor policy exceptions over the last month, needs a group decision on the policy itself\nevent-4   a routine backup completed successfully, nothing unusual\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Route each event correctly",
-      "body": "Astro: \"Active and urgent, wake me. Minor and resolved, log it. A pattern needing a group decision, that's council.\" Classify all four events.",
+      "body": "Astro: \"Active and urgent, wake me. Minor and resolved, log it. A pattern needing a group decision, that's council.\" Classify all four events. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "e1",

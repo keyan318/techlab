@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: the outpost goes where it can actually hold, not just where it looks good on paper. Astro: \"One strong factor never offsets a real disqualifier.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead site-survey.txt: three candidate sites. Classify each as suitable or unsuitable.\n\n1. cat site-survey.txt\n2. classify <site> suitable | unsuitable\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead site-survey.txt: three candidate sites. Classify each as suitable or unsuitable.\n\n1. cat site-survey.txt\n2. echo <site> <answer> >> findings.txt   (answer: suitable | unsuitable)\n",
     "/home/cadet/citadel/site-survey.txt": "SITE SURVEY — Candidate Outposts\n------------------------------------\nsite-ridge       excellent sightlines, no known hazards, two independent power lines\nsite-basin       excellent sightlines, but sits in a known flood zone with only one supply line\nsite-valley      moderate sightlines, no known hazards, two independent power lines, no nearby high-value targets\n"
   },
   "users": [
@@ -54,7 +54,7 @@
     {
       "by": "astro",
       "title": "Judge each candidate",
-      "body": "Astro: \"A real disqualifier, like flood risk with a single supply line, outweighs one strong factor.\" Classify all three sites.",
+      "body": "Astro: \"A real disqualifier, like flood risk with a single supply line, outweighs one strong factor.\" Classify all three sites. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "s1",

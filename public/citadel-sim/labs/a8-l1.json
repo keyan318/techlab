@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every asset is protected to the level it actually deserves. Astro: \"Protecting everything the same way is protecting nothing well.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead asset-list.txt: four items. Classify each into its correct sensitivity tier.\n\n1. cat asset-list.txt\n2. classify <item> public | internal | confidential | restricted\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead asset-list.txt: four items. Classify each into its correct sensitivity tier.\n\n1. cat asset-list.txt\n2. echo <item> <answer> >> findings.txt   (answer: public | internal | confidential | restricted)\n",
     "/home/cadet/citadel/asset-list.txt": "ASSET LIST\n------------\nasset-recruiting-flyer   public recruiting material, meant for wide distribution\nasset-duty-roster         this week's shift schedule, meant only for the crew\nasset-crew-personal-data  personal details of every crew member\nasset-starmap             the crew's most sensitive data, the only way home\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Classify each into its tier",
-      "body": "Astro: \"Match the protection to the actual harm. Four items, four tiers.\" Classify all four.",
+      "body": "Astro: \"Match the protection to the actual harm. Four items, four tiers.\" Classify all four. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "a1",

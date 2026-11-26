@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: the contract keeps judgment calls in-house and monitoring outsourced, exactly where each belongs. Astro: \"Work, yes. Judgment, ours.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead mssp-proposal.txt: three functions proposed for the new contract. Classify each as outsource-ok or keep-in-house.\n\n1. cat mssp-proposal.txt\n2. classify <function> outsource-ok | keep-in-house\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead mssp-proposal.txt: three functions proposed for the new contract. Classify each as outsource-ok or keep-in-house.\n\n1. cat mssp-proposal.txt\n2. echo <function> <answer> >> findings.txt   (answer: outsource-ok | keep-in-house)\n",
     "/home/cadet/citadel/mssp-proposal.txt": "MSSP CONTRACT PROPOSAL\n-------------------------\nfunction-247-monitoring     round-the-clock watching of security alerts\nfunction-access-decisions   deciding who gets access to the starmap and other sensitive files\nfunction-patch-installs     installing routine, vendor-released security patches on standard systems\n"
   },
   "users": [
@@ -54,7 +54,7 @@
     {
       "by": "astro",
       "title": "Decide what stays and what goes",
-      "body": "Astro: \"Constant coverage, routine work — safe to outsource. A judgment call about our own priorities — stays with us.\" Classify all three functions.",
+      "body": "Astro: \"Constant coverage, routine work — safe to outsource. A judgment call about our own priorities — stays with us.\" Classify all three functions. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "f1",

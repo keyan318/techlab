@@ -41,7 +41,7 @@
     {
       "by": "rivet",
       "title": "Compare original to leaked",
-      "body": "Rivet: \"I hide a watermark in every blueprint I ship. If it shows up somewhere it shouldn't, that proves it's mine.\" Read both files, classify the first as `licensed` and the leaked one as `stolen`, then submit the watermark code that appears in both.",
+      "body": "Rivet: \"I hide a watermark in every blueprint I ship. If it shows up somewhere it shouldn't, that proves it's mine.\" Read both files, classify the first as `licensed` and the leaked one as `stolen`, then submit the watermark code that appears in both. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "read-orig",

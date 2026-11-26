@@ -72,7 +72,7 @@ function solveWithLinux(lab) {
   const act = (c) => {
     switch (c.type) {
       case 'read': return run(`cat ${c.file}`);
-      case 'classified': return run(`classify ${c.item} ${c.as}`);
+      case 'classified': return run(`echo ${c.item} ${c.as} >> findings.txt`);
       case 'flag': return run(`submit ${c.value}`);
       case 'user-disabled': return run(`sudo usermod -L ${c.user}`);
       case 'user-enabled': return run(`sudo usermod -U ${c.user}`);
@@ -121,18 +121,18 @@ test('c1-l1 Know Your Citadel can be solved with the commands the steps teach', 
 
   assert.match(sh(lab, s, 'cat README.txt'), /ORDERS FROM ASTRO/);
   assert.match(sh(lab, s, 'cat inventory.txt'), /factory-password/);
-  sh(lab, s, 'classify starmap asset');
-  sh(lab, s, 'classify doom-hackers threat');
-  sh(lab, s, 'classify factory-password vulnerability');
-  sh(lab, s, 'classify vex-plan risk');
+  sh(lab, s, 'echo starmap asset >> findings.txt');
+  sh(lab, s, 'echo doom-hackers threat >> findings.txt');
+  sh(lab, s, 'echo factory-password vulnerability >> findings.txt');
+  sh(lab, s, 'echo vex-plan risk >> findings.txt');
   assert.equal(currentStep(lab, s), 1);
 
   sh(lab, s, 'cd logs');
   assert.equal(promptFor(s), 'cadet@citadel-core:~/citadel/logs$ ');
   assert.match(sh(lab, s, 'cat night.log'), /event-3/);
-  sh(lab, s, 'classify event-1 C');
-  sh(lab, s, 'classify event-2 I');
-  sh(lab, s, 'classify event-3 availability');
+  sh(lab, s, 'echo event-1 C >> findings.txt');
+  sh(lab, s, 'echo event-2 I >> findings.txt');
+  sh(lab, s, 'echo event-3 availability >> findings.txt');
   assert.equal(currentStep(lab, s), 2);
 
   sh(lab, s, 'cd ..');
@@ -146,12 +146,12 @@ test('c1-l1 Know Your Citadel can be solved with the commands the steps teach', 
 test('a wrong classification does not pass, and fixing it does', () => {
   const lab = loadLab('c1-l1');
   const s = createState(lab);
-  sh(lab, s, 'classify starmap threat');
+  sh(lab, s, 'echo starmap threat >> findings.txt');
   const find = () => evaluate(lab, s)[0].find((o) => o.id === 'starmap').pass;
   assert.equal(find(), false);
-  sh(lab, s, 'classify starmap asset');
+  sh(lab, s, 'echo starmap asset >> findings.txt');
   assert.equal(find(), true);
-  assert.match(sh(lab, s, 'classify moon asset'), /Unknown item/);
+  assert.match(sh(lab, s, 'echo moon asset >> findings.txt'), /"moon" is not on this lab's list/);
   assert.match(sh(lab, s, 'submit FLAG{nope}'), /not right/);
 });
 
@@ -183,7 +183,7 @@ test('paths, quoting, pipes and Linux behaviour', () => {
   assert.match(sh(lab, s, 'sudo whoami'), /^root\n$/);
   assert.match(sh(lab, s, 'uname -a'), /^Linux citadel-core/);
   assert.match(sh(lab, s, 'ls -l'), /drwxr-xr-x .* logs/);
-  assert.match(sh(lab, s, 'echo hi > note.txt'), /switched off/);
+  assert.match(sh(lab, s, 'cat < note.txt'), /switched off/);
   sh(lab, s, 'cd logs && cd ..');
   assert.equal(s.cwd, HOME);
 });
@@ -238,7 +238,7 @@ test('progress survives a save and reload, and a bad or old Windows save starts 
   const lab = loadLab('c1-l1');
   const s = createState(lab);
   sh(lab, s, 'cat inventory.txt');
-  sh(lab, s, 'classify starmap asset');
+  sh(lab, s, 'echo starmap asset >> findings.txt');
   sh(lab, s, 'sudo usermod -L volt');
   sh(lab, s, 'chmod 600 inventory.txt');
   const again = restore(lab, JSON.parse(JSON.stringify(snapshot(s))));
@@ -275,9 +275,9 @@ test('missionText shows only the current step and never an unread file or flag',
   assert.doesNotMatch(first, /`/, 'backticks are stripped to plain text');
 
   for (const line of [
-    'cat inventory.txt', 'classify starmap asset', 'classify doom-hackers threat',
-    'classify factory-password vulnerability', 'classify vex-plan risk',
-    'cd logs', 'cat night.log', 'classify event-1 C', 'classify event-2 I', 'classify event-3 A',
+    'cat inventory.txt', 'echo starmap asset >> findings.txt', 'echo doom-hackers threat >> findings.txt',
+    'echo factory-password vulnerability >> findings.txt', 'echo vex-plan risk >> findings.txt',
+    'cd logs', 'cat night.log', 'echo event-1 C >> findings.txt', 'echo event-2 I >> findings.txt', 'echo event-3 A >> findings.txt',
   ]) sh(lab, s, line);
 
   const drill = missionText(lab, s);
@@ -388,9 +388,27 @@ test('caesar and xor ciphers round-trip, and hashcrack looks up the wordlist', (
   assert.match(sh(KIT_LAB, s, 'hashcrack ZZZZ0000'), /No match/);
 });
 
-test('classify accepts free-form categories beyond the built-in CIA/asset shortcuts', () => {
+test('findings.txt accepts free-form answers beyond the built-in CIA/asset shortcuts', () => {
   const lab = { ...KIT_LAB, classify: { 'control-1': 'x' } };
   const s = createState(lab);
-  assert.match(sh(lab, s, 'classify control-1 detect'), /Recorded: control-1 = detect/);
+  assert.equal(sh(lab, s, 'echo control-1 detect >> findings.txt'), '');
   assert.ok(checkOne(lab, s, { type: 'classified', item: 'control-1', as: 'detect' }));
+});
+
+test('> and >> write into files, and findings.txt records answers', () => {
+  const lab = loadLab('c1-l1');
+  const s = createState(lab);
+  assert.equal(sh(lab, s, 'echo "event-1 C" >> findings.txt'), '');
+  sh(lab, s, 'echo event-2 I >> findings.txt');
+  assert.equal(sh(lab, s, 'cat findings.txt'), 'event-1 C\nevent-2 I\n');
+  assert.equal(s.classified['event-1'], 'confidentiality');
+  assert.equal(s.classified['event-2'], 'integrity');
+  sh(lab, s, 'echo hello > notes.txt');
+  sh(lab, s, 'echo again > notes.txt');
+  assert.equal(sh(lab, s, 'cat notes.txt'), 'again\n');
+  assert.match(sh(lab, s, 'echo event-3 >> findings.txt'), /write an answer after event-3/);
+  assert.match(sh(lab, s, 'echo hi > /etc/passwd'), /Permission denied/);
+  assert.match(sh(lab, s, 'echo hi >'), /put the file name right after/);
+  assert.match(sh(lab, s, 'classify event-3 A'), /no classify command.*findings\.txt/);
+  assert.equal(s.classified['event-3'], undefined);
 });

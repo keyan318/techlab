@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every task now has one clear owner, written down. Astro: \"Assumed is not assigned. Now it's written down.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead unassigned-tasks.txt: four tasks nobody has formally claimed. Classify each by its correct role.\n\n1. cat unassigned-tasks.txt\n2. classify <task> security-lead | data-owner | system-admin | every-crew-member\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead unassigned-tasks.txt: four tasks nobody has formally claimed. Classify each by its correct role.\n\n1. cat unassigned-tasks.txt\n2. echo <task> <answer> >> findings.txt   (answer: security-lead | data-owner | system-admin | every-crew-member)\n",
     "/home/cadet/citadel/unassigned-tasks.txt": "UNASSIGNED TASKS\n------------------\ntask-approve-starmap-access   decide who gets access to the starmap files\ntask-apply-patch              install this week's security patch on the relay console\ntask-report-phishing           notice and report a suspicious message in the crew inbox\ntask-set-program-priorities    decide the security program's priorities for the coming quarter\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Assign each task to its role",
-      "body": "Astro: \"Four tasks, four roles. Write it down properly.\" Classify each of the four tasks.",
+      "body": "Astro: \"Four tasks, four roles. Write it down properly.\" Classify each of the four tasks. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "t1",

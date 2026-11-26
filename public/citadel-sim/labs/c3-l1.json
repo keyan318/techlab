@@ -41,7 +41,7 @@
     {
       "by": "astro",
       "title": "Rate and treat the register",
-      "body": "Astro: \"Too many threats, too few hands. Sort them.\" Read `risk-register.txt`, then classify each risk: `classify risk-relay-password treat`, `classify risk-cargo-bay-lock accept`, and so on, using treat, transfer, or accept.",
+      "body": "Astro: \"Too many threats, too few hands. Sort them.\" Read `risk-register.txt`, then classify each risk: `echo risk-relay-password treat >> findings.txt`, `echo risk-cargo-bay-lock accept >> findings.txt`, and so on, using treat, transfer, or accept.",
       "objectives": [
         {
           "id": "read",

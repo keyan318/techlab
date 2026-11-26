@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED, in principle: the crew logs the true cost of the siege before anyone forgets it. Astro: \"Now every cadet can see it in numbers, not just in memory.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nBefore this review closes, read incident-cost.txt and sort each line into its cost category: financial, legal, trust, or operational.\n\n1. cat incident-cost.txt\n2. classify <item> <category> for each of the four lines\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nBefore this review closes, read incident-cost.txt and sort each line into its cost category: financial, legal, trust, or operational.\n\n1. cat incident-cost.txt\n2. echo <item> <category> >> findings.txt for each of the four lines\n",
     "/home/cadet/citadel/incident-cost.txt": "AFTER-ACTION COST REPORT\n-------------------------\ncost-shield-repair    12,000 credits to repair the shield generator\ncost-breach-notice    Codexia regulators require a breach report within 10 days\ncost-ally-trust       Three allied crews now double-check every Citadel report\ncost-mission-pause    Missions paused for a week during cleanup\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "volt",
       "title": "Volt's Ledger: sort the damage",
-      "body": "Volt: \"Four lines, four categories. Sort them so command can see the shape of it.\" Use `classify cost-shield-repair financial`, `classify cost-breach-notice legal`, `classify cost-ally-trust trust`, and `classify cost-mission-pause operational`.",
+      "body": "Volt: \"Four lines, four categories. Sort them so command can see the shape of it.\" Use `echo cost-shield-repair financial >> findings.txt`, `echo cost-breach-notice legal >> findings.txt`, `echo cost-ally-trust trust >> findings.txt`, and `echo cost-mission-pause operational >> findings.txt`. (`echo` prints text and `>>` adds it to the end of a file, so each answer becomes one line of findings.txt.)",
       "objectives": [
         {
           "id": "c1",

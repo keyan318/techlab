@@ -41,7 +41,7 @@
     {
       "by": "astro",
       "title": "Map five defenses to five functions",
-      "body": "Astro: \"Guesses don't scale. A framework does.\" Read `nist-mapping.txt`, then classify each defense to its function: `classify asset-inventory identify`, `classify relay-password protect`, and so on. The note flags `backup-restore` as missing a Detect step — fix that one by giving it the function it's actually missing, `detect`.",
+      "body": "Astro: \"Guesses don't scale. A framework does.\" Read `nist-mapping.txt`, then classify each defense to its function: `echo asset-inventory identify >> findings.txt`, `echo relay-password protect >> findings.txt`, and so on. The note flags `backup-restore` as missing a Detect step — fix that one by giving it the function it's actually missing, `detect`.",
       "objectives": [
         {
           "id": "read",

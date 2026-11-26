@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every activity is filed at the phase where it actually belongs. Astro: \"Earlier is always cheaper. Now it's in writing.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead sdlc-activities.txt: four security activities from the supply-tracking project. Classify each by its correct SDLC phase.\n\n1. cat sdlc-activities.txt\n2. classify <activity> requirements | design | build | test | maintain\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead sdlc-activities.txt: four security activities from the supply-tracking project. Classify each by its correct SDLC phase.\n\n1. cat sdlc-activities.txt\n2. echo <activity> <answer> >> findings.txt   (answer: requirements | design | build | test | maintain)\n",
     "/home/cadet/citadel/sdlc-activities.txt": "SDLC ACTIVITIES\n------------------\nactivity-decide-encryption-need   deciding the tool must encrypt supply data at rest\nactivity-threat-model              modeling how an attacker could misuse the tool, before writing any code\nactivity-code-review                reviewing the finished code for known coding mistakes\nactivity-post-release-patch         fixing a flaw discovered two months after the tool shipped\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "volt",
       "title": "File each activity by phase",
-      "body": "Volt: \"Deciding what's needed is requirements. Modeling threats is design. Reviewing code is build. Fixing it after release is maintain.\" Classify all four.",
+      "body": "Volt: \"Deciding what's needed is requirements. Modeling threats is design. Reviewing code is build. Fixing it after release is maintain.\" Classify all four. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "a1",

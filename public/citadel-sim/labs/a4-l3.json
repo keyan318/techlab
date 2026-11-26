@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every decision waits for the right voices in the room. Astro: \"Get it right the first time, not fixed the second.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead council-agenda.txt: three upcoming decisions and who's attending. Classify each as ready or missing-a-voice.\n\n1. cat council-agenda.txt\n2. classify <decision> ready | missing-a-voice\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead council-agenda.txt: three upcoming decisions and who's attending. Classify each as ready or missing-a-voice.\n\n1. cat council-agenda.txt\n2. echo <decision> <answer> >> findings.txt   (answer: ready | missing-a-voice)\n",
     "/home/cadet/citadel/council-agenda.txt": "COUNCIL AGENDA\n----------------\ndecision-supply-bay-access   affects: Supply department.   attending: Security, Command.  (Supply not present)\ndecision-relay-upgrade       affects: Engineering.         attending: Security, Engineering, Command.\ndecision-visitor-badges      affects: all departments.     attending: Security, Command only.  (no department reps present)\n"
   },
   "users": [
@@ -54,7 +54,7 @@
     {
       "by": "astro",
       "title": "Flag the gaps",
-      "body": "Astro: \"If the affected department isn't in the room, it's not ready.\" Classify all three decisions.",
+      "body": "Astro: \"If the affected department isn't in the room, it's not ready.\" Classify all three decisions. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "d1",

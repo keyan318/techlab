@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it began: real judgment is told apart from corner-cutting. Astro: \"A reason you can explain later is judgment. A shortcut you can't is just a shortcut.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead decisions-log.txt: four choices made against the \"prefer encrypted channels\" guideline. Classify each as good-judgment or skipped-guideline.\n\n1. cat decisions-log.txt\n2. classify <decision> good-judgment | skipped-guideline\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead decisions-log.txt: four choices made against the \"prefer encrypted channels\" guideline. Classify each as good-judgment or skipped-guideline.\n\n1. cat decisions-log.txt\n2. echo <decision> <answer> >> findings.txt   (answer: good-judgment | skipped-guideline)\n",
     "/home/cadet/citadel/decisions-log.txt": "DECISIONS LOG\n---------------\ndecision-1   urgent shield-failure alert sent unencrypted because every second counted\ndecision-2   routine supply report sent unencrypted, cadet said it was \"faster\"\ndecision-3   ally rendezvous coordinates sent unencrypted; cadet later explained the encrypted channel was down and delay meant missing the rendezvous window entirely\ndecision-4   weekly rations count sent unencrypted with no reason given when asked\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Judgment or just a shortcut?",
-      "body": "Astro: \"Could they explain it clearly, with a real reason? That's judgment. No reason at all? That's a skipped guideline.\" Classify all four.",
+      "body": "Astro: \"Could they explain it clearly, with a real reason? That's judgment. No reason at all? That's a skipped guideline.\" Classify all four. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "d1",

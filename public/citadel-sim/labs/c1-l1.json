@@ -15,8 +15,8 @@
   },
   "files": {
     "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nThe alarm went off at 02:47. Before we fight, we name what we protect.\n\n1. Read inventory.txt and classify what you find.\n2. Read logs/night.log and decide what each attack broke:\n   Confidentiality (C), Integrity (I) or Availability (A).\n3. Volt thinks the intruder left something behind. Find it.\n\nType help if you forget a command. Press Tab to finish a file name.\n",
-    "/home/cadet/citadel/inventory.txt": "CITADEL INVENTORY (kept by Rivet)\n---------------------------------\nstarmap           The only map home to Earth. Without it, we are lost.\ndoom-hackers      Commander Vex's hacking squad. They probe our network every night.\nfactory-password  The old relay console still uses its factory password: admin\nvex-plan          Intel: Vex wants to use that factory password to get in and steal the starmap.\n\nUse: classify <item> <asset|threat|vulnerability|risk>\n",
-    "/home/cadet/citadel/logs/night.log": "CITADEL SECURITY LOG · night shift\n[01:47] ALERT  event-1  crew-records.txt was opened by an unknown account from 203.0.113.66\n[02:13] ALERT  event-2  shield-settings.cfg was changed: shield power 100% -> 5%\n[02:31] ALERT  event-3  the comms relay was flooded with junk traffic and went offline for 7 minutes\n[02:44] NOTE   the unknown account left a file in the temp folder\n[02:47] ALARM  Volt's sensors tripped. Intruder disconnected.\n\nUse: classify <event> <C|I|A>\n",
+    "/home/cadet/citadel/inventory.txt": "CITADEL INVENTORY (kept by Rivet)\n---------------------------------\nstarmap           The only map home to Earth. Without it, we are lost.\ndoom-hackers      Commander Vex's hacking squad. They probe our network every night.\nfactory-password  The old relay console still uses its factory password: admin\nvex-plan          Intel: Vex wants to use that factory password to get in and steal the starmap.\n\nWrite each answer: echo <item> <asset|threat|vulnerability|risk> >> findings.txt\n",
+    "/home/cadet/citadel/logs/night.log": "CITADEL SECURITY LOG · night shift\n[01:47] ALERT  event-1  crew-records.txt was opened by an unknown account from 203.0.113.66\n[02:13] ALERT  event-2  shield-settings.cfg was changed: shield power 100% -> 5%\n[02:31] ALERT  event-3  the comms relay was flooded with junk traffic and went offline for 7 minutes\n[02:44] NOTE   the unknown account left a file in the temp folder\n[02:47] ALARM  Volt's sensors tripped. Intruder disconnected.\n\nWrite each answer: echo <event> <C|I|A> >> findings.txt\n",
     "/home/cadet/citadel/shield-settings.cfg": "shield_power=5\n# Rivet: this was 100 before last night.\n",
     "/home/cadet/citadel/temp/note.txt": "To the Captain of Codexia,\nWe read your secrets. We bent your shields. We cut your voice.\nYour walls are paper.\n            (Vex)\n\nFLAG{WALLS-ARE-PAPER}\n"
   },
@@ -104,7 +104,7 @@
     {
       "by": "astro",
       "title": "Name what we protect",
-      "body": "Astro: \"Before we fight, we name what we protect.\" Open the inventory with `cat inventory.txt`. Then record each item: something valuable is an asset, someone who can harm it is a threat, a weakness they can use is a vulnerability, and the chance that a threat uses a weakness to hurt an asset is a risk. Example: `classify starmap asset`.",
+      "body": "Astro: \"Before we fight, we name what we protect.\" Open the inventory with `cat inventory.txt`. Then record each item: something valuable is an asset, someone who can harm it is a threat, a weakness they can use is a vulnerability, and the chance that a threat uses a weakness to hurt an asset is a risk. Example: `echo starmap asset >> findings.txt`. (`echo` prints text and `>>` adds it to the end of a file, so each answer becomes one line of findings.txt.)",
       "objectives": [
         {
           "id": "read-inventory",
@@ -155,7 +155,7 @@
     {
       "by": "volt",
       "title": "Read the night logs",
-      "body": "Volt: \"Three attacks last night. Each one broke a different promise of the CIA triad.\" Go into the logs folder (`cd logs`) and read `night.log`. A secret that was seen breaks Confidentiality (C). Data that was changed breaks Integrity (I). A service that went down breaks Availability (A). Example: `classify event-1 C`.",
+      "body": "Volt: \"Three attacks last night. Each one broke a different promise of the CIA triad.\" Go into the logs folder (`cd logs`) and read `night.log`. A secret that was seen breaks Confidentiality (C). Data that was changed breaks Integrity (I). A service that went down breaks Availability (A). Example: `echo event-1 C >> findings.txt`.",
       "objectives": [
         {
           "id": "read-log",

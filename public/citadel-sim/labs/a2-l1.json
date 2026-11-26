@@ -14,7 +14,7 @@
     "victory": "DOOM ATTACK REPELLED before it started: every log gap is named and closed. Astro: \"Authentication, authorization, accounting — miss one, and CIA pays for it later.\""
   },
   "files": {
-    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead access-log.txt: four flagged entries. Classify each by which AAA step is missing: authentication, authorization, or accounting.\n\n1. cat access-log.txt\n2. classify <entry> authentication | authorization | accounting\n",
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead access-log.txt: four flagged entries. Classify each by which AAA step is missing: authentication, authorization, or accounting.\n\n1. cat access-log.txt\n2. echo <entry> <answer> >> findings.txt   (answer: authentication | authorization | accounting)\n",
     "/home/cadet/citadel/access-log.txt": "FLAGGED ACCESS LOG ENTRIES\n----------------------------\nentry-1   03:00 relay console accessed with NO password check at all\nentry-2   03:05 cadet 'orin' (Users group) opened the Captain's private log (no permission check ran)\nentry-3   03:10 an admin action ran on the shield generator but nothing was written to any log\nentry-4   03:15 a login attempt was correctly verified, and the session was correctly scoped, but no record of it exists anywhere\n"
   },
   "users": [
@@ -55,7 +55,7 @@
     {
       "by": "astro",
       "title": "Name the missing A",
-      "body": "Astro: \"No password check is a missing authentication. No permission check is a missing authorization. Nothing written to the log is a missing accounting.\" Classify all four entries.",
+      "body": "Astro: \"No password check is a missing authentication. No permission check is a missing authorization. Nothing written to the log is a missing accounting.\" Classify all four entries. Write each answer as one line in findings.txt: `echo <item> <answer> >> findings.txt`.",
       "objectives": [
         {
           "id": "e1",
