@@ -9,7 +9,21 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /up
     autoDeploy: true
+    # Load balancing: Render spreads traffic across every running instance by itself, and the app
+    # is ready for it (sessions and queue in Postgres; uploads in Supabase;
+    # rate limits count per instance). The free plan runs one instance only. On a paid plan,
+    # set `plan: starter` (or higher) and uncomment ONE of these:
+    # numInstances: 2
+    # scaling:                 # autoscaling needs a Professional workspace
+    #   minInstances: 1
+    #   maxInstances: 3
+    #   targetCPUPercent: 70
+    #   targetMemoryPercent: 80
+    # With more than one instance, also add `preDeployCommand: php artisan migrate --force` and
+    # set RUN_MIGRATIONS=false, so only one copy updates the database per deploy.
     envVars:
+      - key: APACHE_MAX_WORKERS  # PHP workers per instance; 25 measured at ~140 MB peak on 512 MB
+        value: "25"
       - key: APP_NAME
         value: TechLab
       - key: APP_ENV
@@ -29,7 +43,9 @@ services:
       - key: SESSION_SECURE_COOKIE
         value: "true"
       - key: CACHE_STORE
-        value: database
+        value: file        # local and fast; a database cache made every page wait on Seoul (6x slower)
+      - key: CACHE_LIMITER
+        value: apc         # rate-limit counts in shared memory: exact and instant
       - key: QUEUE_CONNECTION
         value: database
       - key: DB_CONNECTION
@@ -37,7 +53,7 @@ services:
       - key: DB_HOST
         value: aws-0-ap-northeast-2.pooler.supabase.com
       - key: DB_PORT
-        value: "5432"
+        value: "6543"        # transaction pooler: session mode (5432) caps at 15 connections and failed under load
       - key: DB_DATABASE
         value: postgres
       - key: DB_USERNAME

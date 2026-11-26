@@ -7,7 +7,10 @@ php artisan storage:link >/dev/null 2>&1 || true
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
-php artisan migrate --force
+# Set RUN_MIGRATIONS=false when a Render preDeployCommand runs them instead (several instances).
+if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
+  php artisan migrate --force
+fi
 
 # Background jobs (e.g. reading uploaded course materials). Restarts itself if it stops.
 ( while true; do

@@ -48,7 +48,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
 // Faculty and admin have their own front doors. Faculty can sign up (school email only); admins are made with `php artisan admin:create`.
 Route::get('/faculty', [HomeController::class, 'faculty'])->name('faculty.landing');
 Route::get('/faculty/login', [AuthController::class, 'showFacultyLogin'])->name('faculty.login');
@@ -126,7 +126,7 @@ Route::middleware(['enrolled', 'course.member'])->group(function () {
 Route::post('/student/activity', [StudyActivityController::class, 'ping'])->name('student.activity');
 // The student's own list of courses they are on the roster of (each links into its hub).
 Route::get('/student/courses', [StudentController::class, 'courses'])->name('student.courses');
-Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->name('student.crew.join');
+Route::post('/student/crew/join', [StudentController::class, 'joinCrew'])->middleware('throttle:10,1')->name('student.crew.join');
 // Ask to join a code-gated course; the course's faculty member accepts (the code is emailed) or declines.
 // Start a course Self-paced (or go back to it from a class): no faculty member, the default course.
 Route::post('/student/courses/{planet}/{course}/self-paced', [CourseEnrollmentController::class, 'selfPaced'])->middleware(['role:student', 'throttle:10,1'])->name('student.course.self-paced');
@@ -168,8 +168,8 @@ Route::post('/faculty/join-requests/{joinRequest}/decline', [CourseJoinRequestCo
 Route::post('/faculty/courses/{crew}/modules', [CourseModuleController::class, 'store'])->name('faculty.modules.store');
 Route::put('/faculty/modules/{module}', [CourseModuleController::class, 'update'])->name('faculty.modules.update');
 Route::delete('/faculty/modules/{module}', [CourseModuleController::class, 'destroy'])->name('faculty.modules.destroy');
-Route::post('/faculty/modules/{module}/materials', [CourseModuleController::class, 'storeMaterials'])->name('faculty.materials.store');
-Route::post('/faculty/modules/{module}/links', [CourseModuleController::class, 'storeLink'])->name('faculty.materials.link');
+Route::post('/faculty/modules/{module}/materials', [CourseModuleController::class, 'storeMaterials'])->middleware('throttle:uploads')->name('faculty.materials.store');
+Route::post('/faculty/modules/{module}/links', [CourseModuleController::class, 'storeLink'])->middleware('throttle:uploads')->name('faculty.materials.link');
 Route::delete('/faculty/materials/{material}', [CourseModuleController::class, 'destroyMaterial'])->name('faculty.materials.destroy');
 // Crew quizzes: faculty authors them, students in the crew take them
 Route::post('/faculty/courses/{crew}/quizzes', [CrewQuizController::class, 'store'])->name('faculty.quizzes.store');
@@ -231,22 +231,22 @@ Route::post('/faculty/mini-bosses/{quiz}/reset', [ExamsController::class, 'reset
 Route::get('/materials/{material}', [CourseModuleController::class, 'download'])->name('materials.download');
 Route::get('/materials/{material}/preview', [CourseModuleController::class, 'preview'])->name('materials.preview');
 
-Route::post('/chat/message', [ChatController::class, 'send'])->name('chat.message');
+Route::post('/chat/message', [ChatController::class, 'send'])->middleware('throttle:ai')->name('chat.message');
 Route::get('/chat/xp', [ChatController::class, 'xp'])->name('chat.xp');
 Route::get('/chat/conversations', [ChatController::class, 'conversations'])->name('chat.conversations');
 Route::get('/chat/conversations/{conversation}', [ChatController::class, 'show'])->name('chat.conversation.show');
 Route::post('/chat/conversations/{conversation}/title', [ChatController::class, 'title'])->middleware('throttle:20,1')->name('chat.conversation.title');
 Route::post('/chat/conversations/{conversation}/pin', [ChatController::class, 'pin'])->name('chat.conversation.pin');
 Route::delete('/chat/conversations/{conversation}', [ChatController::class, 'destroy'])->name('chat.conversation.destroy');
-Route::post('/chat/analogy', [AstroController::class, 'drawAnalogy'])->middleware('ai.xp:analogy')->name('chat.analogy');
-Route::post('/chat/infographic', [InfographicController::class, 'generate'])->middleware('ai.xp:infographic')->name('chat.infographic');
-Route::post('/chat/quiz', [QuizController::class, 'generate'])->middleware('ai.xp:quiz')->name('chat.quiz');
+Route::post('/chat/analogy', [AstroController::class, 'drawAnalogy'])->middleware(['throttle:ai', 'ai.xp:analogy'])->name('chat.analogy');
+Route::post('/chat/infographic', [InfographicController::class, 'generate'])->middleware(['throttle:ai', 'ai.xp:infographic'])->name('chat.infographic');
+Route::post('/chat/quiz', [QuizController::class, 'generate'])->middleware(['throttle:ai', 'ai.xp:quiz'])->name('chat.quiz');
 Route::get('/chat/studio-outputs', [StudioOutputController::class, 'index'])->name('chat.studio.index');
 Route::post('/chat/studio-outputs', [StudioOutputController::class, 'store'])->name('chat.studio.store');
 Route::delete('/chat/studio-outputs/{uid}', [StudioOutputController::class, 'destroy'])->name('chat.studio.destroy');
-Route::post('/chat/flashcards', [FlashcardController::class, 'generate'])->middleware('ai.xp:flashcards')->name('chat.flashcards');
-Route::post('/chat/key-terms', [KeyTermsController::class, 'generate'])->middleware('ai.xp:keyterms')->name('chat.keyterms');
-Route::post('/chat/report', [ReportController::class, 'generate'])->middleware('ai.xp:report')->name('chat.report');
+Route::post('/chat/flashcards', [FlashcardController::class, 'generate'])->middleware(['throttle:ai', 'ai.xp:flashcards'])->name('chat.flashcards');
+Route::post('/chat/key-terms', [KeyTermsController::class, 'generate'])->middleware(['throttle:ai', 'ai.xp:keyterms'])->name('chat.keyterms');
+Route::post('/chat/report', [ReportController::class, 'generate'])->middleware(['throttle:ai', 'ai.xp:report'])->name('chat.report');
 Route::get('/astro/ping', [AstroController::class, 'ping'])->name('astro.ping');
 
 // Planet / course selection (the onboarding track choice).

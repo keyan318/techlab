@@ -26,6 +26,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Students and faculty agree to the Terms before onboarding or anything else.
         $middleware->web(append: [EnsureTermsAccepted::class]);
 
+        // Flood guard on every web page (limits in AppServiceProvider). It runs after the
+        // session starts, so signed-in people are counted per account, not per school IP.
+        $middleware->appendToGroup('web', 'throttle:global');
+
         $middleware->alias([
             'role' => EnsureRole::class,
             'enrolled' => EnsureEnrolled::class,

@@ -17,6 +17,11 @@ return [
 
     'default' => env('CACHE_STORE', 'database'),
 
+    // Store the rate limiter counts in. Production uses "apc": shared memory across every Apache
+    // worker, with atomic increments (the file store loses counts when requests land together).
+    // Unset = the default store.
+    'limiter' => env('CACHE_LIMITER'),
+
     /*
     |--------------------------------------------------------------------------
     | Cache Stores
@@ -33,6 +38,10 @@ return [
     */
 
     'stores' => [
+
+        'apc' => [
+            'driver' => 'apc',
+        ],
 
         'array' => [
             'driver' => 'array',
