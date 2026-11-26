@@ -181,7 +181,7 @@ class AstroStreamingTest extends TestCase
             });
 
         $this->actingAs(User::factory()->create())
-            ->postJson('/chat/message', ['message' => 'hello'])
+            ->postJson('/chat/message', ['message' => 'What is a variable?'])
             ->assertOk()
             ->assertJsonPath('response', 'Hi')
             ->assertJsonPath('success', true);

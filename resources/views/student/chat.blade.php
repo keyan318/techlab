@@ -729,6 +729,7 @@
         },
         // A chat answer reports its own XP (`done` event / buffered JSON); no extra request needed.
         fromChat(xp) {
+          if (xp && xp.unchanged) return;   // Astro's instant small-talk reply is free
           if (!xp) return this.load();
           this.balance = xp.balance; this.freeChatsLeft = xp.freeLeft;
         },

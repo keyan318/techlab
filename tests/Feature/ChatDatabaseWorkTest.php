@@ -52,7 +52,7 @@ class ChatDatabaseWorkTest extends TestCase
 
         DB::enableQueryLog();
         DB::flushQueryLog();
-        $this->send($user, ['message' => 'hello']);
+        $this->send($user, ['message' => 'What is a variable?']);
 
         $this->assertSame(1, $atFirst, 'nothing was attached, so only the XP read may run before the first chunk of a new chat');
         $this->assertCount(4, DB::getQueryLog(), 'XP read + conversation insert + one multi-row message insert + XP use insert');
@@ -81,7 +81,7 @@ class ChatDatabaseWorkTest extends TestCase
         $atFirst = null;
         $this->fakeNim($atFirst);
 
-        $events = $this->send($user, ['message' => 'hello']);
+        $events = $this->send($user, ['message' => 'What is a variable?']);
 
         $this->assertSame(1, Message::where('role', 'user')->count());
         $this->assertSame(1, Message::where('role', 'assistant')->count());
@@ -138,7 +138,7 @@ class ChatDatabaseWorkTest extends TestCase
         $atFirst = null;
         $this->fakeNim($atFirst);
 
-        $this->send($user, ['message' => 'hi', 'conversation_id' => $empty->id]);
+        $this->send($user, ['message' => 'What is a variable?', 'conversation_id' => $empty->id]);
         $this->assertSame(2, $empty->messages()->count());
 
         foreach ([$foreignEmpty, $foreignBusy] as $foreign) {

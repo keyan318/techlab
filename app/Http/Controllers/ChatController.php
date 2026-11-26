@@ -8,6 +8,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\AiXpService;
 use App\Services\AstroRouter;
+use App\Services\AstroSmallTalk;
 use App\Services\AttachmentService;
 use App\Services\CourseMaterialSourceService;
 use App\Services\LessonSourceService;
@@ -263,6 +264,18 @@ class ChatController extends Controller
         }
         $attachmentItems = $attachments['items'];
 
+        // Pure small talk ("hi", "are you working?", "thanks!") gets a built-in reply at once:
+        // no NVIDIA call (that alone took 1-9s for "hi") and no XP. Anything attached means
+        // real work, so it always goes to the AI.
+        if (! $request->hasFile('files') && ! $request->input('sources') && ! $request->input('materials')) {
+            $conversationId = $request->input('conversation_id') ? (int) $request->input('conversation_id') : null;
+            $who = (Auth::user()->role ?? 'student') === 'faculty' ? 'Captain' : 'astronaut';
+            $instant = app(AstroSmallTalk::class)->reply($userMessage, $who, $conversationId !== null);
+            if ($instant !== null) {
+                return $this->sendInstant($request, $userId, $conversationId, $userMessage, $instant);
+            }
+        }
+
         // Astro costs XP once today's free messages are gone (a message with a file costs more).
         // Checked now (one read), paid only after Astro has answered — a failed answer is free.
         $xpFeature = $attachmentItems ? 'chat_file' : 'chat';
@@ -415,6 +428,77 @@ class ChatController extends Controller
             'Cache-Control' => 'no-cache, no-transform',
             'X-Accel-Buffering' => 'no',
             'X-Astro-Mode' => $route['mode'],
+        ]);
+    }
+
+    /**
+     * Answer small talk with a built-in reply (see AstroSmallTalk), in the same shape as a
+     * real answer (SSE events or the buffered JSON), so the chat page needs no special case.
+     * Free: no XP is quoted or paid, and `xp.unchanged` tells the page not to re-read it.
+     */
+    protected function sendInstant(Request $request, int $userId, ?int $conversationId, string $userMessage, string $reply): JsonResponse|StreamedResponse
+    {
+        $startedAt = microtime(true);
+
+        // The AI path proves ownership through its history read; this path skips that read.
+        if ($conversationId !== null) {
+            Conversation::where('user_id', $userId)->whereKey($conversationId)->firstOrFail();
+        }
+
+        $xp = ['unchanged' => true];
+        $log = fn () => Log::info('Astro chat timing', [
+            'first_delta_ms' => 0,
+            'total_ms' => (int) round((microtime(true) - $startedAt) * 1000),
+            'chars' => strlen($reply),
+            'astro_mode' => 'instant',
+            'astro_reason' => 'small_talk',
+        ]);
+
+        if (! str_contains((string) $request->header('Accept'), 'text/event-stream')) {
+            $ids = $this->persistExchange($userId, $conversationId, $userMessage, $reply);
+            $log();
+
+            return response()->json([
+                'success' => true,
+                'conversation_id' => $ids['conversation_id'],
+                'message_id' => $ids['message_id'],
+                'response' => $reply,
+                'sources' => [],
+                'materials' => [],
+                'web' => [],
+                'xp' => $xp,
+            ]);
+        }
+
+        return response()->stream(function () use ($userId, $conversationId, $userMessage, $reply, $xp, $log) {
+            ignore_user_abort(true);
+            $emit = function (string $event, array $data = []): void {
+                echo "event: {$event}\n";
+                echo 'data: '.json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n\n";
+                if (ob_get_level() > 0) {
+                    @ob_flush();
+                }
+                flush();
+            };
+
+            // Shown first, saved after, exactly like a streamed AI answer.
+            $emit('start');
+            $emit('delta', ['t' => $reply]);
+            $emit('end', ['sources' => [], 'materials' => [], 'web' => []]);
+
+            $ids = ['conversation_id' => null, 'message_id' => null, 'saved' => false];
+            try {
+                $ids = $this->persistExchange($userId, $conversationId, $userMessage, $reply) + ['saved' => true];
+            } catch (\Throwable $e) {
+                Log::error('Failed to persist Astro small talk: '.$e->getMessage());
+            }
+            $emit('done', $ids + ['xp' => $xp]);
+            $log();
+        }, 200, [
+            'Content-Type' => 'text/event-stream; charset=utf-8',
+            'Cache-Control' => 'no-cache, no-transform',
+            'X-Accel-Buffering' => 'no',
+            'X-Astro-Mode' => 'instant',
         ]);
     }
 

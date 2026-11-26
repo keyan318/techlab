@@ -104,7 +104,7 @@ class PlanetSourcesTest extends TestCase
                 return 'Hi!';
             });
 
-        $response = $this->actingAs(User::factory()->create())->postJson('/chat/message', ['message' => 'Hello']);
+        $response = $this->actingAs(User::factory()->create())->postJson('/chat/message', ['message' => 'What is a variable?']);
 
         $response->assertOk()->assertJsonPath('sources', []);
         $this->assertSame('', $captured);

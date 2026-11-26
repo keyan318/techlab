@@ -194,9 +194,9 @@ class ChatAttachmentsTest extends TestCase
                 return 'ok';
             });
 
-        $this->send(User::factory()->create(), ['message' => 'Hi'])->assertOk();
+        $this->send(User::factory()->create(), ['message' => 'What is a variable?'])->assertOk();
 
-        $this->assertSame([['role' => 'user', 'content' => 'Hi']], $seen[0]);
+        $this->assertSame([['role' => 'user', 'content' => 'What is a variable?']], $seen[0]);
         $this->assertNull($seen[1]);
         $this->assertNull(Message::where('role', 'user')->first()->attachments);
     }
