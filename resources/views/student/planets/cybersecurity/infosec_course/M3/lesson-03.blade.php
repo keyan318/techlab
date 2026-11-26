@@ -184,8 +184,8 @@ Syllabus: ITP1232 Unit C.3 ITIL Security Management. --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there, including
-            <code>copy &lt;patch&gt; test-node.cfg</code> and, only after that, <code>copy &lt;patch&gt; prod-node.cfg</code>.
+            Opens the Citadel Sim full screen. You type Linux commands there, including
+            <code>cp &lt;patch&gt; test-node.cfg</code> and, only after that, <code>cp &lt;patch&gt; prod-node.cfg</code>.
             The order you run them in is checked.
         </p>
     </div>

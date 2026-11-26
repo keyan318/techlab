@@ -183,8 +183,8 @@ Syllabus: ITP1232 Unit E, Data & Network Security Services (capstone). --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Windows commands there
-            (Command Prompt) — everything you've learned across this course, in one final defense. Objectives tick off as you go.
+            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Linux commands there
+            (a terminal) — everything you've learned across this course, in one final defense. Objectives tick off as you go.
         </p>
     </div>
 

@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "10:15 · CHANGE REQUEST PENDING · CITADEL CORE",
@@ -14,18 +14,19 @@
     "victory": "DOOM ATTACK REPELLED before it started: the change went through request, approval, and implementation, in order — no conflicts, no surprises. Astro: \"Right this time, and safe every time.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nA comms relay reconfiguration is needed. Follow the process in order: log the request, get approval, then implement.\n\n1. certutil -hashfile change-request.txt SHA256   (this stands in for logging/submitting the request)\n2. type approval.txt   (confirm it's approved before touching anything)\n3. copy relay-config-new.txt relay-config.txt   (implement, only after approval)\n",
-    "C:\\Citadel\\change-request.txt": "CHANGE REQUEST\n----------------\nProposed: reconfigure the comms relay to improve signal range.\nRequested by: Rivet\nStatus: pending approval\n",
-    "C:\\Citadel\\approval.txt": "APPROVAL RECORD\n------------------\nChange request reviewed by Volt: no conflicts with scheduled diagnostics. APPROVED.\n",
-    "C:\\Citadel\\relay-config.txt": "RELAY CONFIG (current, unchanged)\nrange: standard\n",
-    "C:\\Citadel\\relay-config-new.txt": "RELAY CONFIG (proposed)\nrange: extended\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nA comms relay reconfiguration is needed. Follow the process in order: log the request, get approval, then implement.\n\n1. sha256sum change-request.txt   (this stands in for logging/submitting the request)\n2. cat approval.txt   (confirm it's approved before touching anything)\n3. cp relay-config-new.txt relay-config.txt   (implement, only after approval)\n",
+    "/home/cadet/citadel/change-request.txt": "CHANGE REQUEST\n----------------\nProposed: reconfigure the comms relay to improve signal range.\nRequested by: Rivet\nStatus: pending approval\n",
+    "/home/cadet/citadel/approval.txt": "APPROVAL RECORD\n------------------\nChange request reviewed by Volt: no conflicts with scheduled diagnostics. APPROVED.\n",
+    "/home/cadet/citadel/relay-config.txt": "RELAY CONFIG (current, unchanged)\nrange: standard\n",
+    "/home/cadet/citadel/relay-config-new.txt": "RELAY CONFIG (proposed)\nrange: extended\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -37,15 +38,15 @@
     {
       "by": "rivet",
       "title": "Log the request first",
-      "body": "Rivet: \"Request before anything else.\" `certutil -hashfile change-request.txt SHA256`, before implementing.",
+      "body": "Rivet: \"Request before anything else.\" `sha256sum change-request.txt`, before implementing.",
       "objectives": [
         {
           "id": "order",
           "label": "Request was logged before implementation",
           "check": {
             "type": "ordered",
-            "before": "^(certutil|hash)",
-            "after": "^copy"
+            "before": "^(sudo\\s+)?(sha256sum|sha1sum|md5sum)\\b",
+            "after": "^(sudo\\s+)?cp\\b"
           }
         }
       ]
@@ -53,14 +54,14 @@
     {
       "by": "astro",
       "title": "Confirm approval, then implement",
-      "body": "Astro: \"Read the approval before you touch the relay.\" `type approval.txt`, then `copy relay-config-new.txt relay-config.txt`.",
+      "body": "Astro: \"Read the approval before you touch the relay.\" `cat approval.txt`, then `cp relay-config-new.txt relay-config.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read approval.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\approval.txt"
+            "file": "/home/cadet/citadel/approval.txt"
           }
         },
         {
@@ -68,8 +69,8 @@
           "label": "relay-config.txt now matches the approved new configuration",
           "check": {
             "type": "same-content",
-            "a": "C:\\Citadel\\relay-config.txt",
-            "b": "C:\\Citadel\\relay-config-new.txt"
+            "a": "/home/cadet/citadel/relay-config.txt",
+            "b": "/home/cadet/citadel/relay-config-new.txt"
           }
         }
       ]

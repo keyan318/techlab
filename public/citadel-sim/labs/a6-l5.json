@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "07:30 · LEADERSHIP REVIEW · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: leadership's own actions reinforce the program instead of quietly undermining it. Astro: \"What I do matters more than what I sign.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead leadership-actions.txt: four actions from this month. Classify each as supports-program or undermines-program.\n\n1. type leadership-actions.txt\n2. classify <action> supports-program | undermines-program\n",
-    "C:\\Citadel\\leadership-actions.txt": "LEADERSHIP ACTIONS — this month\n-----------------------------------\naction-1   Astro signed in at the console like every other cadet, even when running late\naction-2   Command approved the security budget request in full, on schedule\naction-3   A department head skipped the access review \"just this once,\" no consequence noted\naction-4   Astro publicly thanked a cadet for reporting a phishing email, in front of the crew\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead leadership-actions.txt: four actions from this month. Classify each as supports-program or undermines-program.\n\n1. cat leadership-actions.txt\n2. classify <action> supports-program | undermines-program\n",
+    "/home/cadet/citadel/leadership-actions.txt": "LEADERSHIP ACTIONS — this month\n-----------------------------------\naction-1   Astro signed in at the console like every other cadet, even when running late\naction-2   Command approved the security budget request in full, on schedule\naction-3   A department head skipped the access review \"just this once,\" no consequence noted\naction-4   Astro publicly thanked a cadet for reporting a phishing email, in front of the crew\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "astro",
       "title": "Read the leadership actions",
-      "body": "Astro: \"Read every action before judging any of them.\" `type leadership-actions.txt`.",
+      "body": "Astro: \"Read every action before judging any of them.\" `cat leadership-actions.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read leadership-actions.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\leadership-actions.txt"
+            "file": "/home/cadet/citadel/leadership-actions.txt"
           }
         }
       ]

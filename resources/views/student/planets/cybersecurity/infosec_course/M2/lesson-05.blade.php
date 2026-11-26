@@ -90,15 +90,15 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l5.js
             <polygon points="490,84 484,72 496,72" fill="#7c5cff"/>
 
             <rect x="40" y="88" width="220" height="46" rx="10" fill="#e9f7ef" stroke="#1f7a4d" stroke-width="2"/>
-            <text x="150" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">net user guest /active:no</text>
+            <text x="150" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">sudo usermod -L guest</text>
             <text x="150" y="124" text-anchor="middle" font-size="11" fill="#175a3a">Guest disabled</text>
 
             <rect x="210" y="88" width="220" height="46" rx="10" fill="#e9f7ef" stroke="#1f7a4d" stroke-width="2" transform="translate(0,0)"/>
-            <text x="320" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">net user volt &lt;new-pw&gt;</text>
+            <text x="320" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">sudo passwd volt</text>
             <text x="320" y="124" text-anchor="middle" font-size="11" fill="#175a3a">strong password set</text>
 
             <rect x="380" y="88" width="220" height="46" rx="10" fill="#e9f7ef" stroke="#1f7a4d" stroke-width="2"/>
-            <text x="490" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">taskkill relaylegacy.exe</text>
+            <text x="490" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#175a3a">sudo pkill relaylegacy</text>
             <text x="490" y="124" text-anchor="middle" font-size="11" fill="#175a3a">legacy service stopped</text>
 
             <rect x="140" y="150" width="360" height="34" rx="10" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/>
@@ -158,7 +158,7 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l5.js
             <li class="quiz-option">A. It has no effect on security either way</li>
             <li class="quiz-option quiz-correct">B. A running service nobody needs is a door nobody remembered to lock — still an entry point ✓</li>
             <li class="quiz-option">C. It's required to free up memory</li>
-            <li class="quiz-option">D. Old services are automatically disabled by Windows</li>
+            <li class="quiz-option">D. Old services are automatically disabled by Linux</li>
         </ul>
         <p class="quiz-explanation"><em>Any listening service is a potential way in, whether or not anyone still uses it for its original purpose.</em></p>
     </div>
@@ -190,8 +190,8 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l5.js
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there (Command Prompt), such as
-            <code>net user</code>, <code>taskkill</code> and <code>login</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen. You type Linux commands there (a terminal), such as
+            <code>sudo usermod</code>, <code>sudo pkill</code> and <code>login</code>. Objectives tick off as you go.
         </p>
     </div>
 

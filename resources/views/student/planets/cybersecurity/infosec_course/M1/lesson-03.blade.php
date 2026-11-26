@@ -188,8 +188,8 @@ Syllabus: ITP1232 Unit A.3 Anatomy of an Attack. --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Windows commands there
-            (Command Prompt), such as <code>type</code>, <code>net user</code> and <code>taskkill</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Linux commands there
+            (a terminal), such as <code>cat</code>, <code>sudo usermod</code> and <code>sudo kill</code>. Objectives tick off as you go.
         </p>
     </div>
 

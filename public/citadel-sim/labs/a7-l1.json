@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "06:00 · RECOVERY LOG REVIEW · CITADEL CORE",
@@ -14,16 +14,17 @@
     "victory": "DOOM ATTACK REPELLED before it started: every recovery event is checked honestly against the plan's own targets. Astro: \"The plan is only as good as what it actually does under pressure.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead dr-plan.txt for the targets, then recovery-log.txt for three real events. Classify each event as within-target or exceeded-target.\n\n1. type dr-plan.txt\n2. type recovery-log.txt\n3. classify <event> within-target | exceeded-target\n",
-    "C:\\Citadel\\dr-plan.txt": "DISASTER RECOVERY PLAN — Targets\n------------------------------------\nRTO (recovery time objective): 4 hours\nRPO (recovery point objective): 1 hour\n",
-    "C:\\Citadel\\recovery-log.txt": "RECOVERY LOG\n--------------\nevent-relay-drill      down 3 hours, backup was 30 minutes old at time of failure\nevent-shield-outage    down 6 hours, backup was 20 minutes old at time of failure\nevent-storage-failure  down 2 hours, backup was 90 minutes old at time of failure\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead dr-plan.txt for the targets, then recovery-log.txt for three real events. Classify each event as within-target or exceeded-target.\n\n1. cat dr-plan.txt\n2. cat recovery-log.txt\n3. classify <event> within-target | exceeded-target\n",
+    "/home/cadet/citadel/dr-plan.txt": "DISASTER RECOVERY PLAN — Targets\n------------------------------------\nRTO (recovery time objective): 4 hours\nRPO (recovery point objective): 1 hour\n",
+    "/home/cadet/citadel/recovery-log.txt": "RECOVERY LOG\n--------------\nevent-relay-drill      down 3 hours, backup was 30 minutes old at time of failure\nevent-shield-outage    down 6 hours, backup was 20 minutes old at time of failure\nevent-storage-failure  down 2 hours, backup was 90 minutes old at time of failure\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "astro",
       "title": "Read the plan and the log",
-      "body": "Astro: \"Know the targets before you judge the events.\" `type dr-plan.txt`, then `type recovery-log.txt`.",
+      "body": "Astro: \"Know the targets before you judge the events.\" `cat dr-plan.txt`, then `cat recovery-log.txt`.",
       "objectives": [
         {
           "id": "read1",
           "label": "Read dr-plan.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\dr-plan.txt"
+            "file": "/home/cadet/citadel/dr-plan.txt"
           }
         },
         {
@@ -54,7 +55,7 @@
           "label": "Read recovery-log.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\recovery-log.txt"
+            "file": "/home/cadet/citadel/recovery-log.txt"
           }
         }
       ]

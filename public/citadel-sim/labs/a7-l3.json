@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "20:00 · UNTESTED BACKUP FOUND · CITADEL CORE",
@@ -14,17 +14,18 @@
     "victory": "DOOM ATTACK REPELLED before it started: the restore is tested and confirmed, and the silent failure is caught before it mattered. Astro: \"Tested, not just scheduled. That's the whole difference.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nThe starmap backup has never been test-restored. Restore it now and confirm it matches the working copy.\n\n1. type backup-schedule.txt\n2. copy backup\\starmap.txt.bak starmap.txt\n",
-    "C:\\Citadel\\backup-schedule.txt": "BACKUP SCHEDULE — Starmap\n----------------------------\nRuns nightly. Last restore test: NEVER. (finding: an untested backup cannot be trusted)\n",
-    "C:\\Citadel\\starmap.txt": "###CORRUPTED### the working copy was damaged in a storage error ###CORRUPTED###\n",
-    "C:\\Citadel\\backup\\starmap.txt.bak": "STARMAP (clean backup copy)\nCodexia sector coordinates: 041.2, 118.6, 003.9\nAllied fleet rendezvous point: Sector 7\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nThe starmap backup has never been test-restored. Restore it now and confirm it matches the working copy.\n\n1. cat backup-schedule.txt\n2. cp backup/starmap.txt.bak starmap.txt\n",
+    "/home/cadet/citadel/backup-schedule.txt": "BACKUP SCHEDULE — Starmap\n----------------------------\nRuns nightly. Last restore test: NEVER. (finding: an untested backup cannot be trusted)\n",
+    "/home/cadet/citadel/starmap.txt": "###CORRUPTED### the working copy was damaged in a storage error ###CORRUPTED###\n",
+    "/home/cadet/citadel/backup/starmap.txt.bak": "STARMAP (clean backup copy)\nCodexia sector coordinates: 041.2, 118.6, 003.9\nAllied fleet rendezvous point: Sector 7\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -36,14 +37,14 @@
     {
       "by": "rivet",
       "title": "Rivet's Workbench: read the schedule",
-      "body": "Rivet: \"Read it — see the gap for yourself.\" `type backup-schedule.txt`.",
+      "body": "Rivet: \"Read it — see the gap for yourself.\" `cat backup-schedule.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read backup-schedule.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\backup-schedule.txt"
+            "file": "/home/cadet/citadel/backup-schedule.txt"
           }
         }
       ]
@@ -51,15 +52,15 @@
     {
       "by": "volt",
       "title": "Test the restore for real",
-      "body": "Volt: \"Actually restore it, don't just trust the schedule.\" `copy backup\\starmap.txt.bak starmap.txt`.",
+      "body": "Volt: \"Actually restore it, don't just trust the schedule.\" `cp backup/starmap.txt.bak starmap.txt`.",
       "objectives": [
         {
           "id": "restore",
           "label": "starmap.txt now matches the clean backup",
           "check": {
             "type": "same-content",
-            "a": "C:\\Citadel\\starmap.txt",
-            "b": "C:\\Citadel\\backup\\starmap.txt.bak"
+            "a": "/home/cadet/citadel/starmap.txt",
+            "b": "/home/cadet/citadel/backup/starmap.txt.bak"
           }
         }
       ]

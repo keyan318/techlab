@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "11:20 · COMPLIANCE CHECK · CITADEL CORE",
@@ -14,15 +14,15 @@
     "victory": "DOOM ATTACK REPELLED before it started: the relay account now meets the password standard. Astro: \"A standard is only real once every account actually meets it.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead password-standard.txt, then bring the relay account into compliance: `net user relay <new password>` that actually meets every requirement.\n",
-    "C:\\Citadel\\password-standard.txt": "CITADEL PASSWORD STANDARD\n----------------------------\nEvery account password must:\n1. Be at least 12 characters\n2. Mix upper case, lower case, a number, and a symbol\n3. Never contain the account name\n4. Avoid common words attackers guess first (password, admin, 12345, qwerty, citadel)\n\nThe relay account currently fails this standard: password is \"starlight\" (8 characters, no number, no symbol).\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead password-standard.txt, then bring the relay account into compliance: run `sudo passwd relay` and type a password that actually meets every requirement.\n",
+    "/home/cadet/citadel/password-standard.txt": "CITADEL PASSWORD STANDARD\n----------------------------\nEvery account password must:\n1. Be at least 12 characters\n2. Mix upper case, lower case, a number, and a symbol\n3. Never contain the account name\n4. Avoid common words attackers guess first (password, admin, 12345, qwerty, citadel)\n\nThe relay account currently fails this standard: password is \"starlight\" (8 characters, no number, no symbol).\n"
   },
   "users": [
     {
       "name": "relay",
       "fullName": "Relay Console (service account)",
       "groups": [
-        "Users"
+        "users"
       ],
       "password": "starlight",
       "passwordSet": "never changed",
@@ -32,7 +32,8 @@
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -44,14 +45,14 @@
     {
       "by": "rivet",
       "title": "Rivet's Workbench: read the standard",
-      "body": "Rivet: \"Read every requirement before you set anything.\" `type password-standard.txt`.",
+      "body": "Rivet: \"Read every requirement before you set anything.\" `cat password-standard.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read password-standard.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\password-standard.txt"
+            "file": "/home/cadet/citadel/password-standard.txt"
           }
         }
       ]
@@ -59,7 +60,7 @@
     {
       "by": "rivet",
       "title": "Bring the account into compliance",
-      "body": "Rivet: \"Twelve-plus characters, mixed case, a number, a symbol, no account name, no common word.\" `net user relay <new password>`.",
+      "body": "Rivet: \"Twelve-plus characters, mixed case, a number, a symbol, no account name, no common word.\" `sudo passwd relay`, then type the new password twice.",
       "objectives": [
         {
           "id": "fixed",

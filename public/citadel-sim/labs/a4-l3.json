@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "14:00 · COUNCIL AGENDA REVIEW · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: every decision waits for the right voices in the room. Astro: \"Get it right the first time, not fixed the second.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead council-agenda.txt: three upcoming decisions and who's attending. Classify each as ready or missing-a-voice.\n\n1. type council-agenda.txt\n2. classify <decision> ready | missing-a-voice\n",
-    "C:\\Citadel\\council-agenda.txt": "COUNCIL AGENDA\n----------------\ndecision-supply-bay-access   affects: Supply department.   attending: Security, Command.  (Supply not present)\ndecision-relay-upgrade       affects: Engineering.         attending: Security, Engineering, Command.\ndecision-visitor-badges      affects: all departments.     attending: Security, Command only.  (no department reps present)\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead council-agenda.txt: three upcoming decisions and who's attending. Classify each as ready or missing-a-voice.\n\n1. cat council-agenda.txt\n2. classify <decision> ready | missing-a-voice\n",
+    "/home/cadet/citadel/council-agenda.txt": "COUNCIL AGENDA\n----------------\ndecision-supply-bay-access   affects: Supply department.   attending: Security, Command.  (Supply not present)\ndecision-relay-upgrade       affects: Engineering.         attending: Security, Engineering, Command.\ndecision-visitor-badges      affects: all departments.     attending: Security, Command only.  (no department reps present)\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -38,14 +39,14 @@
     {
       "by": "astro",
       "title": "Read the agenda",
-      "body": "Astro: \"Read who's affected and who's actually attending.\" `type council-agenda.txt`.",
+      "body": "Astro: \"Read who's affected and who's actually attending.\" `cat council-agenda.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read council-agenda.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\council-agenda.txt"
+            "file": "/home/cadet/citadel/council-agenda.txt"
           }
         }
       ]

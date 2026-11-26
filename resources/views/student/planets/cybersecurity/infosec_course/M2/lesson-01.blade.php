@@ -96,7 +96,7 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l1.js
             <text x="172" y="163" text-anchor="middle" font-size="16" fill="#b3261e">✕</text>
             <rect x="215" y="146" width="150" height="55" rx="12" fill="#e9f7ef" stroke="#1f7a4d" stroke-width="2"/>
             <text x="290" y="168" text-anchor="middle" font-size="13" font-weight="700" fill="#175a3a">starmap-copy.txt</text>
-            <text x="290" y="186" text-anchor="middle" font-size="12" fill="#175a3a">icacls /deny doom_intern</text>
+            <text x="290" y="186" text-anchor="middle" font-size="12" fill="#175a3a">ACL denies doom_intern</text>
 
             <rect x="430" y="93" width="180" height="55" rx="12" fill="#f3f0ff" stroke="#7c5cff" stroke-width="2"/>
             <text x="520" y="115" text-anchor="middle" font-size="13" font-weight="700" fill="#4a35b8">crew-roster.txt</text>
@@ -166,7 +166,7 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l1.js
         <ul class="quiz-options">
             <li class="quiz-option">A. Renaming the file</li>
             <li class="quiz-option">B. Classifying it is enough by itself</li>
-            <li class="quiz-option quiz-correct">C. Locking it with a permission that denies that account, e.g. icacls /deny ✓</li>
+            <li class="quiz-option quiz-correct">C. Locking it with a permission that denies that account, e.g. setfacl ✓</li>
             <li class="quiz-option">D. Turning off the console</li>
         </ul>
         <p class="quiz-explanation"><em>Classification tells you what a file is; a permission lock is what actually stops the wrong account from reading it.</em></p>
@@ -188,8 +188,8 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l1.js
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there (Command Prompt), such as
-            <code>type</code>, <code>classify</code> and <code>icacls</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen. You type Linux commands there (a terminal), such as
+            <code>cat</code>, <code>classify</code> and <code>setfacl</code>. Objectives tick off as you go.
         </p>
     </div>
 

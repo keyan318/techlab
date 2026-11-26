@@ -183,7 +183,7 @@ Syllabus: ITP1232 Unit A.2 Attacks & Vulnerabilities. --}}
     <p class="body-text">
         <strong>Mission:</strong> Volt's sensors caught a probe against the relay console. Read Rivet's maintenance
         card, then run Volt's Drill: try the factory password yourself with <code>login relay admin</code>. If it
-        works, patch it with <code>net user relay &lt;new-password&gt;</code>, then try the old password one more
+        works, patch it with <code>sudo passwd relay</code>, then try the old password one more
         time to prove the door is really shut. <strong>Success:</strong> every objective in the simulator is checked off.
     </p>
 
@@ -194,8 +194,8 @@ Syllabus: ITP1232 Unit A.2 Attacks & Vulnerabilities. --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Windows commands there
-            (Command Prompt), such as <code>login</code> and <code>net user</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Linux commands there
+            (a terminal), such as <code>login</code> and <code>sudo passwd</code>. Objectives tick off as you go.
         </p>
     </div>
 

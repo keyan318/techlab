@@ -186,9 +186,9 @@ Syllabus: ITP1232 Unit C.2 Cybercrime & the Law (incl. Philippine RA 10175). --}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there, including
-            <code>certutil -hashfile &lt;file&gt; SHA256</code> to fingerprint evidence and
-            <code>copy &lt;backup&gt; &lt;file&gt;</code> to restore it. Order matters: hash before you restore.
+            Opens the Citadel Sim full screen. You type Linux commands there, including
+            <code>sha256sum &lt;file&gt;</code> to fingerprint evidence and
+            <code>cp &lt;backup&gt; &lt;file&gt;</code> to restore it. Order matters: hash before you restore.
         </p>
     </div>
 

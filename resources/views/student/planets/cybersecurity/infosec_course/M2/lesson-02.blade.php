@@ -147,7 +147,7 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l2.js
     </div>
 
     <div class="quiz-block" data-q="4">
-        <p class="quiz-prompt">Q4. How is masking different from Lesson 2.1's file lock (icacls /deny)?</p>
+        <p class="quiz-prompt">Q4. How is masking different from Lesson 2.1's file lock (setfacl)?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. They're exactly the same thing</li>
             <li class="quiz-option quiz-correct">B. A lock stops the wrong account from opening a file; masking assumes the file will be seen and strips the sensitive part first ✓</li>
@@ -183,8 +183,8 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l2.js
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there (Command Prompt), such as
-            <code>type</code> and <code>mask</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen. You type Linux commands there (a terminal), such as
+            <code>cat</code> and <code>mask</code>. Objectives tick off as you go.
         </p>
     </div>
 

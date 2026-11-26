@@ -201,39 +201,39 @@
       "correct": "D"
     },
     {
-      "prompt": "Which command shows what is listening or connected on a Windows machine?",
+      "prompt": "Which command shows what is listening or connected on a Linux machine?",
       "options": [
-        "netstat -an",
-        "tasklist",
-        "taskkill /f",
-        "ipconfig"
+        "sudo ss -tlnp",
+        "ps aux",
+        "sudo pkill -9",
+        "cat /etc/passwd"
       ],
       "correct": "A"
     },
     {
       "prompt": "Which command shows what programs are running?",
       "options": [
-        "route print",
+        "ip route",
         "nslookup",
-        "tasklist",
-        "netstat -an"
+        "ps aux",
+        "ss -tlnp"
       ],
       "correct": "C"
     },
     {
       "prompt": "You find a process sending data out without permission. What stops it?",
       "options": [
-        "tasklist",
+        "ps aux",
         "ping",
-        "taskkill",
-        "netstat"
+        "kill",
+        "ss -tlnp"
       ],
       "correct": "C"
     },
     {
       "prompt": "Why can \"free\" software be a privacy risk?",
       "options": [
-        "Free software never runs on Windows",
+        "Free software never runs on Linux PCs",
         "Sometimes your data is the payment",
         "Free software always has a virus",
         "Free software cannot be removed"

@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "12:30 · ZONE DRILL · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: every system now sits in its correct zone, and nothing crosses straight from public to restricted. Astro: \"One boundary at a time. No shortcuts.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead zone-drill.txt: five Citadel systems with no zone assigned. Classify each as public, dmz, or restricted.\n\n1. type zone-drill.txt\n2. classify <system> public | dmz | restricted\n",
-    "C:\\Citadel\\zone-drill.txt": "ZONE DRILL\n-----------\nsystem-public-beacon    broadcasts the Citadel's callsign to any passing ship — open to everyone\nsystem-comms-relay      talks to allied fleets outward, and passes verified requests inward\nsystem-starmap-vault    the crew's most sensitive data, never talks to the outside directly\nsystem-guest-terminal   a kiosk visiting allies use, filtered on both sides\nsystem-command-core     Astro's private command systems, reached only through the relay\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead zone-drill.txt: five Citadel systems with no zone assigned. Classify each as public, dmz, or restricted.\n\n1. cat zone-drill.txt\n2. classify <system> public | dmz | restricted\n",
+    "/home/cadet/citadel/zone-drill.txt": "ZONE DRILL\n-----------\nsystem-public-beacon    broadcasts the Citadel's callsign to any passing ship — open to everyone\nsystem-comms-relay      talks to allied fleets outward, and passes verified requests inward\nsystem-starmap-vault    the crew's most sensitive data, never talks to the outside directly\nsystem-guest-terminal   a kiosk visiting allies use, filtered on both sides\nsystem-command-core     Astro's private command systems, reached only through the relay\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -40,14 +41,14 @@
     {
       "by": "volt",
       "title": "Volt's Drill: read the system list",
-      "body": "Volt: \"Read every system before you place a single one.\" `type zone-drill.txt`.",
+      "body": "Volt: \"Read every system before you place a single one.\" `cat zone-drill.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read zone-drill.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\zone-drill.txt"
+            "file": "/home/cadet/citadel/zone-drill.txt"
           }
         }
       ]

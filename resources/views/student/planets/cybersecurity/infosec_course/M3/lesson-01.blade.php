@@ -199,7 +199,7 @@ Syllabus: ITP1232 Unit C.1 IT Risks. --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there (Command Prompt), including
+            Opens the Citadel Sim full screen. You type Linux commands there (a terminal), including
             <code>classify &lt;item&gt; &lt;category&gt;</code> to rate each risk. Objectives tick off as you go.
         </p>
     </div>

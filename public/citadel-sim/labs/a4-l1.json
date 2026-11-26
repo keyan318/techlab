@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "09:45 · UNASSIGNED TASKS · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: every task now has one clear owner, written down. Astro: \"Assumed is not assigned. Now it's written down.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead unassigned-tasks.txt: four tasks nobody has formally claimed. Classify each by its correct role.\n\n1. type unassigned-tasks.txt\n2. classify <task> security-lead | data-owner | system-admin | every-crew-member\n",
-    "C:\\Citadel\\unassigned-tasks.txt": "UNASSIGNED TASKS\n------------------\ntask-approve-starmap-access   decide who gets access to the starmap files\ntask-apply-patch              install this week's security patch on the relay console\ntask-report-phishing           notice and report a suspicious message in the crew inbox\ntask-set-program-priorities    decide the security program's priorities for the coming quarter\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead unassigned-tasks.txt: four tasks nobody has formally claimed. Classify each by its correct role.\n\n1. cat unassigned-tasks.txt\n2. classify <task> security-lead | data-owner | system-admin | every-crew-member\n",
+    "/home/cadet/citadel/unassigned-tasks.txt": "UNASSIGNED TASKS\n------------------\ntask-approve-starmap-access   decide who gets access to the starmap files\ntask-apply-patch              install this week's security patch on the relay console\ntask-report-phishing           notice and report a suspicious message in the crew inbox\ntask-set-program-priorities    decide the security program's priorities for the coming quarter\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "astro",
       "title": "Read the unassigned tasks",
-      "body": "Astro: \"Read every task before assigning a single one.\" `type unassigned-tasks.txt`.",
+      "body": "Astro: \"Read every task before assigning a single one.\" `cat unassigned-tasks.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read unassigned-tasks.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\unassigned-tasks.txt"
+            "file": "/home/cadet/citadel/unassigned-tasks.txt"
           }
         }
       ]

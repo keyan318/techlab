@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "09:00 · POLICY DRAFT REVIEW · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: the policy now says why, who, who enforces it, and what happens if it's broken. Astro: \"Now the crew can actually follow it.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead draft-policy.txt: three gaps are marked. Classify each gap by which required part is missing: purpose, scope, roles, or enforcement.\n\n1. type draft-policy.txt\n2. classify <gap> purpose | scope | roles | enforcement\n",
-    "C:\\Citadel\\draft-policy.txt": "DRAFT: CREW DATA PROTECTION POLICY\n-------------------------------------\n\"Protect crew data.\"\n\ngap-1: no statement of who this applies to (all crew? command only? allies?)\ngap-2: no statement of who is responsible for checking it's followed\ngap-3: no statement of what happens if someone ignores it\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead draft-policy.txt: three gaps are marked. Classify each gap by which required part is missing: purpose, scope, roles, or enforcement.\n\n1. cat draft-policy.txt\n2. classify <gap> purpose | scope | roles | enforcement\n",
+    "/home/cadet/citadel/draft-policy.txt": "DRAFT: CREW DATA PROTECTION POLICY\n-------------------------------------\n\"Protect crew data.\"\n\ngap-1: no statement of who this applies to (all crew? command only? allies?)\ngap-2: no statement of who is responsible for checking it's followed\ngap-3: no statement of what happens if someone ignores it\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -38,14 +39,14 @@
     {
       "by": "astro",
       "title": "Read the draft policy",
-      "body": "Astro: \"Read it the way a new cadet would.\" `type draft-policy.txt`.",
+      "body": "Astro: \"Read it the way a new cadet would.\" `cat draft-policy.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read draft-policy.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\draft-policy.txt"
+            "file": "/home/cadet/citadel/draft-policy.txt"
           }
         }
       ]

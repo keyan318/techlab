@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "02:00 · OVERNIGHT EVENT QUEUE · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: the real alarm reaches Astro immediately, and nothing else drowns it out. Astro: \"The right event, to the right person, at the right speed.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead overnight-queue.txt: four events. Classify each by how it should be routed: immediate, routine, or council.\n\n1. type overnight-queue.txt\n2. classify <event> immediate | routine | council\n",
-    "C:\\Citadel\\overnight-queue.txt": "OVERNIGHT EVENT QUEUE\n------------------------\nevent-1   active intrusion detected on the relay console, ongoing right now\nevent-2   a false alarm from last week, already confirmed harmless\nevent-3   a recurring pattern of minor policy exceptions over the last month, needs a group decision on the policy itself\nevent-4   a routine backup completed successfully, nothing unusual\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead overnight-queue.txt: four events. Classify each by how it should be routed: immediate, routine, or council.\n\n1. cat overnight-queue.txt\n2. classify <event> immediate | routine | council\n",
+    "/home/cadet/citadel/overnight-queue.txt": "OVERNIGHT EVENT QUEUE\n------------------------\nevent-1   active intrusion detected on the relay console, ongoing right now\nevent-2   a false alarm from last week, already confirmed harmless\nevent-3   a recurring pattern of minor policy exceptions over the last month, needs a group decision on the policy itself\nevent-4   a routine backup completed successfully, nothing unusual\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "astro",
       "title": "Read the overnight queue",
-      "body": "Astro: \"Read every event before routing any of them.\" `type overnight-queue.txt`.",
+      "body": "Astro: \"Read every event before routing any of them.\" `cat overnight-queue.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read overnight-queue.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\overnight-queue.txt"
+            "file": "/home/cadet/citadel/overnight-queue.txt"
           }
         }
       ]

@@ -144,7 +144,7 @@ body {
 .screen .sys { color: #8f8f8f; }
 .prompt-row { flex: none; display: flex; align-items: center; gap: 0; padding: 4px 14px 14px; }
 .prompt, .cmd { font-family: Consolas, "Cascadia Mono", ui-monospace, Menlo, monospace; font-size: 13.5px; color: #f2f2f2; }
-.prompt { white-space: nowrap; }
+.prompt { white-space: pre; color: #8ae234; }
 .cmd { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; padding: 0 0 0 1px; caret-color: #f2f2f2; }
 
 /* ---------- victory ---------- */

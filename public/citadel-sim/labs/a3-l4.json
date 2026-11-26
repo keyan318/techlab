@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "10:40 · DISCRETION REVIEW · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it began: real judgment is told apart from corner-cutting. Astro: \"A reason you can explain later is judgment. A shortcut you can't is just a shortcut.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead decisions-log.txt: four choices made against the \"prefer encrypted channels\" guideline. Classify each as good-judgment or skipped-guideline.\n\n1. type decisions-log.txt\n2. classify <decision> good-judgment | skipped-guideline\n",
-    "C:\\Citadel\\decisions-log.txt": "DECISIONS LOG\n---------------\ndecision-1   urgent shield-failure alert sent unencrypted because every second counted\ndecision-2   routine supply report sent unencrypted, cadet said it was \"faster\"\ndecision-3   ally rendezvous coordinates sent unencrypted; cadet later explained the encrypted channel was down and delay meant missing the rendezvous window entirely\ndecision-4   weekly rations count sent unencrypted with no reason given when asked\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead decisions-log.txt: four choices made against the \"prefer encrypted channels\" guideline. Classify each as good-judgment or skipped-guideline.\n\n1. cat decisions-log.txt\n2. classify <decision> good-judgment | skipped-guideline\n",
+    "/home/cadet/citadel/decisions-log.txt": "DECISIONS LOG\n---------------\ndecision-1   urgent shield-failure alert sent unencrypted because every second counted\ndecision-2   routine supply report sent unencrypted, cadet said it was \"faster\"\ndecision-3   ally rendezvous coordinates sent unencrypted; cadet later explained the encrypted channel was down and delay meant missing the rendezvous window entirely\ndecision-4   weekly rations count sent unencrypted with no reason given when asked\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "astro",
       "title": "Read the decisions log",
-      "body": "Astro: \"Read every decision before judging any of them.\" `type decisions-log.txt`.",
+      "body": "Astro: \"Read every decision before judging any of them.\" `cat decisions-log.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read decisions-log.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\decisions-log.txt"
+            "file": "/home/cadet/citadel/decisions-log.txt"
           }
         }
       ]

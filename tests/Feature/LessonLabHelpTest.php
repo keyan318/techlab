@@ -53,7 +53,7 @@ class LessonLabHelpTest extends TestCase
         return $overrides + [
             'lab' => 'c1-l1',
             'question' => 'why does cd temp not work',
-            'context' => "C:\\Citadel\\logs>cd temp\nThe system cannot find the path specified.",
+            'context' => "cadet@citadel-core:~/citadel/logs$ cd temp\nbash: cd: temp: No such file or directory",
         ];
     }
 
@@ -134,7 +134,7 @@ class LessonLabHelpTest extends TestCase
         ], $seen['messages']);
 
         $this->assertStringContainsString('Never state a file\'s contents or a flag\'s text verbatim', $seen['context']);
-        $this->assertStringContainsString("C:\\Citadel\\logs>cd temp\nThe system cannot find the path specified.", $seen['context']);
+        $this->assertStringContainsString("cadet@citadel-core:~/citadel/logs$ cd temp\nbash: cd: temp: No such file or directory", $seen['context']);
     }
 
     public function test_asking_does_not_charge_again(): void

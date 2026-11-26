@@ -25,12 +25,12 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
     <p class="body-text">
         The warning signs are usually visible if you look: an unexpected program in your process list, a port
         listening that you never opened, network traffic going out to an address you don't recognize. Two commands
-        do most of the work here: <code>netstat -an</code> shows what's listening or connected, and
-        <code>tasklist</code> shows what's actually running. Whatever's causing both is your suspect.
+        do most of the work here: <code>sudo ss -tlnp</code> shows which ports are listening and which program owns
+        each one, and <code>ps aux</code> shows what's actually running. Whatever's causing both is your suspect.
     </p>
 
     <p class="body-text">
-        Once you find it, the fix is direct: stop the process (<code>taskkill</code>), and its port stops
+        Once you find it, the fix is direct: stop the process (<code>sudo kill &lt;PID&gt;</code>), and its port stops
         listening along with it. "Free" software is a common source of this — if you're not paying for a product,
         sometimes your data is the payment.
     </p>
@@ -38,12 +38,12 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
     <div class="checkpoint-block" data-cp="1">
         <p class="quiz-prompt">Which command shows what is listening or connected?</p>
         <ul class="quiz-options">
-            <li class="quiz-option quiz-correct">A. <code>netstat -an</code> ✓</li>
-            <li class="quiz-option">B. <code>tasklist</code></li>
-            <li class="quiz-option">C. <code>taskkill</code></li>
-            <li class="quiz-option">D. <code>net user guest</code></li>
+            <li class="quiz-option quiz-correct">A. <code>sudo ss -tlnp</code> ✓</li>
+            <li class="quiz-option">B. <code>ps aux</code></li>
+            <li class="quiz-option">C. <code>sudo kill</code></li>
+            <li class="quiz-option">D. <code>cat /etc/passwd</code></li>
         </ul>
-        <p class="quiz-explanation"><em>netstat -an shows listening ports and connections. tasklist shows what is running.</em></p>
+        <p class="quiz-explanation"><em>sudo ss -tlnp shows listening ports and the program behind each. ps aux shows what is running.</em></p>
     </div>
 
     <h2 class="section-heading">Volt Says</h2>
@@ -74,10 +74,10 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
     <h2 class="section-heading">Field Diagram</h2>
 
     <figure class="net-diagram">
-        <svg viewBox="0 0 640 190" role="img" aria-label="starchart-free.exe runs on the Citadel console and sends outbound traffic to Doom on port 8891; killing the process closes the port">
+        <svg viewBox="0 0 640 190" role="img" aria-label="starchart-free runs on the Citadel console and sends outbound traffic to Doom on port 8891; killing the process closes the port">
             <rect x="30" y="30" width="180" height="70" rx="12" fill="#e8f0ff" stroke="#2f6fe0" stroke-width="2"/>
             <text x="120" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#14306b">CITADEL-CORE</text>
-            <text x="120" y="73" text-anchor="middle" font-size="11.5" fill="#14306b">starchart-free.exe running</text>
+            <text x="120" y="73" text-anchor="middle" font-size="11.5" fill="#14306b">starchart-free running</text>
             <text x="120" y="88" text-anchor="middle" font-size="11" fill="#14306b">port 8891 listening</text>
 
             <line x1="210" y1="65" x2="290" y2="65" stroke="#b3261e" stroke-width="3" stroke-dasharray="5 4"/>
@@ -88,7 +88,7 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
             <text x="368" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#7a1a14">Planet Doom</text>
             <text x="368" y="78" text-anchor="middle" font-size="11" fill="#7a1a14">receiving position data</text>
 
-            <text x="120" y="132" text-anchor="middle" font-size="12" fill="#333">taskkill /im starchart-free.exe /f</text>
+            <text x="120" y="132" text-anchor="middle" font-size="12" fill="#333">sudo pkill starchart-free</text>
             <line x1="120" y1="140" x2="120" y2="155" stroke="#1f7a4d" stroke-width="3"/>
             <polygon points="120,159 114,147 126,147" fill="#1f7a4d"/>
             <rect x="30" y="160" width="180" height="26" rx="8" fill="#e9f7ef" stroke="#1f7a4d" stroke-width="2"/>
@@ -104,7 +104,7 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
             <li class="quiz-option">C. It moves</li>
             <li class="quiz-option">D. It doubles</li>
         </ul>
-        <p class="quiz-explanation"><em>Stopping the process with taskkill stops its port from listening too.</em></p>
+        <p class="quiz-explanation"><em>Stopping the process with kill (or pkill) stops its port from listening too.</em></p>
     </div>
 
     <h2 class="section-heading">Quiz</h2>
@@ -123,27 +123,27 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
     <div class="quiz-block" data-q="2">
         <p class="quiz-prompt">Q2. Which command shows what's listening or connected on the network?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. type</li>
-            <li class="quiz-option quiz-correct">B. netstat -an ✓</li>
+            <li class="quiz-option">A. cat /etc/passwd</li>
+            <li class="quiz-option quiz-correct">B. sudo ss -tlnp ✓</li>
             <li class="quiz-option">C. classify</li>
-            <li class="quiz-option">D. dir</li>
+            <li class="quiz-option">D. ls -l</li>
         </ul>
-        <p class="quiz-explanation"><em>netstat -an lists active and listening network connections, which is how Volt spots the beacon in the first place.</em></p>
+        <p class="quiz-explanation"><em>sudo ss -tlnp lists the listening ports and the program behind each one, which is how Volt spots the beacon in the first place.</em></p>
     </div>
 
     <div class="quiz-block" data-q="3">
         <p class="quiz-prompt">Q3. Which command shows what programs are actually running, so you can spot the one that doesn't belong?</p>
         <ul class="quiz-options">
-            <li class="quiz-option">A. netstat -an</li>
-            <li class="quiz-option quiz-correct">B. tasklist ✓</li>
-            <li class="quiz-option">C. findstr</li>
+            <li class="quiz-option">A. sudo ss -tlnp</li>
+            <li class="quiz-option quiz-correct">B. ps aux ✓</li>
+            <li class="quiz-option">C. grep</li>
             <li class="quiz-option">D. whoami</li>
         </ul>
-        <p class="quiz-explanation"><em>tasklist lists running processes; comparing it against what should be running is how you find the intruder.</em></p>
+        <p class="quiz-explanation"><em>ps aux lists running processes; comparing it against what should be running is how you find the intruder.</em></p>
     </div>
 
     <div class="quiz-block" data-q="4">
-        <p class="quiz-prompt">Q4. Why does killing starchart-free.exe also close port 8891?</p>
+        <p class="quiz-prompt">Q4. Why does killing starchart-free also close port 8891?</p>
         <ul class="quiz-options">
             <li class="quiz-option">A. It doesn't; the port stays open forever</li>
             <li class="quiz-option quiz-correct">B. The port was only open because that process was listening on it; stopping the process stops the listener ✓</li>
@@ -179,8 +179,8 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l4.js
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there (Command Prompt), such as
-            <code>netstat -an</code>, <code>tasklist</code> and <code>taskkill</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen. You type Linux commands there (a terminal), such as
+            <code>sudo ss -tlnp</code>, <code>ps aux</code> and <code>sudo kill</code>. Objectives tick off as you go.
         </p>
     </div>
 

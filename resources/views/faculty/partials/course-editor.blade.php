@@ -1275,7 +1275,7 @@
                 return st;
             });
 
-            // Citadel Sim: the text files students read on the lab's computer (`type <file>`).
+            // Citadel Sim: the text files students read on the lab's computer (`cat <file>`).
             const files = {};
             if (data.files && data.files.length) {
                 const g = group(s.side, 'Files on the lab\'s computer', 'What students see when they open each file. Keep names, codes and answers the checks above look for.');

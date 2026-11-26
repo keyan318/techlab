@@ -148,7 +148,7 @@ class FacultySimLabTest extends TestCase
         $this->assertSame('citadel', $doc['sim']);
         $this->assertSame('Citadel Sim', $doc['simulator']);
         $this->assertSame(['alert', 'vex', 'victory'], array_keys($doc['story']));
-        $this->assertContains('C:\\Citadel\\inventory.txt', array_column($doc['files'], 'path'));
+        $this->assertContains('/home/cadet/citadel/inventory.txt', array_column($doc['files'], 'path'));
         // Items, files and accounts are picked from the lab's own.
         $item = collect($doc['steps'][0]['objectives'][1]['fields'])->firstWhere('path', 'item');
         $this->assertSame('select', $item['input']);
@@ -156,7 +156,7 @@ class FacultySimLabTest extends TestCase
 
         $this->playAndSave($faculty, $url, $this->body($doc, function ($b) {
             $b['story']['vex'] = 'Your walls are still paper, astronaut.';
-            $b['files']['C:\Citadel\temp\note.txt'] = 'Remember the code: FLAG{NEW-WALLS}';
+            $b['files']['/home/cadet/citadel/temp/note.txt'] = 'Remember the code: FLAG{NEW-WALLS}';
             foreach ($b['steps'] as $i => $s) {
                 foreach ($s['objectives'] as $k => $o) {
                     if (($o['values']['value'] ?? null) === 'FLAG{WALLS-ARE-PAPER}') {
@@ -178,7 +178,7 @@ class FacultySimLabTest extends TestCase
 
         $file = $this->actingAs($student)->getJson('/student/planet/cybersecurity/lab/m1/lesson01/file.json')->assertOk()->json();
         $this->assertSame('Your walls are still paper, astronaut.', $file['story']['vex']);
-        $this->assertSame('Remember the code: FLAG{NEW-WALLS}', $file['files']['C:\Citadel\temp\note.txt']);
+        $this->assertSame('Remember the code: FLAG{NEW-WALLS}', $file['files']['/home/cadet/citadel/temp/note.txt']);
         // The simulator only accepts a flag listed in the lab, so the new one replaces the old one there too.
         $this->assertSame(['FLAG{NEW-WALLS}'], $file['flags']);
         $checks = collect($file['steps'])->flatMap(fn ($s) => $s['objectives'])->pluck('check');

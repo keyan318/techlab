@@ -172,8 +172,8 @@ Syllabus: ITP1232 Unit A.5 Security Policy (Acceptable Use Policy). --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Windows commands there
-            (Command Prompt), such as <code>net user</code>, <code>taskkill</code> and <code>icacls</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Linux commands there
+            (a terminal), such as <code>sudo usermod</code>, <code>sudo pkill</code> and <code>setfacl</code>. Objectives tick off as you go.
         </p>
     </div>
 

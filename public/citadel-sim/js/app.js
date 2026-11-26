@@ -1,6 +1,6 @@
-// Citadel Sim page: renders the mission and the Command Prompt, saves per student,
+// Citadel Sim page: renders the mission and the Linux terminal, saves per student,
 // and tells the TechLab lab page (same origin, parent frame) how the student is doing.
-import { createState, currentStep, evaluate, missionText, progress, restore, runCommand, snapshot } from './engine.js';
+import { complete, createState, currentStep, evaluate, missionText, progress, promptFor, restore, runCommand, snapshot } from './engine.js';
 import { createMusic } from './music.js';
 
 const params = new URLSearchParams(location.search);
@@ -13,7 +13,8 @@ const labFile = rawFile && /^\/(student\/planet\/[a-z0-9-]+\/lab\/m\d+\/lesson\d
 const rawUser = params.get('u');
 const userId = rawUser && /^[0-9]{1,20}$/.test(rawUser) ? rawUser : null;
 const embedded = labId !== null && window.parent !== window;
-const saveKey = labId ? `citadel:save:v1:lab:${labId}${userId ? `:u:${userId}` : ''}` : null;
+// v2 = the Linux machine; a v1 save was the old Windows one, so it is not loaded.
+const saveKey = labId ? `citadel:save:v2:lab:${labId}${userId ? `:u:${userId}` : ''}` : null;
 
 const $ = (id) => document.getElementById(id);
 const screen = $('screen');
@@ -79,7 +80,13 @@ function print(text, cls) {
 }
 
 function promptText() {
-  return `${state.cwd.replace(/\\$/, '')}>`;
+  return promptFor(state);
+}
+
+// passwd asks for the new password: hide what is typed, like a real terminal.
+function setSecret(on) {
+  input.type = on ? 'password' : 'text';
+  input.setAttribute('aria-label', on ? 'Password (hidden)' : 'Command');
 }
 
 const WHO = { astro: 'Astro', rivet: 'Rivet', volt: 'Volt' };
@@ -339,10 +346,12 @@ function showVictory() {
 }
 
 function run(line) {
-  print(`${promptText()}${line}\n`, 'echo');
+  const secret = !!state.pending;
+  print(`${promptText()}${secret ? '' : line}\n`, 'echo');
   const res = runCommand(lab, state, line);
   if (res.clear) screen.textContent = '';
   else print(res.output);
+  setSecret(!!state.pending);
   save();
   renderMission();
   report(true);
@@ -350,13 +359,14 @@ function run(line) {
 
 function boot() {
   $('lab-title').textContent = lab.title;
-  $('console-title').textContent = `Command Prompt · ${lab.host?.name || 'CITADEL-CORE'}`;
+
   if (lab.story?.vex) {
     $('vex-text').textContent = lab.story.vex;
     $('vex').hidden = false;
   }
   state = restore(lab, load());
-  print(`Microsoft Windows [Version 10.0.22631] · Citadel Sim\nSigned in as ${lab.host?.user || 'cadet'} on ${lab.host?.name || 'CITADEL-CORE'}.\nType help for commands. Start with: type README.txt\n\n`, 'sys');
+  $('console-title').textContent = `Terminal · ${state.user}@${state.host}`;
+  print(`Citadel Linux 6.8.0-citadel x86_64 · Citadel Sim\nSigned in as ${state.user} on ${state.host}.\nType help for commands. Start with: cat README.txt  (Tab finishes names)\n\n`, 'sys');
   renderMission();
   lastPassed = progress(lab, state).passed;
   // Already solved on an earlier visit: tell the page again (saving is idempotent), no popup.
@@ -369,7 +379,7 @@ $('prompt-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const line = input.value;
   input.value = '';
-  if (line.trim()) {
+  if (line.trim() && !state.pending) {
     history.push(line);
     hIdx = history.length;
   }
@@ -377,10 +387,17 @@ $('prompt-form').addEventListener('submit', (e) => {
 });
 
 input.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowUp' && hIdx > 0) {
+  if (e.key === 'Tab' && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey && state && !state.pending && input.value.trim()) {
+    // Tab finishes a command or file name; when several fit, list them like bash does.
+    // On an empty line Tab moves focus as usual, so keyboard users are never trapped in the terminal.
+    e.preventDefault();
+    const res = complete(state, input.value);
+    input.value = res.line;
+    if (res.options.length) print(`${promptText()}${res.line}\n${res.options.join('  ')}\n`, 'echo');
+  } else if (e.key === 'ArrowUp' && hIdx > 0 && !state?.pending) {
     input.value = history[--hIdx];
     e.preventDefault();
-  } else if (e.key === 'ArrowDown') {
+  } else if (e.key === 'ArrowDown' && !state?.pending) {
     hIdx = Math.min(history.length, hIdx + 1);
     input.value = history[hIdx] || '';
     e.preventDefault();
@@ -399,13 +416,14 @@ $('reset').addEventListener('click', () => {
     // nothing saved
   }
   state = createState(lab);
+  setSecret(false);
   reportedPass = false;
   lastPassed = -1;
   screen.textContent = '';
   // The old chat was about the old transcript. The unlock itself is kept (it's paid for on the server).
   astro.history = [];
   $('astro-log').textContent = '';
-  print('Lab restarted. Type help for commands. Start with: type README.txt\n\n', 'sys');
+  print('Lab restarted. Type help for commands. Start with: cat README.txt\n\n', 'sys');
   renderMission();
   input.focus();
 });

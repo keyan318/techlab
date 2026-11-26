@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "07:00 · POST-SIEGE REVIEW · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED, in principle: the crew logs the true cost of the siege before anyone forgets it. Astro: \"Now every cadet can see it in numbers, not just in memory.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nBefore this review closes, read incident-cost.txt and sort each line into its cost category: financial, legal, trust, or operational.\n\n1. type incident-cost.txt\n2. classify <item> <category> for each of the four lines\n",
-    "C:\\Citadel\\incident-cost.txt": "AFTER-ACTION COST REPORT\n-------------------------\ncost-shield-repair    12,000 credits to repair the shield generator\ncost-breach-notice    Codexia regulators require a breach report within 10 days\ncost-ally-trust       Three allied crews now double-check every Citadel report\ncost-mission-pause    Missions paused for a week during cleanup\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nBefore this review closes, read incident-cost.txt and sort each line into its cost category: financial, legal, trust, or operational.\n\n1. cat incident-cost.txt\n2. classify <item> <category> for each of the four lines\n",
+    "/home/cadet/citadel/incident-cost.txt": "AFTER-ACTION COST REPORT\n-------------------------\ncost-shield-repair    12,000 credits to repair the shield generator\ncost-breach-notice    Codexia regulators require a breach report within 10 days\ncost-ally-trust       Three allied crews now double-check every Citadel report\ncost-mission-pause    Missions paused for a week during cleanup\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "astro",
       "title": "Read the after-action report",
-      "body": "Astro: \"Read it before you sort it.\" `type incident-cost.txt`.",
+      "body": "Astro: \"Read it before you sort it.\" `cat incident-cost.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read incident-cost.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\incident-cost.txt"
+            "file": "/home/cadet/citadel/incident-cost.txt"
           }
         }
       ]

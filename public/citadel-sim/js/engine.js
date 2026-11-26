@@ -1,8 +1,10 @@
-// Citadel Sim engine: a small, fake Windows machine for security labs.
+// Citadel Sim engine: a small, fake Linux machine for security labs.
 // Pure logic with no DOM, so it runs in the browser and under `node --test`.
 // Nothing here touches a real system: files, users and services are data from the lab JSON.
 
-const DATE = '09/23/2026  02:13 AM';
+const DATE = 'Sep 23 02:13';
+const NOW = 'Wed Sep 23 02:13:00 +0000 2026';
+const KERNEL = '6.8.0-citadel';
 
 const CATEGORY = {
   asset: 'asset', threat: 'threat', vulnerability: 'vulnerability', vuln: 'vulnerability', risk: 'risk',
@@ -11,36 +13,61 @@ const CATEGORY = {
   a: 'availability', availability: 'availability',
 };
 
+const GROUP_IDS = { root: 0, adm: 4, sudo: 27, users: 100, guests: 1500 };
+
 // ---------- paths ----------
 
+// An absolute, tidy path: no //, no trailing /, no . or .. parts. Case-sensitive, like Linux.
 export function normPath(p) {
-  return p.replace(/\//g, '\\').replace(/\\+$/, '').toLowerCase();
-}
-
-export function resolvePath(cwd, input) {
-  let p = (input || '').replace(/\//g, '\\').replace(/^"|"$/g, '');
-  if (!p) return cwd;
-  if (/^[a-z]:$/i.test(p)) p += '\\';
-  const abs = /^[a-z]:\\/i.test(p) ? p : `${cwd.replace(/\\$/, '')}\\${p}`;
-  const [drive, ...rest] = abs.split('\\');
   const parts = [];
-  for (const seg of rest) {
+  for (const seg of String(p || '').split('/')) {
     if (!seg || seg === '.') continue;
     if (seg === '..') parts.pop();
     else parts.push(seg);
   }
-  return parts.length ? `${drive.toUpperCase()}\\${parts.join('\\')}` : `${drive.toUpperCase()}\\`;
+  return '/' + parts.join('/');
 }
+
+export function resolvePath(cwd, input, home = '/root') {
+  let p = input || '';
+  if (!p) return cwd;
+  if (p === '~' || p.startsWith('~/')) p = home + p.slice(1);
+  return normPath(p.startsWith('/') ? p : `${cwd}/${p}`);
+}
+
+// What the prompt shows for a folder: the home folder is ~.
+export function displayPath(path, home) {
+  if (path === home) return '~';
+  if (path.startsWith(home + '/')) return '~' + path.slice(home.length);
+  return path;
+}
+
+export function promptFor(state) {
+  if (state.pending) return state.pending.prompt;
+  return `${state.user}@${state.host}:${displayPath(state.cwd, state.home)}$ `;
+}
+
+const dirname = (p) => p.slice(0, p.lastIndexOf('/')) || '/';
+const basename = (p) => p.slice(p.lastIndexOf('/') + 1);
 
 // ---------- state ----------
 
 export function createState(lab) {
+  const user = lab.host?.user || 'cadet';
+  const home = `/home/${user}`;
   const files = {};
-  for (const [path, content] of Object.entries(lab.files || {})) files[normPath(path)] = { path, content };
+  for (const [path, content] of Object.entries(lab.files || {})) {
+    const key = normPath(path);
+    files[key] = { path: key, content };
+  }
   return {
-    cwd: lab.host?.cwd || 'C:\\Citadel',
+    user,
+    host: (lab.host?.name || 'citadel-core').toLowerCase(),
+    home,
+    cwd: lab.host?.cwd ? normPath(lab.host.cwd) : home,
+    oldCwd: null,
     files,
-    users: (lab.users || []).map((u) => ({ enabled: true, groups: [], ...u, changed: false })),
+    users: (lab.users || []).map((u) => ({ enabled: true, groups: ['users'], ...u, changed: false })),
     services: (lab.services || []).map((s) => ({ running: true, ...s })),
     processes: (lab.processes || []).map((p) => ({ ...p })),
     read: [],
@@ -49,267 +76,157 @@ export function createState(lab) {
     history: [],
     loginAttempts: [],
     acl: {},
+    modes: {},
     opened: [],
     triaged: {},
+    pending: null,
   };
 }
 
-function findFile(state, path) {
-  return state.files[normPath(path)] || null;
+const VIRTUAL_FILES = ['/etc/hostname', '/etc/passwd', '/etc/shadow'];
+
+function systemDirs(state) {
+  return new Set(['/', '/etc', '/home', '/root', '/tmp', state.home]);
 }
 
-function isDir(state, path) {
-  const key = normPath(path);
-  if (/^[a-z]:$/.test(key)) return true;
-  return Object.keys(state.files).some((k) => k.startsWith(key + '\\'));
+function knownPaths(state) {
+  return [...Object.keys(state.files), ...VIRTUAL_FILES, ...systemDirs(state)];
+}
+
+function virtualFile(state, abs) {
+  if (abs === '/etc/hostname') return { path: abs, content: `${state.host}\n`, virtual: true };
+  if (abs === '/etc/passwd') return { path: abs, content: passwdText(state), virtual: true };
+  if (abs === '/etc/shadow') return { path: abs, content: shadowText(state), virtual: true };
+  return null;
+}
+
+function getFile(state, abs) {
+  return state.files[abs] || virtualFile(state, abs);
+}
+
+function isDir(state, abs) {
+  if (systemDirs(state).has(abs)) return true;
+  const pre = abs === '/' ? '/' : abs + '/';
+  return knownPaths(state).some((k) => k.startsWith(pre));
+}
+
+function children(state, abs) {
+  const pre = abs === '/' ? '/' : abs + '/';
+  const dirs = systemDirs(state);
+  const found = new Map();
+  for (const k of knownPaths(state)) {
+    if (!k.startsWith(pre) || k === abs) continue;
+    const rest = k.slice(pre.length);
+    if (!rest) continue;
+    const slash = rest.indexOf('/');
+    const name = slash < 0 ? rest : rest.slice(0, slash);
+    const dir = slash >= 0 || dirs.has(k);
+    found.set(name, found.get(name) || dir);
+  }
+  return [...found].sort(([a], [b]) => a.localeCompare(b)).map(([name, dir]) => ({ name, dir }));
+}
+
+function ownerOf(state, abs) {
+  return abs === state.home || abs.startsWith(state.home + '/') ? state.user : 'root';
+}
+
+function modeOf(state, abs, dir) {
+  if (state.modes[abs]) return state.modes[abs];
+  if (abs === '/etc/shadow') return 'rw-r-----';
+  if (abs === '/root') return 'rwx------';
+  return dir ? 'rwxr-xr-x' : 'rw-r--r--';
+}
+
+function canRead(state, file, root) {
+  if (root) return true;
+  if (file.path === '/etc/shadow') return false;
+  const acl = state.acl[file.path];
+  if (acl && acl.denied.includes(state.user.toLowerCase())) return false;
+  const owner = ownerOf(state, file.path) === state.user;
+  return modeOf(state, file.path, false)[owner ? 0 : 6] === 'r';
+}
+
+function canWrite(state, abs, root) {
+  if (root) return true;
+  if (ownerOf(state, abs) !== state.user) return false;
+  const acl = state.acl[abs];
+  if (acl && acl.denied.includes(state.user.toLowerCase())) return false;
+  return !state.files[abs] || modeOf(state, abs, false)[1] === 'w';
 }
 
 function markRead(state, file) {
-  const key = normPath(file.path);
-  if (!state.read.includes(key)) state.read.push(key);
+  if (file.virtual) return;
+  if (!state.read.includes(file.path)) state.read.push(file.path);
 }
 
-// ---------- commands ----------
-
-const HELP = `Citadel Sim commands (Windows syntax). Commands are not case-sensitive.
-
-  dir [path]                       list files in a folder
-  cd <path>  |  cd ..              change folder
-  type <file>                      show a file
-  findstr /i <text> <file>         find lines that contain text
-  whoami | hostname | ver | cls    who and where you are
-  net user                         list accounts
-  net user <name>                  details of one account
-  net user <name> /active:no       disable an account
-  net user <name> <new-password>   set a new password
-  netstat -an                      listening ports
-  tasklist | taskkill /im <name> /f     running programs
-
-Lab tools (the crew's field kit):
-  classify <item> <category>       record what something is:
-                                   asset, threat, vulnerability, risk,
-                                   C (confidentiality), I (integrity), A (availability),
-                                   or any category the lab asks for
-  login <user> <password>          try to log in as an account (Volt's Drill: test it)
-  icacls <file> /deny <user>:F     deny a user access to a file
-  icacls <file> /grant <user>:F    grant a user access to a file
-  copy <src> <dst>                 copy a file, e.g. restore a backup over a tampered file
-  certutil -hashfile <file> [algo] fingerprint a file (also: hash <file>)
-  mask <file>                      write a redacted copy of a file, hiding sensitive patterns
-  inbox                            list messages in the crew inbox
-  open <id>                        read one inbox message
-  report <id>                      flag an inbox message as phishing
-  keep <id>                        mark an inbox message as legitimate
-  caesar <encode|decode> <shift> <text>   shift-cipher a message
-  xor <key> <text|hex>             XOR-cipher a message with a shared key (symmetric)
-  hashcrack <hash>                 look up a hash in the crew's cracked-password list
-  submit <flag>                    hand in a flag or answer you found, e.g. submit FLAG{...}
-  mission                          show your current orders again
-`;
-
-export function runCommand(lab, state, line) {
-  const trimmed = line.trim();
-  if (!trimmed) return { output: '' };
-  state.history.push(trimmed);
-  if (state.history.length > 200) state.history.shift();
-  const argv = tokenize(trimmed);
-  const cmd = argv[0].toLowerCase().replace(/\.exe$/, '');
-  const args = argv.slice(1);
-  const host = lab.host?.name || 'CITADEL-CORE';
-  const user = lab.host?.user || 'cadet';
-
-  switch (cmd) {
-    case 'help':
-    case '/?':
-      return { output: HELP };
-    case 'cls':
-    case 'clear':
-      return { output: '', clear: true };
-    case 'whoami':
-      return { output: `${host.toLowerCase()}\\${user}\n` };
-    case 'hostname':
-      return { output: `${host}\n` };
-    case 'ver':
-      return { output: '\nMicrosoft Windows [Version 10.0.22631] (Citadel Sim)\n' };
-    case 'mission':
-      return { output: missionText(lab, state) };
-    case 'dir':
-      return { output: dir(state, args) };
-    case 'cd':
-    case 'chdir':
-      return { output: cd(state, args) };
-    case 'type':
-    case 'cat':
-      return { output: typeCmd(state, args, cmd) };
-    case 'findstr':
-      return { output: findstr(state, args) };
-    case 'net':
-      return { output: net(state, args, host) };
-    case 'netstat':
-      return { output: netstat(state) };
-    case 'tasklist':
-      return { output: tasklist(state) };
-    case 'taskkill':
-      return { output: taskkill(state, args) };
-    case 'classify':
-      return { output: classify(lab, state, args) };
-    case 'login':
-      return { output: login(state, args) };
-    case 'icacls':
-      return { output: icacls(state, args) };
-    case 'copy':
-    case 'xcopy':
-      return { output: copyCmd(state, args) };
-    case 'certutil':
-      return { output: certutil(state, args) };
-    case 'hash':
-      return { output: certutil(state, ['-hashfile', ...args]) };
-    case 'mask':
-      return { output: mask(lab, state, args) };
-    case 'inbox':
-      return { output: inboxList(lab, state) };
-    case 'open':
-      return { output: inboxOpen(lab, state, args) };
-    case 'report':
-      return { output: triage(lab, state, args, 'report') };
-    case 'keep':
-      return { output: triage(lab, state, args, 'keep') };
-    case 'caesar':
-      return { output: caesarCmd(args) };
-    case 'xor':
-      return { output: xorCmd(args) };
-    case 'hashcrack':
-      return { output: hashcrack(lab, args) };
-    case 'submit':
-      return { output: submit(lab, state, args) };
-    default:
-      return {
-        output:
-          `'${argv[0]}' is not recognized as an internal or external command,\noperable program or batch file.\n` +
-          (cmd === 'ls' ? '(This is Windows. Try: dir)\n' : "(Type 'help' to see the commands you can use.)\n"),
-      };
-  }
+// A friendly nudge under "No such file or directory".
+function pathHint(state, arg) {
+  if (arg.includes('\\')) return `(Linux paths use / not \\. Try: ${arg.replace(/\\/g, '/')})\n`;
+  const abs = resolvePath(state.cwd, arg, state.home);
+  const base = basename(abs).toLowerCase();
+  const hit = children(state, dirname(abs)).find((c) => c.name.toLowerCase() === base);
+  return hit ? `(Linux is case-sensitive. It is called ${hit.name})\n` : '';
 }
 
-export function tokenize(line) {
-  const out = [];
-  let cur = '';
-  let inQ = false;
-  let has = false;
-  for (const ch of line) {
-    if (ch === '"') {
-      inQ = !inQ;
-      has = true;
-    } else if (!inQ && /\s/.test(ch)) {
-      if (has) out.push(cur);
-      cur = '';
-      has = false;
-    } else {
-      cur += ch;
-      has = true;
-    }
-  }
-  if (has) out.push(cur);
-  return out;
-}
-
-function dir(state, args) {
-  const target = resolvePath(state.cwd, args.find((a) => !a.startsWith('/')));
-  if (!isDir(state, target)) {
-    return findFile(state, target) ? `\n Directory of ${target}\n\nFile Not Found (that is a file; use type to read it)\n` : 'File Not Found\n';
-  }
-  const prefix = normPath(target) + '\\';
-  const dirs = new Set();
-  const files = [];
-  for (const [key, f] of Object.entries(state.files)) {
-    if (!key.startsWith(prefix)) continue;
-    const rest = f.path.replace(/\//g, '\\').slice(prefix.length);
-    const slash = rest.indexOf('\\');
-    if (slash >= 0) dirs.add(rest.slice(0, slash));
-    else files.push(f);
-  }
-  let s = `\n Directory of ${target}\n\n`;
-  for (const d of [...dirs].sort()) s += `${DATE}    <DIR>          ${d}\n`;
-  let bytes = 0;
-  for (const f of files.sort((a, b) => a.path.localeCompare(b.path))) {
-    const name = f.path.split('\\').pop();
-    bytes += f.content.length;
-    s += `${DATE}    ${String(f.content.length).padStart(14)} ${name}\n`;
-  }
-  s += `${String(files.length).padStart(16)} File(s) ${String(bytes).padStart(14)} bytes\n`;
-  s += `${String(dirs.size).padStart(16)} Dir(s)\n`;
-  return s;
-}
-
-function cd(state, args) {
-  if (!args.length) return `${state.cwd}\n`;
-  const target = resolvePath(state.cwd, args.join(' '));
-  if (!isDir(state, target)) return 'The system cannot find the path specified.\n';
-  state.cwd = target;
-  return '';
-}
-
-function typeCmd(state, args, cmd) {
-  if (!args.length) return 'The syntax of the command is incorrect.\n';
-  const f = findFile(state, resolvePath(state.cwd, args.join(' ')));
-  if (!f) return 'The system cannot find the file specified.\n';
+// Opens a file named on the command line, or explains why it can't.
+function openFile(ctx, arg, cmd) {
+  const { state, root } = ctx;
+  const abs = resolvePath(state.cwd, arg, state.home);
+  const f = getFile(state, abs);
+  if (!f && isDir(state, abs)) return { err: `${cmd}: ${arg}: Is a directory\n` };
+  if (!f) return { err: `${cmd}: ${arg}: No such file or directory\n` + pathHint(state, arg) };
+  if (!canRead(state, f, root)) return { err: `${cmd}: ${arg}: Permission denied\n` + sudoHint(ctx) };
   markRead(state, f);
-  const note = cmd === 'cat' ? '(cat is Linux; on Windows it is type. Showing it anyway.)\n' : '';
-  return note + f.content + (f.content.endsWith('\n') ? '' : '\n');
+  return { file: f };
 }
 
-function findstr(state, args) {
-  const flags = args.filter((a) => a.startsWith('/')).map((a) => a.toLowerCase());
-  const rest = args.filter((a) => !a.startsWith('/'));
-  if (rest.length < 2) return 'FINDSTR: Usage: findstr [/i] <text> <file>\n';
-  const [text, ...fileParts] = rest;
-  const f = findFile(state, resolvePath(state.cwd, fileParts.join(' ')));
-  if (!f) return `FINDSTR: Cannot open ${fileParts.join(' ')}\n`;
-  markRead(state, f);
-  const ci = flags.includes('/i');
-  const needle = ci ? text.toLowerCase() : text;
-  const hits = f.content.split('\n').filter((l) => (ci ? l.toLowerCase() : l).includes(needle));
-  return hits.length ? hits.join('\n') + '\n' : '';
-}
+const withNl = (s) => (s && !s.endsWith('\n') ? s + '\n' : s);
+const sudoHint = (ctx) => (ctx.root ? '' : `(That needs admin rights. Try: sudo ${ctx.line})\n`);
+
+// ---------- accounts ----------
 
 function findUser(state, name) {
   return state.users.find((u) => u.name.toLowerCase() === (name || '').toLowerCase()) || null;
 }
 
-function net(state, args, host) {
-  if ((args[0] || '').toLowerCase() !== 'user') return 'NetSim supports: net user ...\n';
-  const name = args[1];
-  if (!name) {
-    const names = state.users.map((u) => u.name);
-    let s = `\nUser accounts for \\\\${host}\n\n-------------------------------------------------------------------------------\n`;
-    for (let i = 0; i < names.length; i += 3) s += names.slice(i, i + 3).map((n) => n.padEnd(25)).join('') + '\n';
-    return s + 'The command completed successfully.\n';
-  }
+function uidOf(state, name) {
+  if (name === 'root') return 0;
+  if (name === state.user) return 1000;
+  const others = state.users.filter((u) => u.name !== state.user);
+  const i = others.findIndex((u) => u.name === name);
+  return i < 0 ? 1000 : 1001 + i;
+}
+
+function groupsOf(state, name) {
   const u = findUser(state, name);
-  if (!u) return 'The user name could not be found.\n';
-  const opt = args[2];
-  if (!opt) {
-    return (
-      `User name                    ${u.name}\n` +
-      `Full Name                    ${u.fullName || ''}\n` +
-      `Account active               ${u.enabled ? 'Yes' : 'No'}\n` +
-      `Password last set            ${u.changed ? 'just now' : u.passwordSet || 'never changed'}\n` +
-      `Last logon                   ${u.lastLogon || 'Never'}\n` +
-      `Local Group Memberships      ${u.groups.length ? u.groups.map((g) => '*' + g).join(' ') : '*Users'}\n` +
-      'The command completed successfully.\n'
-    );
+  const groups = u ? [...u.groups] : ['users'];
+  if (name === state.user && !groups.includes('sudo')) groups.push('sudo');
+  return groups;
+}
+
+function passwdText(state) {
+  let s = 'root:x:0:0:root:/root:/bin/bash\n';
+  const names = [state.user, ...state.users.map((u) => u.name).filter((n) => n !== state.user)];
+  for (const name of names) {
+    const u = findUser(state, name);
+    const id = uidOf(state, name);
+    s += `${name}:x:${id}:${id}:${u?.fullName || ''}:/home/${name}:${u?.shell || '/bin/bash'}\n`;
   }
-  const m = opt.match(/^\/active:(yes|no)$/i);
-  if (m) {
-    u.enabled = m[1].toLowerCase() === 'yes';
-    return 'The command completed successfully.\n';
+  return s;
+}
+
+function shadowText(state) {
+  let s = 'root:*:20354:0:99999:7:::\n';
+  for (const u of state.users) {
+    const hash = `$6$citadel$${fakeHash(u.changed ? u.password : u.password || u.name, 'sha512', 43)}`;
+    s += `${u.name}:${u.enabled ? '' : '!'}${hash}:20354:0:99999:7:::\n`;
   }
-  if (opt.startsWith('/')) return `NetSim supports: net user ${u.name} /active:no|yes  or  net user ${u.name} <new-password>\n`;
-  const why = weakReason(opt, u.name);
-  if (why) return `The password does not meet the password policy requirements: ${why}\n`;
-  u.password = opt;
-  u.changed = true;
-  return 'The command completed successfully.\n';
+  return s;
+}
+
+function isoDate(value) {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value || '');
+  return m ? `${m[3]}-${m[1]}-${m[2]}` : value || 'never';
 }
 
 export function weakReason(pw, user) {
@@ -321,31 +238,851 @@ export function weakReason(pw, user) {
   return null;
 }
 
-function netstat(state) {
-  let s = '\nActive Connections\n\n  Proto  Local Address          Foreign Address        State\n';
-  for (const sv of state.services.filter((x) => x.running)) {
-    s += `  ${(sv.proto || 'TCP').padEnd(7)}${`0.0.0.0:${sv.port}`.padEnd(23)}${'0.0.0.0:0'.padEnd(23)}LISTENING\n`;
+// The two questions `passwd` asks. The answers never go into the history.
+function answerPrompt(state, line) {
+  const p = state.pending;
+  if (p.step === 1) {
+    const why = weakReason(line, p.user);
+    if (why) {
+      state.pending = null;
+      return { output: `BAD PASSWORD: ${why}\npasswd: password unchanged\n` };
+    }
+    p.first = line;
+    p.step = 2;
+    p.prompt = 'Retype new password: ';
+    return { output: '', prompt: p.prompt, secret: true };
+  }
+  state.pending = null;
+  if (line !== p.first) {
+    return { output: 'Sorry, passwords do not match.\npasswd: Authentication token manipulation error\npasswd: password unchanged\n' };
+  }
+  const u = findUser(state, p.user);
+  u.password = line;
+  u.changed = true;
+  return { output: 'passwd: password updated successfully\n' };
+}
+
+// ---------- commands ----------
+
+const HELP = `Citadel Sim commands (Linux). Commands and file names are case-sensitive.
+Press Tab to finish a command or file name, and the up arrow for the last command.
+
+Look around
+  ls [-l] [-a] [folder]              list files (-l shows permissions, -a hidden ones)
+  cd <folder>  |  cd ..  |  cd ~     change folder
+  pwd                                show which folder you are in
+  cat <file>                         show a file
+  head | tail [-n 5] <file>          first or last lines of a file
+  grep [-i] [-n] [-r] <text> <file>  find lines that contain text (-i: any case)
+  <command> | grep <text>            send one command's output into another
+  whoami | id | hostname | uname -a | history | clear
+
+Accounts (admin commands need sudo in front)
+  cat /etc/passwd                    list every account
+  id <user>  |  lastlog              one account's groups  |  last logins
+  sudo passwd -S <user>              password status (P = usable, L = locked)
+  sudo usermod -L <user>             lock (disable) an account   (-U unlocks it)
+  sudo passwd <user>                 set a new password (it asks twice, typing stays hidden)
+
+Processes and network
+  ps aux                             running programs and their PIDs
+  sudo ss -tlnp                      listening ports and the program behind each
+  sudo kill <PID>                    stop a program by its PID
+  sudo pkill <name>                  stop a program by its name
+
+Files and permissions
+  cp <from> <to>                     copy a file, e.g. restore a backup over a tampered file
+  setfacl -m u:<user>:--- <file>     block one user from a file   (getfacl <file> shows it)
+  chmod <mode> <file>                change permissions, e.g. chmod 600 secret.txt
+  sha256sum <file>                   fingerprint a file (also md5sum, sha1sum)
+
+Lab tools (the crew's field kit)
+  classify <item> <category>         record what something is:
+                                     asset, threat, vulnerability, risk,
+                                     C (confidentiality), I (integrity), A (availability),
+                                     or any category the lab asks for
+  login <user> <password>            try to log in as an account (Volt's Drill: test it)
+  mask <file>                        write a redacted copy of a file, hiding sensitive patterns
+  inbox                              list messages in the crew inbox
+  open <id>                          read one inbox message
+  report <id>                        flag an inbox message as phishing
+  keep <id>                          mark an inbox message as legitimate
+  caesar <encode|decode> <shift> <text>   shift-cipher a message
+  xor <key> <text|hex>               XOR-cipher a message with a shared key (symmetric)
+  hashcrack <hash>                   look up a hash in the crew's cracked-password list
+  submit <flag>                      hand in a flag or answer you found, e.g. submit FLAG{...}
+  mission                            show your current orders again
+`;
+
+// Windows habits, and what to type on Linux instead.
+const WINDOWS = {
+  dir: 'ls',
+  type: 'cat <file>',
+  findstr: 'grep <text> <file>',
+  net: 'cat /etc/passwd  |  sudo usermod -L <user>  |  sudo passwd <user>',
+  tasklist: 'ps aux',
+  taskkill: 'sudo kill <PID>  or  sudo pkill <name>',
+  icacls: 'setfacl -m u:<user>:--- <file>',
+  copy: 'cp <from> <to>',
+  xcopy: 'cp <from> <to>',
+  certutil: 'sha256sum <file>',
+  cls: 'clear',
+  ver: 'uname -a',
+  ipconfig: 'sudo ss -tlnp (to see open ports)',
+  chdir: 'cd',
+  del: 'rm (not needed in these labs)',
+  move: 'mv (not needed in these labs)',
+  hash: 'sha256sum <file>',
+};
+
+// Real Linux commands this training computer doesn't have.
+const MISSING = {
+  top: 'ps aux', htop: 'ps aux', nano: 'cat <file> (this computer has no editor)',
+  vi: 'cat <file> (this computer has no editor)', vim: 'cat <file> (this computer has no editor)',
+  less: 'cat <file>', more: 'cat <file>', find: 'ls -l or grep -r <text> .', su: 'sudo <command>',
+  userdel: 'sudo usermod -L <user> (lock it, keep it for the investigation)',
+  deluser: 'sudo usermod -L <user> (lock it, keep it for the investigation)',
+  ip: 'sudo ss -tlnp (to see open ports)', ifconfig: 'sudo ss -tlnp (to see open ports)',
+};
+
+const COMMANDS = {
+  help: () => HELP,
+  man: (ctx) => `No manual entry for ${ctx.args[0] || 'that'}. Type help to see every command on this computer.\n`,
+  clear: () => ({ output: '', clear: true }),
+  reset: () => ({ output: '', clear: true }),
+  whoami: (ctx) => `${ctx.root ? 'root' : ctx.state.user}\n`,
+  hostname: (ctx) => `${ctx.state.host}\n`,
+  uname: (ctx) => (ctx.args.some((a) => /^-\w*a/.test(a))
+    ? `Linux ${ctx.state.host} ${KERNEL} #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux\n`
+    : ctx.args.includes('-r') ? `${KERNEL}\n` : 'Linux\n'),
+  id: idCmd,
+  pwd: (ctx) => `${ctx.state.cwd}\n`,
+  cd: cd,
+  ls: ls,
+  cat: cat,
+  head: (ctx) => headTail(ctx, 'head'),
+  tail: (ctx) => headTail(ctx, 'tail'),
+  grep: grep,
+  wc: wc,
+  sort: (ctx) => textFilter(ctx, 'sort', (lines) => [...lines].sort()),
+  uniq: (ctx) => textFilter(ctx, 'uniq', (lines) => lines.filter((l, i) => l !== lines[i - 1])),
+  echo: (ctx) => `${ctx.args.join(' ')}\n`,
+  history: (ctx) => ctx.state.history.map((h, i) => `${String(i + 1).padStart(5)}  ${h}`).join('\n') + '\n',
+  exit: () => 'This is a training computer: leave the lab with the button above the mission.\n',
+  logout: () => 'This is a training computer: leave the lab with the button above the mission.\n',
+  getent: (ctx) => (ctx.args[0] === 'passwd' ? passwdText(ctx.state) : 'Usage: getent passwd\n'),
+  lastlog: lastlog,
+  passwd: passwdCmd,
+  usermod: usermod,
+  ps: ps,
+  kill: kill,
+  pkill: (ctx) => pkill(ctx, false),
+  killall: (ctx) => pkill(ctx, true),
+  ss: (ctx) => sockets(ctx, 'ss'),
+  netstat: (ctx) => sockets(ctx, 'netstat'),
+  cp: cp,
+  chmod: chmod,
+  setfacl: setfacl,
+  getfacl: getfacl,
+  sha256sum: (ctx) => hashsum(ctx, 'sha256', 64),
+  sha1sum: (ctx) => hashsum(ctx, 'sha1', 40),
+  md5sum: (ctx) => hashsum(ctx, 'md5', 32),
+  classify: (ctx) => classify(ctx.lab, ctx.state, ctx.args),
+  login: (ctx) => login(ctx.state, ctx.args),
+  mask: (ctx) => mask(ctx.lab, ctx.state, ctx.args),
+  inbox: (ctx) => inboxList(ctx.lab, ctx.state),
+  open: (ctx) => inboxOpen(ctx.lab, ctx.state, ctx.args),
+  report: (ctx) => triage(ctx.lab, ctx.state, ctx.args, 'report'),
+  keep: (ctx) => triage(ctx.lab, ctx.state, ctx.args, 'keep'),
+  caesar: (ctx) => caesarCmd(ctx.args),
+  xor: (ctx) => xorCmd(ctx.args),
+  hashcrack: (ctx) => hashcrack(ctx.lab, ctx.args),
+  submit: (ctx) => submit(ctx.lab, ctx.state, ctx.args),
+  mission: (ctx) => missionText(ctx.lab, ctx.state),
+};
+
+export const COMMAND_NAMES = Object.keys(COMMANDS).sort();
+
+// Splits a command line into words and operators (| ; && || > < &), honouring '...' and "..." quotes.
+function lex(line) {
+  const out = [];
+  let cur = '';
+  let has = false;
+  let quote = null;
+  const push = () => {
+    if (has) out.push({ w: cur });
+    cur = '';
+    has = false;
+  };
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (quote) {
+      if (ch === quote) quote = null;
+      else cur += ch;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      quote = ch;
+      has = true;
+    } else if (ch === '\\' && line[i + 1] === ' ') {
+      cur += ' ';
+      has = true;
+      i++;
+    } else if (/\s/.test(ch)) {
+      push();
+    } else if (ch === '|' || ch === '&') {
+      push();
+      if (line[i + 1] === ch) {
+        out.push({ op: ch + ch });
+        i++;
+      } else out.push({ op: ch });
+    } else if (ch === ';' || ch === '<') {
+      push();
+      out.push({ op: ch });
+    } else if (ch === '>') {
+      push();
+      if (line[i + 1] === '>') i++;
+      out.push({ op: '>' });
+    } else {
+      cur += ch;
+      has = true;
+    }
+  }
+  push();
+  return out;
+}
+
+export function tokenize(line) {
+  return lex(line).filter((t) => 'w' in t).map((t) => t.w);
+}
+
+export function runCommand(lab, state, line) {
+  if (state.pending) return answerPrompt(state, line);
+  const trimmed = line.trim();
+  if (!trimmed) return { output: '' };
+  const toks = lex(trimmed);
+
+  if (toks.some((t) => ['>', '<', '&'].includes(t.op))) {
+    remember(state, trimmed);
+    return { output: 'bash: > < and & are switched off on this training computer. To copy a file, use cp <from> <to>.\n' };
+  }
+
+  // `a ; b`, `a && b` and `a || b` run one after another; each part is one history entry.
+  const groups = [[]];
+  for (const t of toks) {
+    if (t.op === ';' || t.op === '&&' || t.op === '||') groups.push([]);
+    else groups[groups.length - 1].push(t);
+  }
+  const parts = groups.filter((g) => g.length);
+  let output = '';
+  for (const g of parts) {
+    const stages = [[]];
+    for (const t of g) {
+      if (t.op === '|') stages.push([]);
+      else stages[stages.length - 1].push(t.w);
+    }
+    remember(state, parts.length === 1 ? trimmed : stages.map((s) => s.join(' ')).join(' | '));
+    if (stages.some((s) => !s.length)) return { output: output + "bash: syntax error near unexpected token `|'\n" };
+    let stdin = null;
+    for (const words of stages) {
+      const res = exec(lab, state, words, stdin);
+      if (res.clear && stages.length === 1 && parts.length === 1) return res;
+      if (res.prompt) return { ...res, output: output + (res.output || '') };
+      stdin = res.output || '';
+    }
+    output += stdin;
+  }
+  return { output };
+}
+
+function remember(state, line) {
+  state.history.push(line);
+  if (state.history.length > 200) state.history.shift();
+}
+
+function exec(lab, state, words, stdin) {
+  let argv = words;
+  let root = false;
+  if (argv[0] === 'sudo') {
+    argv = argv.slice(1);
+    while (argv[0] && argv[0].startsWith('-')) argv = argv.slice(1);
+    if (!argv.length) return { output: 'usage: sudo <command>\n' };
+    if (argv[0] === 'su' || argv[0] === 'bash' || argv[0] === 'sh' || argv[0] === 'sudo') {
+      return { output: `You stay signed in as ${state.user} here. Put sudo in front of the one command that needs admin rights.\n` };
+    }
+    root = true;
+  }
+  const name = argv[0];
+  const fn = Object.hasOwn(COMMANDS, name) ? COMMANDS[name] : null;
+  if (!fn) return { output: unknown(name) };
+  const r = fn({ lab, state, args: argv.slice(1), stdin, root, cmd: name, line: argv.join(' ') });
+  return typeof r === 'string' ? { output: r } : r;
+}
+
+function unknown(name) {
+  let s = `bash: ${name}: command not found\n`;
+  const lower = name.toLowerCase().replace(/\.exe$/, '');
+  if (Object.hasOwn(WINDOWS, lower)) s += `(${name} is a Windows command. On Linux, use: ${WINDOWS[lower]})\n`;
+  else if (lower !== name && Object.hasOwn(COMMANDS, lower)) s += `(Linux is case-sensitive. Try: ${lower})\n`;
+  else if (Object.hasOwn(MISSING, lower)) s += `(This training computer doesn't have ${lower}. Try: ${MISSING[lower]})\n`;
+  else s += "(Type help to see the commands you can use.)\n";
+  return s;
+}
+
+function splitFlags(args) {
+  let flags = '';
+  const rest = [];
+  for (const a of args) {
+    if (/^-[A-Za-z]+$/.test(a)) flags += a.slice(1);
+    else rest.push(a);
+  }
+  return { flags, rest };
+}
+
+function idCmd(ctx) {
+  const { state, root } = ctx;
+  const name = ctx.args.find((a) => !a.startsWith('-')) || (root ? 'root' : state.user);
+  if (name !== 'root' && name !== state.user && !findUser(state, name)) return `id: '${name}': no such user\n`;
+  const uid = uidOf(state, name);
+  const groups = name === 'root' ? [] : groupsOf(state, name);
+  const list = [`${uid}(${name})`, ...groups.map((g) => `${GROUP_IDS[g] ?? 1600}(${g})`)];
+  return `uid=${uid}(${name}) gid=${uid}(${name}) groups=${list.join(',')}\n`;
+}
+
+function cd(ctx) {
+  const { state, root } = ctx;
+  const arg = ctx.args.find((a) => a !== '--');
+  let target;
+  if (!arg) target = state.home;
+  else if (arg === '-') {
+    if (!state.oldCwd) return 'bash: cd: OLDPWD not set\n';
+    target = state.oldCwd;
+  } else target = resolvePath(state.cwd, arg, state.home);
+  if (!isDir(state, target)) {
+    if (getFile(state, target)) return `bash: cd: ${arg}: Not a directory\n`;
+    return `bash: cd: ${arg}: No such file or directory\n` + pathHint(state, arg);
+  }
+  if (target === '/root' && !root) return `bash: cd: ${arg}: Permission denied\n`;
+  state.oldCwd = state.cwd;
+  state.cwd = target;
+  return arg === '-' ? `${target}\n` : '';
+}
+
+function longLine(state, abs, name, dir) {
+  const f = dir ? null : getFile(state, abs);
+  const owner = ownerOf(state, abs);
+  const group = abs === '/etc/shadow' ? 'shadow' : owner;
+  const acl = state.acl[abs] && (state.acl[abs].denied.length || Object.keys(state.acl[abs].users || {}).length) ? '+' : ' ';
+  const size = dir ? 4096 : f.content.length;
+  return `${dir ? 'd' : '-'}${modeOf(state, abs, dir)}${acl} ${dir ? 2 : 1} ${owner.padEnd(6)} ${group.padEnd(6)} ${String(size).padStart(5)} ${DATE} ${name}`;
+}
+
+function ls(ctx) {
+  const { state, root } = ctx;
+  const { flags, rest } = splitFlags(ctx.args);
+  const long = flags.includes('l');
+  const all = flags.includes('a');
+  const targets = rest.length ? rest : ['.'];
+  let out = '';
+  targets.forEach((t, idx) => {
+    const abs = resolvePath(state.cwd, t, state.home);
+    if (isDir(state, abs) && !getFile(state, abs)) {
+      if (abs === '/root' && !root) {
+        out += `ls: cannot open directory '${t}': Permission denied\n`;
+        return;
+      }
+      if (targets.length > 1) out += `${idx ? '\n' : ''}${t}:\n`;
+      let list = children(state, abs);
+      if (!all) list = list.filter((k) => !k.name.startsWith('.'));
+      else list = [{ name: '.', dir: true }, { name: '..', dir: true }, ...list];
+      if (long) {
+        out += `total ${list.length * 4}\n`;
+        for (const k of list) {
+          const kAbs = k.name === '.' ? abs : k.name === '..' ? dirname(abs) : normPath(`${abs}/${k.name}`);
+          out += longLine(state, kAbs, k.name, k.dir) + '\n';
+        }
+      } else if (list.length) {
+        out += list.map((k) => (k.dir && k.name !== '.' && k.name !== '..' ? `${k.name}/` : k.name)).join('  ') + '\n';
+      }
+    } else if (getFile(state, abs)) {
+      out += long ? longLine(state, abs, t, false) + '\n' : `${t}\n`;
+    } else {
+      out += `ls: cannot access '${t}': No such file or directory\n` + pathHint(state, t);
+    }
+  });
+  return out;
+}
+
+function cat(ctx) {
+  const names = ctx.args.filter((a) => !a.startsWith('-'));
+  if (!names.length) return ctx.stdin ?? 'Usage: cat <file>   e.g. cat README.txt\n';
+  let out = '';
+  for (const a of names) {
+    const r = openFile(ctx, a, 'cat');
+    out += r.err || withNl(r.file.content);
+  }
+  return out;
+}
+
+function headTail(ctx, which) {
+  let n = 10;
+  const names = [];
+  const args = ctx.args;
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === '-n') n = parseInt(args[++i], 10);
+    else if (/^-n\d+$/.test(a)) n = parseInt(a.slice(2), 10);
+    else if (/^-\d+$/.test(a)) n = parseInt(a.slice(1), 10);
+    else if (!a.startsWith('-')) names.push(a);
+  }
+  if (Number.isNaN(n)) return `${which}: invalid number of lines\n`;
+  const pick = (text) => {
+    if (!text) return '';
+    const lines = text.replace(/\n$/, '').split('\n');
+    return (which === 'head' ? lines.slice(0, n) : lines.slice(Math.max(0, lines.length - n))).join('\n') + '\n';
+  };
+  if (!names.length) return ctx.stdin !== null ? pick(ctx.stdin) : `Usage: ${which} -n 5 <file>\n`;
+  let out = '';
+  names.forEach((a, i) => {
+    const r = openFile(ctx, a, which);
+    if (r.err) out += r.err;
+    else out += (names.length > 1 ? `${i ? '\n' : ''}==> ${a} <==\n` : '') + pick(r.file.content);
+  });
+  return out;
+}
+
+function grep(ctx) {
+  const { state } = ctx;
+  const { flags, rest } = splitFlags(ctx.args);
+  if (!rest.length) return 'Usage: grep [-i] [-n] [-v] [-c] [-r] <text> [file...]   e.g. grep -i shield night.log\n';
+  const [pat, ...names] = rest;
+  const ci = flags.includes('i');
+  const num = flags.includes('n');
+  const inv = flags.includes('v');
+  const count = flags.includes('c');
+  const rec = flags.includes('r') || flags.includes('R');
+  let re;
+  try {
+    re = new RegExp(pat, ci ? 'i' : '');
+  } catch {
+    re = new RegExp(pat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), ci ? 'i' : '');
+  }
+  const scan = (text, label) => {
+    const lines = text.replace(/\n$/, '').split('\n');
+    let c = 0;
+    let out = '';
+    lines.forEach((l, i) => {
+      if (re.test(l) !== inv) {
+        c++;
+        if (!count) out += `${label ? label + ':' : ''}${num ? i + 1 + ':' : ''}${l}\n`;
+      }
+    });
+    return count ? `${label ? label + ':' : ''}${c}\n` : out;
+  };
+  if (!names.length) {
+    if (rec) names.push('.');
+    else if (ctx.stdin !== null) return scan(ctx.stdin, '');
+    else return 'grep: give it a file to search, e.g. grep -i shield night.log\n';
+  }
+  const targets = [];
+  let out = '';
+  for (const a of names) {
+    const abs = resolvePath(state.cwd, a, state.home);
+    if (isDir(state, abs) && !getFile(state, abs)) {
+      if (!rec) {
+        out += `grep: ${a}: Is a directory\n`;
+        continue;
+      }
+      const pre = abs === '/' ? '/' : abs + '/';
+      for (const key of Object.keys(state.files).filter((k) => k.startsWith(pre)).sort()) {
+        const label = (a === '.' ? '' : a.replace(/\/$/, '') + '/') + key.slice(pre.length);
+        const r = openFile(ctx, key, 'grep');
+        if (r.err) out += r.err;
+        else targets.push([r.file, label]);
+      }
+    } else {
+      const r = openFile(ctx, a, 'grep');
+      if (r.err) out += r.err;
+      else targets.push([r.file, a]);
+    }
+  }
+  const many = targets.length > 1 || rec;
+  for (const [f, label] of targets) out += scan(f.content, many ? label : '');
+  return out;
+}
+
+function textFilter(ctx, cmd, fn) {
+  const name = ctx.args.find((a) => !a.startsWith('-'));
+  let text;
+  if (name) {
+    const r = openFile(ctx, name, cmd);
+    if (r.err) return r.err;
+    text = r.file.content;
+  } else if (ctx.stdin !== null) text = ctx.stdin;
+  else return `Usage: ${cmd} <file>   or   <command> | ${cmd}\n`;
+  if (!text) return '';
+  return fn(text.replace(/\n$/, '').split('\n')).join('\n') + '\n';
+}
+
+function wc(ctx) {
+  const { flags, rest } = splitFlags(ctx.args);
+  const pickAll = !/[lwc]/.test(flags);
+  const count = (text, label) => {
+    const n = [];
+    if (pickAll || flags.includes('l')) n.push((text.match(/\n/g) || []).length);
+    if (pickAll || flags.includes('w')) n.push(text.split(/\s+/).filter(Boolean).length);
+    if (pickAll || flags.includes('c')) n.push(text.length);
+    return n.map((x) => String(x).padStart(pickAll ? 7 : 1)).join(' ') + (label ? ` ${label}` : '') + '\n';
+  };
+  if (!rest.length) return ctx.stdin !== null ? count(ctx.stdin, '') : 'Usage: wc -l <file>\n';
+  let out = '';
+  for (const a of rest) {
+    const r = openFile(ctx, a, 'wc');
+    out += r.err || count(r.file.content, a);
+  }
+  return out;
+}
+
+function lastlog(ctx) {
+  const { state } = ctx;
+  const i = ctx.args.indexOf('-u');
+  const only = i >= 0 ? ctx.args[i + 1] : null;
+  let users = state.users;
+  if (only) {
+    users = users.filter((u) => u.name.toLowerCase() === only.toLowerCase());
+    if (!users.length) return `lastlog: Unknown user or range: ${only}\n`;
+  }
+  let s = 'Username         Port     From             Latest\n';
+  for (const u of users) {
+    const last = u.lastLogon || 'Never';
+    const never = /^never$/i.test(last);
+    const latest = never ? '**Never logged in**' : /^now$/i.test(last) ? NOW : last;
+    s += `${u.name.padEnd(17)}${(never ? '' : 'pts/0').padEnd(9)}${(never ? '' : '10.0.0.7').padEnd(17)}${latest}\n`;
   }
   return s;
 }
 
-function tasklist(state) {
-  let s = '\nImage Name                     PID Session Name        Mem Usage\n========================= ======== ================ ============\n';
-  for (const p of state.processes.filter((x) => !x.killed)) {
-    s += `${p.name.padEnd(26)}${String(p.pid).padStart(8)} ${'Console'.padEnd(17)}${(p.mem || '12,480 K').padStart(12)}\n`;
+function passwdCmd(ctx) {
+  const { state, root } = ctx;
+  const { flags, rest } = splitFlags(ctx.args.filter((a) => !a.startsWith('--')));
+  const long = ctx.args.filter((a) => a.startsWith('--'));
+  const name = rest[0] || (root ? 'root' : state.user);
+  if (name === 'root') return 'passwd: the root account is not part of this lab.\n';
+  if (name !== state.user && !root) {
+    return `passwd: You may not view or modify password information for ${name}.\n` + sudoHint(ctx);
+  }
+  const u = findUser(state, name);
+  if (!u) return `passwd: user '${name}' does not exist\n`;
+  if (flags.includes('S') || long.includes('--status')) {
+    return `${u.name} ${u.enabled ? 'P' : 'L'} ${u.changed ? '2026-09-23' : isoDate(u.passwordSet)} 0 99999 7 -1\n`;
+  }
+  if (flags.includes('l') || long.includes('--lock')) {
+    u.enabled = false;
+    return 'passwd: password expiry information changed.\n';
+  }
+  if (flags.includes('u') || long.includes('--unlock')) {
+    u.enabled = true;
+    return 'passwd: password expiry information changed.\n';
+  }
+  if (flags || long.length) return 'Usage: passwd <user>   |   passwd -S <user>   |   passwd -l <user>\n';
+  state.pending = { kind: 'passwd', user: u.name, step: 1, prompt: 'New password: ' };
+  return { output: '', prompt: state.pending.prompt, secret: true };
+}
+
+function usermod(ctx) {
+  const { state, root, args } = ctx;
+  if (!root) return 'usermod: Permission denied.\nusermod: cannot lock /etc/passwd; try again later.\n' + sudoHint(ctx);
+  let action = null;
+  const names = [];
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === '-L' || a === '--lock') action = 'lock';
+    else if (a === '-U' || a === '--unlock') action = 'unlock';
+    else if (a === '-s' || a === '--shell') {
+      const shell = args[++i] || '';
+      if (/(nologin|false)$/.test(shell)) action = 'lock';
+      else if (/(bash|sh)$/.test(shell)) action = 'unlock';
+    } else if (a === '-e' || a === '--expiredate') {
+      const when = args[++i] || '';
+      action = when === '' || when === '-1' ? 'unlock' : 'lock';
+    } else if (!a.startsWith('-')) names.push(a);
+  }
+  const name = names[names.length - 1];
+  if (!name) return 'Usage: sudo usermod -L <user>   (lock)    sudo usermod -U <user>   (unlock)\n';
+  const u = findUser(state, name);
+  if (!u) return `usermod: user '${name}' does not exist\n`;
+  if (!action) return 'This training computer supports usermod -L (lock) and -U (unlock).\n';
+  u.enabled = action === 'unlock';
+  return '';
+}
+
+function procOwner(state, p) {
+  return p.user || (p.name === 'bash' ? state.user : 'root');
+}
+
+function rss(p) {
+  return parseInt(String(p.mem || '12,480 K').replace(/[^\d]/g, ''), 10) || 12480;
+}
+
+function ps(ctx) {
+  const { state } = ctx;
+  const everyone = ctx.args.some((a) => /a|e|x/.test(a));
+  const list = state.processes.filter((p) => !p.killed && (everyone || procOwner(state, p) === state.user));
+  let s = 'USER         PID %CPU %MEM    RSS TTY      STAT START   TIME COMMAND\n';
+  for (const p of list) {
+    const own = procOwner(state, p) === state.user;
+    s += `${procOwner(state, p).padEnd(8)}${String(p.pid).padStart(8)}  0.0  0.1 ${String(rss(p)).padStart(6)} ${(own ? 'pts/0' : '?').padEnd(8)} ${(own ? 'Ss' : 'Ssl').padEnd(4)} 02:13   0:00 ${p.cmd || (own ? '-bash' : p.name)}\n`;
   }
   return s;
 }
 
-function taskkill(state, args) {
-  const i = args.findIndex((a) => a.toLowerCase() === '/im');
-  const name = i >= 0 ? args[i + 1] : null;
-  if (!name) return 'ERROR: Invalid syntax. Usage: taskkill /im <name> /f\n';
-  const p = state.processes.find((x) => !x.killed && x.name.toLowerCase() === name.toLowerCase());
-  if (!p) return `ERROR: The process "${name}" not found.\n`;
+function stopProcess(state, p) {
   p.killed = true;
-  for (const sv of state.services) if (sv.process && sv.process.toLowerCase() === p.name.toLowerCase()) sv.running = false;
-  return `SUCCESS: The process "${p.name}" with PID ${p.pid} has been terminated.\n`;
+  for (const sv of state.services) if (sv.process && sv.process === p.name) sv.running = false;
+}
+
+function kill(ctx) {
+  const { state, root } = ctx;
+  const pids = ctx.args.filter((a) => /^\d+$/.test(a));
+  if (!pids.length) return 'Usage: kill <PID>   (find the PID with ps aux)\n';
+  let out = '';
+  for (const pid of pids) {
+    const p = state.processes.find((x) => !x.killed && String(x.pid) === pid);
+    if (!p) out += `bash: kill: (${pid}) - No such process\n`;
+    else if (p.name === 'bash' && procOwner(state, p) === state.user) out += '(That is your own shell. Stopping it would log you out, so leave it running.)\n';
+    else if (procOwner(state, p) !== state.user && !root) out += `bash: kill: (${pid}) - Operation not permitted\n` + sudoHint(ctx);
+    else stopProcess(state, p);
+  }
+  return out;
+}
+
+// pkill matches part of the name (like the real one); killall needs the exact name.
+function pkill(ctx, exact) {
+  const { state, root } = ctx;
+  const cmd = exact ? 'killall' : 'pkill';
+  const name = ctx.args.find((a) => !a.startsWith('-'));
+  if (!name) return `Usage: ${cmd} <name>   (see names with ps aux)\n`;
+  let re;
+  try {
+    re = new RegExp(name);
+  } catch {
+    re = null;
+  }
+  const hits = state.processes.filter((p) => !p.killed && p.name !== 'bash' && (exact || !re ? p.name === name : re.test(p.name)));
+  if (!hits.length) return exact ? `${name}: no process found\n` : '';
+  let out = '';
+  for (const p of hits) {
+    if (procOwner(state, p) !== state.user && !root) {
+      out += exact ? `${name}(${p.pid}): Operation not permitted\n` : `${cmd}: killing pid ${p.pid} failed: Operation not permitted\n`;
+    } else stopProcess(state, p);
+  }
+  return out ? out + sudoHint(ctx) : '';
+}
+
+// `ss -tlnp` (and the older `netstat -tlnp`): listening ports, and with -p the program behind each.
+function sockets(ctx, style) {
+  const { state, root } = ctx;
+  const showProc = ctx.args.some((a) => /^-\w*p/.test(a));
+  const rows = state.services.filter((x) => x.running).map((sv) => {
+    const p = state.processes.find((x) => !x.killed && x.name === sv.process);
+    const udp = /udp/i.test(sv.proto || '');
+    return { sv, p, udp, mine: p && procOwner(state, p) === state.user };
+  });
+  let s;
+  if (style === 'ss') {
+    s = 'State    Recv-Q  Send-Q   Local Address:Port    Peer Address:Port  Process\n';
+    for (const { sv, p, udp, mine } of rows) {
+      const proc = showProc && p && (root || mine) ? `users:(("${p.name}",pid=${p.pid},fd=3))` : '';
+      s += `${(udp ? 'UNCONN' : 'LISTEN').padEnd(9)}0       ${udp ? '0      ' : '128    '}${`0.0.0.0:${sv.port}`.padStart(19)}  ${'0.0.0.0:*'.padStart(15)}    ${proc}\n`;
+    }
+    if (showProc && !root && rows.some((r) => !r.mine)) s += '(Some programs are hidden: only root sees them all. Try: sudo ss -tlnp)\n';
+    return s;
+  }
+  s = 'Active Internet connections (only servers)\nProto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name\n';
+  for (const { sv, p, udp, mine } of rows) {
+    const proc = showProc ? (p && (root || mine) ? `${p.pid}/${p.name}` : '-') : '';
+    s += `${(udp ? 'udp' : 'tcp').padEnd(6)}${'0'.padStart(6)}${'0'.padStart(7)} ${`0.0.0.0:${sv.port}`.padEnd(24)}${'0.0.0.0:*'.padEnd(24)}${(udp ? '' : 'LISTEN').padEnd(12)}${proc}\n`;
+  }
+  if (showProc && !root && rows.some((r) => !r.mine)) {
+    s = '(Not all processes could be identified, non-owned process info\n will not be shown, you would have to be root to see it all.)\n' + s;
+  }
+  return s;
+}
+
+function cp(ctx) {
+  const { state, root } = ctx;
+  const paths = ctx.args.filter((a) => !a.startsWith('-'));
+  if (paths.length < 2) return paths.length ? `cp: missing destination file operand after '${paths[0]}'\n` : 'cp: missing file operand\n';
+  const [srcArg, dstArg] = paths;
+  const srcAbs = resolvePath(state.cwd, srcArg, state.home);
+  const src = getFile(state, srcAbs);
+  if (!src) {
+    if (isDir(state, srcAbs)) return `cp: -r not specified; omitting directory '${srcArg}'\n`;
+    return `cp: cannot stat '${srcArg}': No such file or directory\n` + pathHint(state, srcArg);
+  }
+  if (!canRead(state, src, root)) return `cp: cannot open '${srcArg}' for reading: Permission denied\n` + sudoHint(ctx);
+  let dst = resolvePath(state.cwd, dstArg, state.home);
+  if (isDir(state, dst) && !getFile(state, dst)) dst = normPath(`${dst}/${basename(src.path)}`);
+  if (dst === src.path) return `cp: '${srcArg}' and '${dstArg}' are the same file\n`;
+  if (!isDir(state, dirname(dst))) return `cp: cannot create regular file '${dstArg}': No such file or directory\n` + pathHint(state, dstArg);
+  if (!canWrite(state, dst, root) || VIRTUAL_FILES.includes(dst)) return `cp: cannot create regular file '${dstArg}': Permission denied\n`;
+  state.files[dst] = { path: dst, content: src.content };
+  markRead(state, src);
+  return '';
+}
+
+function applyMode(mode, spec) {
+  if (/^[0-7]{3,4}$/.test(spec)) {
+    return [...spec.slice(-3)].map((d) => {
+      const n = Number(d);
+      return (n & 4 ? 'r' : '-') + (n & 2 ? 'w' : '-') + (n & 1 ? 'x' : '-');
+    }).join('');
+  }
+  const bits = mode.split('');
+  for (const part of spec.split(',')) {
+    const m = /^([ugoa]*)([+\-=])([rwx]*)$/.exec(part);
+    if (!m) return null;
+    const who = new Set((m[1] || 'a').replace(/a/g, 'ugo'));
+    for (const w of who) {
+      const base = { u: 0, g: 3, o: 6 }[w];
+      ['r', 'w', 'x'].forEach((b, i) => {
+        const has = m[3].includes(b);
+        if (m[2] === '+' && has) bits[base + i] = b;
+        else if (m[2] === '-' && has) bits[base + i] = '-';
+        else if (m[2] === '=') bits[base + i] = has ? b : '-';
+      });
+    }
+  }
+  return bits.join('');
+}
+
+function chmod(ctx) {
+  const { state, root } = ctx;
+  const [spec, ...names] = ctx.args.filter((a) => !/^-[Rv]+$/.test(a));
+  if (!spec || !names.length) return 'Usage: chmod <mode> <file>   e.g. chmod 600 secret.txt  or  chmod o-r secret.txt\n';
+  let out = '';
+  for (const a of names) {
+    const abs = resolvePath(state.cwd, a, state.home);
+    const dir = isDir(state, abs) && !getFile(state, abs);
+    if (!dir && !getFile(state, abs)) {
+      out += `chmod: cannot access '${a}': No such file or directory\n` + pathHint(state, a);
+      continue;
+    }
+    if (ownerOf(state, abs) !== state.user && !root) {
+      out += `chmod: changing permissions of '${a}': Operation not permitted\n`;
+      continue;
+    }
+    const next = applyMode(modeOf(state, abs, dir), spec);
+    if (!next) return `chmod: invalid mode: '${spec}'\n`;
+    state.modes[abs] = next;
+  }
+  return out;
+}
+
+function setfacl(ctx) {
+  const { state, root, args } = ctx;
+  const usage = 'Usage: setfacl -m u:<user>:--- <file>   (block a user)\n       setfacl -x u:<user> <file>       (remove that rule)\n';
+  const mi = args.findIndex((a) => a === '-m' || a === '--modify');
+  const xi = args.findIndex((a) => a === '-x' || a === '--remove');
+  const bi = args.findIndex((a) => a === '-b' || a === '--remove-all');
+  const opt = mi >= 0 ? mi : xi >= 0 ? xi : bi;
+  if (opt < 0) return usage;
+  const spec = bi >= 0 && opt === bi ? null : args[opt + 1];
+  const names = args.filter((a, i) => !a.startsWith('-') && !(spec !== null && i === opt + 1));
+  if ((opt !== bi && !spec) || !names.length) return usage;
+  let rule = null;
+  if (spec !== null) {
+    rule = (mi >= 0 ? /^(?:u|user):([^:]+):([rwx-]*)$/ : /^(?:u|user):([^:]+)$/).exec(spec);
+    if (!rule) return `setfacl: Option ${args[opt]}: Invalid argument near character 1\n` + usage;
+  }
+  let out = '';
+  for (const a of names) {
+    const abs = resolvePath(state.cwd, a, state.home);
+    if (!getFile(state, abs) && !isDir(state, abs)) {
+      out += `setfacl: ${a}: No such file or directory\n` + pathHint(state, a);
+      continue;
+    }
+    if (ownerOf(state, abs) !== state.user && !root) {
+      out += `setfacl: ${a}: Operation not permitted\n`;
+      continue;
+    }
+    const acl = (state.acl[abs] = state.acl[abs] || { denied: [] });
+    acl.users = acl.users || {};
+    if (bi >= 0 && opt === bi) {
+      acl.denied = [];
+      acl.users = {};
+      continue;
+    }
+    const user = rule[1].toLowerCase();
+    acl.denied = acl.denied.filter((x) => x !== user);
+    delete acl.users[user];
+    if (mi >= 0) {
+      const perms = rule[2] || '';
+      if (/[rwx]/.test(perms)) acl.users[user] = ['r', 'w', 'x'].map((b) => (perms.includes(b) ? b : '-')).join('');
+      else acl.denied.push(user);
+    }
+  }
+  return out;
+}
+
+function getfacl(ctx) {
+  const { state } = ctx;
+  const names = ctx.args.filter((a) => !a.startsWith('-'));
+  if (!names.length) return 'Usage: getfacl <file>\n';
+  let out = '';
+  for (const a of names) {
+    const abs = resolvePath(state.cwd, a, state.home);
+    const dir = isDir(state, abs) && !getFile(state, abs);
+    if (!dir && !getFile(state, abs)) {
+      out += `getfacl: ${a}: No such file or directory\n`;
+      continue;
+    }
+    const mode = modeOf(state, abs, dir);
+    const owner = ownerOf(state, abs);
+    const acl = state.acl[abs] || { denied: [], users: {} };
+    out += `# file: ${abs.slice(1)}\n# owner: ${owner}\n# group: ${owner}\nuser::${mode.slice(0, 3)}\n`;
+    for (const [u, p] of Object.entries(acl.users || {})) out += `user:${u}:${p}\n`;
+    for (const u of acl.denied) out += `user:${u}:---\n`;
+    out += `group::${mode.slice(3, 6)}\n`;
+    if (acl.denied.length || Object.keys(acl.users || {}).length) {
+      const bits = [mode.slice(3, 6), ...Object.values(acl.users || {})];
+      out += `mask::${['r', 'w', 'x'].map((b, i) => (bits.some((x) => x[i] === b) ? b : '-')).join('')}\n`;
+    }
+    out += `other::${mode.slice(6)}\n\n`;
+  }
+  return out;
+}
+
+// Not a real hash: a stable fingerprint of the content, the right length for the algorithm.
+function fakeHash(content, algo = 'sha256', len = 64) {
+  let h = 2166136261;
+  const s = `${algo}:${content}`;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  let out = '';
+  let x = h >>> 0;
+  while (out.length < len) {
+    x = Math.imul(x ^ 0x9e3779b9, 16777619) >>> 0;
+    x ^= x >>> 13;
+    out += (x >>> 0).toString(16).padStart(8, '0');
+  }
+  return out.slice(0, len);
+}
+
+function hashsum(ctx, algo, len) {
+  const names = ctx.args.filter((a) => !a.startsWith('-'));
+  if (!names.length) {
+    if (ctx.stdin !== null) return `${fakeHash(ctx.stdin, algo, len)}  -\n`;
+    return `Usage: ${ctx.cmd} <file>   e.g. ${ctx.cmd} README.txt\n`;
+  }
+  let out = '';
+  for (const a of names) {
+    const r = openFile(ctx, a, ctx.cmd);
+    out += r.err || `${fakeHash(r.file.content, algo, len)}  ${a}\n`;
+  }
+  return out;
 }
 
 function classify(lab, state, args) {
@@ -378,76 +1115,21 @@ function login(state, args) {
   const u = findUser(state, name);
   const success = !!u && u.enabled && u.password === pw;
   state.loginAttempts.push({ user: (name || '').toLowerCase(), password: pw, success });
-  if (!u) return 'Login failed: unknown user name.\n';
-  if (!u.enabled) return 'Login failed: this account is disabled.\n';
-  return success ? `Login successful. Welcome, ${u.fullName || u.name}.\n` : 'Login failed: incorrect password.\n';
-}
-
-function icacls(state, args) {
-  if (!args.length) return 'ICACLS: no file specified.\n';
-  const denyIdx = args.findIndex((a) => a.toLowerCase() === '/deny');
-  const grantIdx = args.findIndex((a) => a.toLowerCase() === '/grant');
-  const filePart = args.slice(0, denyIdx >= 0 ? denyIdx : grantIdx >= 0 ? grantIdx : args.length).join(' ');
-  const f = findFile(state, resolvePath(state.cwd, filePart));
-  if (!f) return `ICACLS: ${filePart}: The system cannot find the file specified.\n`;
-  const key = normPath(f.path);
-  state.acl[key] = state.acl[key] || { denied: [] };
-  if (denyIdx >= 0) {
-    const user = (args[denyIdx + 1] || '').split(':')[0].toLowerCase();
-    if (!user) return 'ICACLS: /deny requires <user>:<perm>\n';
-    if (!state.acl[key].denied.includes(user)) state.acl[key].denied.push(user);
-    return `processed file: ${f.path}\nSuccessfully processed 1 files; Failed processing 0 files\n`;
-  }
-  if (grantIdx >= 0) {
-    const user = (args[grantIdx + 1] || '').split(':')[0].toLowerCase();
-    state.acl[key].denied = state.acl[key].denied.filter((u) => u !== user);
-    return `processed file: ${f.path}\nSuccessfully processed 1 files; Failed processing 0 files\n`;
-  }
-  return 'ICACLS: use /deny <user>:F or /grant <user>:F\n';
-}
-
-function copyCmd(state, args) {
-  if (args.length < 2) return 'The syntax of the command is incorrect.\n';
-  const src = findFile(state, resolvePath(state.cwd, args[0]));
-  if (!src) return 'The system cannot find the file specified.\n';
-  const dstPath = resolvePath(state.cwd, args[1]);
-  state.files[normPath(dstPath)] = { path: dstPath, content: src.content };
-  markRead(state, src);
-  return '        1 file(s) copied.\n';
-}
-
-function fakeHash(content) {
-  let h = 2166136261;
-  for (let i = 0; i < content.length; i++) {
-    h ^= content.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  const hex = (h >>> 0).toString(16).padStart(8, '0').toUpperCase();
-  return hex.repeat(8);
-}
-
-function certutil(state, args) {
-  const i = args.findIndex((a) => a.toLowerCase() === '-hashfile');
-  const filePart = i >= 0 ? args[i + 1] : args[0];
-  const algo = (i >= 0 ? args[i + 2] : args[1]) || 'SHA256';
-  if (!filePart) return 'Usage: certutil -hashfile <file> [SHA256]\n';
-  const f = findFile(state, resolvePath(state.cwd, filePart));
-  if (!f) return 'CertUtil: -hashfile command FAILED: 0x80070002 (The system cannot find the file specified.)\n';
-  markRead(state, f);
-  return `${algo.toUpperCase()} hash of ${f.path}:\n${fakeHash(f.content)}\nCertUtil: -hashfile command completed successfully.\n`;
+  if (!u) return 'Login incorrect (no such user).\n';
+  if (!u.enabled) return 'Login incorrect: this account is locked.\n';
+  return success ? `Login successful. Welcome, ${u.fullName || u.name}.\n` : 'Login incorrect (wrong password).\n';
 }
 
 function mask(lab, state, args) {
   if (!args.length) return 'Usage: mask <file>\n';
-  const f = findFile(state, resolvePath(state.cwd, args.join(' ')));
-  if (!f) return 'The system cannot find the file specified.\n';
-  const key = normPath(f.path);
-  const rule = (lab.masks || {})[key];
+  const f = getFile(state, resolvePath(state.cwd, args.join(' '), state.home));
+  if (!f) return `mask: ${args.join(' ')}: No such file or directory\n`;
+  const rule = (lab.masks || {})[f.path];
   if (!rule) return 'Nothing in this lab says how to mask that file.\n';
   markRead(state, f);
   const masked = f.content.replace(new RegExp(rule.pattern, 'g'), rule.replace);
-  const outPath = rule.output || f.path.replace(/(\.[A-Za-z0-9]+)?$/, '.masked$1');
-  state.files[normPath(outPath)] = { path: outPath, content: masked };
+  const outPath = rule.output ? normPath(rule.output) : f.path.replace(/(\.[A-Za-z0-9]+)?$/, '.masked$1');
+  state.files[outPath] = { path: outPath, content: masked };
   return `Masked. Wrote ${outPath}\n\n${masked}\n`;
 }
 
@@ -525,6 +1207,37 @@ function hashcrack(lab, args) {
   const found = (lab.crackable || {})[h];
   if (!found) return `No match in the crew's wordlist for ${h}.\n`;
   return `Match found: ${h} = "${found}"\n`;
+}
+
+// ---------- Tab completion ----------
+
+// Finishes the last word of the line: a command name first, a file or folder after that.
+export function complete(state, line) {
+  const m = /^(.*?)(\S*)$/.exec(line);
+  const before = m[1];
+  const word = m[2];
+  const head = before.trim();
+  let options;
+  if (!head || /(\||;|&&|^sudo)$/.test(head)) {
+    options = COMMAND_NAMES.filter((c) => c.startsWith(word)).map((c) => ({ text: c, dir: false }));
+  } else {
+    const slash = word.lastIndexOf('/');
+    const dirPart = slash >= 0 ? word.slice(0, slash + 1) : '';
+    const base = word.slice(slash + 1);
+    const dirAbs = resolvePath(state.cwd, dirPart || '.', state.home);
+    if (!isDir(state, dirAbs)) return { line, options: [] };
+    options = children(state, dirAbs)
+      .filter((c) => c.name.startsWith(base) && (base.startsWith('.') || !c.name.startsWith('.')))
+      .map((c) => ({ text: dirPart + c.name, dir: c.dir }));
+  }
+  if (!options.length) return { line, options: [] };
+  if (options.length === 1) {
+    const o = options[0];
+    return { line: before + o.text + (o.dir ? '/' : ' '), options: [] };
+  }
+  let common = options[0].text;
+  for (const o of options) while (!o.text.startsWith(common)) common = common.slice(0, -1);
+  return { line: before + common, options: options.map((o) => o.text.slice(o.text.lastIndexOf('/') + 1) + (o.dir ? '/' : '')) };
 }
 
 // ---------- objectives ----------
@@ -614,10 +1327,11 @@ export function missionText(lab, state) {
 }
 
 // ---------- save / restore (only the student's changes, never the lab itself) ----------
+// v2 is the Linux machine. A v1 save (the old Windows machine, C:\ paths) starts the lab fresh.
 
 export function snapshot(state) {
   return {
-    v: 1,
+    v: 2,
     cwd: state.cwd,
     users: state.users.map((u) => ({ name: u.name, enabled: u.enabled, changed: u.changed, password: u.changed ? u.password : undefined })),
     killed: state.processes.filter((p) => p.killed).map((p) => p.name),
@@ -628,6 +1342,7 @@ export function snapshot(state) {
     history: state.history.slice(-50),
     loginAttempts: state.loginAttempts.slice(-50),
     acl: state.acl,
+    modes: state.modes,
     opened: state.opened,
     triaged: state.triaged,
     files: Object.fromEntries(Object.entries(state.files).map(([k, f]) => [k, { path: f.path, content: f.content }])),
@@ -636,8 +1351,8 @@ export function snapshot(state) {
 
 export function restore(lab, saved) {
   const state = createState(lab);
-  if (!saved || saved.v !== 1) return state;
-  if (typeof saved.cwd === 'string') state.cwd = saved.cwd;
+  if (!saved || saved.v !== 2) return state;
+  if (typeof saved.cwd === 'string' && saved.cwd.startsWith('/')) state.cwd = normPath(saved.cwd);
   for (const su of saved.users || []) {
     const u = findUser(state, su.name);
     if (u) Object.assign(u, { enabled: !!su.enabled, changed: !!su.changed, ...(su.changed ? { password: su.password } : {}) });
@@ -651,11 +1366,18 @@ export function restore(lab, saved) {
   state.loginAttempts = Array.isArray(saved.loginAttempts)
     ? saved.loginAttempts.filter((a) => a && typeof a.user === 'string' && typeof a.password === 'string')
     : [];
-  state.acl = saved.acl && typeof saved.acl === 'object' ? { ...saved.acl } : {};
+  if (saved.acl && typeof saved.acl === 'object') {
+    for (const [k, a] of Object.entries(saved.acl)) {
+      if (a && Array.isArray(a.denied)) state.acl[k] = { denied: a.denied.filter((x) => typeof x === 'string'), users: a.users && typeof a.users === 'object' ? { ...a.users } : {} };
+    }
+  }
+  if (saved.modes && typeof saved.modes === 'object') {
+    for (const [k, m] of Object.entries(saved.modes)) if (typeof m === 'string' && /^[rwx-]{9}$/.test(m)) state.modes[k] = m;
+  }
   state.opened = Array.isArray(saved.opened) ? saved.opened.filter((x) => typeof x === 'string') : [];
   state.triaged = saved.triaged && typeof saved.triaged === 'object' ? { ...saved.triaged } : {};
   for (const [k, f] of Object.entries(saved.files || {})) {
-    if (f && typeof f.path === 'string' && typeof f.content === 'string') state.files[k] = { path: f.path, content: f.content };
+    if (f && typeof f.path === 'string' && typeof f.content === 'string' && k.startsWith('/')) state.files[k] = { path: f.path, content: f.content };
   }
   return state;
 }

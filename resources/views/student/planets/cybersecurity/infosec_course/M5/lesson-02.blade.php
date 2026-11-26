@@ -178,8 +178,8 @@ Syllabus: ITP1232 Unit E, Authentication & Non-Repudiation. --}}
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Windows commands there
-            (Command Prompt), such as <code>hashcrack</code> and <code>net user</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen: a training copy of the Citadel's main computer. You type Linux commands there
+            (a terminal), such as <code>hashcrack</code> and <code>sudo passwd</code>. Objectives tick off as you go.
         </p>
     </div>
 

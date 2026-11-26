@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "15:00 · HULL BREACH DRILL · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: the crew keeps operating, systems and people both, regardless of what breaks. Astro: \"Systems back is DR. Crew still running is BCP. We need both.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead drill-activities.txt: four activities from the hull-breach drill. Classify each as dr-scope or bcp-scope.\n\n1. type drill-activities.txt\n2. classify <activity> dr-scope | bcp-scope\n",
-    "C:\\Citadel\\drill-activities.txt": "HULL BREACH DRILL — ACTIVITIES\n----------------------------------\nactivity-1   relocating command to the auxiliary hall while the main hall is repaired\nactivity-2   restoring a corrupted database backup after an unrelated storage failure\nactivity-3   assigning a backup officer to speak with allied fleets since the usual liaison is unreachable\nactivity-4   reinstalling the relay console's software after a crash\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead drill-activities.txt: four activities from the hull-breach drill. Classify each as dr-scope or bcp-scope.\n\n1. cat drill-activities.txt\n2. classify <activity> dr-scope | bcp-scope\n",
+    "/home/cadet/citadel/drill-activities.txt": "HULL BREACH DRILL — ACTIVITIES\n----------------------------------\nactivity-1   relocating command to the auxiliary hall while the main hall is repaired\nactivity-2   restoring a corrupted database backup after an unrelated storage failure\nactivity-3   assigning a backup officer to speak with allied fleets since the usual liaison is unreachable\nactivity-4   reinstalling the relay console's software after a crash\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "volt",
       "title": "Volt's Drill: read the activities",
-      "body": "Volt: \"Read all four before sorting any.\" `type drill-activities.txt`.",
+      "body": "Volt: \"Read all four before sorting any.\" `cat drill-activities.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read drill-activities.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\drill-activities.txt"
+            "file": "/home/cadet/citadel/drill-activities.txt"
           }
         }
       ]

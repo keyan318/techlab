@@ -6,7 +6,7 @@
   "host": {
     "name": "CITADEL-CORE",
     "user": "cadet",
-    "cwd": "C:\\Citadel"
+    "cwd": "/home/cadet/citadel"
   },
   "story": {
     "alert": "21:15 · DETECTION COVERAGE AUDIT · CITADEL CORE",
@@ -14,15 +14,16 @@
     "victory": "DOOM ATTACK REPELLED before it started: every entry point that could be quietly beaten now has a way to notice if it is. Astro: \"Locks buy time. Detection is what tells us the time ran out.\""
   },
   "files": {
-    "C:\\Citadel\\README.txt": "ORDERS FROM ASTRO\n=================\nRead coverage-audit.txt: four entry points. Classify each as covered or detection-gap.\n\n1. type coverage-audit.txt\n2. classify <entry> covered | detection-gap\n",
-    "C:\\Citadel\\coverage-audit.txt": "DETECTION COVERAGE AUDIT\n---------------------------\nentry-main-hall       solid lock, CCTV covers it, alarm wired and monitored\nentry-cargo-loading   solid lock, but no camera and no alarm on this door\nentry-side-corridor   solid lock, motion sensor active, alarm wired and monitored\nentry-maintenance-hatch  lock present, camera nearby but pointed the wrong direction, no alarm\n"
+    "/home/cadet/citadel/README.txt": "ORDERS FROM ASTRO\n=================\nRead coverage-audit.txt: four entry points. Classify each as covered or detection-gap.\n\n1. cat coverage-audit.txt\n2. classify <entry> covered | detection-gap\n",
+    "/home/cadet/citadel/coverage-audit.txt": "DETECTION COVERAGE AUDIT\n---------------------------\nentry-main-hall       solid lock, CCTV covers it, alarm wired and monitored\nentry-cargo-loading   solid lock, but no camera and no alarm on this door\nentry-side-corridor   solid lock, motion sensor active, alarm wired and monitored\nentry-maintenance-hatch  lock present, camera nearby but pointed the wrong direction, no alarm\n"
   },
   "users": [
     {
       "name": "cadet",
       "fullName": "Shield Cadet (you)",
       "groups": [
-        "Users"
+        "users",
+        "sudo"
       ],
       "passwordSet": "09/23/2026",
       "lastLogon": "Now"
@@ -39,14 +40,14 @@
     {
       "by": "volt",
       "title": "Read the coverage audit",
-      "body": "Volt: \"Read every entry point before judging any.\" `type coverage-audit.txt`.",
+      "body": "Volt: \"Read every entry point before judging any.\" `cat coverage-audit.txt`.",
       "objectives": [
         {
           "id": "read",
           "label": "Read coverage-audit.txt",
           "check": {
             "type": "read",
-            "file": "C:\\Citadel\\coverage-audit.txt"
+            "file": "/home/cadet/citadel/coverage-audit.txt"
           }
         }
       ]

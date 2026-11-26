@@ -195,8 +195,8 @@ The Defense Lab is the Citadel Sim; passing it (public/citadel-sim/labs/c2-l3.js
             <span class="code-btn-arrow" aria-hidden="true">→</span>
         </a>
         <p class="body-text relay-lab-note">
-            Opens the Citadel Sim full screen. You type Windows commands there (Command Prompt), such as
-            <code>type</code> and <code>classify</code>. Objectives tick off as you go.
+            Opens the Citadel Sim full screen. You type Linux commands there (a terminal), such as
+            <code>cat</code> and <code>classify</code>. Objectives tick off as you go.
         </p>
     </div>
 
